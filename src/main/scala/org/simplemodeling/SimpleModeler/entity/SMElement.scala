@@ -1,0 +1,109 @@
+package org.simplemodeling.SimpleModeler.entity
+
+import scala.collection.mutable.{Buffer, ArrayBuffer}
+import java.util.UUID
+import org.simplemodeling.dsl._
+import org.goldenport.value._
+import org.goldenport.sdoc._
+import org.goldenport.sdoc.inline.SIAnchor
+import com.asamioffice.goldenport.text.UJavaString
+import org.simplemodeling.SimpleModeler._
+import org.simplemodeling.SimpleModeler.sdoc.SMObjectRef
+
+/*
+ * @since   Sep. 15, 2008
+ * @version Dec. 18, 2010
+ * @author  ASAMI, Tomoharu
+ */
+abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMElement] {
+  type TreeNode_TYPE = SMElement
+//  require (dslElement != null &&
+//	   (!this.isInstanceOf[SMRoot] && dslElement.name != null))
+  content = this
+  set_name(dslElement.name)
+//  dslElement.modelElement = this
+
+  private val _features = new ArrayBuffer[SMFeature]
+//  private val _anchors = new ArrayBuffer[SIAnchor]
+
+  val id: UUID = UUID.randomUUID()
+
+  protected final def add_feature(key: GKey, value: SDoc): SMFeature = {
+    val feature = new SMFeature(key, value)
+    _features += feature
+    feature
+  }
+
+  protected final def add_feature(aKey: GKey)(aFunction: () => SDoc): SMFeature = {
+    val feature = new SMFeature(aKey)(aFunction)
+    _features += feature
+    feature
+  }
+
+/* 2008-10-15
+  protected final def add_anchor(anchor: SIAnchor): SIAnchor = {
+    _anchors += anchor
+    anchor
+  }
+*/
+
+  final def name_en = dslElement.name_en
+  final def name_ja = dslElement.name_ja
+  final def term = dslElement.term
+  final def term_en = dslElement.term_en
+  final def term_ja = dslElement.term_ja
+  // XXX another name stuff
+  final def caption = dslElement.caption
+  final def brief = dslElement.brief
+  final def summary = dslElement.summary
+  final def resume = dslElement.resume
+  final def description = dslElement.description
+  final def note = dslElement.note
+  final def history = dslElement.history
+
+  protected def new_Node(aName: String): SMElement = {
+    val dslPackage = new SPackage(aName)
+    // XXX more setup
+    new SMPackage(dslPackage)
+  }
+
+  final def qualifiedName: String = {
+    qualified_Name match {
+      case Some(qName) => qName
+      case None => UJavaString.pathname2className(pathname)
+    }
+  }
+
+  protected def qualified_Name: Option[String] = None
+
+  final def features: Seq[SMFeature] = _features.toList
+
+/*
+  final def features: Seq[SMFeature] = {
+    val buf = new ArrayBuffer[SMFeature]
+    build_Element_Feature(buf)
+    buf
+  }
+
+  protected def build_Element_Feature(aBuf: Buffer[SMFeature]) {
+  }
+*/
+
+  // utilities
+  protected final def objects_literal(theObjects: Seq[SMObject]): SDoc = {
+    if (theObjects.isEmpty) return "-"
+    val fragment = SFragment()
+    for (obj <- theObjects) {
+      val anchor = new SMObjectRef(obj)
+      fragment.addChild(anchor)
+      if (theObjects.last != obj) {
+	fragment.addChild(SText(", "))
+      }
+    }
+    fragment
+  }
+
+  protected final def syntax_error(message: String) {
+    error("syntax error: " + message)
+  }
+}
