@@ -1,3 +1,5 @@
+seq(conscriptSettings :_*)
+
 name := "simplemodeler"
 
 organization := "org.simplemodeling"
@@ -5,6 +7,10 @@ organization := "org.simplemodeling"
 version := "0.3.1"
 
 scalaVersion := "2.9.1"
+
+scalacOptions += "-deprecation"
+
+scalacOptions += "-unchecked"
 
 resolvers += "Scala Tools Snapshots" at "http://scala-tools.org/repo-snapshots/"
 

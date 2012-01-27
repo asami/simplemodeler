@@ -57,6 +57,17 @@ object SimpleModeler {
   }
 }
 
+class AppMain extends xsbti.AppMain {
+  def run(config: xsbti.AppConfiguration) = {
+    val args = config.arguments
+    val smartdox = new SimpleModeler(args)
+    smartdox.executeShellCommand(args)
+    new xsbti.Exit {
+      val code = 0
+    }
+  }    
+}
+
 object Main {
   def main(args: Array[String]) {
     val simpleModeler = new SimpleModeler(args)
