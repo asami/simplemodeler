@@ -122,8 +122,11 @@ abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) 
   val rights: String = ""
 
   // used in BusinessUsecase.task and SimpleModelEntity.is_exists_or_register  
-  def isObjectScope: Boolean = false
-  val isMaster: Boolean = SObjectRepository.register(this)
+  def isObjectScope: Boolean = false // OLD logic
+  val isRegisteredMaster: Boolean = SObjectRepository.register(this) // OLD logic
+  // New logic
+  def isMaster = isRegisteredMaster | isMasterSingleton
+  var isMasterSingleton = true
 
   var xmlNamespace: String = null
   var baseObject: SObject = NullObject

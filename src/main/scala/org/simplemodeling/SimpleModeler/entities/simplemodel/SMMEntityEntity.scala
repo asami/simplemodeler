@@ -25,6 +25,8 @@ import org.simplemodeling.dsl.domain.DomainPowertype
 import org.simplemodeling.dsl.domain.DomainResource
 import org.simplemodeling.dsl.domain.DomainRole
 import org.simplemodeling.dsl.domain.DomainRule
+import org.simplemodeling.dsl.domain.DomainState
+import org.simplemodeling.dsl.domain.DomainStateMachine
 import org.simplemodeling.dsl.domain.DomainSummary
 import org.simplemodeling.dsl.domain.DomainValue
 import org.simplemodeling.dsl.domain.DomainValueId
@@ -49,7 +51,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
 /*
  * @since   Jan. 30, 2009
  *  version Dec.  8, 2011
- * @version Jan. 25, 2012
+ * @version Jan. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) {
@@ -649,40 +651,61 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     kind match {
       case ActorKind    => new DomainActor(name, packageName) {
 //        override def isObjectScope = true
+        isMasterSingleton = true
       }
       case ResourceKind => new DomainResource(name, packageName) {
 //        override def isObjectScope = true
+        isMasterSingleton = true
       }
       case EventKind    => new DomainEvent(name, packageName) {
 //        override def isObjectScope = true
+        isMasterSingleton = true
       }
       case RoleKind     => new DomainRole(name, packageName) {
 //        override def isObjectScope = true
+        isMasterSingleton = true
       }
       case SummaryKind  => new DomainSummary(name, packageName) {
 //        override def isObjectScope = true
+        isMasterSingleton = true
       }
       case EntityKind   => new DomainEntity(name, packageName) {
 //        override def isObjectScope = true
+        isMasterSingleton = true
       }
       case RuleKind         => new DomainRule(name, packageName) {
 //        override def isObjectScope = true
+        isMasterSingleton = true
       }
       case IdKind           => new DomainValueId(name, packageName) {
 //        override def isObjectScope = true
+        isMasterSingleton = true
       }
       case NameKind         => new DomainValueName(name, packageName) {
 //        override def isObjectScope = true
+        isMasterSingleton = true
       }
       case PowertypeKind    => new DomainPowertype(name, packageName) {
 //        override def isObjectScope = true
+        isMasterSingleton = true
       }
-//      case "statemachine" => new DomainStateMachine(name) {}
-//      case "state"        => new DomainState(name) {}
+/*
+      case StateMachineKind => new DomainStateMachine(name) {
+        override def isObjectScope = true        
+      }
+      case StateMachineStateKind => new DomainState(name) {
+        override def isObjectScope = true        
+      }
+*/
       case UsecaseKind      => new BusinessUsecase(name, packageName) {
+//        override def isObjectScope = true
       }
-      case NoneKind => new GenericDomainEntity(name, packageName, Nil)
-      case gk: GenericKind => new GenericDomainEntity(name, packageName, List(gk.name))
+      case NoneKind => new GenericDomainEntity(name, packageName, Nil) {
+//        override def isObjectScope = true
+      }
+      case gk: GenericKind => new GenericDomainEntity(name, packageName, List(gk.name)) {
+//        override def isObjectScope = true
+      }
       case _          => error("not implemented yet = " + kind)
     }
   }

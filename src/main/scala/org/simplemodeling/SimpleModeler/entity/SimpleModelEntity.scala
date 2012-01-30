@@ -24,7 +24,8 @@ import com.asamioffice.goldenport.text.UJavaString
 
 /*
  * @since   Sep. 13, 2008
- * @version Sep. 19, 2011
+ *  version Sep. 19, 2011
+ * @version Jan. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) {
@@ -34,6 +35,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
   private val _done_objects = new mutable.HashSet[String]
 
   var title: SDoc = SEmpty
+  private var _new_logic = true
 
   def this(aDataSource: GDataSource, aContext: GEntityContext) = this(aDataSource, aDataSource, aContext)
 
@@ -41,7 +43,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
 //println("open start simplemodel") 2009-03-01
     set_root(new SMRoot)
     build_datatypes()
-    aDataSource.objects.foreach(build_object)
+    _build_objects(aDataSource)
     resolve_document()
     resolve_value()
     resolve_stateMachine()
@@ -120,16 +122,27 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
     build_datatype(XRating)
   }
 
-  private def build_object(anObject: SObject) {
+  private def _build_objects(ds: SObjectDataSource) {
+    ds.objects.foreach(build_object)
+  }
+
+  def build_object(anObject: SObject) {
     record_trace("build_object = " + anObject.name)
-    if (anObject.isObjectScope) {
-      build_object_body(anObject)
-    } else if (is_exists_or_register(anObject)) {
-      return
-    } else if (anObject.isMaster) {
-      build_object_body(anObject)
+    println("build_object = " + anObject.name)
+    if (_new_logic) {
+      if (!is_exists_or_register(anObject)) {
+        build_object_body(anObject)
+      }
     } else {
-      build_object_body(SObjectRepository.getObject(anObject.qualifiedName))
+      if (anObject.isObjectScope) {
+        build_object_body(anObject)
+      } else if (is_exists_or_register(anObject)) {
+        return
+      } else if (anObject.isMaster) {
+        build_object_body(anObject)
+      } else {
+        build_object_body(SObjectRepository.getObject(anObject.qualifiedName))
+      }
     }
   }
 

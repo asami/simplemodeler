@@ -3,10 +3,12 @@ package org.simplemodeling.dsl
 import scala.collection.mutable._
 import java.util.Locale
 import org.goldenport.sdoc._
+import scala.deprecated
 
 /*
- * Sep. 10, 2008
+ * @since   Sep. 10, 2008
  * Dec. 22, 2008
+ * @version Jan. 30, 2012
  */
 class SObjectRepository {
   private val _objects = new HashMap[String, SObject]
@@ -41,4 +43,5 @@ class SObjectRepository {
 */
 }
 
+@deprecated
 object SObjectRepository extends SObjectRepository
