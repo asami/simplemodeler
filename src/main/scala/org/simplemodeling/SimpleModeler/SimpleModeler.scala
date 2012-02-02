@@ -20,7 +20,11 @@ import org.goldenport.exporter.FirstLeafOrZipResultExporterClass
 /*
  * @since   Apr. 13, 2009
  *  version Dec. 13, 2011
- * @version Jan. 30, 2012
+<<<<<<< HEAD
+ * @version Feb.  9, 2012
+=======
+ * @version Feb.  9, 2012
+>>>>>>> Updates BuildService.
  * @auther  ASAMI, Tomoharu
  */
 class SimpleModeler(args: Array[String]) {
@@ -78,13 +82,14 @@ object Main {
 // TODO: append custom service feature
 class SimpleModelerDescriptor extends GApplicationDescriptor {
   name = "SimpleModeler"
-  version = "0.3.2-SNAPSHOT"
-  version_build = "20120130"
+  version = "0.3.3-SNAPSHOT"
+  version_build = "20120209"
   copyright_years = "2008-2012"
   copyright_owner = "ASAMI, Tomoharu"
   command_name = "sm"
   //
   classpath("target/classes")
+  classpath("target/scala-2.9.1/classes")
   importers(ScalaDslImporter)
   entities(CsvEntity, XMindEntity, OpmlEntity, ExcelTableEntity, 
       OrgmodeEntity, YamlEntity)
@@ -100,7 +105,8 @@ class SimpleModelerDescriptor extends GApplicationDescriptor {
 	   AndroidGeneratorService,
 	   G3GeneratorService,
 	   AsakusaGeneratorService,
-	   DiagramGeneratorService)
+	   DiagramGeneratorService,
+	   BuildService)
 }
 
 object SimpleModelerDescriptor extends SimpleModelerDescriptor
