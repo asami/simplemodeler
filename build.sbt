@@ -26,7 +26,7 @@ libraryDependencies += "junit" % "junit" % "4.7" % "test"
 
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "6.0.3"
 
-libraryDependencies += "org.goldenport" %% "goldenport" % "0.3.1"
+libraryDependencies += "org.goldenport" %% "goldenport" % "0.3.2-SNAPSHOT"
 
 //
 publishTo := Some(Resolver.file("asamioffice", file("target/maven-repository")))
