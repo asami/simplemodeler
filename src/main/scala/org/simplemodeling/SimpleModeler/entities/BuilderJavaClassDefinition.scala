@@ -3,7 +3,8 @@ package org.simplemodeling.SimpleModeler.entities
 /*
  * @since   Jul.  7, 2011
  *  version Aug. 27, 2011
- * @version Dec. 14, 2011
+ *  version Dec. 14, 2011
+ * @version Feb.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class BuilderJavaClassDefinition(
@@ -46,10 +47,10 @@ class BuilderJavaClassDefinition(
       if (!attributeDefinitions.isEmpty) {
         jm_pln
         jm_p(attributeDefinitions.head.varName)
-      }
-      for (a <- attributeDefinitions.tail) {
-        jm_pln(",")
-        jm_p(a.varName)
+        for (a <- attributeDefinitions.tail) {
+          jm_pln(",")
+          jm_p(a.varName)
+        }
       }
       jm_pln(");")
       jm_indent_down

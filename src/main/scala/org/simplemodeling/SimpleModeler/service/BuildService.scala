@@ -64,8 +64,11 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
     }
   }
 
+  implicit def GtreeContainerEntityNodeShow: Show[GTreeContainerEntityNode] = showA
+
   private def _build(home: GTreeContainerEntityNode) {
     val tree = entree(home)
+    println("tree = " + tree.drawTree)
     val x = _collect_suffixes(tree, List("csv"))
     println("csvs = " + x.toList)
     val transformed = (for ((path, node) <- _collect_suffixes(tree, List("csv")).toList) yield {
@@ -109,8 +112,9 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
     sm2java.javaSrcDir = "/main/java"
     val javaRealm = sm2java.transform
     val tree = entree(javaRealm.root)
+    println("sm_java6 tree = " + tree.drawTree)
     val r = collectZPathPT(tree) {
-      case (p, t) => t.rootLabel.content
+      case (p, t) if t.rootLabel.isContent => t.rootLabel.content
     } (NodeZPathClass)
     println("_sm2_java6 = " + r.toList)
     r
@@ -137,7 +141,7 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
     collectZPathPT(tree) {
       new PartialFunction[(ZPath, Tree[GTreeContainerEntityNode]), GTreeContainerEntityNode] {
         override def isDefinedAt(pt: (ZPath, Tree[GTreeContainerEntityNode])) = {
-          pt._1.suffix.exists(suffixes.contains) ensuring { x => println(pt._1 + "/" + x);true}
+          pt._1.suffix.exists(suffixes.contains) ensuring { x => println(pt._1 + " => " + x);true}
         }
         override def apply(pt: (ZPath, Tree[GTreeContainerEntityNode])) = {
           pt._2.rootLabel
