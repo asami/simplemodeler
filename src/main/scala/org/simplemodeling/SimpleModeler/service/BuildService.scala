@@ -110,6 +110,7 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
   private def _sm2_java6(path: ZPath, call: GServiceCall, sm: SimpleModelEntity): Stream[(ZPath, GContent)] = {
     val sm2java = new SimpleModel2Java6RealmTransformer(sm, call.serviceContext)
     sm2java.javaSrcDir = "/main/java"
+    sm2java.isMakeProject = false
     val javaRealm = sm2java.transform
     val tree = entree(javaRealm.root)
     println("sm_java6 tree = " + tree.drawTree)

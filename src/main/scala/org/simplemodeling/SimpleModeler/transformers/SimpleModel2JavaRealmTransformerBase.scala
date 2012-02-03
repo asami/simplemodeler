@@ -23,7 +23,7 @@ import org.goldenport.recorder.Recordable
 /*
  * @since   Apr. 18, 2011
  *  version Dec. 14, 2011
- * @version Jan. 24, 2012
+ * @version Feb.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -36,6 +36,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
 
   var javaSrcDir = "/src"
   var scriptSrcDir= ""
+  var isMakeProject = true
 
   setup_FowardingRecorder(serviceContext)
 
@@ -47,7 +48,9 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
     for (phase <- make_Phases) {
       target_realm.traverse(phase)
     }
-    make_Project()
+    if (isMakeProject) {
+      make_Project()
+    }
     simpleModel.close()
     target_realm ensuring(_.isOpened)
   }
