@@ -346,6 +346,7 @@ abstract class GenericClassAttributeDefinition(
    */
   def variable_id {
     val varName = var_name
+    aspects.foreach(_.weaveAttributeSlot(attr, varName))
     if (aspects.find(_.weaveIdAttributeSlot(attr, varName) == true).isDefined) {}
     else if (variable_id_Id(java_type, varName)) {}
     else variable_plain_Attribute_Instance_Variable(java_type, varName)
@@ -355,7 +356,8 @@ abstract class GenericClassAttributeDefinition(
 
   def variable_plain {
     //      println("Attr %s, kind = %s".format(attr.name, attr.kind)) // 2009-10-28
-
+    val varName = var_name
+    aspects.foreach(_.weaveAttributeSlot(attr, varName))
     attr.kind match {
       case NullAttributeKind => {
         attr.attributeType match {
