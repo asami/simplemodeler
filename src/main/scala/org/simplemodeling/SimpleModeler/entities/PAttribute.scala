@@ -11,7 +11,8 @@ import org.simplemodeling.SimpleModeler.entity._
  * implemented as a instance variable.
  * 
  * @since   Apr. 22, 2011
- * @version Jul. 22, 2011
+ *  version Jul. 22, 2011
+ * @version Feb.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 // XXX Should be immutable
@@ -239,5 +240,16 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   final def isEntity = {
     attributeType.isEntity
+  }
+
+  //
+  def idDatatypeName: String = {
+    getIdDatatypeName.get
+  }
+
+  def getIdDatatypeName(): Option[String] = {
+    Option(modelAttribute) flatMap { m =>
+      SMObject.getIdDatatypeName(m.attributeType.typeObject)
+    }
   }
 }

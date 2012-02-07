@@ -9,7 +9,8 @@ import com.asamioffice.goldenport.text.UPathString
 
 /*
  * @since   Sep. 13, 2008
- * @version Jul. 13, 2011
+ *  version Jul. 13, 2011
+ * @version Feb.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
@@ -241,6 +242,26 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   private[entity] def addAttribute(anAttr: SMAttribute) {
     require (anAttr != null)
     _attributes += anAttr
+  }
+}
+
+object SMObject {
+  def getIdDatatypeName(obj: SMObject): Option[String] = {
+    getIdDatatype(obj) map (_.name)
+  }
+
+  def getIdDatatype(obj: SMObject): Option[SMDatatype] = {
+    obj match {
+      case id: domain.SMDomainValueId => {
+        id.attributes.headOption flatMap { m2 =>
+          m2.attributeType.typeObject match {
+            case d: SMDatatype => Some(d)
+            case _ => None
+          }
+        }
+      }
+      case _ => None
+    }
   }
 }
 
