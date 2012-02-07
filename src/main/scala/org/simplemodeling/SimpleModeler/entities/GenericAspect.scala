@@ -15,6 +15,7 @@ abstract class GenericAspect {
 */
   def weaveImports() {}
   def weaveOpenAnnotation() {}
+  def weaveAttributeSlot(attr: PAttribute, varName: String) {}
   def weaveIdAttributeSlot(attr: PAttribute, varName: String): Boolean = false
   def weavePersistentAnnotation(attr: PAttribute) {}
   def weaveNotPersistentAnnotation(attr: PAttribute) {}

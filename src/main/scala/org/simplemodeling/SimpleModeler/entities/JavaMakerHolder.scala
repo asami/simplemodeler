@@ -2,7 +2,8 @@ package org.simplemodeling.SimpleModeler.entities
 
 /*
  * @since   May. 15, 2011
- * @version Sep.  1, 2011
+ *  version Sep.  1, 2011
+ * @version Feb.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaMakerHolder {
@@ -59,6 +60,18 @@ trait JavaMakerHolder {
 
   protected final def jm_end_import_section() {
     _maker.endImportSection()
+  }
+
+  protected final def jm_annotation(ano: String) {
+    jm_pln("@%s".format(ano))
+  }
+
+  protected final def jm_annotation(ano: String, params: String) {
+    jm_pln("@%s(%s)".format(ano, params))
+  }
+
+  protected final def jm_annotation_string(ano: String, params: String) {
+    jm_pln("@%s(\"%s\")".format(ano, params))
   }
 
   protected final def jm_private_instance_variable(attr: PAttribute, typename: String = null, varname: String = null) {
