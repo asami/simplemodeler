@@ -1,12 +1,15 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import scalaz._
+import Scalaz._
 import java.text.SimpleDateFormat
 import java.util.TimeZone
 import org.simplemodeling.SimpleModeler.entity.SMPackage
 
 /*
  * @since   Jun.  6, 2011
- * @version Aug. 13, 2011
+ *  version Aug. 13, 2011
+ * @version Feb.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -123,7 +126,8 @@ class JavaClassDefinition(
   override protected def constructors_copy_constructor {
     jm_public_constructor("%s(%s o)", name, name) {
       for (a <- attributeDefinitions) {
-        jm_assign_this(a.varName, "o." + a.varName)
+        if (aspects.find(_.weaveCopyConstructorAttributeBlock(a.attr, a.varName, "o")).isDefined) {}
+        else jm_assign_this(a.varName, "o." + a.varName)
       }
     }
   }
@@ -134,7 +138,8 @@ class JavaClassDefinition(
     if (!params.isEmpty) {
       jm_public_constructor("%s(%s)", name, params) {
         for (a <- attributeDefinitions) {
-          jm_assign_this(a.varName, a.paramName)
+          if (aspects.find(_.weavePlainConstructorAttributeBlock(a.attr, a.varName, a.paramName)).isDefined) {}
+          else jm_assign_this(a.varName, a.paramName)
         }
       }
     }
@@ -182,12 +187,20 @@ class JavaClassDefinition(
           jm_pln("""to_xml(buf, "%s", %s);""", a.xmlElementName, a.varName)
         } else {
           jm_if_not_null(a.varName) {
-            jm_pln("%s.toXml(buf);", a.varName)
+            jm_pln("%s.toXml(buf);", _var_name(a))
           }
         }
       }
       jm_append_String("</%s>", xmlElementName)
     }
+  }
+
+  private def _var_name(attr: GenericClassAttributeDefinition): String = {
+    _var_name(attr.attr, attr.varName)
+  }
+
+  private def _var_name(attr: PAttribute, varName: String): String = {
+    aspects.flatMap(_.objectVarName(attr, varName)).headOption getOrElse varName
   }
 
   override protected def to_methods_json {
@@ -205,7 +218,7 @@ class JavaClassDefinition(
         if (a.isSystemType) {
           jm_pln("""to_json(buf, %s, %s);""", a.propertyConstantName, a.varName)
         } else {
-          jm_pln("""to_json(buf, %s, %s.toJson());""", a.propertyConstantName, a.varName)
+          jm_pln("""to_json(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
         }
       }
       jm_append_String("}", term)
@@ -227,7 +240,7 @@ class JavaClassDefinition(
         if (a.isSystemType) {
           jm_pln("""to_json(buf, %s, %s);""", a.propertyConstantName, a.varName)
         } else {
-          jm_pln("""to_json(buf, %s, %s.toJson());""", a.propertyConstantName, a.varName)
+          jm_pln("""to_json(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
         }
       }
       jm_append_String("}", term)
@@ -249,7 +262,7 @@ class JavaClassDefinition(
         if (a.isSystemType) {
           jm_pln("""to_json(buf, %s, %s);""", a.propertyConstantName, a.varName)
         } else {
-          jm_pln("""to_json(buf, %s, %s.toJson());""", a.propertyConstantName, a.varName)
+          jm_pln("""to_json(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
         }
       }
       jm_append_String("}", term)
@@ -270,7 +283,7 @@ class JavaClassDefinition(
         if (a.isSystemType) {
           jm_pln("""to_string_map(r, %s, %s);""", a.propertyConstantName, a.varName)
         } else {
-          jm_pln("""to_string_map(r, %s, %s.toJson());""", a.propertyConstantName, a.varName)
+          jm_pln("""to_string_map(r, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
         }
       }
       jm_return("r")

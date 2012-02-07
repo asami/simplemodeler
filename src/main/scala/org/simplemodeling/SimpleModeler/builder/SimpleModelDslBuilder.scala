@@ -15,14 +15,15 @@ import org.goldenport.recorder.Recordable
 /*
  * @since   Sep. 15, 2011
  *  version Dec. 11, 2011
- * @version Jan. 25, 2012
+ * @version Feb.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelDslBuilder(
     private val entityContext: GEntityContext, 
     private val packageName: String,
     private val _policy: Policy,
-    private val _strategy: Option[Strategy]) extends SimpleModelBuilder with Recordable {
+    private val _strategy: Option[Strategy])
+    extends SimpleModelBuilder with Recordable with UseTerm {
   private val packagePathname = UJavaString.packageName2pathname(packageName)
   private val entities = new HashMap[String, SMMEntityEntity]
   private def _naming_strategy = (_strategy getOrElse _policy.strategy).naming
@@ -207,86 +208,6 @@ class SimpleModelDslBuilder(
     }
   }
 
-  // common with SimpleModelMakerEntity : XXX unify
-  def get_name_by_term(aTerm: String): String = {
-    val index = aTerm.indexOf(':')
-    if (index != -1) return aTerm.substring(0, index).trim
-    val index2 = aTerm.indexOf('(')
-    if (index2 != -1) return aTerm.substring(0, index2).trim
-    get_name_without_multiplicity(aTerm)
-  }
-
-  def get_name_without_multiplicity(aTerm: String): String = {
-    (aTerm(aTerm.length - 1) match {
-      case '?' => aTerm.substring(0, aTerm.length - 1)
-      case '+' => aTerm.substring(0, aTerm.length - 1)
-      case '*' => aTerm.substring(0, aTerm.length - 1)
-      case _   => aTerm
-    }).trim
-  }
-
-  def get_type_name_by_term(aTerm: String): String = {
-    val index = aTerm.indexOf(':')
-    if (index == -1) {
-      get_name_by_term(aTerm)
-    } else {
-      val index2 = aTerm.indexOf('(')
-      if (index2 != -1) {
-        aTerm.substring(index, index2).trim
-      } else {
-        get_name_without_multiplicity(aTerm.substring(index + 1))
-      }
-    }
-  }
-
-  def get_attribute_type_by_term(aTerm: String): SMMObjectType = {
-    def get_type(aTypeName: String) = {
-      aTypeName match {
-        case "boolean"       => SMMBooleanType
-        case "byte"          => SMMByteType
-        case "short"         => SMMShortType
-        case "int"           => SMMIntType
-        case "long"          => SMMLongType
-        case "float"         => SMMFloatType
-        case "double"        => SMMDoubleType
-        case "integer"       => SMMIntegerType
-        case "decimal"       => SMMDecimalType
-        case "unsignedByte"  => SMMUnsignedByteType
-        case "unsignedShort" => SMMUnsignedShortType
-        case "unsignedInt"   => SMMUnsignedIntType
-        case "unsignedLong"  => SMMUnsignedLongType
-        case _               => SMMStringType
-      }
-    }
-
-    val index = aTerm.indexOf(':')
-    if (index == -1) return SMMStringType
-    val index2 = aTerm.indexOf('(')
-    if (index2 != -1) return get_type(aTerm.substring(index + 1, index2))
-    aTerm(aTerm.length - 1) match {
-      case '?' => get_type(aTerm.substring(index + 1, aTerm.length - 1))
-      case '+' => get_type(aTerm.substring(index + 1, aTerm.length - 1))
-      case '*' => get_type(aTerm.substring(index + 1, aTerm.length - 1))
-      case _   => get_type(aTerm.substring(index + 1))
-    }
-  }
-
-  def get_labels_by_term(aTerm: String): Seq[String] = {
-    val start = aTerm.indexOf('(')
-    if (start == -1) return Nil
-    val end = aTerm.indexOf(')')
-    if (end == -1) error("syntax error: = " + aTerm) // XXX
-    aTerm.substring(start + 1, end).split("[;. ]+")
-  }
-
-  def get_multiplicity_by_term(aTerm: String): GRMultiplicity = {
-    aTerm(aTerm.length - 1) match {
-      case '?' => GRZeroOne
-      case '+' => GROneMore
-      case '*' => GRZeroMore
-      case _   => GROne
-    }
-  }
 
   def get_entity_by_term(aTerm: String): SMMEntityEntity = {
     get_entity_by_entity_name(get_type_name_by_term(aTerm))

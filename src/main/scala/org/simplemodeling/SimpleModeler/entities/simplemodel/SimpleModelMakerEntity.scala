@@ -12,14 +12,17 @@ import org.goldenport.value.GTreeBase
 import com.asamioffice.goldenport.text.{UJavaString, UString}
 import org.simplemodeling.SimpleModeler.builder.SimpleModelMakerBuilder
 import org.simplemodeling.SimpleModeler.builder.Policy
+import org.simplemodeling.SimpleModeler.builder.UseTerm
 
 /*
  * @since   Jan. 30, 2009
  *  version Nov.  5, 2011
- * @version Dec. 11, 2011
+ *  version Dec. 11, 2011
+ * @version Feb.  7, 2012
  * @author  ASAMI, Tomoharu
  */
-class SimpleModelMakerEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext, val policy: Policy) extends GTreeContainerEntityBase(aIn, aOut, aContext) {
+class SimpleModelMakerEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext, val policy: Policy)
+    extends GTreeContainerEntityBase(aIn, aOut, aContext) with UseTerm {
   type DataSource_TYPE = GDataSource
   override type TreeNode_TYPE = GTreeContainerEntityNode
   override def is_Text_Output = true
@@ -153,86 +156,6 @@ class SimpleModelMakerEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEnt
                 }
               }
             }
-          }
-        }
-
-        def get_name_by_term(aTerm: String): String = {
-          val index = aTerm.indexOf(':')
-          if (index != -1) return aTerm.substring(0, index).trim
-          val index2 = aTerm.indexOf('(')
-          if (index2 != -1) return aTerm.substring(0, index2).trim
-          get_name_without_multiplicity(aTerm)
-        }
-
-        def get_name_without_multiplicity(aTerm: String): String = {
-          (aTerm(aTerm.length - 1) match {
-            case '?' => aTerm.substring(0, aTerm.length - 1)
-            case '+' => aTerm.substring(0, aTerm.length - 1)
-            case '*' => aTerm.substring(0, aTerm.length - 1)
-            case _   => aTerm
-          }).trim
-        }
-
-        def get_type_name_by_term(aTerm:String): String = {
-            val index = aTerm.indexOf(':')
-            if (index == -1) {
-              get_name_by_term(aTerm)
-            } else {
-              val index2 = aTerm.indexOf('(')
-              if (index2 != -1) {
-                aTerm.substring(index, index2).trim
-              } else {
-                get_name_without_multiplicity(aTerm.substring(index + 1))
-              }
-            }
-        }
-
-        def get_attribute_type_by_term(aTerm: String): SMMObjectType = {
-          def get_type(aTypeName: String) = {
-            aTypeName match {
-              case "boolean"       => SMMBooleanType
-              case "byte"          => SMMByteType
-              case "short"         => SMMShortType
-              case "int"           => SMMIntType
-              case "long"          => SMMLongType
-              case "float"         => SMMFloatType
-              case "double"        => SMMDoubleType
-              case "integer"       => SMMIntegerType
-              case "decimal"       => SMMDecimalType
-              case "unsignedByte"  => SMMUnsignedByteType
-              case "unsignedShort" => SMMUnsignedShortType
-              case "unsignedInt"   => SMMUnsignedIntType
-              case "unsignedLong"  => SMMUnsignedLongType
-              case _               => SMMStringType
-            }
-          }
-
-          val index = aTerm.indexOf(':')
-          if (index == -1) return SMMStringType
-          val index2 = aTerm.indexOf('(')
-          if (index2 != -1) return get_type(aTerm.substring(index + 1, index2))
-          aTerm(aTerm.length - 1) match {
-            case '?' => get_type(aTerm.substring(index + 1, aTerm.length - 1))
-            case '+' => get_type(aTerm.substring(index + 1, aTerm.length - 1))
-            case '*' => get_type(aTerm.substring(index + 1, aTerm.length - 1))
-            case _   => get_type(aTerm.substring(index + 1))
-          }
-        }
-
-        def get_labels_by_term(aTerm: String): Seq[String] = {
-          val start = aTerm.indexOf('(')
-          if (start == -1) return Nil
-          val end = aTerm.indexOf(')')
-          if (end == -1) error("syntax error: = " + aTerm) // XXX
-          aTerm.substring(start + 1, end).split("[;. ]+")
-        }
-
-        def get_multiplicity_by_term(aTerm: String): GRMultiplicity = {
-          aTerm(aTerm.length - 1) match {
-            case '?' => GRZeroOne
-            case '+' => GROneMore
-            case '*' => GRZeroMore
-            case _   => GROne
           }
         }
 
