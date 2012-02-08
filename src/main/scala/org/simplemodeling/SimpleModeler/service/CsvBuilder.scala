@@ -27,9 +27,11 @@ class CsvBuilder(val project: ProjectRealmEntity, packageName: String, csv: CsvE
   val model_Builder = new SimpleModelMakerBuilder(simplemodel, packageName, policy)
 
   def build {
-    simplemodel.build
-    project.copyIn("src/main/scala", simplemodel)
-    simplemodel.close()    
+    simplemodel.using {
+      build_model
+      simplemodel.build
+      project.copyIn("src/main/scala", simplemodel)
+    }
   }
 }
 

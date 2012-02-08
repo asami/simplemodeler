@@ -15,10 +15,24 @@ import org.simplemodeling.dsl.SObject
  * @since   Feb.  2, 2009
  *  version Mar.  6, 2009
  *  version Dec. 12, 2011
- * @version Jan. 24, 2012
+ * @version Feb.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelMakerBuilder(
+    private val simplemodel: SimpleModelMakerEntity,
+    packageName: String,
+    policy: Policy,
+    strategy: Option[Strategy] = None) extends SimpleModelDslBuilder(
+    simplemodel.entityContext, packageName, policy, strategy) with Recordable {
+  val packagePathname = UJavaString.packageName2pathname(packageName)
+
+  override protected def create_Object(name: String, entity: SMMEntityEntity) {
+    val pathname = packagePathname + "/" + entity.name + ".scala"
+    simplemodel.setEntity(pathname, entity)
+  }
+}
+
+class SimpleModelMakerBuilder0(
     private val simplemodel: SimpleModelMakerEntity,
     private val packageName: String,
     private val _policy: Policy,

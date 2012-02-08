@@ -165,7 +165,7 @@ class SimpleModelMakerEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEnt
 
         def get_entity_by_entity_name(name: String): SMMEntityEntity = {
           for (entity <- entities) {
-            if (entity.term == name) {
+            if (entity.name == name) {
               return entity
             }
           }

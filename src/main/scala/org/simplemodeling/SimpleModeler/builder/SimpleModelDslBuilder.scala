@@ -15,7 +15,7 @@ import org.goldenport.recorder.Recordable
 /*
  * @since   Sep. 15, 2011
  *  version Dec. 11, 2011
- * @version Feb.  7, 2012
+ * @version Feb.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelDslBuilder(
@@ -114,10 +114,13 @@ class SimpleModelDslBuilder(
         entity.term = aName
         entity.packageName = packageName
         entities += (name -> entity)
+        create_Object(name, entity)
         entity
       }
     }
   }
+
+  protected def create_Object(name: String, entity: SMMEntityEntity) {}
 
   final def createObject(aKind: String, aName: String): SMMEntityEntity = {
     val k = if (UString.isNull(aKind)) {
