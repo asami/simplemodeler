@@ -5,7 +5,7 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
 
 /**
  * @since   Feb.  7, 2012
- * @version Feb.  7, 2012
+ * @version Feb.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 trait UseTerm {
@@ -31,6 +31,7 @@ trait UseTerm {
     name.trim
   }
 
+/*
   def get_type_name_by_term(aTerm:String): String = {
     val index = aTerm.indexOf(':')
     if (index == -1) {
@@ -44,10 +45,15 @@ trait UseTerm {
       }
     }
   }
+*/
 
   private def _normalize_type_name(term: String): String = {
     UString.capitalize(term).trim
   }
+
+  def get_entity_by_term_in_entities(entities: Traversable[SMMEntityEntity], term: String): Option[SMMEntityEntity] = {
+    entities.find(_.term == term)
+  } 
 
   def get_attribute_type_by_term(aTerm: String): SMMObjectType = {
     def get_type(aTypeName: String) = {
