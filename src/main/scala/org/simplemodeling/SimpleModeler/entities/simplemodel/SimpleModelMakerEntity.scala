@@ -160,6 +160,18 @@ class SimpleModelMakerEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEnt
         }
 
         def get_entity_by_term(aTerm: String): SMMEntityEntity = {
+          get_entity_by_term_in_entities(entities, aTerm) getOrElse {
+            record_warning("Term is not found: %s, creates a resource entity implicitly.", aTerm)
+            builder.createObject(ResourceKind, aTerm)
+          }
+        }
+
+        def maybe_entity_by_term(aTerm: String): Option[SMMEntityEntity] = {
+          get_entity_by_term_in_entities(entities, aTerm)
+        }
+        
+/*
+        def get_entity_by_term(aTerm: String): SMMEntityEntity = {
           get_entity_by_entity_name(get_type_name_by_term(aTerm))
         }
 
@@ -185,7 +197,7 @@ class SimpleModelMakerEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEnt
           }
           None
         }
-
+*/
         def get_powertype_by_term(aTerm: String): (String, SMMPowertypeType, GRMultiplicity) = {
           val name = get_name_by_term(aTerm)
           val labels = get_labels_by_term(aTerm)

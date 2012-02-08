@@ -20,15 +20,7 @@ import org.goldenport.exporter.FirstLeafOrZipResultExporterClass
 /*
  * @since   Apr. 13, 2009
  *  version Dec. 13, 2011
-<<<<<<< HEAD
-<<<<<<< HEAD
  * @version Feb.  9, 2012
-=======
- * @version Feb.  9, 2012
->>>>>>> Updates BuildService.
-=======
- * @version Feb.  9, 2012
->>>>>>> Updates Java6 generator.
  * @auther  ASAMI, Tomoharu
  */
 class SimpleModeler(args: Array[String]) {
