@@ -4,10 +4,11 @@ import scalaz._
 import Scalaz._
 import org.simplemodeling.SimpleModeler.entity._
 import com.asamioffice.goldenport.text.UString.notNull
+import com.sun.org.apache.xalan.internal.xsltc.compiler.IdPattern
 
 /*
  * @since   Dec. 15, 2011
- * @version Feb.  7, 2012
+ * @version Feb.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class Jpa317Aspect extends JavaAspect {
@@ -34,26 +35,16 @@ class Jpa317Aspect extends JavaAspect {
       jm_pln("@GeneratedValue(strategy=GenerationType.AUTO)")
       jm_pln("private %s %s;".format(idAttr.typeName, varName))
     } else {
-      idAttr.idPolicy match {
-        case SMAutoIdPolicy => {
-          jm_pln("@Id")
-          jm_pln("@GeneratedValue(strategy=GenerationType.AUTO)")
-          if (_is_primitive(idAttr)) {
-            jm_pln("private %s %s;".format(_typename(idAttr), varName))
-          } else {
-            val datatypename = idAttr.idDatatypeName match {
-              case "XString" => "String"
-              case "XLong" => "Long"
-              case _ => sys.error("not implemented yet")
-            }
-            jm_pln("private %s %s;".format(datatypename, varName))
-            jm_pln("private %s %s;".format(idAttr.typeName, _id_holder_name(varName)))
-          }
-        }
-        case SMApplicationIdPolicy => {
-          jm_pln("@Id")
-          jm_pln("private String %s;".format(varName))
-        }
+      jm_pln("@Id")
+      if (idAttr.idPolicy == SMAutoIdPolicy) {
+        jm_pln("@GeneratedValue(strategy=GenerationType.AUTO)")
+      }
+      if (_is_primitive(idAttr)) {
+        jm_pln("private %s %s;".format(_typename(idAttr), varName))
+      } else {
+        val datatypename = _typename(idAttr.idDatatypeName)
+        jm_pln("private %s %s;".format(datatypename, varName))
+        jm_pln("private %s %s;".format(idAttr.typeName, _id_holder_name(varName)))
       }
     }
     true
@@ -68,9 +59,14 @@ class Jpa317Aspect extends JavaAspect {
   }
 
   private def _typename(attr: PAttribute): String = {
-    attr.typeName match {
+    _typename(attr.typeName)
+  }
+
+  private def _typename(xtype: String): String = {
+    xtype match {
       case "XString" => "String"
-      case "XLong" => "Long"
+      case "XLong" => "Long" // XXX Other datatypes
+      case _ => sys.error("not implemented yet")
     }
   }
 
@@ -111,7 +107,8 @@ class Jpa317Aspect extends JavaAspect {
           jm_pln("this.%s = %s.%s;".format(_id_holder_name(varName), paramName, _id_holder_name(varName)))
         }
         case SMApplicationIdPolicy => {
-          sys.error("not implemented yet")
+          jm_pln("this.%s = %s.%s;".format(varName, paramName, varName))
+          jm_pln("this.%s = %s.%s;".format(_id_holder_name(varName), paramName, _id_holder_name(varName)))
         }
       }
       true
@@ -128,7 +125,8 @@ class Jpa317Aspect extends JavaAspect {
           jm_pln("this.%s = %s;".format(_id_holder_name(varName), paramName))
         }
         case SMApplicationIdPolicy => {
-          sys.error("not implemented yet")
+          jm_pln("this.%s = %s.value;".format(varName, paramName))
+          jm_pln("this.%s = %s;".format(_id_holder_name(varName), paramName))
         }
       }
       true
@@ -150,11 +148,11 @@ class Jpa317Aspect extends JavaAspect {
         case SMAutoIdPolicy => {}
         case SMApplicationIdPolicy => {
           if (_is_primitive(idAttr)) {
-            jm_public_method("public void set%s(%s %s)".format(attrName.capitalize, javaType, paramName)) {
+            jm_public_method("void set%s(%s %s)".format(attrName.capitalize, javaType, paramName)) {
               jm_pln("this.%s = %s;".format(varName, paramName))
             }
           } else {
-            jm_public_method("public void set%s(%s %s)".format(attrName.capitalize, javaType, paramName)) {
+            jm_public_method("void set%s(%s %s)".format(attrName.capitalize, javaType, paramName)) {
               jm_pln("this.%s = %s.value;".format(varName, paramName))
               jm_pln("this.%s = %s;".format(_id_holder_name(varName), paramName))
             }

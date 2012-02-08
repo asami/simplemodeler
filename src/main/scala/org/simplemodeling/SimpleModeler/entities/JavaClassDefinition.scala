@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
 /*
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
- * @version Feb.  7, 2012
+ * @version Feb.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -23,6 +23,8 @@ class JavaClassDefinition(
   } else {
     jm_open(maker, aspects)
   }
+
+  private lazy val _builder = new BuilderJavaClassDefinition(pContext, Nil, pobject, jm_maker)
 
   override def toText = {
     jm_to_text
@@ -78,6 +80,10 @@ class JavaClassDefinition(
     // jm_import("com.google.inject.Inject")
   }
 
+  override protected def head_imports_Builder {
+    _builder.includeImports
+  }
+
   override protected def class_open_body {
     if (isSingleton) {
       jm_pln("@Singleton")
@@ -119,7 +125,9 @@ class JavaClassDefinition(
   }
 
   override protected def constructors_null_constructor {
-    jm_public_constructor("%s()", name) {
+    if (!attributeDefinitions.filter(!_.isInject).isEmpty) {
+      jm_public_constructor("%s()", name) {
+      }
     }
   }
 
@@ -132,6 +140,36 @@ class JavaClassDefinition(
     }
   }
 
+  override protected def constructors_plain_constructor {
+    val params = attributeDefinitions.filter(!_.isInject).
+      map(a => a.javaType + " " + a.paramName).mkString(", ")
+    jm_public_constructor("%s(%s)", name, params) {
+      for (a <- attributeDefinitions) {
+        if (aspects.find(_.weavePlainConstructorAttributeBlock(a.attr, a.varName, a.paramName)).isDefined) {}
+        else jm_assign_this(a.varName, a.paramName)
+      }
+    }
+  }
+
+  protected final def constructors_plain_constructor_for_document {
+    val params = attributeDefinitions.filter(!_.isInject).
+      map(a => {
+        val typename = a.attr.attributeType match {
+          case t: PEntityType => {
+            pContext.entityDocumentName(t.entity.modelEntity)
+          }
+          case _ => a.javaType
+        }
+        typename + " " + a.paramName 
+      }).mkString(", ")
+    jm_public_constructor("%s(%s)", name, params) {
+      for (a <- attributeDefinitions) {
+        jm_assign_this(a.varName, a.paramName)
+      }
+    }
+  }
+
+/*
   override protected def constructors_plain_constructor {
     val params = attributeDefinitions.filter(!_.isInject).
       map(a => a.javaType + " " + a.paramName).mkString(", ")
@@ -164,6 +202,7 @@ class JavaClassDefinition(
       }
     }
   }
+*/
 
   /*
    * to_methods
@@ -571,8 +610,7 @@ protected final void to_string_map(Map<String, String> map, String name, Object 
   }
 
   override protected def builder_class {
-    val builder = new BuilderJavaClassDefinition(pContext, Nil, pobject, jm_maker)
-    builder.build
+    _builder.build
   }
 
   override protected def builder_auxiliary {

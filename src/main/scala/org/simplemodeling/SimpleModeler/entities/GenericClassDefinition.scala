@@ -35,7 +35,7 @@ import org.goldenport.recorder.Recordable
  * 
  * @since   Jun.  4, 2011
  *  version Sep. 25, 2011
- * @version Jan. 24, 2012
+ * @version Feb.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -149,6 +149,10 @@ abstract class GenericClassDefinition(
     class_close
   }
 
+  def includeImports {
+    head_imports_body
+  }
+
   protected def head_package {
   }
 
@@ -156,6 +160,11 @@ abstract class GenericClassDefinition(
    * Import
    */
   protected def head_imports {
+    head_imports_body
+    head_imports_Epilogue
+  }
+
+  protected def head_imports_body {
     head_imports_Prologue
     baseObject.foreach(head_imports_Object)
     val attrs = attributes.filter(_.attributeType.isEntity)
@@ -166,7 +175,9 @@ abstract class GenericClassDefinition(
     attributeDefinitions.foreach(_.head_imports)
     aspects.foreach(_.weaveImports)
     head_imports_Extension
-    head_imports_Epilogue
+    if (useBuilder) {
+      head_imports_Builder
+    }    
   }
 
   protected def head_imports_Prologue {
@@ -179,6 +190,9 @@ abstract class GenericClassDefinition(
   }
 
   protected def head_imports_Extension {
+  }
+
+  protected def head_imports_Builder {
   }
 
   protected def head_imports_Epilogue {

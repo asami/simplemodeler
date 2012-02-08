@@ -4,7 +4,7 @@ package org.simplemodeling.SimpleModeler.entities
  * @since   Jul.  7, 2011
  *  version Aug. 27, 2011
  *  version Dec. 14, 2011
- * @version Feb.  3, 2012
+ * @version Feb.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class BuilderJavaClassDefinition(
@@ -17,6 +17,11 @@ class BuilderJavaClassDefinition(
   isStatic = true
   customName = Some("Builder")
   isCustomVariableImplementation = true
+
+  override protected def head_imports_Prologue {
+    super.head_imports_Prologue
+    jm_import("org.json.*")
+  }
 
   override protected def constructors_copy_constructor {
     jm_public_constructor("%s(%s src)", name, pobject.name) {
