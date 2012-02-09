@@ -799,9 +799,14 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _dsl_type(otype: SMMObjectType): SAttributeType = {
+    def stubvalue(name: String, pkgname: String) = {
+      val v = new SValue(name, pkgname)
+      v.isMasterSingleton = false
+      v
+    }
     otype match {
-      case v: SMMValueIdType => new SValue(v.name, v.packageName)
-      case v: SMMValueType => new SValue(v.name, v.packageName)
+      case v: SMMValueIdType => stubvalue(v.name, v.packageName)
+      case v: SMMValueType => stubvalue(v.name, v.packageName)
       case _: SMMStringType => XString
       case _: SMMBooleanType => XBoolean
       case _: SMMByteType => XByte
