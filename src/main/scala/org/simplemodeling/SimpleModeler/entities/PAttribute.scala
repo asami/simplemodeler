@@ -1,5 +1,7 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import scalaz._
+import Scalaz._
 import scala.collection.mutable.{Buffer, ArrayBuffer}
 import org.simplemodeling.dsl._
 import org.simplemodeling.SimpleModeler.entity._
@@ -12,7 +14,7 @@ import org.simplemodeling.SimpleModeler.entity._
  * 
  * @since   Apr. 22, 2011
  *  version Jul. 22, 2011
- * @version Feb.  7, 2012
+ * @version Feb.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 // XXX Should be immutable
@@ -251,5 +253,11 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     Option(modelAttribute) flatMap { m =>
       SMObject.getIdDatatypeName(m.attributeType.typeObject)
     }
+  }
+
+  def getConstraints(): Seq[SConstraint] = {
+    Option(modelAttribute) map { m =>
+      m.dslAttribute.constraints
+    } orZero
   }
 }

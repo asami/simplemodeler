@@ -85,6 +85,7 @@ class SimpleModelerDescriptor extends GApplicationDescriptor {
   command_name = "sm"
   //
   classpath("target/classes")
+  classpath("target/scala-2.9.1/classes")
   importers(ScalaDslImporter)
   entities(CsvEntity, XMindEntity, OpmlEntity, ExcelTableEntity, 
       OrgmodeEntity, YamlEntity)

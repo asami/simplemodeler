@@ -5,29 +5,18 @@ import com.asamioffice.goldenport.text.UString.notNull
 
 /*
  * @since   Dec. 15, 2011
- * @version Feb.  6, 2012
+ * @version Feb.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 class Cdi299Aspect extends JavaAspect {
-  var modelEntity: SMEntity = null
-  var is_logical_operation = false
-
   override def weaveImports() {
+    jm_import("javax.validation.constraints.*")
   }
 
-  override def weaveIdAttributeSlot(idAttr: PAttribute, varName: String): Boolean = {
-    false
-  }
-
-  override def weavePersistentAnnotation(attr: PAttribute) {
-  }
-
-  override def weaveNotPersistentAnnotation(attr: PAttribute) {
-    jm_pln("@NotPersistent")
-  }
-
-  override def weaveIdMethods(idAttr: PAttribute, attrName: String, varName: String, paramName: String, javaType: String): Boolean = {
-    false
+  override def weaveAttributeSlot(attr: PAttribute, varName: String) {
+    for (c <- attr.getConstraints) {
+      jm_pln(c.literal)
+    }
   }
 }
 
