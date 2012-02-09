@@ -1,11 +1,13 @@
 package org.simplemodeling.dsl
 
+import scala.collection.mutable.ArrayBuffer
 import org.goldenport.sdoc.SDoc
 
-/*
+/**
  * @since   Sep. 10, 2008
  *  version Nov. 13, 2010
- * @version Dec. 15, 2011
+ *  version Dec. 15, 2011
+ * @version Feb.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 class SAttribute(aName: String, aMultiplicity: SMultiplicity) extends SElement(aName) {
@@ -17,6 +19,7 @@ class SAttribute(aName: String, aMultiplicity: SMultiplicity) extends SElement(a
   var idPolicy: SIdPolicy = ApplicationIdPolicy
   var isPersistent: Boolean = true
   var defaultValue: Any = _
+  var constraints = new ArrayBuffer[SConstraint]
 
   final def isId = {
     kind == IdAttributeKind
@@ -72,4 +75,14 @@ class SAttribute(aName: String, aMultiplicity: SMultiplicity) extends SElement(a
     defaultValue = aValue
     this
   }
+
+  def withConstraint(c: SConstraint): SAttribute = {
+    constraints += c
+    this
+  }
+
+  def <<(c: SConstraint): SAttribute = {
+    constraints += c
+    this
+  }    
 }

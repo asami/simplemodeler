@@ -56,7 +56,7 @@ import java.util.TimeZone
  * 
  * @since   Jun. 20, 2011
  *  version Aug. 19, 2011
- * @version Dec. 15, 2011
+ * @version Feb.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassAttributeDefinition(
@@ -346,10 +346,10 @@ abstract class GenericClassAttributeDefinition(
    */
   def variable_id {
     val varName = var_name
-    aspects.foreach(_.weaveAttributeSlot(attr, varName))
     if (aspects.find(_.weaveIdAttributeSlot(attr, varName) == true).isDefined) {}
     else if (variable_id_Id(java_type, varName)) {}
     else variable_plain_Attribute_Instance_Variable(java_type, varName)
+    aspects.foreach(_.weaveAttributeSlot(attr, varName))
   }
 
   protected def variable_id_Id(typeName: String, varName: String): Boolean = false
