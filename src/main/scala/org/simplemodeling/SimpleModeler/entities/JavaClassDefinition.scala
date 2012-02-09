@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
 /*
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
- * @version Feb.  8, 2012
+ * @version Feb.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -470,7 +470,7 @@ class JavaClassDefinition(
 
   override protected def utilities {
     if (isValueEquality || isData) { 
-      jm_code("""
+      jm_code("""// Utility methods
 protected final int hash_code(Object value) {
     return value == null ? 0 : value.hashCode();
 }
@@ -512,6 +512,10 @@ protected final void to_string(StringBuilder buf, String value) {
     buf.append(value);
 }
 
+protected final void to_string(StringBuilder buf, Object value) {
+    buf.append(to_string(value));
+}
+
 protected final void to_string(StringBuilder buf, Date value) {
     buf.append(to_string(value));
 }
@@ -529,9 +533,97 @@ protected final void to_xml(StringBuilder buf, String name, String value) {
     buf.append("</"); 
     buf.append(name); 
     buf.append(">");
+}
+/*
+protected final void to_xml(StringBuilder buf, String name, boolean value) {
+    if (value == null) return;
+    buf.append("<"); 
+    buf.append(name); 
+    buf.append(">"); 
+    to_string(buf, value);
+    buf.append("</"); 
+    buf.append(name); 
+    buf.append(">");
 } 
 
+protected final void to_xml(StringBuilder buf, String name, byte value) {
+    if (value == null) return;
+    buf.append("<"); 
+    buf.append(name); 
+    buf.append(">"); 
+    to_string(buf, value);
+    buf.append("</"); 
+    buf.append(name); 
+    buf.append(">");
+} 
+
+protected final void to_xml(StringBuilder buf, String name, short value) {
+    if (value == null) return;
+    buf.append("<"); 
+    buf.append(name); 
+    buf.append(">"); 
+    to_string(buf, value);
+    buf.append("</"); 
+    buf.append(name); 
+    buf.append(">");
+} 
+
+protected final void to_xml(StringBuilder buf, String name, int value) {
+    if (value == null) return;
+    buf.append("<"); 
+    buf.append(name); 
+    buf.append(">"); 
+    to_string(buf, value);
+    buf.append("</"); 
+    buf.append(name); 
+    buf.append(">");
+} 
+
+protected final void to_xml(StringBuilder buf, String name, long value) {
+    if (value == null) return;
+    buf.append("<"); 
+    buf.append(name); 
+    buf.append(">"); 
+    to_string(buf, value);
+    buf.append("</"); 
+    buf.append(name); 
+    buf.append(">");
+} 
+
+protected final void to_xml(StringBuilder buf, String name, float value) {
+    if (value == null) return;
+    buf.append("<"); 
+    buf.append(name); 
+    buf.append(">"); 
+    to_string(buf, value);
+    buf.append("</"); 
+    buf.append(name); 
+    buf.append(">");
+} 
+
+protected final void to_xml(StringBuilder buf, String name, double value) {
+    if (value == null) return;
+    buf.append("<"); 
+    buf.append(name); 
+    buf.append(">"); 
+    to_string(buf, value);
+    buf.append("</"); 
+    buf.append(name); 
+    buf.append(">");
+} 
+*/
 protected final void to_xml(StringBuilder buf, String name, Date value) {
+    if (value == null) return;
+    buf.append("<"); 
+    buf.append(name); 
+    buf.append(">"); 
+    to_string(buf, value);
+    buf.append("</"); 
+    buf.append(name); 
+    buf.append(">");
+} 
+
+protected final void to_xml(StringBuilder buf, String name, Object value) {
     if (value == null) return;
     buf.append("<"); 
     buf.append(name); 
@@ -550,6 +642,79 @@ protected final void to_xml(StringBuilder buf, String name, List<String> values)
 } 
 
 protected final void to_json(StringBuilder buf, String name, String value) {
+    if (value == null) return;
+    buf.append(name); 
+    buf.append(":"); 
+    buf.append("\""); 
+    to_string(buf, value); 
+    buf.append("\""); 
+} 
+
+/*
+protected final void to_json(StringBuilder buf, String name, boolean value) {
+    if (value == null) return;
+    buf.append(name); 
+    buf.append(":"); 
+    buf.append("\""); 
+    to_string(buf, value); 
+    buf.append("\""); 
+} 
+
+protected final void to_json(StringBuilder buf, String name, byte value) {
+    if (value == null) return;
+    buf.append(name); 
+    buf.append(":"); 
+    buf.append("\""); 
+    to_string(buf, value); 
+    buf.append("\""); 
+} 
+
+protected final void to_json(StringBuilder buf, String name, short value) {
+    if (value == null) return;
+    buf.append(name); 
+    buf.append(":"); 
+    buf.append("\""); 
+    to_string(buf, value); 
+    buf.append("\""); 
+} 
+
+protected final void to_json(StringBuilder buf, String name, int value) {
+    if (value == null) return;
+    buf.append(name); 
+    buf.append(":"); 
+    buf.append("\""); 
+    to_string(buf, value); 
+    buf.append("\""); 
+} 
+
+protected final void to_json(StringBuilder buf, String name, long value) {
+    if (value == null) return;
+    buf.append(name); 
+    buf.append(":"); 
+    buf.append("\""); 
+    to_string(buf, value); 
+    buf.append("\""); 
+} 
+
+protected final void to_json(StringBuilder buf, String name, float value) {
+    if (value == null) return;
+    buf.append(name); 
+    buf.append(":"); 
+    buf.append("\""); 
+    to_string(buf, value); 
+    buf.append("\""); 
+} 
+
+protected final void to_json(StringBuilder buf, String name, double value) {
+    if (value == null) return;
+    buf.append(name); 
+    buf.append(":"); 
+    buf.append("\""); 
+    to_string(buf, value); 
+    buf.append("\""); 
+} 
+*/
+protected final void to_json(StringBuilder buf, String name, Object value) {
     if (value == null) return;
     buf.append(name); 
     buf.append(":"); 
