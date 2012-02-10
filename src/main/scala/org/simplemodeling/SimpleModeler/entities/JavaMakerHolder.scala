@@ -3,7 +3,7 @@ package org.simplemodeling.SimpleModeler.entities
 /*
  * @since   May. 15, 2011
  *  version Sep.  1, 2011
- * @version Feb.  7, 2012
+ * @version Feb. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaMakerHolder {
@@ -56,6 +56,10 @@ trait JavaMakerHolder {
 
   protected final def jm_import(aName: String) {
     _maker.declareImport(aName)
+  }
+
+  protected final def jm_static_import(aName: String) {
+    _maker.declareStaticImport(aName)
   }
 
   protected final def jm_end_import_section() {

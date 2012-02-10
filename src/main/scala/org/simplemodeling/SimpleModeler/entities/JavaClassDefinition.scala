@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
 /*
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
- * @version Feb.  9, 2012
+ * @version Feb. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -49,6 +49,7 @@ class JavaClassDefinition(
   override protected def head_imports_Prologue {
     jm_import("java.util.*")
     jm_import("java.math.*")
+    jm_import("org.simplemodeling.SimpleModeler.runtime.USimpleModeler")
     if (isSingleton) {
       head_imports_Inject_Singleton
     }
@@ -223,7 +224,7 @@ class JavaClassDefinition(
       jm_append_String("""<%s xmlns="%s">""", xmlElementName, xmlNamespace)
       for (a <- attributeDefinitions) {
         if (a.isSystemType) {
-          jm_pln("""to_xml(buf, "%s", %s);""", a.xmlElementName, a.varName)
+          jm_pln("""USimpleModeler.toXml(buf, "%s", %s);""", a.xmlElementName, a.varName)
         } else {
           jm_if_not_null(a.varName) {
             jm_pln("%s.toXml(buf);", _var_name(a))
@@ -255,9 +256,9 @@ class JavaClassDefinition(
         if (cont) jm_append_String(", ")
         else cont = true
         if (a.isSystemType) {
-          jm_pln("""to_json(buf, %s, %s);""", a.propertyConstantName, a.varName)
+          jm_pln("""USimpleModeler.toJson(buf, %s, %s);""", a.propertyConstantName, a.varName)
         } else {
-          jm_pln("""to_json(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
+          jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
         }
       }
       jm_append_String("}", term)
@@ -277,9 +278,9 @@ class JavaClassDefinition(
         if (cont) jm_append_String(", ")
         else cont = true
         if (a.isSystemType) {
-          jm_pln("""to_json(buf, %s, %s);""", a.propertyConstantName, a.varName)
+          jm_pln("""USimpleModeler.toJson(buf, %s, %s);""", a.propertyConstantName, a.varName)
         } else {
-          jm_pln("""to_json(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
+          jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
         }
       }
       jm_append_String("}", term)
@@ -299,9 +300,9 @@ class JavaClassDefinition(
         if (cont) jm_append_String(", ")
         else cont = true
         if (a.isSystemType) {
-          jm_pln("""to_json(buf, %s, %s);""", a.propertyConstantName, a.varName)
+          jm_pln("""USimpleModeler.toJson(buf, %s, %s);""", a.propertyConstantName, a.varName)
         } else {
-          jm_pln("""to_json(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
+          jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
         }
       }
       jm_append_String("}", term)
@@ -312,7 +313,7 @@ class JavaClassDefinition(
     jm_public_method("Map<String, Object> toMap()") {
       jm_var("Map<String, Object>", "r", "new LinkedHashMap<String, Object>()")
       for (a <- attributeDefinitions) {
-        jm_pln("""to_map(r, %s, %s);""", a.propertyConstantName, a.varName) 
+        jm_pln("""USimpleModeler.toMap(r, %s, %s);""", a.propertyConstantName, a.varName) 
       }
       jm_return("r")
     }
@@ -320,9 +321,9 @@ class JavaClassDefinition(
       jm_var("Map<String, String>", "r", "new LinkedHashMap<String, String>()")
       for (a <- attributeDefinitions) {
         if (a.isSystemType) {
-          jm_pln("""to_string_map(r, %s, %s);""", a.propertyConstantName, a.varName)
+          jm_pln("""USimpleModeler.toStringMap(r, %s, %s);""", a.propertyConstantName, a.varName)
         } else {
-          jm_pln("""to_string_map(r, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
+          jm_pln("""USimpleModeler.toStringMap(r, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
         }
       }
       jm_return("r")
@@ -376,12 +377,12 @@ class JavaClassDefinition(
       var cont = false
       attributeDefinitions match {
         case Nil => jm_pln("0;")
-        case List(a) => jm_pln("hash_code(%s);", a.varName)
+        case List(a) => jm_pln("USimpleModeler.toHashCode(%s);", a.varName)
         case a :: tail => {
-          jm_p("hash_code(%s)", a.varName)
+          jm_p("USimpleModeler.toHashCode(%s)", a.varName)
           for (aa <- tail) {
             jm_pln
-            jm_p("+ hash_code(%s)", aa.varName)
+            jm_p("+ USimpleModeler.toHashCode(%s)", aa.varName)
           }
           jm_pln(";")
         }
@@ -391,7 +392,7 @@ class JavaClassDefinition(
 
   override protected def object_methods_equals {
     def isequals(a: GenericClassAttributeDefinition) {
-      jm_p("is_equals(oo.%s, this.%s)", a.varName, a.varName)      
+      jm_p("USimpleModeler.isEquals(oo.%s, this.%s)", a.varName, a.varName)      
 //      if (a.isSystemType) {
 //          jm_p("is_equals(oo.%s, this.%s)", a.varName, a.varName)
 //        } else {
@@ -468,6 +469,7 @@ class JavaClassDefinition(
     }
   }
 
+/*
   override protected def utilities {
     if (isValueEquality || isData) { 
       jm_code("""// Utility methods
@@ -761,7 +763,7 @@ protected final void to_string_map(Map<String, String> map, String name, Object 
 """)
     }
   }
-
+*/
   override protected def builder_copy_factory {
     jm_public_method("Builder builder()") {
       jm_return("new Builder(this)");

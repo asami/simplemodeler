@@ -241,7 +241,7 @@ abstract class GenericClassDefinition(
   }
 
   protected def attribute_variables_id {
-    if (isId) {
+    if (isId && !baseObject.isDefined) {
       attribute(idAttr).variable_id
     }
   }
@@ -372,7 +372,7 @@ abstract class GenericClassDefinition(
   }
 
   protected def attribute_bean_methods_id {
-    if (isId) {
+    if (isId && !baseObject.isDefined) {
       attribute(idAttr).method_id
     }
   }

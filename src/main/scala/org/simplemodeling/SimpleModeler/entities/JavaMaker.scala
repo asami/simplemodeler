@@ -5,12 +5,14 @@ import scala.collection.mutable.ArrayBuffer
 
 /*
  * @since   May. 14, 2011
- * @version Jul. 26, 2011
+ *  version Jul. 26, 2011
+ * @version Feb. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaMaker extends JavaTextMaker {
   private var _use_package = false
   private var _imports = new ArrayBuffer[String]
+  private var _static_imports = new ArrayBuffer[String]
   methodAutoIndent = false
 
   def p(s: String, params: AnyRef*) {
@@ -41,6 +43,10 @@ class JavaMaker extends JavaTextMaker {
   def declareImport(name: String) {
     _imports += name
   }
+
+  def declareStaticImport(name: String) {
+    _static_imports += name
+  }
   
   def endImportSection() {
     val imports = _unify_imports
@@ -49,7 +55,12 @@ class JavaMaker extends JavaTextMaker {
       p(name)
       pln(";")
     }
-    if (!imports.isEmpty) {
+    for (name <- _static_imports) {
+      p("import static ")
+      p(name)
+      pln(";")
+    }
+    if (imports.nonEmpty || _static_imports.nonEmpty) {
       pln
     }
   }

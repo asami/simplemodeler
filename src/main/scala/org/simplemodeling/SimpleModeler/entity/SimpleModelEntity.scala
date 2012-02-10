@@ -129,7 +129,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
   def build_object(anObject: SObject) {
     record_trace("build_object = " + anObject.name)
     if (_new_logic) {
-      if (!anObject.isMaster) return
+      if (!anObject.isMasterSingleton) return
       if (!is_exists_or_register(anObject)) {
         build_object_body(anObject)
       }

@@ -20,7 +20,7 @@ import org.goldenport.exporter.FirstLeafOrZipResultExporterClass
 /*
  * @since   Apr. 13, 2009
  *  version Dec. 13, 2011
- * @version Feb.  9, 2012
+ * @version Feb. 10, 2012
  * @auther  ASAMI, Tomoharu
  */
 class SimpleModeler(args: Array[String]) {
@@ -79,7 +79,7 @@ object Main {
 class SimpleModelerDescriptor extends GApplicationDescriptor {
   name = "SimpleModeler"
   version = "0.3.3-SNAPSHOT"
-  version_build = "20120209"
+  version_build = "20120210"
   copyright_years = "2008-2012"
   copyright_owner = "ASAMI, Tomoharu"
   command_name = "sm"
