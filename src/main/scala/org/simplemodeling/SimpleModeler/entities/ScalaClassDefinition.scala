@@ -4,7 +4,8 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
 
 /*
  * @since   Aug. 19, 2011
- * @version Aug. 19, 2011
+ *  version Aug. 19, 2011
+ * @version Feb. 11, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassDefinition(
@@ -13,6 +14,8 @@ class ScalaClassDefinition(
   pobject: PObjectEntity,
   maker: ScalaMaker = null
 ) extends GenericClassDefinition(pContext, aspects, pobject) with ScalaMakerHolder {
+  type ATTR_DEF = ScalaClassAttributeDefinition
+
   if (maker == null) {
     sm_open(aspects)
   } else {
@@ -23,7 +26,7 @@ class ScalaClassDefinition(
     sm_to_text
   }
 
-  override protected def attribute(attr: PAttribute): GenericClassAttributeDefinition = {
+  override protected def attribute(attr: PAttribute): ATTR_DEF = {
     new ScalaClassAttributeDefinition(pContext, aspects, attr, this, sm_maker)
   }
 

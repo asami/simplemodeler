@@ -1,5 +1,7 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import scalaz._
+import Scalaz._
 import scala.collection.mutable.ArrayBuffer
 import org.simplemodeling.SimpleModeler.entity.business.SMBusinessTask
 import org.simplemodeling.SimpleModeler.entity.business.SMBusinessUsecase
@@ -35,7 +37,7 @@ import org.goldenport.recorder.Recordable
  * 
  * @since   Jun.  4, 2011
  *  version Sep. 25, 2011
- * @version Feb.  8, 2012
+ * @version Feb. 11, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -43,6 +45,8 @@ abstract class GenericClassDefinition(
   val aspects: Seq[GenericAspect],
   val pobject: PObjectEntity
 ) extends Recordable {
+  type ATTR_DEF <: GenericClassAttributeDefinition
+
   def name: String = customName getOrElse pobject.name
   val packageName = pobject.packageName
   val xmlNamespace = pobject.xmlNamespace
@@ -76,6 +80,8 @@ abstract class GenericClassDefinition(
   }
   val modelObject: SMObject = pobject.modelObject
   val baseObject: Option[PObjectReferenceType] = pobject.getBaseObjectType
+  def hasBaseObject = baseObject.isDefined
+  def isRootObject = baseObject.isEmpty
   val modelEntityOption: Option[SMEntity] = modelObject match {
     case entity: SMEntity => Some(entity)
     case _ => None
@@ -91,7 +97,13 @@ abstract class GenericClassDefinition(
   def nameName = pobject.nameName
   def getNameName = pobject.getNameName
 
-  lazy val attributeDefinitions = attributes.map(attribute(_)).toList
+  lazy val attributeDefinitions: List[ATTR_DEF] = attributes.map(attribute(_)).toList
+  lazy val parentAttributeDefinitions: List[ATTR_DEF] = {
+    baseObject map {
+      _.reference.wholeAttributes.map(attribute(_)).toList
+    } orZero
+  }
+  lazy val wholeAttributeDefinitions: List[ATTR_DEF] = attributeDefinitions ::: parentAttributeDefinitions
 
   //
   var useDocument: Boolean = false
@@ -241,12 +253,12 @@ abstract class GenericClassDefinition(
   }
 
   protected def attribute_variables_id {
-    if (isId && !baseObject.isDefined) {
+    if (isId && isRootObject) {
       attribute(idAttr).variable_id
     }
   }
 
-  protected def attribute(attr: PAttribute): GenericClassAttributeDefinition
+  protected def attribute(attr: PAttribute): ATTR_DEF
 
   protected def attribute_variables_plain {
     for (attr <- attributes if !attr.isId) {
@@ -372,7 +384,7 @@ abstract class GenericClassDefinition(
   }
 
   protected def attribute_bean_methods_id {
-    if (isId && !baseObject.isDefined) {
+    if (isId && isRootObject) {
       attribute(idAttr).method_id
     }
   }

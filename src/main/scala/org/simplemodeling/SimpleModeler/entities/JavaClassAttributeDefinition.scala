@@ -12,7 +12,8 @@ import java.util.TimeZone
  * 
  * @since   Jun. 21, 2011
  *  version Aug.  7, 2011
- * @version Dec. 14, 2011
+ *  version Dec. 14, 2011
+ * @version Feb. 11, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassAttributeDefinition(
@@ -21,6 +22,8 @@ class JavaClassAttributeDefinition(
   attr: PAttribute,
   owner: JavaClassDefinition,
   jmaker: JavaMaker) extends GenericClassAttributeDefinition(pContext, aspects, attr, owner) with JavaMakerHolder {
+  type ATTR_DEF = JavaClassAttributeDefinition
+
   jm_open(jmaker, aspects)
 
   override protected def head_imports_Extension {

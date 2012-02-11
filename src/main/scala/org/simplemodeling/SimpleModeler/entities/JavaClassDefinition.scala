@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
 /*
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
- * @version Feb. 10, 2012
+ * @version Feb. 11, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -18,6 +18,8 @@ class JavaClassDefinition(
   pobject: PObjectEntity,
   maker: JavaMaker = null
 ) extends GenericClassDefinition(pContext, aspects, pobject) with JavaMakerHolder {
+  type ATTR_DEF = JavaClassAttributeDefinition
+
   if (maker == null) {
     jm_open(aspects)
   } else {
@@ -30,7 +32,7 @@ class JavaClassDefinition(
     jm_to_text
   }
 
-  override protected def attribute(attr: PAttribute): GenericClassAttributeDefinition = {
+  override protected def attribute(attr: PAttribute): ATTR_DEF = {
     new JavaClassAttributeDefinition(pContext, aspects, attr, this, jm_maker)
   }
 
@@ -128,12 +130,18 @@ class JavaClassDefinition(
   override protected def constructors_null_constructor {
     if (!attributeDefinitions.filter(!_.isInject).isEmpty) {
       jm_public_constructor("%s()", name) {
+        if (hasBaseObject) {
+          jm_pln("super();")
+        }
       }
     }
   }
 
   override protected def constructors_copy_constructor {
     jm_public_constructor("%s(%s o)", name, name) {
+      if (hasBaseObject) {
+        jm_pln("super(o);")
+      }
       for (a <- attributeDefinitions) {
         if (aspects.find(_.weaveCopyConstructorAttributeBlock(a.attr, a.varName, "o")).isDefined) {}
         else jm_assign_this(a.varName, "o." + a.varName)
@@ -142,9 +150,14 @@ class JavaClassDefinition(
   }
 
   override protected def constructors_plain_constructor {
-    val params = attributeDefinitions.filter(!_.isInject).
+    val params = wholeAttributeDefinitions.filter(!_.isInject).
       map(a => a.javaType + " " + a.paramName).mkString(", ")
     jm_public_constructor("%s(%s)", name, params) {
+      if (hasBaseObject) {
+        val vs = parentAttributeDefinitions.filter(!_.isInject).
+          map(a => a.paramName).mkString(", ")
+        jm_pln("super(%s);", vs)
+      }
       for (a <- attributeDefinitions) {
         if (aspects.find(_.weavePlainConstructorAttributeBlock(a.attr, a.varName, a.paramName)).isDefined) {}
         else jm_assign_this(a.varName, a.paramName)
@@ -164,6 +177,11 @@ class JavaClassDefinition(
         typename + " " + a.paramName 
       }).mkString(", ")
     jm_public_constructor("%s(%s)", name, params) {
+      if (hasBaseObject) {
+        val vs = attributeDefinitions.filter(!_.isInject).
+          map(a => a.paramName).mkString(", ")
+        jm_pln("super(%s);", vs)
+      }
       for (a <- attributeDefinitions) {
         jm_assign_this(a.varName, a.paramName)
       }
@@ -217,21 +235,27 @@ class JavaClassDefinition(
   override protected def to_methods_xml {
     jm_public_method("String toXml()") {
       jm_var_new_StringBuilder
-      jm_pln("toXml(buf);")
+      jm_pln("toXmlElement(buf);")
       jm_return_StringBuilder
     }
-    jm_public_method("void toXml(StringBuilder buf)") {
+    jm_public_method("void toXmlElement(StringBuilder buf)") {
       jm_append_String("""<%s xmlns="%s">""", xmlElementName, xmlNamespace)
+      jm_pln("toXmlContent(buf);")
+      jm_append_String("</%s>", xmlElementName)
+    }
+    jm_public_method("void toXmlContent(StringBuilder buf)") {
+      if (hasBaseObject) {
+        jm_pln("super.toXmlContent(buf);")
+      }
       for (a <- attributeDefinitions) {
         if (a.isSystemType) {
           jm_pln("""USimpleModeler.toXml(buf, "%s", %s);""", a.xmlElementName, a.varName)
         } else {
           jm_if_not_null(a.varName) {
-            jm_pln("%s.toXml(buf);", _var_name(a))
+            jm_pln("%s.toXmlElement(buf);", _var_name(a))
           }
         }
-      }
-      jm_append_String("</%s>", xmlElementName)
+      }      
     }
   }
 

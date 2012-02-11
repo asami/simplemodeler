@@ -64,6 +64,8 @@ abstract class GenericClassAttributeDefinition(
     val aspects: Seq[GenericAspect],
     val attr: PAttribute,
     val owner: GenericClassDefinition) {
+  type ATTR_DEF <: GenericClassAttributeDefinition
+  
   var isImmutable: Boolean = false // XXX attr.readonly
   def isInject = attr.inject
   var entityPersistentKind: EntityAttributeKind = {
@@ -98,9 +100,9 @@ abstract class GenericClassAttributeDefinition(
     }
   }
 
-  def withImmutable(value: Boolean) = {
+  def withImmutable(value: Boolean): ATTR_DEF = {
     isImmutable = value
-    this
+    this.asInstanceOf[ATTR_DEF]
   }
 
   /*
