@@ -270,11 +270,18 @@ class JavaClassDefinition(
   override protected def to_methods_json {
     jm_public_method("String toJson()") {
       jm_var_new_StringBuilder
-      jm_pln("toJson(buf);")
+      jm_pln("toJsonElement(buf);")
       jm_return_StringBuilder
     }
-    jm_public_method("void toJson(StringBuilder buf)") {
+    jm_public_method("void toJsonElement(StringBuilder buf)") {
       jm_append_String("{", term)
+      jm_pln("toJsonContent(buf);")
+      jm_append_String("}", term)
+    }
+    jm_public_method("void toJsonContent(StringBuilder buf)") {
+      if (hasBaseObject) {
+        jm_pln("super.toJsonContent(buf);")
+      }
       var cont = false
       for (a <- attributeDefinitions) {
         if (cont) jm_append_String(", ")
@@ -285,18 +292,23 @@ class JavaClassDefinition(
           jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
         }
       }
-      jm_append_String("}", term)
     }
   }
 
   override protected def to_methods_csv {
     jm_public_method("String toCsv()") {
       jm_var_new_StringBuilder
-      jm_pln("toCsv(buf);")
+      jm_pln("toCsvElement(buf);")
       jm_return_StringBuilder
     }
-    jm_public_method("void toCsv(StringBuilder buf)") {
-      jm_append_String("{", term)
+    jm_public_method("void toCsvElement(StringBuilder buf)") {
+      jm_pln("toCsvContent(buf);")
+      jm_append_String("\n", term)
+    }
+    jm_public_method("void toCsvContent(StringBuilder buf)") {
+      if (hasBaseObject) {
+        jm_pln("super.toCsvContent(buf);")
+      }
       var cont = false
       for (a <- attributeDefinitions) {
         if (cont) jm_append_String(", ")
@@ -307,18 +319,24 @@ class JavaClassDefinition(
           jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
         }
       }
-      jm_append_String("}", term)
     }
   }
 
   override protected def to_methods_yaml {
     jm_public_method("String toYaml()") {
       jm_var_new_StringBuilder
-      jm_pln("toYaml(buf);")
+      jm_pln("toYamlElement(buf);")
       jm_return_StringBuilder
     }
-    jm_public_method("void toYaml(StringBuilder buf)") {
+    jm_public_method("void toYamlElement(StringBuilder buf)") {
       jm_append_String("{", term)
+      jm_pln("toYamlContent(buf);")
+      jm_append_String("}", term)
+    }
+    jm_public_method("void toYamlContent(StringBuilder buf)") {
+      if (hasBaseObject) {
+        jm_pln("super.toYamlContent(buf);")
+      }
       var cont = false
       for (a <- attributeDefinitions) {
         if (cont) jm_append_String(", ")
@@ -329,20 +347,32 @@ class JavaClassDefinition(
           jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
         }
       }
-      jm_append_String("}", term)
     }
   }
 
   override protected def to_methods_map {
     jm_public_method("Map<String, Object> toMap()") {
       jm_var("Map<String, Object>", "r", "new LinkedHashMap<String, Object>()")
+      jm_pln("toMapContent(r);")
+      jm_return("r")
+    }
+    jm_public_method("void toMapContent(Map r)") {
+      if (hasBaseObject) {
+        jm_pln("super.toMapContent(r);")
+      }
       for (a <- attributeDefinitions) {
         jm_pln("""USimpleModeler.toMap(r, %s, %s);""", a.propertyConstantName, a.varName) 
       }
-      jm_return("r")
     }
     jm_public_method("Map<String, String> toStringMap()") {
       jm_var("Map<String, String>", "r", "new LinkedHashMap<String, String>()")
+      jm_pln("toStringMapContent(r);")
+      jm_return("r")
+    }
+    jm_public_method("void toStringMapContent(Map r)") {
+      if (hasBaseObject) {
+        jm_pln("super.toMapContent(r);")
+      }
       for (a <- attributeDefinitions) {
         if (a.isSystemType) {
           jm_pln("""USimpleModeler.toStringMap(r, %s, %s);""", a.propertyConstantName, a.varName)
@@ -350,7 +380,6 @@ class JavaClassDefinition(
           jm_pln("""USimpleModeler.toStringMap(r, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
         }
       }
-      jm_return("r")
     }
   }
 
