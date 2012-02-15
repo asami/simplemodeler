@@ -6,21 +6,22 @@ import com.asamioffice.goldenport.text.UString
 import com.asamioffice.goldenport.text.UPathString
 import org.goldenport.z._
 import org.goldenport.Z._
+import org.goldenport._
 import org.goldenport.service._
 import org.goldenport.entity._
 import org.goldenport.entity.content.GContent
 import org.goldenport.entities.workspace.TreeWorkspaceEntity
 import org.goldenport.entities.fs.FileStoreEntity
 import org.goldenport.entities.csv.CsvEntity
+import org.goldenport.record._
 import org.simplemodeling.SimpleModeler.entity.SimpleModelEntity
 import org.simplemodeling.SimpleModeler.generators.uml.ClassDiagramGenerator
 import org.simplemodeling.SimpleModeler.importer.ScalaDslImporter
 import org.simplemodeling.SimpleModeler.transformers.java.SimpleModel2Java6RealmTransformer
-import content.EntityContent
 
 /*
  * @since   Jan. 29, 2012
- * @version Feb.  1, 2012
+ * @version Feb. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -166,7 +167,11 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
   }
 }
 
-object BuildService extends GServiceClass("build") {
+object BuildService extends GServiceClass("build") with GoldenportConstants {
+  summary = "Builds SimpleModel project."
+  contract = Schema(
+      Field("source.package", XString, summary = "Package name"),
+      Field(Container_Message, XString))
   def new_Service(aCall: GServiceCall): GService =
     new BuildService(aCall, this)
 }
