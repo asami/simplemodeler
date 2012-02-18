@@ -14,6 +14,7 @@ import org.goldenport.entities.workspace.TreeWorkspaceEntity
 import org.goldenport.entities.fs.FileStoreEntity
 import org.goldenport.entities.csv.CsvEntity
 import org.goldenport.record._
+import org.smartdox.Text
 import org.simplemodeling.SimpleModeler.entity.SimpleModelEntity
 import org.simplemodeling.SimpleModeler.generators.uml.ClassDiagramGenerator
 import org.simplemodeling.SimpleModeler.importer.ScalaDslImporter
@@ -21,7 +22,7 @@ import org.simplemodeling.SimpleModeler.transformers.java.SimpleModel2Java6Realm
 
 /*
  * @since   Jan. 29, 2012
- * @version Feb. 15, 2012
+ * @version Feb. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -168,7 +169,7 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
 }
 
 object BuildService extends GServiceClass("build") with GoldenportConstants {
-  summary = "Builds SimpleModel project."
+  description.title = Some(Text("Builds SimpleModel project."))
   contract = Schema(
       Field("source.package", XString, summary = "Package name"),
       Field(Container_Message, XString))

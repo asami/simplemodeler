@@ -3,15 +3,18 @@ package org.simplemodeling.SimpleModeler.service
 import org.goldenport.service._
 import org.goldenport.entity._
 import org.goldenport.entities.workspace.TreeWorkspaceEntity
+import org.goldenport.GoldenportConstants
 import org.simplemodeling.SimpleModeler.entity.SimpleModelEntity
 import org.simplemodeling.SimpleModeler.generators.uml.ClassDiagramGenerator
 import com.asamioffice.goldenport.text.UString
 import com.asamioffice.goldenport.text.UPathString
+import org.goldenport.record._
+import org.smartdox.Text
 
 /*
  * @since   Nov.  7, 2011
  *  version Dec.  6, 2011
- * @version Jan. 25, 2012
+ * @version Feb. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class DiagramGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -38,7 +41,13 @@ class DiagramGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) 
   }
 }
 
-object DiagramGeneratorService extends GServiceClass("diagram") {
+object DiagramGeneratorService extends GServiceClass("diagram") with GoldenportConstants {
+  description.title = Some(Text("Diagram generator."))
+  contract = Schema(
+      Field("$", XBase64Binary, summary = "File name"),
+      Field("source.package", XString, summary = "Package name"),
+      Field(Container_Message, XString))
+
   def new_Service(aCall: GServiceCall): GService =
     new DiagramGeneratorService(aCall, this)
 }
