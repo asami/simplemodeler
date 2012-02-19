@@ -22,7 +22,7 @@ import org.simplemodeling.SimpleModeler.transformers.java.SimpleModel2Java6Realm
 
 /*
  * @since   Jan. 29, 2012
- * @version Feb. 17, 2012
+ * @version Feb. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -116,13 +116,19 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
     val javaRealm = sm2java.transform
     val tree = entree(javaRealm.root)
     println("sm_java6 tree = " + tree.drawTree)
-    val r = collectZPathPT(tree) {
+    val r = _collect_path(tree) {
       case (p, t) if t.rootLabel.isContent => t.rootLabel.content
     } (NodeZPathClass)
     println("_sm2_java6 = " + r.toList)
     r
   }
-  
+
+  private def _collect_path[T, U](tree: Tree[T])(
+      pf: PartialFunction[(ZPath, Tree[T]), U])
+      (implicit op: ZPathClass[T]): Stream[(ZPath, U)] = {
+    ZUtils.collectZPathPT(tree)(pf)(op)
+  }
+
   private def _build0(home: GTreeContainerEntityNode, dest: GTreeContainerEntity) {
     val tree = entree(home)
     for ((path, node) <- _collect_suffix(tree, "csv")) {
@@ -133,7 +139,7 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
   private def _collect_suffix(
       tree: Tree[GTreeContainerEntityNode], suffix: String
       ): Stream[(ZPath, GTreeContainerEntityNode)] = {
-    collectZPathPT(tree) {
+    _collect_path(tree) {
       case (p, t) if p.suffix == suffix => t.rootLabel
     } (NodeZPathClass)
   }
@@ -141,7 +147,7 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
   private def _collect_suffixes(
       tree: Tree[GTreeContainerEntityNode], suffixes: List[String]
       ): Stream[(ZPath, GTreeContainerEntityNode)] = {
-    collectZPathPT(tree) {
+    _collect_path(tree) {
       new PartialFunction[(ZPath, Tree[GTreeContainerEntityNode]), GTreeContainerEntityNode] {
         override def isDefinedAt(pt: (ZPath, Tree[GTreeContainerEntityNode])) = {
           pt._1.suffix.exists(suffixes.contains) ensuring { x => println(pt._1 + " => " + x);true}
