@@ -5,7 +5,7 @@ import com.asamioffice.goldenport.text.UString.notNull
 
 /**
  * @since   Dec. 15, 2011
- * @version Feb.  7, 2012
+ * @version Feb. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class BeanValidation303Aspect extends JavaAspect {
@@ -24,6 +24,7 @@ class BeanValidation303Aspect extends JavaAspect {
   val Size = "Size"
 
   override def weaveImports() {
+    jm_import("javax.validation.constraints.*")
   }
 
   override def weaveAttributeSlot(attr: PAttribute, varName: String) {

@@ -14,7 +14,7 @@ import org.simplemodeling.SimpleModeler.entity._
  * 
  * @since   Apr. 22, 2011
  *  version Jul. 22, 2011
- * @version Feb.  9, 2012
+ * @version Feb. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 // XXX Should be immutable
@@ -129,7 +129,7 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
         Some(false)
       }
     } else if (modelPowertype != null) {
-      error("power type attribute")
+      Some(false)
     } else {
       None
     }

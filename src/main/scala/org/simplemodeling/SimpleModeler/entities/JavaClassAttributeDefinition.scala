@@ -13,7 +13,7 @@ import java.util.TimeZone
  * @since   Jun. 21, 2011
  *  version Aug.  7, 2011
  *  version Dec. 14, 2011
- * @version Feb. 11, 2012
+ * @version Feb. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassAttributeDefinition(
@@ -141,12 +141,12 @@ class JavaClassAttributeDefinition(
   }
 
   override protected def method_bean_single_powertype(e: PPowertypeType) {
-    jm_public_get_method(javaType, attrName, erPowerVarName); 
+    jm_public_get_method(javaType, attrName, varName); // erPowerVarName); 
     if (attr.attributeType == PBooleanType) {
       jm_public_is_method(attrName, varName)
     }
     if (is_settable()) {
-      jm_public_set_method(attrName, javaType, paramName, erPowerVarName);
+      jm_public_set_method(attrName, javaType, paramName, varName); // erPowerVarName);
     }
   }
 
@@ -238,12 +238,12 @@ class JavaClassAttributeDefinition(
   }
 
   override protected def method_bean_multi_powertype(e: PPowertypeType) {
-    jm_public_get_list_method_prologue(javaType, attrName, erPowerVarName) {
+    jm_public_get_list_method_prologue(javaType, attrName, varName) { // erPowerVarName) {
       jm_pln("fill_%s()", attrName)
     }
     if (is_settable()) {
-      jm_public_set_list_method(attrName, javaElementType, paramName, erPowerVarName)
-      jm_public_add_list_element_method(attrName, javaElementType, paramName, erPowerVarName)
+      jm_public_set_list_method(attrName, javaElementType, paramName, varName) // erPowerVarName)
+      jm_public_add_list_element_method(attrName, javaElementType, paramName, varName) // erPowerVarName)
     }
   }
 

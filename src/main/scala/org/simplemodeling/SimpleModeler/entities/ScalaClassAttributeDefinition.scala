@@ -9,7 +9,7 @@ import org.simplemodeling.dsl._
  * Scala Class Attribute Definition
  * 
  * @since   Aug. 19, 2011
- * @version Aug. 19, 2011
+ * @version Feb. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassAttributeDefinition(
@@ -135,12 +135,12 @@ class ScalaClassAttributeDefinition(
   }
 
   override protected def method_bean_single_powertype(e: PPowertypeType) {
-    sm_public_get_method(javaType, attrName, erPowerVarName); 
+    sm_public_get_method(javaType, attrName, varName); // erPowerVarName); 
     if (attr.attributeType == PBooleanType) {
       sm_public_is_method(attrName, varName)
     }
     if (is_settable()) {
-      sm_public_set_method(attrName, javaType, paramName, erPowerVarName);
+      sm_public_set_method(attrName, javaType, paramName, varName); // erPowerVarName);
     }
   }
 

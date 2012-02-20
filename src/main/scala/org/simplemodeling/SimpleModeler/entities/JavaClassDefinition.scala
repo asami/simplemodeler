@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
 /*
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
- * @version Feb. 11, 2012
+ * @version Feb. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -25,6 +25,7 @@ class JavaClassDefinition(
   } else {
     jm_open(maker, aspects)
   }
+  aspects.foreach(_.openJavaClass(this))
 
   private lazy val _builder = new BuilderJavaClassDefinition(pContext, Nil, pobject, jm_maker)
 
@@ -95,11 +96,8 @@ class JavaClassDefinition(
     if (isStatic) {
       jm_p("static ")
     }
-    if (isInterface) {
-      jm_p("interface ")
-    } else {
-      jm_p("class ")
-    }
+    jm_p(classifierKind.keyword)
+    jm_p(" ")
     jm_p(name)
     for (base <- customBaseName orElse baseObject.map(_.name)) {
       jm_p(" extends ")

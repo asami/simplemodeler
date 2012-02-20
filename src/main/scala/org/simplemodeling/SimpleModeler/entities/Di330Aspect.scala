@@ -4,14 +4,13 @@ import org.simplemodeling.SimpleModeler.entity._
 import com.asamioffice.goldenport.text.UString.notNull
 
 /*
+ * http://java.dzone.com/articles/what-relation-betwe-there
+ *
  * @since   Dec. 15, 2011
- * @version Feb.  6, 2012
+ * @version Feb. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class Di330Aspect extends JavaAspect {
-  var modelEntity: SMEntity = null
-  var is_logical_operation = false
-
   override def weaveImports() {
   }
 
@@ -23,7 +22,6 @@ class Di330Aspect extends JavaAspect {
   }
 
   override def weaveNotPersistentAnnotation(attr: PAttribute) {
-    jm_pln("@NotPersistent")
   }
 
   override def weaveIdMethods(idAttr: PAttribute, attrName: String, varName: String, paramName: String, javaType: String): Boolean = {

@@ -37,7 +37,7 @@ import org.goldenport.recorder.Recordable
  * 
  * @since   Jun.  4, 2011
  *  version Sep. 25, 2011
- * @version Feb. 11, 2012
+ * @version Feb. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -111,7 +111,7 @@ abstract class GenericClassDefinition(
   var isImmutable: Boolean = false
   def useBuilder: Boolean = isImmutable
   var isStatic: Boolean = false
-  var isInterface: Boolean = false
+  var classifierKind: ClassifierKind = ClassClassifierKind
   var customName: Option[String] = None
   var customBaseName: Option[String] = None
   var customImplementNames: List[String] = Nil
@@ -221,7 +221,6 @@ abstract class GenericClassDefinition(
   }
 
   protected def class_open_document {
-    // TODO
   }
 
   protected def class_open_Annotation {
@@ -239,14 +238,18 @@ abstract class GenericClassDefinition(
    * Attributes Variables
    */
   protected def attribute_variables {
-    attribute_constants
+    attribute_variables_Prologue
+    attribute_variables_constants
     attribute_variables_id
     attribute_variables_plain
     attribute_variables_aggregate
     attribute_variables_extension
+    attribute_variables_Epilogue
   }
 
-  protected def attribute_constants {
+  protected def attribute_variables_Prologue {}
+
+  protected def attribute_variables_constants {
     for (attr <- attributeDefinitions) {
       attr.constant_property
     }
@@ -294,6 +297,8 @@ abstract class GenericClassDefinition(
 
   protected def attribute_variables_extension {
   }
+
+  protected def attribute_variables_Epilogue {}
 
   /*
    * Package variables

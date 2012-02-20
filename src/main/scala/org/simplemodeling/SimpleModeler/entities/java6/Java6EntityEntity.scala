@@ -9,12 +9,13 @@ import org.simplemodeling.SimpleModeler.entities._
 /*
  * @since   Aug. 15, 2011
  *  version Aug. 20, 2011
- * @version Dec. 15, 2011
+ *  version Dec. 15, 2011
+ * @version Feb. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class Java6EntityEntity(val java6Context: Java6EntityContext) extends JavaObjectEntityBase(java6Context) with PEntityEntity {
   override protected def write_Content(out: BufferedWriter) {
-    val aspects = List(BeanValidation303Aspect, Cdi299Aspect, Di330Aspect, CommonAnnotations250Aspect, Jpa317Aspect)
+    val aspects = List(new BeanValidation303Aspect, new Cdi299Aspect, new Di330Aspect, new CommonAnnotations250Aspect, new Jpa317Aspect)
     val klass = new EntityJavaClassDefinition(java6Context, aspects, Java6EntityEntity.this)
     klass.build()
     out.append(klass.toText)

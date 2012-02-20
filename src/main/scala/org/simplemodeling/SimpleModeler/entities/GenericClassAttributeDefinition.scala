@@ -56,7 +56,7 @@ import java.util.TimeZone
  * 
  * @since   Jun. 20, 2011
  *  version Aug. 19, 2011
- * @version Feb.  9, 2012
+ * @version Feb. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassAttributeDefinition(
@@ -427,6 +427,11 @@ abstract class GenericClassAttributeDefinition(
 
   // part
   protected def variable_plain_entity_part_attribute(p: PEntityPartType) {
+    if (aspects.find(_.weavePartAttributeSlot(attr, erPartVarName)).isDefined) {}
+    else variable_plain_Transient_Instance_Variable(java_type, erPartVarName);
+  }
+
+  protected def variable_plain_entity_part_attribute0(p: PEntityPartType) {
     variable_plain_persistent_annotation
     variable_plain_Attribute_Instance_Variable("Text", erPersistentVarName); // XXX Text google app engine
     variable_plain_not_persistent_annotation
@@ -435,6 +440,13 @@ abstract class GenericClassAttributeDefinition(
 
   // powertype
   protected def variable_plain_powertype_atttribute(p: PPowertypeType) {
+    if (aspects.find(_.weavePowertypeAttributeSlot(attr, varName)).isDefined) {}
+    else  {
+      variable_plain_Attribute_Instance_Variable(java_type, varName)
+    }
+  }
+
+  protected def variable_plain_powertype_atttribute0(p: PPowertypeType) {
     variable_plain_persistent_annotation
     variable_plain_Attribute_Instance_Variable("String", erPersistentVarName);
     variable_plain_persistent_annotation

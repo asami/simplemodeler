@@ -8,7 +8,7 @@ import com.sun.org.apache.xalan.internal.xsltc.compiler.IdPattern
 
 /*
  * @since   Dec. 15, 2011
- * @version Feb.  8, 2012
+ * @version Feb. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class Jpa317Aspect extends JavaAspect {
@@ -26,7 +26,12 @@ class Jpa317Aspect extends JavaAspect {
   }
 
   override def weaveOpenAnnotation() {
-    jm_pln("@Entity")
+    for (j <- javaClass) {
+      j match {
+        case _: PowertypeJavaClassDefinition => {}
+        case _ => jm_pln("@Entity")
+      }
+    }
   }
 
   override def weaveIdAttributeSlot(idAttr: PAttribute, varName: String): Boolean = {
@@ -44,7 +49,7 @@ class Jpa317Aspect extends JavaAspect {
       } else {
         val datatypename = _typename(idAttr.idDatatypeName)
         jm_pln("private %s %s;".format(datatypename, varName))
-        jm_pln("private %s %s;".format(idAttr.typeName, _id_holder_name(varName)))
+        jm_pln("private %s %s;".format(idAttr.typeName, id_holder_name(varName)))
       }
     }
     true
@@ -68,6 +73,13 @@ class Jpa317Aspect extends JavaAspect {
       case "XLong" => "Long" // XXX Other datatypes
       case _ => sys.error("not implemented yet")
     }
+  }
+
+  override def weavePowertypeAttributeSlot(attr: PAttribute, varName: String): Boolean = {
+    val pwr = attr.modelPowertype
+    jm_pln("@Enumerated")
+    jm_pln("private %s %s;".format(attr.typeName, varName))
+    true
   }
 
   override def weavePersistentAnnotation(attr: PAttribute) {
@@ -104,11 +116,11 @@ class Jpa317Aspect extends JavaAspect {
       attr.idPolicy match {
         case SMAutoIdPolicy => {
           jm_pln("this.%s = %s.%s;".format(varName, paramName, varName))
-          jm_pln("this.%s = %s.%s;".format(_id_holder_name(varName), paramName, _id_holder_name(varName)))
+          jm_pln("this.%s = %s.%s;".format(id_holder_name(varName), paramName, id_holder_name(varName)))
         }
         case SMApplicationIdPolicy => {
           jm_pln("this.%s = %s.%s;".format(varName, paramName, varName))
-          jm_pln("this.%s = %s.%s;".format(_id_holder_name(varName), paramName, _id_holder_name(varName)))
+          jm_pln("this.%s = %s.%s;".format(id_holder_name(varName), paramName, id_holder_name(varName)))
         }
       }
       true
@@ -122,11 +134,11 @@ class Jpa317Aspect extends JavaAspect {
       attr.idPolicy match {
         case SMAutoIdPolicy => {
           jm_pln("this.%s = %s.value;".format(varName, paramName))
-          jm_pln("this.%s = %s;".format(_id_holder_name(varName), paramName))
+          jm_pln("this.%s = %s;".format(id_holder_name(varName), paramName))
         }
         case SMApplicationIdPolicy => {
           jm_pln("this.%s = %s.value;".format(varName, paramName))
-          jm_pln("this.%s = %s;".format(_id_holder_name(varName), paramName))
+          jm_pln("this.%s = %s;".format(id_holder_name(varName), paramName))
         }
       }
       true
@@ -141,7 +153,7 @@ class Jpa317Aspect extends JavaAspect {
         if (_is_primitive(idAttr)) {
           jm_return(varName)
         } else {
-          jm_return(_id_holder_name(varName))
+          jm_return(id_holder_name(varName))
         }
       }
       idAttr.idPolicy match {
@@ -154,7 +166,7 @@ class Jpa317Aspect extends JavaAspect {
           } else {
             jm_public_method("void set%s(%s %s)".format(attrName.capitalize, javaType, paramName)) {
               jm_pln("this.%s = %s.value;".format(varName, paramName))
-              jm_pln("this.%s = %s;".format(_id_holder_name(varName), paramName))
+              jm_pln("this.%s = %s;".format(id_holder_name(varName), paramName))
             }
           }
         }
@@ -166,10 +178,6 @@ class Jpa317Aspect extends JavaAspect {
   override def objectVarName(attr: PAttribute, varName: String): Option[String] = {
     if (!attr.isId) None
     else if (_is_primitive(attr)) None
-    else Some(_id_holder_name(varName))
+    else Some(id_holder_name(varName))
   }
-
-  private def _id_holder_name(name: String) = name + "_id"
 }
-
-object Jpa317Aspect extends Jpa317Aspect

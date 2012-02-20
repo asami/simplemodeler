@@ -5,10 +5,8 @@ import java.util.TimeZone
 import org.simplemodeling.SimpleModeler.entity.SMPackage
 
 /*
- * Created at Tomamu
- * 
  * @since   Sep.  1, 2011
- * @version Sep.  1, 2011
+ * @version Feb. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaInterfaceDefinition(
@@ -17,6 +15,6 @@ class JavaInterfaceDefinition(
   pobject: PObjectEntity,
   maker: JavaMaker = null
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
-  isInterface = true
+  classifierKind = InterfaceClassifierKind
   useDocument = false
 }
