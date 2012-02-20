@@ -1,5 +1,5 @@
 [app]
-  version: 0.3.2
+  version: 0.3.3
   org: org.simplemodeling
   name: simplemodeler
   class: org.simplemodeling.SimpleModeler.AppMain

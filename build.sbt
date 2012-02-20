@@ -24,7 +24,7 @@ libraryDependencies += "org.scalaz" %% "scalaz-core" % "6.0.3"
 
 libraryDependencies += "org.goldenport" %% "goldenport" % "0.3.2"
 
-libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.1.2-SNAPSHOT"
+libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.1.2"
 
 libraryDependencies += "org.goldenport" %% "goldenport-record" % "0.1.0"
 
