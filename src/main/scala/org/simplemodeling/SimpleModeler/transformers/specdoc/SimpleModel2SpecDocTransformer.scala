@@ -90,7 +90,7 @@ class SimpleModel2SpecDocTransformer(val simpleModel: SimpleModelEntity) {
     simpleModel.open()
     specdoc.open()
     specdoc.name = simpleModel.name
-    specdoc.title = simpleModel.title
+    specdoc.sdocTitle = simpleModel.title
     simpleModel.activePackages.foreach(build_package)
     simpleModel.close()
     specdoc ensuring (_.isOpened)
@@ -1384,7 +1384,7 @@ class SimpleModel2SpecDocTransformer(val simpleModel: SimpleModelEntity) {
       specPackage.addEntity(objEntity)
       objEntity.category = object_category
       objEntity.categories ++= entityCategories // XXX move individual settings
-      objEntity.title = SText(anObject.name)
+      objEntity.sdocTitle = SText(anObject.name)
       objEntity.caption = anObject.caption
       objEntity.brief = anObject.brief
       objEntity.summary = anObject.summary
@@ -1431,7 +1431,7 @@ class SimpleModel2SpecDocTransformer(val simpleModel: SimpleModelEntity) {
     }
 
     specPackage.categories ++= packageCategories
-    specPackage.title = SText(modelPackage.name)
+    specPackage.sdocTitle = SText(modelPackage.name)
     specPackage.caption = modelPackage.caption
     specPackage.brief = modelPackage.brief
     specPackage.summary = modelPackage.summary

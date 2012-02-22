@@ -10,9 +10,10 @@ import com.asamioffice.goldenport.text.UJavaString
 import org.simplemodeling.SimpleModeler._
 import org.simplemodeling.SimpleModeler.sdoc.SMObjectRef
 
-/*
+/**
  * @since   Sep. 15, 2008
- * @version Dec. 18, 2010
+ *  version Dec. 18, 2010
+ * @version Feb. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMElement] {
@@ -25,8 +26,6 @@ abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMEleme
 
   private val _features = new ArrayBuffer[SMFeature]
 //  private val _anchors = new ArrayBuffer[SIAnchor]
-
-  val id: UUID = UUID.randomUUID()
 
   protected final def add_feature(key: GKey, value: SDoc): SMFeature = {
     val feature = new SMFeature(key, value)

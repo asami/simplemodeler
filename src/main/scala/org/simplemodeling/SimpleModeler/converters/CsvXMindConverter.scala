@@ -4,20 +4,208 @@ import scala.collection.mutable.ArrayBuffer
 import org.goldenport.Goldenport
 import org.goldenport.service._
 import org.goldenport.entity._
+import org.goldenport.value.GTreeNode
 import org.goldenport.entity.datasource.{NullDataSource, ResourceDataSource}
+import org.goldenport.entity.content._
 import org.goldenport.entities.csv.CsvEntity
 import org.goldenport.entities.xmind.{XMindEntity, XMindNode}
+import com.asamioffice.goldenport.text.CsvUtility
 import org.simplemodeling.SimpleModeler.entities.project.ProjectRealmEntity
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
 import org.simplemodeling.SimpleModeler.values.smcsv.SimpleModelCsvTabular
-import com.asamioffice.goldenport.text.CsvUtility
+import org.simplemodeling.SimpleModeler.builder._
 
 /*
  * @since   Feb.  3, 2009
- * @version Nov. 13, 2010
+ *  version Nov. 13, 2010
+ * @version Feb. 22, 2012
  * @author  ASAMI, Tomoharu
  */
-class CsvXMindConverter(val csv: CsvEntity, val projectName: String) {
+class CsvXMindConverter(policy: Policy, packageName: String, csv: CsvEntity, val projectName: String)
+    extends CsvBuilderBase(policy, packageName, csv) {
+  val entityContext = csv.entityContext
+  val xmind = new XMindEntity(entityContext)
+
+  val simplemodel = new SimpleModelMakerEntity(entityContext, policy)
+  val model_Builder = new SimpleModelMakerBuilder(simplemodel, packageName, policy)
+  xmind.open()
+  val thema = xmind.firstThema
+  private val _outline_builder = new OutlineBuilder[XMindNode](thema)
+
+  def toXMind: XMindEntity = {
+    csv using {
+      _build_xmind
+    }
+  }
+
+  private def _build_xmind = {
+    thema.title = projectName
+    simplemodel.using {
+      xmind.open()
+      _build
+//      _resolve
+      xmind ensuring (_.isOpened)
+    }
+  }
+
+  private def _build {
+//    implicit val s = org.goldenport.entity.content.GContentShow
+    implicit val s = new org.goldenport.value.GTreeNodeShow[org.goldenport.entity.content.GContent]
+    build_model
+    simplemodel.build
+    val tree = simplemodel.ztree
+    println(tree.drawTree)
+    for (n <- tree.flatten) {
+      n.content match {
+        case ec: EntityContent => _build_entity(ec.entity)
+        case _ => {}
+      }
+    }
+  }
+
+  private def _build_entity(entity: GEntity) {
+    entity match {
+      case e: SMMEntityEntity => _build_entity(e)
+      case _ => {}
+    }
+  }
+
+  private def _build_entity(entity: SMMEntityEntity) {
+    println("build = " + entity)    
+    entity.kind match {
+      case ActorKind => _build_actor(entity)
+      case ResourceKind => _build_resource(entity)
+      case EventKind => _build_event(entity)
+      case RoleKind => _build_role(entity)
+      case SummaryKind => _build_summary(entity)
+      case EntityKind => _build_plain_entity(entity)
+      case RuleKind => _build_rule(entity)
+      case UsecaseKind => _build_rule(entity)
+      case StateMachineKind => {}
+      case StateMachineStateKind => {} 
+      case _ => {}
+    }
+  }
+
+  private def _build_actor(entity: SMMEntityEntity) {
+    val node = _outline_builder.actors
+    _build_object_body(entity, node)
+  }
+
+  private def _build_resource(entity: SMMEntityEntity) {
+    val node = _outline_builder.resources
+    _build_object_body(entity, node)
+  }
+
+  private def _build_event(entity: SMMEntityEntity) {
+    val node = _outline_builder.events
+    _build_object_body(entity, node)
+  }
+
+  private def _build_role(entity: SMMEntityEntity) {
+    val node = _outline_builder.roles
+    _build_object_body(entity, node)
+  }
+
+  private def _build_summary(entity: SMMEntityEntity) {
+    val node = _outline_builder.summaries
+    _build_object_body(entity, node)
+  }
+
+  private def _build_plain_entity(entity: SMMEntityEntity) {
+    // do nothing
+  }
+
+  private def _build_rule(entity: SMMEntityEntity) {
+    val node = _outline_builder.rules
+    _build_object_body(entity, node)
+  }
+
+  private def _build_usecase(entity: SMMEntityEntity) {
+    val node = _outline_builder.usecases
+    _build_object_body(entity, node)
+  }
+
+  private def _build_object_body(entity: SMMEntityEntity, node: GTreeNode[XMindNode]) {
+    _outline_builder.setName(node, entity.name)
+  }
+
+/*
+  def get_entity_structure_node(anEntity: XMindNode, aTitle: String): XMindNode = {
+    val nodeName = "[" + aTitle + "]"
+    anEntity.children.find(_.title == nodeName) match {
+      case Some(node) => node
+      case None => {
+        val node = anEntity.addChild()
+        node.title = nodeName
+        node
+      }
+    }
+  }
+
+  def find_entity_structure_node(anEntity: XMindNode, aTitle: String): Option[XMindNode] = {
+    val nodeName = "[" + aTitle + "]"
+    anEntity.children.find(_.title == nodeName)
+  }
+
+  def find_child_in_tree(aParent: XMindNode, aTitle: String): Option[XMindNode] = {
+    aParent.children.find(_.title == aTitle) match {
+      case Some(node) => Some(node)
+      case None => {
+        for (entity <- aParent.children) {
+          find_entity_structure_node(entity, "種類") match {
+            case Some(structureNode) => {
+              find_child_in_tree(structureNode, aTitle) match {
+                case Some(node2) => Some(node2)
+                case None        => //
+              }
+            }
+            case None => //
+          }
+        }
+        None
+      }
+    }
+  }
+
+  def get_entity_node(aTitle: String): XMindNode = {
+    def find_child(aParent: XMindNode): Option[XMindNode] = {
+      find_child_in_tree(aParent, aTitle)
+    }
+
+    find_child(get_actors_node) match {
+      case Some(node) => return node
+      case None       => //
+    }
+    find_child(get_resources_node) match {
+      case Some(node) => return node
+      case None       => //
+    }
+    find_child(get_events_node) match {
+      case Some(node) => return node
+      case None       => //
+    }
+    find_child(get_roles_node) match {
+      case Some(node) => return node
+      case None       => //
+    }
+    error("syntax error")
+  }
+
+  private def _resolve {
+    for ((baseName, derivedName, y) <- generalization_candidates) {
+      val base = get_entity_node(baseName)
+      val parent = get_entity_structure_node(base, "種類")
+      val node = parent.addChild()
+      node.title = derivedName
+      node
+      build_body(node, y)
+    }
+  }
+*/
+}
+
+class CsvXMindConverter0(val csv: CsvEntity, val projectName: String) {
   val entityContext = csv.entityContext
   csv.open()
 //  println("CsvXMind csv = " + csv.width + "/" + csv.height) 2009-02-07
