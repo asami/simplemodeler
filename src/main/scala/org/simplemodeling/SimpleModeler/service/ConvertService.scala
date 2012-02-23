@@ -7,14 +7,15 @@ import org.goldenport.service._
 import org.goldenport.entity._
 import org.goldenport.entities.csv.CsvEntity
 import org.goldenport.entities.xmind.XMindEntity
+import org.goldenport.entities.orgmode.OrgmodeEntity
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
-import org.simplemodeling.SimpleModeler.converters.CsvXMindConverter
+import org.simplemodeling.SimpleModeler.converters._
 import org.simplemodeling.SimpleModeler.builder._
 
 /*
  * @since   Feb.  3, 2009
  *  version Feb. 27, 2009
- * @version Feb. 21, 2012
+ * @version Feb. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 class ConvertService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -42,6 +43,7 @@ class ConvertService(aCall: GServiceCall, serviceClass: GServiceClass) extends G
         format match {
           case "csv" => convert_csv_csv
           case "xmind" => convert_csv_xmind(policy, packageName, csv, projectName)
+          case "org" => convert_csv_org
           case _ => error("jump to usage.")
         }
       }
@@ -49,6 +51,15 @@ class ConvertService(aCall: GServiceCall, serviceClass: GServiceClass) extends G
         format match {
           case "csv" => convert_xmind_csv
           case "xmind" => convert_xmind_xmind
+          case "org" => convert_xmind_org
+          case _ => error("jump to usage.")
+        }
+      }
+      case org: OrgmodeEntity => {
+        format match {
+          case "csv" => convert_org_csv
+          case "xmind" => convert_org_xmind(policy, packageName, org, projectName)
+          case "org" => convert_org_org
           case _ => error("jump to usage.")
         }
       }
@@ -59,7 +70,7 @@ class ConvertService(aCall: GServiceCall, serviceClass: GServiceClass) extends G
   }
 
   private def convert_csv_csv: CsvEntity = {
-    error("jump to usage.")
+    error("not implemented yet.")
   }
 
   private def convert_csv_xmind(policy: Policy, packageName: String, csv: CsvEntity, projectName: String): XMindEntity = {
@@ -67,12 +78,33 @@ class ConvertService(aCall: GServiceCall, serviceClass: GServiceClass) extends G
     csv2xmind.toXMind
   }
 
+  private def convert_csv_org: CsvEntity = {
+    error("not implemented yet.")
+  }
+
   private def convert_xmind_csv: CsvEntity = {
-    error("jump to usage.")
+    error("not implemented yet.")
   }
 
   private def convert_xmind_xmind: XMindEntity = {
-    error("jump to usage.")
+    error("not implemented yet.")
+  }
+
+  private def convert_xmind_org: XMindEntity = {
+    error("not implemented yet.")
+  }
+
+  private def convert_org_csv: CsvEntity = {
+    error("not implemented yet.")
+  }
+
+  private def convert_org_xmind(policy: Policy, packageName: String, org: OrgmodeEntity, projectName: String): XMindEntity = {
+    val org2xmind = new OrgXMindConverter(policy, packageName, org, projectName)
+    org2xmind.toXMind
+  }
+
+  private def convert_org_org: OrgmodeEntity = {
+    error("not implemented yet.")
   }
 }
 

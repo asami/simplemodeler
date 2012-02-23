@@ -18,10 +18,35 @@ import org.simplemodeling.SimpleModeler.builder._
 /*
  * @since   Feb.  3, 2009
  *  version Nov. 13, 2010
- * @version Feb. 23, 2012
+ * @version Feb. 24, 2012
  * @author  ASAMI, Tomoharu
  */
-class CsvXMindConverter(policy: Policy, packageName: String, csv: CsvEntity, val projectName: String)
+class CsvXMindConverter(val policy: Policy, val packageName: String, val csv: CsvEntity, val projectName: String) {
+  private val _entity_context = csv.entityContext
+  private val _simplemodel = new SimpleModelMakerEntity(_entity_context, policy)
+  private val _xmind = new XMindEntity(_entity_context)
+
+  def toXMind: XMindEntity = {
+    csv using {
+      _simplemodel using {
+        _build_xmind
+        _xmind
+      }
+    }
+  }
+
+  private def _build_xmind = {
+    _xmind.open()
+    val thema = _xmind.firstThema
+    thema.title = projectName
+    val simplemodelbuilder = new CsvSimpleModelMakerBuilder(_simplemodel, policy, packageName, csv)
+    simplemodelbuilder.build()
+    val outlinebuilder = new SimpleModelOutlineBuilder[XMindNode](_simplemodel, policy, packageName, thema)
+    outlinebuilder.build()
+  }
+}
+
+class CsvXMindConverter1(policy: Policy, packageName: String, csv: CsvEntity, val projectName: String)
     extends CsvBuilderBase(policy, packageName, csv) {
   val entityContext = csv.entityContext
   val xmind = new XMindEntity(entityContext)
