@@ -1,16 +1,80 @@
 package org.simplemodeling.SimpleModeler.builder
 
+import scala.collection.mutable.ArrayBuffer
 import com.asamioffice.goldenport.text.CsvUtility
 import org.goldenport.value.GTreeNode
 
 /*
  * @since   Feb. 22, 2012
- * @version Feb. 22, 2012
+ * @version Feb. 23, 2012
  * @author  ASAMI, Tomoharu
  */
 class OutlineBuilder[T](val root: GTreeNode[T]) {
-  def setName(entity: GTreeNode[T], value: String) = {
-    entity.title = value
+  case class EntityEntry(node: GTreeNode[T], name: String, base: String, builder: (GTreeNode[T]) => Unit)
+  private val _child_entities = new ArrayBuffer[EntityEntry]()
+
+  def registerActor(name: String, base: Option[String], builder: GTreeNode[T] => Unit) = {
+    registerEntity(actors, name, base, builder)
+  }
+
+  def registerResource(name: String, base: Option[String], builder: GTreeNode[T] => Unit) = {
+    registerEntity(resources, name, base, builder)
+  }
+
+  def registerEvent(name: String, base: Option[String], builder: GTreeNode[T] => Unit) = {
+    registerEntity(events, name, base, builder)
+  }
+
+  def registerRole(name: String, base: Option[String], builder: GTreeNode[T] => Unit) = {
+    registerEntity(roles, name, base, builder)
+  }
+
+  def registerSummary(name: String, base: Option[String], builder: GTreeNode[T] => Unit) = {
+    registerEntity(summaries, name, base, builder)
+  }
+
+  def registerRule(name: String, base: Option[String], builder: GTreeNode[T] => Unit) = {
+    registerEntity(rules, name, base, builder)
+  }
+
+  def registerUsecase(name: String, base: Option[String], builder: GTreeNode[T] => Unit) = {
+    registerEntity(usecases, name, base, builder)
+  }
+
+  def registerEntity(parent: GTreeNode[T], name: String, base: Option[String], builder: GTreeNode[T] => Unit) {
+    base match {
+      case Some(b) => {
+        _child_entities += (EntityEntry(parent, name, b, builder))
+      }
+      case None => {
+        val entity = getEntity(parent, name)
+        builder(entity)
+      }
+    }
+  }
+
+  def getEntity(node: GTreeNode[T], name: String): GTreeNode[T] = {
+    val entity = node.addChild()
+    entity.title = name
+    entity
+  }
+
+  def findEntity(node: GTreeNode[T], name: String): Option[GTreeNode[T]] = {
+    node.children.find(_.title == name) match {
+      case Some(n) => Some(n)
+      case None => {
+        for (c <- node.children) {
+          _find_entity_structure_node(c, "種類") match {
+            case Some(cc) => {
+              val r = findEntity(cc, name)
+              if (r.isDefined) return r
+            }
+            case None => {}
+          }
+        }
+        None
+      }
+    }
   }
 
   def addNname(entity: GTreeNode[T], value: String) = {
@@ -31,6 +95,13 @@ class OutlineBuilder[T](val root: GTreeNode[T]) {
     val child = _get_entity_structure_node(entity, "注記")
     val node = child.addChild()
     node.title = "name_ja=" + value
+    node
+  }
+
+  def addTerm(entity: GTreeNode[T], value: String) = {
+    val child = _get_entity_structure_node(entity, "注記")
+    val node = child.addChild()
+    node.title = "term=" + value
     node
   }
 
@@ -84,7 +155,7 @@ class OutlineBuilder[T](val root: GTreeNode[T]) {
 
   def addAttrs(entity: GTreeNode[T], value: String) = {
     def add_attr(aAttr: String) {
-      val child = _get_entity_structure_node(entity, "特徴")
+      val child = _get_entity_structure_node(entity, "属性")
       val node = child.addChild()
       node.title = aAttr
     }
@@ -92,6 +163,7 @@ class OutlineBuilder[T](val root: GTreeNode[T]) {
     value.split("[;, ]+").foreach(add_attr)
   }
 
+  @deprecated
   def addParts(entity: GTreeNode[T], value: String) = {
     def add_part(aPart: String) {
       val child = _get_entity_structure_node(entity, "部品")
@@ -100,6 +172,20 @@ class OutlineBuilder[T](val root: GTreeNode[T]) {
     }
 
     value.split("[;, ]+").foreach(add_part)
+  }
+
+  def addComposition(entity: GTreeNode[T], value: String, builder: GTreeNode[T] => Unit) = {
+    val part = _add_structure_slot(entity, "部品", value)
+    builder(part)
+    part
+  }
+
+  def addAggregation(entity: GTreeNode[T], value: String) = {
+    _add_structure_slot(entity, "部品", value)
+  }
+
+  def addAssociation(entity: GTreeNode[T], value: String) = {
+    _add_structure_slot(entity, "参照", value)
   }
 
   def addBase(entity: GTreeNode[T], value: String) = {
@@ -196,5 +282,35 @@ class OutlineBuilder[T](val root: GTreeNode[T]) {
         node
       }
     }
+  }
+
+  private def _find_entity_structure_node(anEntity: GTreeNode[T], aTitle: String): Option[GTreeNode[T]] = {
+    val nodeName = "[" + aTitle + "]"
+    anEntity.children.find(_.title == nodeName)
+  }
+
+  private def _add_structure_slot(entity: GTreeNode[T], slotname: String, value: String) = {
+    val child = _get_entity_structure_node(entity, slotname)
+    val node = child.addChild()
+    node.title = value
+    node
+  }
+
+  def _resolve_entity(entry: EntityEntry) {
+    val entity = findEntity(entry.node, entry.base) match {
+      case Some(b) => {
+        val n = _get_entity_structure_node(b, "種類")
+        getEntity(n, entry.name)
+      }
+      case None => {
+        println("Warning: " + entry)
+        getEntity(entry.node, entry.name)
+      }
+    }
+    entry.builder(entity)
+  }
+
+  def resolve() {
+    _child_entities.foreach(_resolve_entity)
   }
 }

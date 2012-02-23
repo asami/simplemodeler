@@ -115,6 +115,11 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   final def isDerived = base != NullEntityEntity || narrativeBase != ""
 
+  def getBase(): Option[SMMEntityEntity] = {
+    if (base == NullEntityEntity) None
+    else Some(base)
+  }
+    
   final def baseClassQName: String = {
     kind match {
       case ActorKind        => "org.simplemodeling.dsl.domain.DomainActor"

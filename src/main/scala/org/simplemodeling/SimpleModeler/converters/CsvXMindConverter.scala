@@ -9,7 +9,7 @@ import org.goldenport.entity.datasource.{NullDataSource, ResourceDataSource}
 import org.goldenport.entity.content._
 import org.goldenport.entities.csv.CsvEntity
 import org.goldenport.entities.xmind.{XMindEntity, XMindNode}
-import com.asamioffice.goldenport.text.CsvUtility
+import com.asamioffice.goldenport.text.{UString, CsvUtility}
 import org.simplemodeling.SimpleModeler.entities.project.ProjectRealmEntity
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
 import org.simplemodeling.SimpleModeler.values.smcsv.SimpleModelCsvTabular
@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.builder._
 /*
  * @since   Feb.  3, 2009
  *  version Nov. 13, 2010
- * @version Feb. 22, 2012
+ * @version Feb. 23, 2012
  * @author  ASAMI, Tomoharu
  */
 class CsvXMindConverter(policy: Policy, packageName: String, csv: CsvEntity, val projectName: String)
@@ -61,6 +61,7 @@ class CsvXMindConverter(policy: Policy, packageName: String, csv: CsvEntity, val
         case _ => {}
       }
     }
+    _outline_builder.resolve()
   }
 
   private def _build_entity(entity: GEntity) {
@@ -88,28 +89,28 @@ class CsvXMindConverter(policy: Policy, packageName: String, csv: CsvEntity, val
   }
 
   private def _build_actor(entity: SMMEntityEntity) {
-    val node = _outline_builder.actors
-    _build_object_body(entity, node)
+    _outline_builder.registerActor(entity.name, entity.getBase.map(_.name),
+        _build_object_body(entity, _))
   }
 
   private def _build_resource(entity: SMMEntityEntity) {
-    val node = _outline_builder.resources
-    _build_object_body(entity, node)
+    _outline_builder.registerResource(entity.name, entity.getBase.map(_.name),
+        _build_object_body(entity, _))
   }
 
   private def _build_event(entity: SMMEntityEntity) {
-    val node = _outline_builder.events
-    _build_object_body(entity, node)
+    _outline_builder.registerEvent(entity.name, entity.getBase.map(_.name),
+        _build_object_body(entity, _))
   }
 
   private def _build_role(entity: SMMEntityEntity) {
-    val node = _outline_builder.roles
-    _build_object_body(entity, node)
+    _outline_builder.registerRole(entity.name, entity.getBase.map(_.name),
+        _build_object_body(entity, _))
   }
 
   private def _build_summary(entity: SMMEntityEntity) {
-    val node = _outline_builder.summaries
-    _build_object_body(entity, node)
+    _outline_builder.registerSummary(entity.name, entity.getBase.map(_.name),
+        _build_object_body(entity, _))
   }
 
   private def _build_plain_entity(entity: SMMEntityEntity) {
@@ -117,17 +118,61 @@ class CsvXMindConverter(policy: Policy, packageName: String, csv: CsvEntity, val
   }
 
   private def _build_rule(entity: SMMEntityEntity) {
-    val node = _outline_builder.rules
-    _build_object_body(entity, node)
+    _outline_builder.registerRule(entity.name, entity.getBase.map(_.name),
+        _build_object_body(entity, _))
   }
 
   private def _build_usecase(entity: SMMEntityEntity) {
-    val node = _outline_builder.usecases
-    _build_object_body(entity, node)
+    _outline_builder.registerUsecase(entity.name, entity.getBase.map(_.name),
+        _build_object_body(entity, _))
   }
 
-  private def _build_object_body(entity: SMMEntityEntity, node: GTreeNode[XMindNode]) {
-    _outline_builder.setName(node, entity.name)
+  private def _build_object_body(src: SMMEntityEntity, node: GTreeNode[XMindNode]) {
+//    _outline_builder.addName(node, src.name)
+    if (UString.notNull(src.name_en)) {
+      _outline_builder.addNameEn(node, src.name_en)
+    }
+    if (UString.notNull(src.name_ja)) {
+      _outline_builder.addNameJa(node, src.name_ja)
+    }
+    if (UString.notNull(src.term)) {
+      _outline_builder.addTerm(node, src.term)
+    }
+    if (UString.notNull(src.name_en)) {
+      _outline_builder.addTermEn(node, src.term_en)
+    }
+    if (UString.notNull(src.name_ja)) {
+      _outline_builder.addTermJa(node, src.term_ja)
+    }
+    if (UString.notNull(src.caption)) {
+      _outline_builder.addCaption(node, src.caption)
+    }
+    if (UString.notNull(src.brief)) {
+      _outline_builder.addBrief(node, src.brief)
+    }
+    if (UString.notNull(src.summary)) {
+       _outline_builder.addSummary(node, src.summary)
+    }
+    if (UString.notNull(src.tableName)) {
+      _outline_builder.addTableName(node, src.name)
+    }
+//    _outline_builder.addStates(node, src.name)
+//    _outline_builder.addRoles(node, src.name)
+    for (a <- src.attributes) {
+      _outline_builder.addAttrs(node, a.name)
+    }
+    for (c <- src.compositions) {
+      _outline_builder.addComposition(node, c.name, _build_object_body(src, _))
+    }
+    for (a <- src.aggregations) {
+      _outline_builder.addAggregation(node, a.name)
+    }
+    for (a <- src.associations) {
+      _outline_builder.addAssociation(node, a.name)
+    }
+    for (p <- src.powertypes) {
+      _outline_builder.addPowers(node, p.name)
+    }
   }
 
 /*
