@@ -1,11 +1,12 @@
 package org.simplemodeling.SimpleModeler.builder
 
 import org.goldenport.entities.orgmode._
+import org.goldenport.entities.outline.OutlineNodeShow
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
 
 /**
  * @since   Feb. 24, 2012
- * @version Feb. 24, 2012
+ * @version Feb. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 class OrgSimpleModelMakerBuilder(
@@ -13,6 +14,7 @@ class OrgSimpleModelMakerBuilder(
   val policy: Policy, val packageName: String, val org: OrgmodeEntity) {
 
   def build() {
-    // XXX
+    val tree = org.ztree
+    println(tree.drawTree(OutlineNodeShow))
   }
 }
