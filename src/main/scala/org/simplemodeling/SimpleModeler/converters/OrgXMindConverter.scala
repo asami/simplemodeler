@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.builder._
 
 /*
  * @since   Feb. 23, 2012
- * @version Feb. 24, 2012
+ * @version Feb. 27, 2012
  * @author  ASAMI, Tomoharu
  */
 class OrgXMindConverter(val policy: Policy, val packageName: String, val org: OrgmodeEntity, val projectName: String) {
@@ -27,8 +27,10 @@ class OrgXMindConverter(val policy: Policy, val packageName: String, val org: Or
 
   def toXMind: XMindEntity = {
     org using {
-      _build_xmind
-      _xmind
+      _simplemodel using {
+        _build_xmind
+        _xmind
+      }
     }
   }
 

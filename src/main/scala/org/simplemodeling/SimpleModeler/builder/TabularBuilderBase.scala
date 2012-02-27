@@ -3,40 +3,37 @@ package org.simplemodeling.SimpleModeler.builder
 import org.goldenport.entities.csv.CsvEntity
 import org.goldenport.entity._
 import org.goldenport.value.util.AnnotatedCsvTabular
+import org.simplemodeling.SimpleModeler.builder.SimpleModelDslBuilder
+import org.simplemodeling.SimpleModeler.builder.SimpleModelMakerBuilder
 import org.simplemodeling.SimpleModeler.entities.project.ProjectRealmEntity
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
 import org.simplemodeling.SimpleModeler.entity.SimpleModelEntity
 import org.simplemodeling.SimpleModeler.values.smcsv.SimpleModelCsvTabular
 import org.simplemodeling.dsl.SObject
 import com.asamioffice.goldenport.text.UJavaString
+import org.simplemodeling.SimpleModeler.builder.Policy
 import org.goldenport.service.GServiceCall
+import org.simplemodeling.SimpleModeler.builder.SimpleModelBuilder
 
 /*
- * Derived from CsvBuilder and CsvImporter
+ * 9Derived from CsvBuilder and CsvImporter.)
+ * Derived from CsvBuilderBase.
  * 
- * @since   Dec. 11, 2011
- *  version Dec. 11, 2011
+ *  since   Dec. 11, 2011
+ * @since   Jan. 24, 2012
  * @version Feb. 27, 2012
  * @author  ASAMI, Tomoharu
  */
-abstract class CsvBuilderBase(policy: Policy, packageName: String, val csv: CsvEntity
-    ) extends TabularBuilderBase(policy, packageName) {
+abstract class TabularBuilderBase(val policy: Policy, val packageName: String) {
+  val model_Builder: SimpleModelBuilder
 
-  override protected def build_Model {
-    val tabuler = csv using {
-      new SimpleModelCsvTabular(csv) { // new AnnotatedCsvTabular(csv)
-        build
-      }
-    }
-    build_model(tabuler)
+  protected def build_model {
+    build_Model
   }
 
-  protected final def build_model0 {
-    csv.open()
-    val tabular = new SimpleModelCsvTabular(csv) // new AnnotatedCsvTabular(csv)
-    tabular.build
-    //    tabular.dump
-    csv.close()
+  protected def build_Model: Unit
+
+  protected final def build_model(tabular: AnnotatedCsvTabular) {
     val packagePathname = UJavaString.packageName2pathname(packageName)
 //    for (y <- 0 until tabular.height if (tabular.annotations.get(0, y).key != "memo")) {
     for (y <- 0 until tabular.height) {
@@ -90,6 +87,11 @@ abstract class CsvBuilderBase(policy: Policy, packageName: String, val csv: CsvE
       }
 //      model_Builder.makeNarrativeAttributes(obj)
     }
+  }
+
+  def importDslObjects: List[SObject] = { // XXX
+    build_Model
+    model_Builder.dslObjects
   }
 
   private def make_items(value: String) = {

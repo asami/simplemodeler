@@ -6,10 +6,10 @@ import com.asamioffice.goldenport.text.CsvUtility
 /*
  * Nov. 6, 2011 (derived from MindmapModelingXMind)
  * @since   Nov. 30, 2011 
- * @version Nov. 30, 2011
+ * @version Feb. 27, 2012
  * @author  ASAMI, Tomoharu
  */
-class MindmapModelingOutliner(val outline:  OutlineEntityBase) {
+class MindmapModelingOutliner(val outline: OutlineEntityBase) {
   val thema = outline.firstThema
 
   def actors: List[TopicNode] = {
@@ -83,7 +83,7 @@ class MindmapModelingOutliner(val outline:  OutlineEntityBase) {
   def scenario(term: TopicNode): List[TopicNode] = {
     structure_node_children(term, "脚本")
   }
-  def structure_node_children(aParent: TopicNode, aName: String): List[TopicNode] = {
+  def structure_node_children(aParent: OutlineNode, aName: String): List[TopicNode] = {
     def is_match(aNode: OutlineNode, theNames: Seq[String]): Boolean = {
       for (name <- theNames) {
         if (aNode.title == name) return true
@@ -113,5 +113,20 @@ class MindmapModelingOutliner(val outline:  OutlineEntityBase) {
       }
       buf.toString
     }
+  }
+
+  def isDefinition(term: TopicNode): Boolean = {
+    aggregations(term).nonEmpty ||
+    attributes(term).nonEmpty ||
+    derivations(term).nonEmpty ||
+    powertypes(term).nonEmpty ||
+    roles(term).nonEmpty ||
+    states(term).nonEmpty ||
+    annotations(term).nonEmpty ||
+    primaryActors(term).nonEmpty ||
+    secondaryActors(term).nonEmpty ||
+    supportingActors(term).nonEmpty ||
+    goals(term).nonEmpty ||
+    scenario(term).nonEmpty
   }
 }

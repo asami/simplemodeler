@@ -6,15 +6,17 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
 
 /**
  * @since   Feb. 24, 2012
- * @version Feb. 26, 2012
+ * @version Feb. 27, 2012
  * @author  ASAMI, Tomoharu
  */
 class OrgSimpleModelMakerBuilder(
-  val simpleModel: SimpleModelMakerEntity,
-  val policy: Policy, val packageName: String, val org: OrgmodeEntity) {
+  simpleModel: SimpleModelMakerEntity,
+  policy: Policy, packageName: String, val org: OrgmodeEntity
+  ) extends OutlineSimpleModelMakerBuilder(simpleModel, policy, packageName, org) {
 
   def build() {
-    val tree = org.ztree
-    println(tree.drawTree(OutlineNodeShow))
+    simpleModel using {
+      build_model
+    }
   }
 }

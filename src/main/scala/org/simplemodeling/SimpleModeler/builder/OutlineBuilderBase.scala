@@ -1,40 +1,33 @@
 package org.simplemodeling.SimpleModeler.builder
 
-import org.simplemodeling.SimpleModeler.entities.simplemodel.ActorKind
-import org.simplemodeling.SimpleModeler.entities.simplemodel.RoleKind
-import org.simplemodeling.SimpleModeler.entities.simplemodel.SMMEntityEntity
-import org.simplemodeling.SimpleModeler.entities.simplemodel.ResourceKind
-import org.goldenport.service.GServiceCall
-import org.simplemodeling.SimpleModeler.entities.simplemodel.RuleKind
-import org.simplemodeling.dsl.SObject
-import org.simplemodeling.SimpleModeler.entities.simplemodel.UsecaseKind
-import org.goldenport.entities.xmind.XMindEntity
-import org.goldenport.entities.xmind.TopicNode
-import org.simplemodeling.SimpleModeler.entities.simplemodel.ElementKind
-import org.simplemodeling.SimpleModeler.entities.simplemodel.EventKind
 import org.goldenport.recorder.Recordable
+import org.goldenport.service.GServiceCall
+import org.goldenport.entities.outline._
+import org.simplemodeling.dsl.SObject
+import org.simplemodeling.SimpleModeler.entities.simplemodel._
 import org.simplemodeling.SimpleModeler.importer.UXMind
-import org.simplemodeling.SimpleModeler.importer.MindmapModelingXMind
+import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
 
 /*
  * Derived from XMindBuilder and XMindImporter
- * 
- * @since   Dec. 11, 2011
+ * Derived XMindBuilderBase
+ *
+ *  since   Dec. 11, 2011
+ * @since   Feb. 27, 2012
  * @version Feb. 27, 2012
  * @author  ASAMI, Tomoharu
  */
-@deprecated("use OutlineBuilderBase")
-abstract class XMindBuilderBase(val policy: Policy, val packageName: String, val xmind: XMindEntity) extends Recordable {
+abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, val outline: OutlineEntityBase) extends Recordable {
   import UXMind._
 
-  val entityContext = xmind.entityContext
+  val entityContext = outline.entityContext
   protected val model_Builder: SimpleModelBuilder
-  private lazy val _mmx = MindmapModelingXMind(xmind)
+  private lazy val _mmx = new MindmapModelingOutliner(outline)
 
-  setup_FowardingRecorder(xmind.entityContext)
+  setup_FowardingRecorder(outline.entityContext)
 
   protected final def build_model {
-    xmind.open()
+    outline.open()
     try {
       _mmx.actors.foreach(_create_object(ActorKind, _, _build_object))
       _mmx.resources.foreach(_create_object(ResourceKind, _, _build_object))
@@ -43,7 +36,7 @@ abstract class XMindBuilderBase(val policy: Policy, val packageName: String, val
       _mmx.rules.foreach(_create_object(RuleKind, _, _build_rule))
       _mmx.usecases.foreach(_create_object(UsecaseKind, _, _build_usecase))
     } finally {
-      xmind.close();
+      outline.close();
     }
   }
 
