@@ -8,9 +8,10 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
 
 /**
  * @since   Feb. 23, 2012
- * @version Feb. 24, 2012
+ * @version Feb. 28, 2012
  * @author  ASAMI, Tomoharu
  */
+@deprecated("Use SimpleModelEntity to produce artifacts instead of SimpleModlMakerEntity.")
 class SimpleModelOutlineBuilder[T](
   val simplemodel: SimpleModelMakerEntity,
   policy: Policy, packageName: String, root: GTreeNode[T]) {
@@ -26,7 +27,7 @@ class SimpleModelOutlineBuilder[T](
         }
       }
       _outline_builder.resolve()
-    } 
+    }
   }
 
   private def _build_entity(entity: GEntity) {
@@ -37,7 +38,7 @@ class SimpleModelOutlineBuilder[T](
   }
 
   private def _build_entity(entity: SMMEntityEntity) {
-    println("build = " + entity)    
+    println("SimpleModelOutlineBuilder = " + entity)    
     entity.kind match {
       case ActorKind => _build_actor(entity)
       case ResourceKind => _build_resource(entity)
