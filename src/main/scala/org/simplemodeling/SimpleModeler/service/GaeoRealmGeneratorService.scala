@@ -7,7 +7,8 @@ import org.simplemodeling.SimpleModeler.transformers.gaeo.SimpleModel2GaeoRealmT
 
 /*
  * @since   Mar. 11, 2009
- * @version Dec. 18, 2010
+ *  version Dec. 18, 2010
+ * @version Feb. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 class GaeoRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -20,6 +21,8 @@ class GaeoRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass
 }
 
 object GaeoRealmGeneratorService extends GServiceClass("gaeo") {
+  description.title = "(obsolate)"
+
   def new_Service(aCall: GServiceCall): GService =
     new GaeoRealmGeneratorService(aCall, this)
 }

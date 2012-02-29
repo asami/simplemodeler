@@ -22,7 +22,7 @@ import org.simplemodeling.SimpleModeler.transformers.java.SimpleModel2Java6Realm
 
 /*
  * @since   Jan. 29, 2012
- * @version Feb. 18, 2012
+ * @version Feb. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -175,7 +175,7 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
 }
 
 object BuildService extends GServiceClass("build") with GoldenportConstants {
-  description.title = Some(Text("Builds SimpleModel project."))
+  description.title = "Builds SimpleModel project."
   contract = Schema(
       Field("source.package", XString, summary = "Package name"),
       Field(Container_Message, XString))

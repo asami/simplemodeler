@@ -8,6 +8,7 @@ import org.simplemodeling.SimpleModeler.transformers.gae.SimpleModel2GaeRealmTra
 /*
  * Mar.  8, 2009
  * Dec. 18, 2010
+ * @version  Feb. 28, 2012
  */
 class GaeRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
   def execute_Service(aRequest: GServiceRequest, aResponse: GServiceResponse) = {
@@ -19,6 +20,8 @@ class GaeRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass)
 }
 
 object GaeRealmGeneratorService extends GServiceClass("gae") {
+  description.title = "(obsolate)"
+
   def new_Service(aCall: GServiceCall): GService =
     new GaeRealmGeneratorService(aCall, this)
 }

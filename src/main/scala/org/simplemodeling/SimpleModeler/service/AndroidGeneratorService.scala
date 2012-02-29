@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.transformers.android.SimpleModel2Android
 
 /*
  * @since   Apr. 13, 2011
- * @version Apr. 25, 2011
+ * @version Feb. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 class AndroidGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -20,6 +20,8 @@ class AndroidGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) 
 }
 
 object AndroidGeneratorService extends GServiceClass("android") {
+  description.title = "Produces an android application."
+
   def new_Service(aCall: GServiceCall): GService =
     new AndroidGeneratorService(aCall, this)
 }

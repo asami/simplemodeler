@@ -8,7 +8,8 @@ import org.simplemodeling.SimpleModeler.entities.project._
 
 /*
  * @since   Jan. 28, 2009
- * @version Apr. 26, 2011
+ *  version Apr. 26, 2011
+ * @version Feb. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 class ProjectRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -27,6 +28,8 @@ class ProjectRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceCl
 }
 
 object ProjectRealmGeneratorService extends GServiceClass("project") {
+  description.title = "Creates a project initial artifacts."
+
   def new_Service(aCall: GServiceCall): GService =
     new ProjectRealmGeneratorService(aCall, this)
 }

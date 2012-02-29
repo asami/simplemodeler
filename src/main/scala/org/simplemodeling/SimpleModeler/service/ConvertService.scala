@@ -12,10 +12,10 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
 import org.simplemodeling.SimpleModeler.converters._
 import org.simplemodeling.SimpleModeler.builder._
 
-/*
+/**
  * @since   Feb.  3, 2009
  *  version Feb. 27, 2009
- * @version Feb. 24, 2012
+ * @version Feb. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 class ConvertService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -109,6 +109,8 @@ class ConvertService(aCall: GServiceCall, serviceClass: GServiceClass) extends G
 }
 
 object ConvertService extends GServiceClass("convert") {
+  description.title = "Converts artifacts."
+
   def new_Service(aCall: GServiceCall): GService =
     new ConvertService(aCall, this)
 }

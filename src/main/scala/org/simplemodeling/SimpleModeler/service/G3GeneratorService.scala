@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.transformers.g3.SimpleModel2G3RealmTrans
 
 /*
  * @since   Jun. 12, 2011
- * @version Jun. 12, 2011
+ * @version Feb. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 class G3GeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -20,6 +20,8 @@ class G3GeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) exten
 }
 
 object G3GeneratorService extends GServiceClass("g3") {
+  description.title = "Produces a g3 application."
+
   def new_Service(aCall: GServiceCall): GService =
     new G3GeneratorService(aCall, this)
 }

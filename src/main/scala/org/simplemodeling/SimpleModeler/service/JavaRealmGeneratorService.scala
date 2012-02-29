@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.transformers.java.SimpleModel2Java6Realm
 
 /*
  * @since   Dec. 12, 2011
- * @version Dec. 13, 2011
+ * @version Feb. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -21,6 +21,8 @@ class JavaRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass
 }
 
 object JavaRealmGeneratorService extends GServiceClass("java") {
+  description.title = "Produces a Java 6 application."
+
   def new_Service(aCall: GServiceCall): GService =
     new JavaRealmGeneratorService(aCall, this)
 }

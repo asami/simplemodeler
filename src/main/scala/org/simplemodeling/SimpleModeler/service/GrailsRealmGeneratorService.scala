@@ -8,6 +8,7 @@ import org.simplemodeling.SimpleModeler.transformers.grails.SimpleModel2GrailsRe
 /*
  * Jan. 25, 2009
  * Dec. 18, 2010
+ * @version  Feb. 28, 2012
  */
 class GrailsRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
   def execute_Service(aRequest: GServiceRequest, aResponse: GServiceResponse) = {
@@ -19,6 +20,8 @@ class GrailsRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceCla
 }
 
 object GrailsRealmGeneratorService extends GServiceClass("grails") {
+  description.title = "(preliminary)"
+
   def new_Service(aCall: GServiceCall): GService =
     new GrailsRealmGeneratorService(aCall, this)
 }

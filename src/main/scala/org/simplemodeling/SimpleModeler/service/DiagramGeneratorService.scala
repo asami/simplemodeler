@@ -14,7 +14,7 @@ import org.smartdox.Text
 /*
  * @since   Nov.  7, 2011
  *  version Dec.  6, 2011
- * @version Feb. 17, 2012
+ * @version Feb. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 class DiagramGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -42,7 +42,7 @@ class DiagramGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) 
 }
 
 object DiagramGeneratorService extends GServiceClass("diagram") with GoldenportConstants {
-  description.title = Some(Text("Diagram generator."))
+  description.title = "Produce diagrams (e.g. class diagram)."
   contract = Schema(
       Field("$", XBase64Binary, summary = "File name"),
       Field("source.package", XString, summary = "Package name"),

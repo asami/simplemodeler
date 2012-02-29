@@ -14,7 +14,8 @@ import org.simplemodeling.SimpleModeler.builder.Policy
 /*
  * @since   Jan. 28, 2009
  *  version Feb. 27, 2009
- * @version Dec. 11, 2011
+ *  version Dec. 11, 2011
+ * @version Feb. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 class ImportService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -49,6 +50,8 @@ class ImportService(aCall: GServiceCall, serviceClass: GServiceClass) extends GS
 }
 
 object ImportService extends GServiceClass("import") {
+  description.title = "Imports project."
+
   def new_Service(aCall: GServiceCall): GService =
     new ImportService(aCall, this)
 }

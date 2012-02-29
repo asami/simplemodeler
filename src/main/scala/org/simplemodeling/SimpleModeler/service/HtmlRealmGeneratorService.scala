@@ -12,6 +12,7 @@ import org.goldenport.entities.smartdoc.generators.SmartDocRealm2HtmlRealmGenera
 /*
  * Oct. 27, 2008
  * Dec. 18, 2010
+ * @version  Feb. 28, 2012
  */
 class HtmlRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
   def execute_Service(aRequest: GServiceRequest, aResponse: GServiceResponse) = {
@@ -39,6 +40,8 @@ class HtmlRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass
 }
 
 object HtmlRealmGeneratorService extends GServiceClass("html") {
+  description.title = "(preliminary)"
+
   def new_Service(aCall: GServiceCall): GService =
     new HtmlRealmGeneratorService(aCall, this)
 }

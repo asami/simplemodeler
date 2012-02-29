@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.transformers.gaej.SimpleModel2GaeJavaRea
 
 /*
  * @since   Apr.  9, 2009
- * @version Dec. 18, 2010
+ * @version Feb. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 class GaeJavaRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -20,6 +20,8 @@ class GaeJavaRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceCl
 }
 
 object GaeJavaRealmGeneratorService extends GServiceClass("gaej") {
+  description.title = "(preliminary)"
+
   def new_Service(aCall: GServiceCall): GService =
     new GaeJavaRealmGeneratorService(aCall, this)
 }
