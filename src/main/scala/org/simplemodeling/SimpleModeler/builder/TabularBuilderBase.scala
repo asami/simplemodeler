@@ -3,17 +3,13 @@ package org.simplemodeling.SimpleModeler.builder
 import org.goldenport.entities.csv.CsvEntity
 import org.goldenport.entity._
 import org.goldenport.value.util.AnnotatedCsvTabular
-import org.simplemodeling.SimpleModeler.builder.SimpleModelDslBuilder
-import org.simplemodeling.SimpleModeler.builder.SimpleModelMakerBuilder
 import org.simplemodeling.SimpleModeler.entities.project.ProjectRealmEntity
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
 import org.simplemodeling.SimpleModeler.entity.SimpleModelEntity
 import org.simplemodeling.SimpleModeler.values.smcsv.SimpleModelCsvTabular
 import org.simplemodeling.dsl.SObject
 import com.asamioffice.goldenport.text.UJavaString
-import org.simplemodeling.SimpleModeler.builder.Policy
 import org.goldenport.service.GServiceCall
-import org.simplemodeling.SimpleModeler.builder.SimpleModelBuilder
 
 /*
  * 9Derived from CsvBuilder and CsvImporter.)
@@ -21,7 +17,7 @@ import org.simplemodeling.SimpleModeler.builder.SimpleModelBuilder
  * 
  *  since   Dec. 11, 2011
  * @since   Jan. 24, 2012
- * @version Feb. 27, 2012
+ * @version Mar.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class TabularBuilderBase(val policy: Policy, val packageName: String) {

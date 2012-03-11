@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.builder
 
+import org.goldenport.value.GTable
 import org.goldenport.recorder.Recordable
 import org.goldenport.service.GServiceCall
 import org.goldenport.entities.outline._
@@ -14,7 +15,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *
  *  since   Dec. 11, 2011
  * @since   Feb. 27, 2012
- * @version Feb. 27, 2012
+ * @version Mar.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, val outline: OutlineEntityBase) extends Recordable {
@@ -30,6 +31,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     outline.open()
     try {
       _mmx.actors.foreach(_create_object(ActorKind, _, _build_object))
+      _mmx.actorTables.foreach(create_Object_Table(ActorKind, _))
       _mmx.resources.foreach(_create_object(ResourceKind, _, _build_object))
       _mmx.events.foreach(_create_object(EventKind, _, _build_object))
       _mmx.roles.foreach(_create_object(RoleKind, _, _build_object))
@@ -52,6 +54,9 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     target
   }
 
+  protected def create_Object_Table(kind: ElementKind, table: GTable[String]) {
+  }
+
   private def _build_object(source: TopicNode, target: SMMEntityEntity) {
     if (target.isDerived) {
       model_Builder.makeAttributesForDerivedObject(target)
@@ -72,6 +77,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 
   private def _build_object_common(aNode: TopicNode, target: SMMEntityEntity) {
     _mmx.aggregations(aNode).foreach(_build_aggregation(_, target))
+    _mmx.aggregationTables(aNode).foreach(_build_aggregation_table(_, target))
     _mmx.attributes(aNode).foreach(_build_attribute(_, target))
     _mmx.derivations(aNode).foreach(_build_derivation(_, target))
     _mmx.powertypes(aNode).foreach(_build_powertype(_, target))
@@ -93,6 +99,10 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     } else {
       target.addNarrativePart(term)
     }
+  }
+
+  private def _build_aggregation_table(table: GTable[String], target: SMMEntityEntity) {
+    // XXX
   }
 
   private def _build_attribute(source: TopicNode, target: SMMEntityEntity) {

@@ -6,13 +6,15 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
 
 /**
  * @since   Feb. 24, 2012
- * @version Feb. 27, 2012
+ * @version Mar. 11, 2012
  * @author  ASAMI, Tomoharu
  */
 class OrgSimpleModelMakerBuilder(
   simpleModel: SimpleModelMakerEntity,
   policy: Policy, packageName: String, val org: OrgmodeEntity
   ) extends OutlineSimpleModelMakerBuilder(simpleModel, policy, packageName, org) {
+
+  protected val table_Model_Builder = new DoxTablesSimpleModelMakerBuilder(model_Builder, policy, packageName)
 
   def build() {
     simpleModel using {
