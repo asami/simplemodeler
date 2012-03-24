@@ -1,8 +1,8 @@
 package org.simplemodeling.SimpleModeler.importer
 
-import org.goldenport.entities.csv.CsvEntity
 import org.goldenport.entity._
 import org.goldenport.value.util.AnnotatedCsvTabular
+import org.simplemodeling.SimpleModeler.builder.OutlineBuilderBase
 import org.simplemodeling.SimpleModeler.builder.SimpleModelDslBuilder
 import org.simplemodeling.SimpleModeler.builder.SimpleModelMakerBuilder
 import org.simplemodeling.SimpleModeler.entities.project.ProjectRealmEntity
@@ -19,10 +19,19 @@ import org.simplemodeling.SimpleModeler.builder.Policy
  * Derived from XMindBuilder
  * 
  * @since   Nov. 30, 2011
- * @version Dec. 10, 2011
+ *  version Dec. 10, 2011
+ * @version Mar. 17, 2012
  * @author  ASAMI, Tomoharu
  */
-class OutlineImporter(val policy: Policy, val call: GServiceCall, val packageName: String, val outline: OutlineEntityBase) {
+class OutlineImporter(policy: Policy, val call: GServiceCall, packageName: String, outline: OutlineEntityBase)
+    extends OutlineBuilderBase(policy, packageName, outline) {
+
+  val makerentity = new SimpleModelMakerEntity(outline.entityContext, policy) // XXX
+  makerentity.open() // XXX
+  val model_Builder = new SimpleModelMakerBuilder(makerentity, packageName, policy, None)
+}
+
+class OutlineImporter0(val policy: Policy, val call: GServiceCall, val packageName: String, val outline: OutlineEntityBase) {
   import UXMind._
 
   private val _model_builder = new SimpleModelDslBuilder(outline.entityContext, packageName, policy, None)

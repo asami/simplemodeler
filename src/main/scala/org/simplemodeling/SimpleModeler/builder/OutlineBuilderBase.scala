@@ -15,15 +15,16 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *
  *  since   Dec. 11, 2011
  * @since   Feb. 27, 2012
- * @version Mar.  6, 2012
+ * @version Mar. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, val outline: OutlineEntityBase) extends Recordable {
   import UXMind._
 
   val entityContext = outline.entityContext
-  protected val model_Builder: SimpleModelBuilder
+  protected val model_Builder: SimpleModelMakerBuilder
   private lazy val _mmx = new MindmapModelingOutliner(outline)
+  private lazy val _table_builder = new TableSimpleModelMakerBuilder(model_Builder, policy, packageName)
 
   setup_FowardingRecorder(outline.entityContext)
 
@@ -31,7 +32,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     outline.open()
     try {
       _mmx.actors.foreach(_create_object(ActorKind, _, _build_object))
-      _mmx.actorTables.foreach(create_Object_Table(ActorKind, _))
+      _mmx.actorTables.foreach(create_object_table(ActorKind, _))
       _mmx.resources.foreach(_create_object(ResourceKind, _, _build_object))
       _mmx.events.foreach(_create_object(EventKind, _, _build_object))
       _mmx.roles.foreach(_create_object(RoleKind, _, _build_object))
@@ -54,7 +55,8 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     target
   }
 
-  protected def create_Object_Table(kind: ElementKind, table: GTable[String]) {
+  protected def create_object_table(kind: ElementKind, table: GTable[String]) = {
+    _table_builder.createObjects(kind, table)
   }
 
   private def _build_object(source: TopicNode, target: SMMEntityEntity) {
@@ -79,6 +81,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     _mmx.aggregations(aNode).foreach(_build_aggregation(_, target))
     _mmx.aggregationTables(aNode).foreach(_build_aggregation_table(_, target))
     _mmx.attributes(aNode).foreach(_build_attribute(_, target))
+    _mmx.attributeTables(aNode).foreach(_build_attribute_table(_, target))
     _mmx.derivations(aNode).foreach(_build_derivation(_, target))
     _mmx.powertypes(aNode).foreach(_build_powertype(_, target))
     _mmx.roles(aNode).foreach(_build_role(_, target))
@@ -102,12 +105,18 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   private def _build_aggregation_table(table: GTable[String], target: SMMEntityEntity) {
-    // XXX
+    println("build_aggregation")
+    sys.error("not implemented yet")
   }
 
   private def _build_attribute(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     target.addNarrativeAttribute(term)
+  }
+
+  private def _build_attribute_table(table: GTable[String], target: SMMEntityEntity) {
+    println("OutlineBuilderBase: build_attribute")
+    _table_builder.buildObject(target, table)
   }
 
   private def _build_derivation(source: TopicNode, target: SMMEntityEntity) {

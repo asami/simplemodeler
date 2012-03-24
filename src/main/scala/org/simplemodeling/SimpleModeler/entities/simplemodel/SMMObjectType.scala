@@ -8,7 +8,8 @@ import org.goldenport.entity.datasource.GContentDataSource
 
 /*
  * @since   Jan. 30, 2009
- * @version Jul. 12, 2009
+ *  version Jul. 12, 2009
+ * @version Mar. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SMMObjectType(val name: String, val packageName: String) {
@@ -84,3 +85,17 @@ object SMMIntegerType extends SMMIntegerType
 
 class SMMDecimalType extends SMMObjectType("XDecimal", "org.simplemodeling.dsl.datatype")
 object SMMDecimalType extends SMMDecimalType
+
+object SMMObjectType {
+  def get(string: String): Option[SMMObjectType] = {
+    val a = string.toLowerCase
+    a match {
+      case "string" => Some(SMMStringType)
+      case "int" => Some(SMMIntType)
+      case "long" => Some(SMMLongType)
+      case "float" => Some(SMMLongType)
+      case "double" => Some(SMMLongType)
+      case _ => None
+    }
+  }
+}

@@ -11,7 +11,7 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
 
 /**
  * @since   Feb. 27, 2012
- * @version Mar. 11, 2012
+ * @version Mar. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class OutlineSimpleModelMakerBuilder(
@@ -21,11 +21,6 @@ abstract class OutlineSimpleModelMakerBuilder(
 
   val model_Builder = new SimpleModelMakerBuilder(simpleModel, packageName, policy)
   protected val table_Model_Builder: TableSimpleModelMakerBuilder
-
-  override protected def create_Object_Table(kind: ElementKind, table: GTable[String]) {
-    sys.error("not implemented yet")
-  }
-
 
 /*
   protected def build_model(entity: OutlineEntityBase) {

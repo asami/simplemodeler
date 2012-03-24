@@ -16,7 +16,7 @@ import org.goldenport.service.GServiceCall
  * 
  * @since   Dec. 11, 2011
  *  version Dec. 11, 2011
- * @version Feb. 27, 2012
+ * @version Mar. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class CsvBuilderBase(policy: Policy, packageName: String, val csv: CsvEntity
@@ -90,9 +90,5 @@ abstract class CsvBuilderBase(policy: Policy, packageName: String, val csv: CsvE
       }
 //      model_Builder.makeNarrativeAttributes(obj)
     }
-  }
-
-  private def make_items(value: String) = {
-    com.asamioffice.goldenport.text.CsvUtility.makeItems(value)
   }
 }

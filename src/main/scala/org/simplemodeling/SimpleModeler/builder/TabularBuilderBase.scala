@@ -17,7 +17,7 @@ import org.goldenport.service.GServiceCall
  * 
  *  since   Dec. 11, 2011
  * @since   Jan. 24, 2012
- * @version Mar.  6, 2012
+ * @version Mar. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class TabularBuilderBase(val policy: Policy, val packageName: String) {
@@ -90,7 +90,7 @@ abstract class TabularBuilderBase(val policy: Policy, val packageName: String) {
     model_Builder.dslObjects
   }
 
-  private def make_items(value: String) = {
+  protected final def make_items(value: String) = {
     com.asamioffice.goldenport.text.CsvUtility.makeItems(value)
   }
 }

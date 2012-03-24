@@ -13,7 +13,7 @@ import org.smartdox._
 /**
  * Nov. 6, 2011 (derived from MindmapModelingXMind)
  * @since   Nov. 30, 2011 
- * @version Mar. 11, 2012
+ * @version Mar. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class MindmapModelingOutliner(val outline: OutlineEntityBase) {
@@ -24,7 +24,13 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
   }
 
   def actorTables: List[GTable[String]] = {
-    _structure_node_tables(thema, "登場人物")
+    val a = boi("登場人物")
+    val b = thema
+    val r = List(boi("登場人物"), thema.some).flatten.flatMap {
+      _structure_node_tables(_, "登場人物")
+    }
+    println(r)
+    r
   }
 
   def resources = {
@@ -57,6 +63,10 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
 
   def attributes(term: TopicNode): List[TopicNode] = {
     structure_node_children(term, "属性") // 特長
+  }
+
+  def attributeTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, "属性")
   }
 
   def derivations(term: TopicNode): List[TopicNode] = {
@@ -98,7 +108,23 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
   def scenario(term: TopicNode): List[TopicNode] = {
     structure_node_children(term, "脚本")
   }
-  
+
+  def boi(name: String): Option[TopicNode] = {
+    structure_node(thema, name)
+  }
+
+  def structure_node(aParent: OutlineNode, aName: String): Option[TopicNode] = {
+    structure_node(aParent, List(aName))
+  }
+
+  def structure_node(aParent: OutlineNode, names: Seq[String]): Option[TopicNode] = {
+    structure_node(aParent, _is_match(names, _))
+  }
+
+  def structure_node(aParent: OutlineNode, ismatch: OutlineNode => Boolean): Option[TopicNode] = {
+    aParent.children.find(ismatch).asInstanceOf[Option[TopicNode]]
+  }
+
   def structure_node_children(aParent: OutlineNode, aName: String): List[TopicNode] = {
     structure_node_children(aParent, List(aName))
   }
@@ -169,6 +195,7 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
   private def _structure_node_tables(node: OutlineNode, names: List[String]): List[GTable[String]] = {
     val candidates: List[String] = names.flatMap(n => List(n, n + "一覧")) 
     def isaccept(t: Table): Boolean = {
+      println(t.caption + "/" + candidates)
       t.caption.map(c => candidates.contains(c.toText())) | false
     }
     val t = node.doc.tree

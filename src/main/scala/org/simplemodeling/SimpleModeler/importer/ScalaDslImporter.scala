@@ -18,7 +18,7 @@ import com.asamioffice.goldenport.text.UString
 /*
  * @since   Oct. 31, 2008
  *  version Dec. 11, 2011
- * @version Jan. 25, 2012
+ * @version Mar. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
@@ -68,6 +68,7 @@ class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
       entities.flatMap {
         case csv: CsvEntity => _csv_dsl_objects(csv)
         case xmind: XMindEntity => _xmind_dsl_objects(xmind)
+//        case orgmode: OrgmodeEntity => _orgmode_dsl_objects(orgmode)
         case outline: OutlineEntityBase => _outline_dsl_objects(outline)
         case _ => error("jump usage error = " + request.entity) // XXX
       }
@@ -85,6 +86,13 @@ class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
     val importer = new XMindImporter(_builder_policy, serviceCall, packageName, xmind)
     importer.importDslObjects
   }
+
+/*
+  private def _orgmode_dsl_objects(orgmode: OrgmodeEntityBase): List[SObject] = {
+    val importer = new OrgmodeImporter(_builder_policy, serviceCall, packageName, orgmode)
+    importer.importDslObjects
+  }
+*/
 
   private def _outline_dsl_objects(outline: OutlineEntityBase): List[SObject] = {
     val importer = new OutlineImporter(_builder_policy, serviceCall, packageName, outline)
