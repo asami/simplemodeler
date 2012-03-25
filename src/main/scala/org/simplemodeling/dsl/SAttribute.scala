@@ -7,7 +7,8 @@ import org.goldenport.sdoc.SDoc
  * @since   Sep. 10, 2008
  *  version Nov. 13, 2010
  *  version Dec. 15, 2011
- * @version Feb.  9, 2012
+ *  version Feb.  9, 2012
+ * @version Mar. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SAttribute(aName: String, aMultiplicity: SMultiplicity) extends SElement(aName) {
@@ -20,6 +21,7 @@ class SAttribute(aName: String, aMultiplicity: SMultiplicity) extends SElement(a
   var isPersistent: Boolean = true
   var defaultValue: Any = _
   var constraints = new ArrayBuffer[SConstraint]
+  var columnName: String = ""
 
   final def isId = {
     kind == IdAttributeKind

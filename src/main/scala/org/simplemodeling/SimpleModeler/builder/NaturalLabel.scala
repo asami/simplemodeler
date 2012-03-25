@@ -34,13 +34,17 @@ object CaptionLabel extends NaturalLabel
 object BriefLabel extends NaturalLabel
 // object SummaryLabel extends NaturalLabel
 object DescriptionLabel extends NaturalLabel
-object TableNameLabel extends NaturalLabel
-object ColumnNameLabel extends NaturalLabel
 object AttributeLabel extends NaturalLabel
 object AssociationLabel extends NaturalLabel
 object AggregationLabel extends NaturalLabel
 object CompositionLabel extends NaturalLabel
 object BaseLabel extends NaturalLabel
+object MultiplicityLabel extends NaturalLabel
+//
+object TableNameLabel extends NaturalLabel
+object ColumnNameLabel extends NaturalLabel
+object SqlDatatypeLabel extends NaturalLabel
+//
 object NullNaturalLabel extends NaturalLabel
 
 object NaturalLabel {
@@ -68,14 +72,18 @@ object NaturalLabel {
   val brief_candidates = List("brief")
 //  val summary_candidates = List("summary")
   val description_candidates = List("description", "説明")
-  val tableName_candidates = List("tablename", "tablenames", "table name", "table names", "テーブル名")
-  val columnName_candidates = List("columnname", "columnnames", "column name", "column names", "カラム名")
   val attribute_candidates = List("attr", "attrs", "attribute", "attributes", "属性名")
   val association_candidates = List("assoc", "assocs", "associations", "関連", "参照")
   val aggregation_candidates = List("aggregation", "aggregations", "集約", "部品")
   val composition_candidates = List("composition", "compositions", "合成", "合成集約")
   val base_candidates = List("base", "bases", "extend", "extends", "ベース", "継承", "基底")
   val datatype_candidates = List("type", "datatype", "datatypes", "data type", "data types", "型", "データ型", "データタイプ")
+  val multiplicity_candidates = List("multiplicity", "mul", "多重度")
+  // SQL
+  val tableName_candidates = List("tablename", "tablenames", "table name", "table names", "テーブル名")
+  val columnName_candidates = List("columnname", "columnnames", "column name", "column names", "カラム名")
+  val sqlDatatype_candidates = List("sql type", "sql datatype", "sql datatypes", "sql data type", "sql data types",
+      "SQL型", "SQLデータ型", "SQLデータタイプ")
 
   def apply(string: String): NaturalLabel = {
     val a = string.toLowerCase
@@ -103,14 +111,16 @@ object NaturalLabel {
     else if (brief_candidates.contains(a)) BriefLabel
     else if (summary_candidates.contains(a)) SummaryLabel
     else if (description_candidates.contains(a)) DescriptionLabel
-    else if (tableName_candidates.contains(a)) TableNameLabel
-    else if (columnName_candidates.contains(a)) ColumnNameLabel
     else if (attribute_candidates.contains(a)) AttributeLabel
     else if (association_candidates.contains(a)) AssociationLabel
     else if (aggregation_candidates.contains(a)) AggregationLabel
     else if (composition_candidates.contains(a)) CompositionLabel
     else if (base_candidates.contains(a)) BaseLabel
+    else if (multiplicity_candidates.contains(a)) MultiplicityLabel
     else if (datatype_candidates.contains(a)) DatatypeLabel
+    else if (tableName_candidates.contains(a)) TableNameLabel
+    else if (columnName_candidates.contains(a)) ColumnNameLabel
+    else if (sqlDatatype_candidates.contains(a)) SqlDatatypeLabel
     else NullNaturalLabel;
   }
 

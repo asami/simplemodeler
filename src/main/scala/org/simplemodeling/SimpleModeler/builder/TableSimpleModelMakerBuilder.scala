@@ -101,14 +101,21 @@ class TableSimpleModelMakerBuilder(
     for ((key, value) <- entry) {
       NaturalLabel(key) match {
         case NameLabel => {}
-//        case "name_ja"     => attr.name_ja = value
-//        case "name_en"     => attr.name_en = value
-//        case "term_ja"     => attr.term_ja = value
-//        case "term_en"     => attr.term_en = value
-//        case "caption"     => attr.caption = value
-//        case "brief"       => attr.brief = value
-//        case "summary"     => attr.summary = value
-//        case "description" => attr.description = value
+        case DatatypeLabel => {}
+        case MultiplicityLabel => attr.multiplicity = GRMultiplicity(value)
+        case NameJaLabel => attr.name_ja = value
+        case NameEnLabel => attr.name_en = value
+        case TermLabel => attr.term = value
+        case TermJaLabel => attr.term_ja = value
+        case TermEnLabel => attr.term_en = value
+        case TitleLabel => attr.title = value
+        case SubtitleLabel => attr.subtitle = value
+        case CaptionLabel => attr.caption = value
+        case BriefLabel => attr.brief = value
+        case SummaryLabel => attr.brief = value
+        case DescriptionLabel => attr.description = value
+        case ColumnNameLabel => attr.columnName = value
+        case SqlDatatypeLabel => attr.sqlDatatype = SMMObjectType.get(value)
         case _ => {}
       }
     }

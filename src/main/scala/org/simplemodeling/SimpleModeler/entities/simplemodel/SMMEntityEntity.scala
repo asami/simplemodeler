@@ -33,6 +33,7 @@ import org.simplemodeling.dsl.domain.DomainValueId
 import org.simplemodeling.dsl.domain.DomainValueName
 import org.simplemodeling.dsl.One
 import org.simplemodeling.dsl.OneMore
+import org.simplemodeling.dsl.SAttribute
 import org.simplemodeling.dsl.SAttributeType
 import org.simplemodeling.dsl.SEntity
 import org.simplemodeling.dsl.SMultiplicity
@@ -51,7 +52,8 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
 /*
  * @since   Jan. 30, 2009
  *  version Dec.  8, 2011
- * @version Jan. 30, 2012
+ *  version Jan. 30, 2012
+ * @version Mar. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) {
@@ -785,9 +787,11 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       attr.attributeType match {
         case t: SMMValueIdType => {
           entity.attribute_id.attributeType = _dsl_type(t)
+          _build_attribute(entity.attribute_id, attr)
         }
         case _ => {
-          entity.attribute(attr.name, _dsl_type(attr.attributeType), _dsl_multiplicity(attr.multiplicity))
+          val a = entity.attribute(attr.name, _dsl_type(attr.attributeType), _dsl_multiplicity(attr.multiplicity))
+          _build_attribute(a, attr)
         }
       }
     }
@@ -797,10 +801,54 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     for (attr <- attributes) {
       attr.attributeType match {
         case _ => {
-          value.attribute(attr.name, _dsl_type(attr.attributeType), _dsl_multiplicity(attr.multiplicity))
+          val a = value.attribute(attr.name, _dsl_type(attr.attributeType), _dsl_multiplicity(attr.multiplicity))
+          _build_attribute(a, attr)
         }
       }
     }
+  }
+
+  private def _build_attribute(attr: SAttribute, src: SMMAttribute) {
+    for (a <- _dsl_text(src.name_ja)) {
+      attr.name_ja = a
+    }
+    for (a <- _dsl_text(src.name_en)) {
+      attr.name_en = a
+    }
+    for (a <- _dsl_text(src.term)) {
+      attr.term = a
+    }
+    for (a <- _dsl_text(src.term_ja)) {
+      attr.term_ja = a
+    }
+    for (a <- _dsl_text(src.term_en)) {
+      attr.term_en = a
+    }
+    for (a <- _dsl_text(src.title)) {
+//      attr.title = a XXX
+      attr.caption = a
+    }
+    for (a <- _dsl_text(src.subtitle)) {
+//      attr.subtitle = a XXX
+      attr.brief = a
+    }
+    for (a <- _dsl_text(src.caption)) {
+      attr.caption = a
+    }
+    for (a <- _dsl_text(src.brief)) {
+      attr.brief = a
+    }
+    for (a <- _dsl_text(src.summary)) {
+      attr.summary = a
+    }
+    for (a <- _dsl_text(src.columnName)) {
+      attr.columnName = a
+    }
+  }
+
+  private def _dsl_text(s: String): Option[String] = {
+    if (UString.isNull(s)) None
+    else Some(s)
   }
 
   private def _dsl_type(otype: SMMObjectType): SAttributeType = {
