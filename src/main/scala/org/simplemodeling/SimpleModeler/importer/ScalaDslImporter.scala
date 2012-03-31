@@ -18,7 +18,7 @@ import com.asamioffice.goldenport.text.UString
 /*
  * @since   Oct. 31, 2008
  *  version Dec. 11, 2011
- * @version Mar. 17, 2012
+ * @version Mar. 31, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
@@ -157,6 +157,8 @@ object ScalaDslImporter extends GImporterClass {
       case "android" => Some(true)
       case "g3"      => Some(true)
       case "diagram" => Some(true)
+      case "extjs" => Some(true)
+      case "play" => Some(true)
       case _         => None
     }
   }
