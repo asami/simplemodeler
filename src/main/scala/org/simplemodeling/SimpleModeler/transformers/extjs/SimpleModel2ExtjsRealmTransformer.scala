@@ -23,7 +23,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /*
  * @since   Mar. 31, 2011
- * @version Mar. 31, 2012
+ * @version Apr.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -39,9 +39,10 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
     new ExtjsBuilder 
   }
 
-//  override protected def make_Phases(): List[TransformerPhase] = {
+  override protected def make_Phases(): List[TransformerPhase] = {
 //    List(new ExtjsBuilder2(), new ExtjsResolve(), new ExtjsMakeCrud())
-//  }
+    List(new ExtjsResolve(), new ExtjsMakeCrud())
+  }
 
   override protected def make_Project() {
 /*

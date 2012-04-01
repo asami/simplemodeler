@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *
  *  since   Dec. 11, 2011
  * @since   Feb. 27, 2012
- * @version Mar. 21, 2012
+ * @version Apr.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, val outline: OutlineEntityBase) extends Recordable {
@@ -56,16 +56,21 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   protected def create_object_table(kind: ElementKind, table: GTable[String]) = {
-    _table_builder.createObjects(kind, table)
+    val objs = _table_builder.createObjects(kind, table)
+    objs.foreach(_adjust_object)
   }
 
   private def _build_object(source: TopicNode, target: SMMEntityEntity) {
+    _build_object_common(source, target)
+    _adjust_object(target)
+  }
+
+  private def _adjust_object(target: SMMEntityEntity) {
     if (target.isDerived) {
       model_Builder.makeAttributesForDerivedObject(target)
     } else {
       model_Builder.makeAttributesForBaseObject(target)
     }
-    _build_object_common(source, target)
   }
 
   private def _build_rule(source: TopicNode, target: SMMEntityEntity) {

@@ -11,7 +11,8 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
 
 /*
  * @since   Apr. 22, 2011
- * @version Jul. 25, 2011
+ *  version Jul. 25, 2011
+ * @version Apr.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -478,7 +479,7 @@ class PValueType(val name: String, val packageName: String) extends PObjectType(
 
   private var _value: PValueEntity = _
   def value: PValueEntity = {
-    require(_value != null)
+    require(_value != null, "PValueType " + name + " should be resolved a reference to the value entity.")
     _value
   }
   def value_=(aValue: PValueEntity) = _value = aValue
@@ -497,7 +498,7 @@ class PDocumentType(val name: String, val packageName: String) extends PObjectTy
 
   private var _document: PDocumentEntity = _
   def document: PDocumentEntity = {
-    require(_document != null)
+    require(_document != null, "PDocumentType " + name + " should be resolved a reference to the value entity.")
     _document
   }
   def document_=(aDocument: PDocumentEntity) = _document = aDocument

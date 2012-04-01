@@ -786,7 +786,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     for (attr <- attributes) {
       attr.attributeType match {
         case t: SMMValueIdType => {
-          entity.attribute_id.attributeType = _dsl_type(t)
+//          entity.attribute_id.attributeType = _dsl_type(t)
           _build_attribute(entity.attribute_id, attr)
         }
         case _ => {

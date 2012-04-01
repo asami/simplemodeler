@@ -3,7 +3,8 @@ package org.simplemodeling.SimpleModeler.entities
 /*
  * @since   Jul.  9, 2011
  *  version Aug.  7, 2011
- * @version Dec. 13, 2011
+ *  version Dec. 13, 2011
+ * @version Apr.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 class EntityJavaClassDefinition(
@@ -12,6 +13,7 @@ class EntityJavaClassDefinition(
   pobject: PObjectEntity
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
   isData = true
+  useDocument = true
 
   override protected def attribute(attr: PAttribute) = {
     new EntityJavaClassAttributeDefinition(pContext, aspects, attr, this, jm_maker)
