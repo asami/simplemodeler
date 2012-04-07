@@ -13,7 +13,7 @@ import org.smartdox._
 /**
  * Nov. 6, 2011 (derived from MindmapModelingXMind)
  * @since   Nov. 30, 2011 
- * @version Mar. 17, 2012
+ * @version Apr.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class MindmapModelingOutliner(val outline: OutlineEntityBase) {
@@ -29,7 +29,7 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
     val r = List(boi("登場人物"), thema.some).flatten.flatMap {
       _structure_node_tables(_, "登場人物")
     }
-    println(r)
+//    println(r)
     r
   }
 
@@ -195,7 +195,7 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
   private def _structure_node_tables(node: OutlineNode, names: List[String]): List[GTable[String]] = {
     val candidates: List[String] = names.flatMap(n => List(n, n + "一覧")) 
     def isaccept(t: Table): Boolean = {
-      println(t.caption + "/" + candidates)
+//      println(t.caption + "/" + candidates)
       t.caption.map(c => candidates.contains(c.toText())) | false
     }
     val t = node.doc.tree

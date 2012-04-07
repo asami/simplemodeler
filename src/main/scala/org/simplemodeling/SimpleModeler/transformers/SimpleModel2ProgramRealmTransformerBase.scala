@@ -20,18 +20,14 @@ import com.asamioffice.goldenport.io.UIO
 import com.asamioffice.goldenport.util.MultiValueMap
 import org.goldenport.recorder.Recordable
 
-/*
- * @since   Apr. 18, 2011
- *  version Dec. 14, 2011
- * @version Apr.  7, 2012
+/**
+ * Derived from SimpleModel2JavaRealmTransformerBase (Feb. 3, 2011)
+ * 
+ * @since   Apr.  7, 2012
+ * @version Apr.  8, 2012
  * @author  ASAMI, Tomoharu
  */
-abstract class SimpleModel2JavaRealmTransformerBase0(
-  simpleModel: SimpleModelEntity, serviceContext: GServiceContext
-) extends SimpleModel2ProgramRealmTransformerBase(simpleModel, serviceContext) {
-}
-
-abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
+abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
     ) extends Recordable {
   type EntityContextTYPE <: PEntityContext
   type TargetRealmTYPE <: PRealmEntity
@@ -39,7 +35,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
   val target_context: EntityContextTYPE
   val target_realm: TargetRealmTYPE
 
-  var javaSrcDir = "/src"
+  var srcMainDir = "/src"
   var scriptSrcDir= ""
   var isMakeProject = true
 
@@ -67,6 +63,18 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
   }
 
   protected def make_Project() {
+  }
+
+  protected def make_PackageName(obj: SMObject): String = {
+    obj.packageName
+  }
+
+  protected def make_Pathname(obj: PObjectEntity): String = {
+    srcMainDir + UJavaString.packageName2pathname(obj.packageName) + "/" + obj.name + "." + obj.fileSuffix
+  }
+
+  protected def make_Pathname(qname: String): String = {
+    srcMainDir + UJavaString.className2pathname(qname) + ".java"
   }
 
   abstract class BuilderBase extends GTreeVisitor[SMElement] { 
@@ -437,7 +445,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
       obj.term_ja = modelObject.term_ja
       obj.termName = target_context.termName(modelObject)
       obj.termNameBase = target_context.objectNameBase(modelObject)
-      obj.packageName = modelObject.packageName
+      obj.packageName = make_PackageName(modelObject)
       obj.xmlNamespace = modelObject.xmlNamespace
       obj.modelObject = modelObject
       modelObject.getBaseObject match { // XXX doc
@@ -447,7 +455,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
         case None => {}
       }
       build_properties(obj, modelObject)
-      val pathname = javaSrcDir + UJavaString.packageName2pathname(obj.packageName) + "/" + obj.name + "." + obj.fileSuffix
+      val pathname = make_Pathname(obj)
       target_realm.setEntity(pathname, obj)
       obj
     }
@@ -459,7 +467,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
       obj.term_ja = modelObject.term_ja
       obj.termName = target_context.termName(modelObject)
       obj.termNameBase = target_context.objectNameBase(modelObject)
-      obj.packageName = modelObject.packageName
+      obj.packageName = make_PackageName(modelObject)
       obj.xmlNamespace = modelObject.xmlNamespace
       obj.modelObject = modelObject
       modelObject.getBaseObject match {
@@ -469,7 +477,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
         case None => {}
       }
       build_properties(obj, modelObject)
-      val pathname = javaSrcDir + UJavaString.packageName2pathname(obj.packageName) + "/" + obj.name + "." + obj.fileSuffix
+      val pathname = make_Pathname(obj)
       target_realm.setEntity(pathname, obj)
       obj
     }
@@ -596,7 +604,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
       obj.xmlNamespace = modelPackage.xmlNamespace
 //      obj.modelObject = modelPackage
 //      build_properties(obj, modelPackage)
-      val pathname = javaSrcDir + UJavaString.packageName2pathname(obj.packageName) + "/" + obj.name + "." + obj.fileSuffix
+      val pathname = make_Pathname(obj)
       target_realm.setEntity(pathname, obj)
       obj
     }
@@ -656,7 +664,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
       obj.xmlNamespace = entity.xmlNamespace
 //      obj.modelObject = modelPackage
 //      build_properties(obj, modelPackage)
-      val pathname = javaSrcDir + UJavaString.packageName2pathname(obj.packageName) + "/" + obj.name + "." + obj.fileSuffix
+      val pathname = make_Pathname(obj)
       target_realm.setEntity(pathname, obj)
       obj
     }
@@ -675,7 +683,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
       obj.xmlNamespace = modelPackage.xmlNamespace
 //      obj.modelObject = modelPackage
 //      build_properties(obj, modelPackage)
-      val pathname = javaSrcDir + UJavaString.packageName2pathname(obj.packageName) + "/" + obj.name + "." + obj.fileSuffix
+      val pathname = make_Pathname(obj)
       target_realm.setEntity(pathname, obj)
       obj
     }
@@ -684,7 +692,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
   // XXX unify ResolveTransformerPhase methods with TransformerPhase methods
   abstract class ResolvePhase extends TransformerPhase {
     def findObject(aQName: String): Option[PObjectEntity] = {
-      target_realm.getNode(javaSrcDir + UJavaString.className2pathname(aQName) + ".java") match {
+      target_realm.getNode(make_Pathname(aQName)) match {
         case Some(node) => node.entity.asInstanceOf[Some[PObjectEntity]]
         case None => None
       }
@@ -699,7 +707,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
     }
 
     def findEntity(aQName: String): Option[PEntityEntity] = {
-      target_realm.getNode(javaSrcDir + UJavaString.className2pathname(aQName) + ".java") match {
+      target_realm.getNode(make_Pathname(aQName)) match {
         case Some(node) => node.entity.asInstanceOf[Some[PEntityEntity]]
         case None => None
       }
@@ -714,7 +722,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
     }
 
     def findPart(aQName: String): Option[PEntityPartEntity] = {
-      target_realm.getNode(javaSrcDir + UJavaString.className2pathname(aQName) + ".java") match {
+      target_realm.getNode(make_Pathname(aQName)) match {
         case Some(node) => node.entity.asInstanceOf[Some[PEntityPartEntity]]
         case None => None
       }
@@ -729,7 +737,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
     }
 
     def findPowertype(aQName: String): Option[PPowertypeEntity] = {
-      target_realm.getNode(javaSrcDir + UJavaString.className2pathname(aQName) + ".java") match {
+      target_realm.getNode(make_Pathname(aQName)) match {
         case Some(node) => node.entity.asInstanceOf[Some[PPowertypeEntity]]
         case None => None
       }
@@ -744,7 +752,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
     }
 
     def findDocument(aQName: String): Option[PDocumentEntity] = {
-      target_realm.getNode(javaSrcDir + UJavaString.className2pathname(aQName) + ".java") match {
+      target_realm.getNode(make_Pathname(aQName)) match {
         case Some(node) => node.entity.asInstanceOf[Some[PDocumentEntity]]
         case None => None
       }
@@ -759,7 +767,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
     }
 
     def findValue(aQName: String): Option[PValueEntity] = {
-      target_realm.getNode(javaSrcDir + UJavaString.className2pathname(aQName) + ".java") match {
+      target_realm.getNode(make_Pathname(aQName)) match {
         case Some(node) => node.entity.asInstanceOf[Some[PValueEntity]]
         case None => None
       }

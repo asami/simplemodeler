@@ -8,7 +8,7 @@ import org.simplemodeling.SimpleModeler.entity.domain._
 import org.simplemodeling.SimpleModeler.entity.requirement._
 import org.simplemodeling.SimpleModeler.entities._
 import org.simplemodeling.SimpleModeler.entities.extjs._
-import org.simplemodeling.SimpleModeler.transformers.SimpleModel2JavaRealmTransformerBase
+import org.simplemodeling.SimpleModeler.transformers.SimpleModel2ProgramRealmTransformerBase
 import org.goldenport.value._
 import org.goldenport.service.GServiceContext
 import org.goldenport.entity._
@@ -23,10 +23,10 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /*
  * @since   Mar. 31, 2011
- * @version Apr.  1, 2012
+ * @version Apr.  8, 2012
  * @author  ASAMI, Tomoharu
  */
-class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
+class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
   type EntityContextTYPE = ExtjsEntityContext
   type TargetRealmTYPE = ExtjsRealmEntity
 

@@ -18,7 +18,8 @@ import org.simplemodeling.SimpleModeler.builder._
 /*
  * @since   Feb.  3, 2009
  *  version Nov. 13, 2010
- * @version Feb. 24, 2012
+ *  version Feb. 24, 2012
+ * @version Apr.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class CsvXMindConverter(val policy: Policy, val packageName: String, val csv: CsvEntity, val projectName: String) {
@@ -79,7 +80,7 @@ class CsvXMindConverter1(policy: Policy, packageName: String, csv: CsvEntity, va
     build_model
     simplemodel.build
     val tree = simplemodel.ztree
-    println(tree.drawTree)
+//    println(tree.drawTree)
     for (n <- tree.flatten) {
       n.content match {
         case ec: EntityContent => _build_entity(ec.entity)
@@ -97,7 +98,7 @@ class CsvXMindConverter1(policy: Policy, packageName: String, csv: CsvEntity, va
   }
 
   private def _build_entity(entity: SMMEntityEntity) {
-    println("build = " + entity)    
+//    println("build = " + entity)    
     entity.kind match {
       case ActorKind => _build_actor(entity)
       case ResourceKind => _build_resource(entity)

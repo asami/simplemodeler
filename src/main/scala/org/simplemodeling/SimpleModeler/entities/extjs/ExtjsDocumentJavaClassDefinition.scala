@@ -12,7 +12,8 @@ import org.simplemodeling.dsl.datatype.ext._
 
 /**
  * @since   Mar. 31, 2012
- * @version Mar. 31, 2012
+ *  version Mar. 31, 2012
+ * @version Apr.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class ExtjsDocumentJavaClassDefinition(
@@ -665,7 +666,8 @@ public static final Parcelable.Creator<%classname%> CREATOR = new Parcelable.Cre
   }
 
   protected def entry_attr(names: String*): Option[GenericClassAttributeDefinition] = {
-    attributeDefinitions.find(attr => { println(names + "," + attr.attrName);names.contains(attr.attrName) } )
+//    attributeDefinitions.find(attr => { println(names + "," + attr.attrName);names.contains(attr.attrName) } )
+    attributeDefinitions.find(attr => { names.contains(attr.attrName) } )
   }
 
   private def _prop_return(attr: GenericClassAttributeDefinition) {
