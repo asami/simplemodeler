@@ -8,10 +8,32 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Mar. 31, 2012
- * @version Mar. 31, 2012
+ * @version Apr.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 class ExtjsEntityEntity(aContext: ExtjsEntityContext) extends ExtjsObjectEntity(aContext) with PEntityEntity {
+/*
+Ext.define('App1.model.Account', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'sectionname'},
+        {name: 'produceamount',  type: 'long'},
+        {name: 'loadship',  type: 'long'},
+        {name: 'productship',  type: 'long'},
+        {name: 'internalconvert',  type: 'long'},
+        {name: 'sumofinputcost',  type: 'long'},
+        {name: 'laborexpense',  type: 'long'},
+        {name: 'expense',  type: 'long'},
+        {name: 'sumofcausecost',  type: 'long'},
+        {name: 'initialstock',  type: 'long'},
+        {name: 'endstock',  type: 'long'},
+        {name: 'stockinprocess',  type: 'long'},
+        {name: 'shipinprocess',  type: 'long'},
+        {name: 'sumofcost',  type: 'long'},
+        {name: 'costratio', type: 'float'}
+    ]
+});
+*/
   override protected def write_Content(out: BufferedWriter) {
     val klass = new ExtjsEntityJavaClassDefinition(aContext, Nil, ExtjsEntityEntity.this)
     klass.build()

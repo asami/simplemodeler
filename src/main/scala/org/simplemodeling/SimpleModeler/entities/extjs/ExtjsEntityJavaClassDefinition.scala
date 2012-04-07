@@ -12,9 +12,10 @@ import org.simplemodeling.dsl.datatype.ext._
 
 /**
  * @since   Mar. 31, 2012
- * @version Mar. 31, 2012
+ * @version Apr.  4, 2012
  * @author  ASAMI, Tomoharu
  */
+@Deprecated
 class ExtjsEntityJavaClassDefinition(
   pContext: PEntityContext,     
   aspects: Seq[JavaAspect],
