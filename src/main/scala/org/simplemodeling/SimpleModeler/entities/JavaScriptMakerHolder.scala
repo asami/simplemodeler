@@ -4,7 +4,7 @@ import com.asamioffice.goldenport.text.JavaScriptTextMaker
 
 /*
  * @since   Apr.  4, 2012
- * @version Apr.  6, 2012
+ * @version Apr.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaScriptMakerHolder {
@@ -23,7 +23,7 @@ trait JavaScriptMakerHolder {
   }
 
   protected def jm_open(m: JavaScriptTextMaker, aspects: Seq[JavaScriptAspect]) {
-    require (m != null)
+    require (m != null, "JavaScriptTextMaker should be not null")
     _maker = m;
     aspects.foreach(_.open(_maker))
   }

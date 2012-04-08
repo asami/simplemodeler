@@ -7,8 +7,8 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Mar. 31, 2012
- * @version Mar. 31, 2012
+ * @version Apr.  8, 2012
  * @author  ASAMI, Tomoharu
  */
-class ExtjsPowertypeEntity(val extjsContext: ExtjsEntityContext) extends JavaObjectEntityBase(extjsContext) with PPowertypeEntity {
+class ExtjsPowertypeEntity(extjsContext: ExtjsEntityContext) extends ExtjsObjectEntity(extjsContext) with PPowertypeEntity {
 }

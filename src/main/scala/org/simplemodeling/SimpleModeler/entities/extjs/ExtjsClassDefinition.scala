@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr.  4, 2012
- * @version Apr.  7, 2012
+ * @version Apr.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class ExtjsClassDefinition(

@@ -34,6 +34,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
   val target_context: EntityContextTYPE
   val target_realm: TargetRealmTYPE
+  val defaultFileSuffix: String
 
   var srcMainDir = "/src"
   var scriptSrcDir= ""
@@ -74,7 +75,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
   }
 
   protected def make_Pathname(qname: String): String = {
-    srcMainDir + UJavaString.className2pathname(qname) + ".java"
+    srcMainDir + UJavaString.className2pathname(qname) + "." + defaultFileSuffix
   }
 
   abstract class BuilderBase extends GTreeVisitor[SMElement] { 

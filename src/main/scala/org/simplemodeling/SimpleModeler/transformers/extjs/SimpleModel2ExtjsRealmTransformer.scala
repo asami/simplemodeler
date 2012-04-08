@@ -30,6 +30,7 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
   type EntityContextTYPE = ExtjsEntityContext
   type TargetRealmTYPE = ExtjsRealmEntity
 
+  override val defaultFileSuffix = "js"
   override val target_context = new ExtjsEntityContext(sm.entityContext, sctx)
   override val target_realm = new ExtjsRealmEntity(target_context)  
 

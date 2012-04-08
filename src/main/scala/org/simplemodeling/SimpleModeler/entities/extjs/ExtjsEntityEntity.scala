@@ -8,7 +8,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Mar. 31, 2012
- * @version Apr.  4, 2012
+ * @version Apr.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class ExtjsEntityEntity(aContext: ExtjsEntityContext) extends ExtjsObjectEntity(aContext) with PEntityEntity {
@@ -35,7 +35,7 @@ Ext.define('App1.model.Account', {
 });
 */
   override protected def write_Content(out: BufferedWriter) {
-    val klass = new ExtjsEntityJavaClassDefinition(aContext, Nil, ExtjsEntityEntity.this)
+    val klass = new ExtjsClassDefinition(aContext, Nil, ExtjsEntityEntity.this)
     klass.build()
     out.append(klass.toText)
     out.flush

@@ -10,7 +10,7 @@ import java.util.TimeZone
 
 /**
  * @since   Apr.  4, 2012
- * @version Apr.  7, 2012
+ * @version Apr.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class ExtjsClassAttributeDefinition(
@@ -18,10 +18,10 @@ class ExtjsClassAttributeDefinition(
   aspects: Seq[ExtjsAspect],
   attr: PAttribute,
   owner: ExtjsClassDefinition,
-  jmaker: ExtjsTextMaker) extends GenericClassAttributeDefinition(pContext, aspects, attr, owner) with ExtjsMakerHolder {
+  maker: ExtjsTextMaker) extends GenericClassAttributeDefinition(pContext, aspects, attr, owner) with ExtjsMakerHolder {
   type ATTR_DEF = ExtjsClassAttributeDefinition
 
-  ej_open(ejmaker, aspects)
+  ej_open(maker, aspects)
 
   override protected def head_imports_Extension {
     jm_import("org.json.*")

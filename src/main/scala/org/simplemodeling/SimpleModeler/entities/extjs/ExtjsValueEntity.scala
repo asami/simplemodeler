@@ -8,10 +8,10 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Mar. 31, 2012
- * @version Mar. 31, 2012
+ * @version Apr.  8, 2012
  * @author  ASAMI, Tomoharu
  */
-class ExtjsValueEntity(val extjsContext: ExtjsEntityContext) extends JavaObjectEntityBase(extjsContext) with PValueEntity {
+class ExtjsValueEntity(extjsContext: ExtjsEntityContext) extends ExtjsObjectEntity(extjsContext) with PValueEntity {
   override protected def write_Content(out: BufferedWriter) {
     val klass = new ValueJavaClassDefinition(extjsContext, Nil, ExtjsValueEntity.this)
     klass.build()
