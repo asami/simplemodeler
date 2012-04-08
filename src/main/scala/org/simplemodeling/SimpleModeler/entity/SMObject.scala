@@ -10,7 +10,8 @@ import com.asamioffice.goldenport.text.UPathString
 /*
  * @since   Sep. 13, 2008
  *  version Jul. 13, 2011
- * @version Feb.  7, 2012
+ *  version Feb.  7, 2012
+ * @version Apr.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
@@ -255,11 +256,12 @@ object SMObject {
       case id: domain.SMDomainValueId => {
         id.attributes.headOption flatMap { m2 =>
           m2.attributeType.typeObject match {
-            case d: SMDatatype => Some(d)
+            case dt: SMDatatype => Some(dt)
             case _ => None
           }
         }
       }
+      case dt: SMDatatype => Some(dt)
       case _ => None
     }
   }
