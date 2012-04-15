@@ -7,14 +7,27 @@ import org.goldenport.service.GServiceContext
 import com.asamioffice.goldenport.text.{UString, UJavaString}
 
 // derived from GaejEntityContext since Apr. 11, 2009
-/*
+/**
  * @since   Apr. 18, 2011
- * @version Aug. 26, 2011
+ *  version Aug. 26, 2011
+ * @version Apr. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) {
   final def simplemodelerVersion = serviceContext.parameter[String](Application_Version)
   final def simplemodelerBuild = serviceContext.parameter[String](Application_Version_Build)
+
+  def applicationName(po: PObjectEntity): String = {
+    applicationName(po.packageName)
+  }
+
+  def applicationName(pkg: SMPackage): String = {
+    applicationName(pkg.name)
+  }
+
+  def applicationName(pkgname: String): String = {
+    _make_object_name(pkgname)
+  }
 
   def contextName(po: PObjectEntity): String = {
     po.modelPackage match {

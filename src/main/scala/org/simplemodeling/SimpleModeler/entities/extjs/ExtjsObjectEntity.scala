@@ -7,8 +7,9 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Mar. 31, 2012
- * @version Apr.  8, 2012
+ * @version Apr. 15, 2012
  * @author  ASAMI, Tomoharu
  */
-class ExtjsObjectEntity(val extjsContext: ExtjsEntityContext) extends JavaScriptObjectEntityBase(extjsContext) {
+abstract class ExtjsObjectEntity(val extjsContext: ExtjsEntityContext) extends JavaScriptObjectEntityBase(extjsContext) {
+  val kind: String
 }

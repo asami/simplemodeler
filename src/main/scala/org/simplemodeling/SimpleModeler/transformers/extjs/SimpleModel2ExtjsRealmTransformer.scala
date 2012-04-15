@@ -23,7 +23,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /*
  * @since   Mar. 31, 2011
- * @version Apr.  8, 2012
+ * @version Apr. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
@@ -33,6 +33,9 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
   override val defaultFileSuffix = "js"
   override val target_context = new ExtjsEntityContext(sm.entityContext, sctx)
   override val target_realm = new ExtjsRealmEntity(target_context)  
+  useEntityDocument = false
+  useValue = false
+  usePowertype = false
 
   def toExtjsRealm() = transform
 
@@ -84,6 +87,7 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
       }
     }
 */
+/*
     override protected def create_Actor(entity: SMDomainActor): DomainActorTYPE = {
       new ExtjsEntityEntity(target_context)
     }
@@ -103,11 +107,19 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
     override protected def create_Summary(entity: SMDomainSummary): DomainSummaryTYPE = {
       new ExtjsEntityEntity(target_context)
     }
-
+*/
     override protected def create_Entity(entity: SMDomainEntity): DomainEntityTYPE = {
       new ExtjsEntityEntity(target_context)
     }
 
+    override protected def make_Entities(entity: SMDomainEntity): List[PObjectEntity] = {
+      List(new ExtjsEntityGridEntity(target_context),
+          new ExtjsEntityViewFormEntity(target_context),
+          new ExtjsEntityEditFormEntity(target_context),
+          new ExtjsEntityStoreEntity(target_context),
+          new ExtjsEntityControllerEntity(target_context))
+    }
+ 
     override protected def create_Entity_Part(entity: SMDomainEntityPart): DomainEntityPartTYPE = {
       new ExtjsEntityPartEntity(target_context)
     }
@@ -131,6 +143,24 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
     }
 
     // platform specific models
+    override protected def create_Controller(): Option[PControllerEntity] = {
+      Some(new ExtjsMainControllerEntity(target_context))
+    }
+
+    override protected def create_View(): Option[PViewEntity] = {
+      Some(new ExtjsViewportEntity(target_context))
+    }
+/*
+    Main Controller
+    Entity specific controller
+    Entity specific view
+        - grid
+        - form view
+        - form edit
+    Entity specific store
+    Entity model [done]
+    Entity list navigation
+*/
 /*
     override protected def create_Agent(): Option[PAgentEntity] = {
       Some(new ExtjsAgentEntity(target_context))

@@ -6,16 +6,16 @@ import org.goldenport.entity.datasource.GDataSource
 import org.goldenport.entity.GEntityContext
 import org.simplemodeling.SimpleModeler.entities._
 
-/*
- * @since   Mar. 31, 2012
+/**
+ * @since   Apr. 14, 2012
  * @version Apr. 15, 2012
  * @author  ASAMI, Tomoharu
  */
-class ExtjsEntityEntity(aContext: ExtjsEntityContext) extends ExtjsObjectEntity(aContext) with PEntityEntity {
-  val kind = "model"
+class ExtjsEntityGridEntity(aContext: ExtjsEntityContext) extends ExtjsObjectEntity(aContext) {
+  val kind = "view"
 
   override protected def write_Content(out: BufferedWriter) {
-    val klass = new ModelExtjsClassDefinition(aContext, Nil, ExtjsEntityEntity.this)
+    val klass = new GridExtjsClassDefinition(aContext, Nil, ExtjsEntityGridEntity.this)
     klass.build()
     out.append(klass.toText)
     out.flush

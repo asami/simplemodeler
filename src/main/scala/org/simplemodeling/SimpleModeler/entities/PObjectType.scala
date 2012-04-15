@@ -12,7 +12,7 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
 /*
  * @since   Apr. 22, 2011
  *  version Jul. 25, 2011
- * @version Apr.  1, 2012
+ * @version Apr. 11, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -362,7 +362,7 @@ object PUserType extends PUserType
 
 class PBlobType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) {
   override def objectTypeName = "Blob" // com.google.appengine.api.datastore.Blob
-  override def xmlDatatypeName = "base64Binary"
+  override def xmlDatatypeName = "base64Binary" // hexBinary ??
 
   def this() = this(null)
 }

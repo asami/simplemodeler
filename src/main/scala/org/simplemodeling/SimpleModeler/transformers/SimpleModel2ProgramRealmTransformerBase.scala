@@ -24,7 +24,7 @@ import org.goldenport.recorder.Recordable
  * Derived from SimpleModel2JavaRealmTransformerBase (Feb. 3, 2011)
  * 
  * @since   Apr.  7, 2012
- * @version Apr.  8, 2012
+ * @version Apr. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -38,6 +38,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
   var srcMainDir = "/src"
   var scriptSrcDir= ""
+  var useEntityDocument = true
+  var useValue = true
+  var usePowertype = true
   var isMakeProject = true
 
   setup_FowardingRecorder(serviceContext)
@@ -129,103 +132,138 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     protected def transform_Actor(actor: SMDomainActor): DomainActorTYPE = {
       val obj = create_Actor(actor)
       build_entity(obj, actor)
+      make_Actors(actor).foreach(store_object)
       obj
     }
 
     protected def create_Actor(entity: SMDomainActor): DomainActorTYPE = {
-      // new PEntityEntity(target_context)
-      throw new UnsupportedOperationException
+      create_Entity(entity)
     }
+
+    protected def make_Actors(entity: SMDomainActor): List[PObjectEntity] = Nil
 
     protected def transform_Resource(resource: SMDomainResource): DomainResourceTYPE = {
       val obj = create_Resource(resource)
       build_entity(obj, resource)
+      make_Resources(resource).foreach(store_object)
       obj
     }
 
     protected def create_Resource(entity: SMDomainResource): DomainResourceTYPE = {
-//      new PEntityEntity(target_context)
-      throw new UnsupportedOperationException
+      create_Entity(entity)
     }
+
+    protected def make_Resources(entity: SMDomainResource): List[PObjectEntity] = Nil
 
     protected def transform_Event(event: SMDomainEvent): DomainEventTYPE = {
       val obj = create_Event(event)
       build_entity(obj, event)
+      make_Events(event).foreach(store_object)
       obj
     }
 
     protected def create_Event(entity: SMDomainEvent): DomainEventTYPE = {
-//      new PEntityEntity(target_context)
-      throw new UnsupportedOperationException
+      create_Entity(entity)
     }
+
+    protected def make_Events(entity: SMDomainEvent): List[PObjectEntity] = Nil
 
     protected def transform_Role(role: SMDomainRole): DomainRoleTYPE = {
       val obj = create_Role(role)
       build_entity(obj, role)
+      make_Roles(role).foreach(store_object)
       obj
     }
 
-    protected def create_Role(entity: SMDomainRole): DomainRoleTYPE = {
-//      new PEntityEntity(target_context)
-      throw new UnsupportedOperationException
+    protected def create_Role(role: SMDomainRole): DomainRoleTYPE = {
+      create_Entity(role)
     }
+
+    protected def make_Roles(entity: SMDomainRole): List[PObjectEntity] = Nil
 
     protected def transform_Summary(summary: SMDomainSummary): DomainSummaryTYPE = {
       val obj = create_Summary(summary)
       build_entity(obj, summary)
+      make_Summarys(summary).foreach(store_object)
       obj
     }
 
     protected def create_Summary(entity: SMDomainSummary): DomainSummaryTYPE = {
-//      new PEntityEntity(target_context)
-      throw new UnsupportedOperationException
+      create_Entity(entity)
     }
+
+    protected def make_Summarys(entity: SMDomainSummary): List[PObjectEntity] = Nil
 
     protected def transform_Entity(entity: SMDomainEntity): DomainEntityTYPE = {
       val obj = create_Entity(entity)
       build_entity(obj, entity)
+      make_Entities(entity).foreach(store_object)
       obj
     }
 
     protected def create_Entity(entity: SMDomainEntity): DomainEntityTYPE = {
-//      new PEntityEntity(target_context)
       throw new UnsupportedOperationException
     }
+
+    protected def make_Entities(entity: SMDomainEntity): List[PObjectEntity] = Nil
 
     protected def transform_Entity_Part(part: SMDomainEntityPart): DomainEntityPartTYPE = {
       val obj = create_Entity_Part(part)
       build_entity(obj, part)
+      make_Parts(part).foreach(store_object)
       obj
     }
 
     protected def create_Entity_Part(entity: SMDomainEntityPart): DomainEntityPartTYPE = {
-//      new PEntityPartEntity(target_context)
       throw new UnsupportedOperationException
     }
 
-    protected def transform_Powertype(powertype: SMDomainPowertype): DomainPowertypeTYPE = {
+    protected def make_Parts(entity: SMDomainEntityPart): List[PObjectEntity] = Nil
+
+    protected def transform_Powertype(powertype: SMDomainPowertype) {
+      if (!usePowertype) return;
       val obj = create_Powertype(powertype)
       build_object(obj, powertype)
-      obj
+      make_Powertypes(powertype).foreach(store_object)
     }
 
     protected def create_Powertype(entity: SMDomainPowertype): DomainPowertypeTYPE = {
-//      new PPowertypeEntity(target_context)
       throw new UnsupportedOperationException
     }
 
-    protected def transform_Id(id: SMDomainValueId): DomainValueIdTYPE = {
-      transform_Value(id)
+    protected def make_Powertypes(entity: SMDomainPowertype): List[PObjectEntity] = Nil
+
+    protected def transform_Id(id: SMDomainValueId) {
+      if (!useValue) return
+      val obj = create_ValueId(id)
+      build_object(obj, id)
+      make_ValueIds(id).foreach(store_object)
     }
 
-    protected def transform_Name(name: SMDomainValueName): DomainValueNameTYPE = {
-      transform_Value(name)
+    protected def create_ValueId(id: SMDomainValueId): DomainValueTYPE = {
+      create_Value(id)
     }
 
-    private def transform_Value(value: SMDomainValue): DomainValueTYPE = {
+    protected def make_ValueIds(value: SMDomainValueId): List[PObjectEntity] = Nil
+
+    protected def transform_Name(name: SMDomainValueName) {
+      if (!useValue) return
+      val obj = create_ValueName(name)
+      build_object(obj, name)
+      make_ValueNames(name).foreach(store_object)
+    }
+
+    protected def create_ValueName(name: SMDomainValueName): DomainValueTYPE = {
+      create_Value(name)
+    }
+
+    protected def make_ValueNames(entity: SMDomainValueName): List[PObjectEntity] = Nil
+
+    private def transform_Value(value: SMDomainValue) {
+      if (!useValue) return
       val obj = create_Value(value)
       build_object(obj, value)
-      obj
+      make_Values(value).foreach(store_object)
     }
 
     protected def create_Value(entity: SMDomainValue): DomainValueTYPE = {
@@ -233,9 +271,12 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       throw new UnsupportedOperationException
     }
 
+    protected def make_Values(entity: SMDomainValue): List[PObjectEntity] = Nil
+
     private def transform_Document(document: SMDomainDocument): DomainDocumentTYPE = {
       val obj = create_Document(document)
       build_object(obj, document)
+      make_Documents(document).foreach(store_object)
       obj
     }
 
@@ -244,9 +285,12 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       throw new UnsupportedOperationException
     }
 
+    protected def make_Documents(entity: SMDomainDocument): List[PObjectEntity] = Nil
+
     private def transform_Rule(rule: SMDomainRule) {
       val obj = create_Rule(rule)
       build_object(obj, rule)
+      make_Rules(rule).foreach(store_object)
     }
 
     protected def create_Rule(entity: SMDomainRule): PRuleEntity = {
@@ -254,9 +298,12 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       throw new UnsupportedOperationException
     }
 
+    protected def make_Rules(entity: SMDomainRule): List[PObjectEntity] = Nil
+
     private def transform_Service(service: SMDomainService): DomainServiceTYPE = {
       val obj = create_Service(service)
       build_object(obj, service)
+      make_Services(service).foreach(store_object)
       obj
     }
 
@@ -264,6 +311,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 //      new PServiceEntity(target_context)
       throw new UnsupportedOperationException
     }
+
+    protected def make_Services(entity: SMDomainService): List[PObjectEntity] = Nil
 
     protected def transform_Package(pkg: SMPackage) {
       val contextname = target_context.contextName(pkg)
@@ -434,11 +483,13 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 */
     private def build_entity(obj: PEntityObjectEntity, anObject: SMObject) {
       build_object(obj, anObject);
-      obj.documentName = make_entity_document_name(anObject)
-      make_entity_document(obj.documentName, anObject)
+      if (useEntityDocument) {
+        obj.documentName = make_entity_document_name(anObject)
+        make_entity_document(obj.documentName, anObject)
+      }
     }
 
-    private def make_entity_document(docName: String, modelObject: SMObject) {
+    private def make_entity_document(docName: String, modelObject: SMObject) = {
       val obj = create_Document(null)
       obj.name = docName
       obj.term = modelObject.term
@@ -456,12 +507,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         case None => {}
       }
       build_properties(obj, modelObject)
-      val pathname = make_Pathname(obj)
-      target_realm.setEntity(pathname, obj)
-      obj
+      store_object(obj)
     }
 
-    private def build_object(obj: PObjectEntity, modelObject: SMObject) {
+    private def build_object(obj: PObjectEntity, modelObject: SMObject) = {
       obj.name = make_object_name(modelObject.name)
       obj.term = modelObject.term
       obj.term_en = modelObject.term_en
@@ -478,10 +527,16 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         case None => {}
       }
       build_properties(obj, modelObject)
+      store_object(obj)
+    }
+
+    private def store_object(obj: PObjectEntity) = {
+      require (obj != null, "store_object: object should be not null.")
+      require (obj.name != null && obj.name.nonEmpty, "store_object: object name should not be empty.")
       val pathname = make_Pathname(obj)
       target_realm.setEntity(pathname, obj)
       obj
-    }
+    }      
 
     private def build_super(obj: PObjectEntity, anObject: SMObject) {
 //      obj.setBaseClass(new PEntityType(obj.name, obj.packageName))
@@ -831,13 +886,17 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
             partType.part = getPart(partType.qualifiedName)
           }
           case powertypeType: PPowertypeType => {
-            powertypeType.powertype = getPowertype(powertypeType.qualifiedName)
+            if (usePowertype) {
+              powertypeType.powertype = getPowertype(powertypeType.qualifiedName)
+            }
           }
           case documentType: PDocumentType => {
             documentType.document = getDocument(documentType.qualifiedName)
           }
           case valueType: PValueType => {
-            valueType.value = getValue(valueType.qualifiedName)
+            if (useValue) {
+              valueType.value = getValue(valueType.qualifiedName)
+            }
           }
           case _ => //
         }
