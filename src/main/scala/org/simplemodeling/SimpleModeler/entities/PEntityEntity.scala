@@ -12,7 +12,6 @@ import com.asamioffice.goldenport.text.{JavaTextMaker, UString}
 import org.simplemodeling.dsl._
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entities.PUtil._
-import com.asamioffice.goldenport.text.UString.notNull
 
 // derived from GaejEntityEntity since Apr. 10, 2009
 /*

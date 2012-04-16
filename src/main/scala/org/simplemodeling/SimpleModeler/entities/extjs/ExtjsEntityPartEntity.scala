@@ -11,5 +11,5 @@ import org.simplemodeling.SimpleModeler.entities._
  * @author  ASAMI, Tomoharu
  */
 class ExtjsEntityPartEntity(aContext: ExtjsEntityContext) extends ExtjsObjectEntity(aContext) with PEntityPartEntity {
-  val kind = "model"
+  kindName = "model"
 }

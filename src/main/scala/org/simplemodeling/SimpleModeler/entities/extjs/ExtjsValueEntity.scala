@@ -12,7 +12,7 @@ import org.simplemodeling.SimpleModeler.entities._
  * @author  ASAMI, Tomoharu
  */
 class ExtjsValueEntity(extjsContext: ExtjsEntityContext) extends ExtjsObjectEntity(extjsContext) with PValueEntity {
-  val kind = "model"
+  kindName = "model"
 
   override protected def write_Content(out: BufferedWriter) {
     val klass = new ValueJavaClassDefinition(extjsContext, Nil, ExtjsValueEntity.this)

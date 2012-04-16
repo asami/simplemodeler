@@ -12,7 +12,7 @@ import org.simplemodeling.SimpleModeler.entities._
  * @author  ASAMI, Tomoharu
  */
 class ExtjsDocumentEntity(extjsContext: ExtjsEntityContext) extends ExtjsObjectEntity(extjsContext) with PDocumentEntity {
-  val kind = "doc"
+  kindName = "doc"
 
   override protected def write_Content(out: BufferedWriter) {
     val klass = new ExtjsDocumentJavaClassDefinition(extjsContext, Nil, ExtjsDocumentEntity.this)

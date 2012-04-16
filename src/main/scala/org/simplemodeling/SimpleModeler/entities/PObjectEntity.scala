@@ -12,7 +12,8 @@ import org.simplemodeling.dsl._
 /*
  * @since   Apr. 21, 2011
  *  version Aug. 20, 2011
- * @version Dec. 15, 2011
+ *  version Dec. 15, 2011
+ * @version Apr. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -28,6 +29,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   val fileSuffix: String
 
   var packageName = ""
+  var kindName = ""
   var xmlNamespace = ""
   def qualifiedName = if (packageName != "") packageName + "." + name else name
   val attributes = new ArrayBuffer[PAttribute]
@@ -57,8 +59,21 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     _baseObject = new PObjectReferenceType(className, packageName)
   }
 
+  def setKindedBaseObjectType(className: String, packageName: String) {
+    _baseObject = new PObjectReferenceType(className, get_kinded_package_name(packageName))
+  }
+
   def getBaseObjectType = {
     if (_baseObject != null) Some(_baseObject) else None
+  }
+
+  def setKindedPackageName(pkgname: String) {
+    packageName = get_kinded_package_name(pkgname)
+  }
+
+  protected final def get_kinded_package_name(pkgname: String): String = {
+    if (UString.isNull(kindName)) pkgname
+    else pkgname + "." + kindName
   }
 
   lazy val wholeAttributes: List[PAttribute] = {

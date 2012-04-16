@@ -10,7 +10,7 @@ import com.asamioffice.goldenport.text.{UString, UJavaString}
 /**
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
- * @version Apr. 15, 2012
+ * @version Apr. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) {
@@ -103,6 +103,10 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     _make_object_name(pkg.name + "Controller")
   }
 
+  def viewName(pkg: SMPackage) = {
+    _make_object_name(pkg.name + "View")
+  }
+
   def restDriverInterface(pkg: SMPackage) = {
     "I" + _make_object_name(pkg.name + "RestDriver")
   }
@@ -137,7 +141,8 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   private def _make_object_name(name: String): String = {
-    name.capitalize
+//    name.capitalize
+    pascal_case_name(name)
   }
 
   final def sqlName(anObject: PObjectEntity): String = {

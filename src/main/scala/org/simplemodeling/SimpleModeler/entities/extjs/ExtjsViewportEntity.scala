@@ -12,7 +12,7 @@ import org.simplemodeling.SimpleModeler.entities._
  * @author  ASAMI, Tomoharu
  */
 class ExtjsViewportEntity(aContext: ExtjsEntityContext) extends ExtjsObjectEntity(aContext) with PViewEntity {
-  val kind = "view"
+  kindName = "view"
 
   override protected def write_Content(out: BufferedWriter) {
     val klass = new ViewportExtjsClassDefinition(aContext, Nil, ExtjsViewportEntity.this)

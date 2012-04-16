@@ -11,5 +11,5 @@ import org.simplemodeling.SimpleModeler.entities._
  * @author  ASAMI, Tomoharu
  */
 class ExtjsServiceEntity(extjsContext: ExtjsEntityContext) extends ExtjsObjectEntity(extjsContext) with PServiceEntity {
-  val kind = "controller"
+  kindName = "controller"
 }

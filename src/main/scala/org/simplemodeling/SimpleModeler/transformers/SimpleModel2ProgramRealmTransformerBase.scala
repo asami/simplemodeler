@@ -24,7 +24,7 @@ import org.goldenport.recorder.Recordable
  * Derived from SimpleModel2JavaRealmTransformerBase (Feb. 3, 2011)
  * 
  * @since   Apr.  7, 2012
- * @version Apr. 15, 2012
+ * @version Apr. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -74,6 +74,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
   }
 
   protected def make_Pathname(obj: PObjectEntity): String = {
+//    val kind = if (UString.isNull(obj.kindName)) "" else "/" + obj.kindName 
+//    srcMainDir + UJavaString.packageName2pathname(obj.packageName) + kind + "/" + obj.name + "." + obj.fileSuffix
     srcMainDir + UJavaString.packageName2pathname(obj.packageName) + "/" + obj.name + "." + obj.fileSuffix
   }
 
@@ -140,7 +142,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Actors(entity: SMDomainActor): List[PObjectEntity] = Nil
+    protected def make_Actors(entity: SMDomainActor): List[PObjectEntity] = {
+      make_Entities(entity)
+    }
 
     protected def transform_Resource(resource: SMDomainResource): DomainResourceTYPE = {
       val obj = create_Resource(resource)
@@ -153,7 +157,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Resources(entity: SMDomainResource): List[PObjectEntity] = Nil
+    protected def make_Resources(entity: SMDomainResource): List[PObjectEntity] = {
+      make_Entities(entity)
+    }
 
     protected def transform_Event(event: SMDomainEvent): DomainEventTYPE = {
       val obj = create_Event(event)
@@ -166,7 +172,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Events(entity: SMDomainEvent): List[PObjectEntity] = Nil
+    protected def make_Events(entity: SMDomainEvent): List[PObjectEntity] = {
+      make_Entities(entity)
+    }
 
     protected def transform_Role(role: SMDomainRole): DomainRoleTYPE = {
       val obj = create_Role(role)
@@ -179,7 +187,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(role)
     }
 
-    protected def make_Roles(entity: SMDomainRole): List[PObjectEntity] = Nil
+    protected def make_Roles(entity: SMDomainRole): List[PObjectEntity] = {
+      make_Entities(entity)
+    }
 
     protected def transform_Summary(summary: SMDomainSummary): DomainSummaryTYPE = {
       val obj = create_Summary(summary)
@@ -192,7 +202,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Summarys(entity: SMDomainSummary): List[PObjectEntity] = Nil
+    protected def make_Summarys(entity: SMDomainSummary): List[PObjectEntity] = {
+      make_Entities(entity)
+    }
 
     protected def transform_Entity(entity: SMDomainEntity): DomainEntityTYPE = {
       val obj = create_Entity(entity)
@@ -320,6 +332,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       val factoryname = target_context.factoryName(pkg)
       val repositoryname = target_context.repositoryName(pkg)
       val controllername = target_context.controllerName(pkg)
+      val viewname = target_context.viewName(pkg)
       val modelname = target_context.modelName(pkg)
       val errormodelname = target_context.errorModelName(pkg)
       val agentname = target_context.agentName(pkg)
@@ -329,6 +342,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         val context = create_Context()
         val repository = create_Repository()
         val controller = create_Controller()
+        val view = create_View()
         val model = create_Model()
         val errormodel = create_ErrorModel()
         val agent = create_Agent()
@@ -341,6 +355,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         }
         for (c <- controller) {
           build_package(c, pkg, ppkg, controllername)
+        }
+        for (v <- view) {
+          build_package(v, pkg, ppkg, viewname)
         }
         for (m <- model) {
           build_package(m, pkg, ppkg, modelname)
@@ -492,15 +509,15 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     private def make_entity_document(docName: String, modelObject: SMObject) = {
       val obj = create_Document(null)
       obj.name = docName
-      obj.term = modelObject.term
-      obj.term_en = modelObject.term_en
-      obj.term_ja = modelObject.term_ja
-      obj.termName = target_context.termName(modelObject)
-      obj.termNameBase = target_context.objectNameBase(modelObject)
-      obj.packageName = make_PackageName(modelObject)
+      obj.term = modelObject.term // XXX
+      obj.term_en = modelObject.term_en // XXX
+      obj.term_ja = modelObject.term_ja // XXX
+      obj.termName = target_context.termName(modelObject) // XXX
+      obj.termNameBase = target_context.objectNameBase(modelObject) // XXX
+      obj.setKindedPackageName(make_PackageName(modelObject))
       obj.xmlNamespace = modelObject.xmlNamespace
       obj.modelObject = modelObject
-      modelObject.getBaseObject match { // XXX doc
+      modelObject.getBaseObject match { // XXX doc name
         case Some(base) => {
           obj.setBaseObjectType(make_class_name(base), base.packageName)
         }
@@ -517,12 +534,12 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.term_ja = modelObject.term_ja
       obj.termName = target_context.termName(modelObject)
       obj.termNameBase = target_context.objectNameBase(modelObject)
-      obj.packageName = make_PackageName(modelObject)
+      obj.setKindedPackageName(make_PackageName(modelObject))
       obj.xmlNamespace = modelObject.xmlNamespace
       obj.modelObject = modelObject
       modelObject.getBaseObject match {
         case Some(base) => {
-          obj.setBaseObjectType(make_class_name(base), base.packageName)
+          obj.setKindedBaseObjectType(make_class_name(base), base.packageName)
         }
         case None => {}
       }
@@ -531,9 +548,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
 
     private def store_object(obj: PObjectEntity) = {
-      require (obj != null, "store_object: object should be not null.")
-      require (obj.name != null && obj.name.nonEmpty, "store_object: object name should not be empty.")
+      require (obj != null, "store_object: object should be not null: " + obj)
+      require (obj.name != null && obj.name.nonEmpty, "store_object: object name should not be empty:" + obj)
       val pathname = make_Pathname(obj)
+      println("store_object = " + pathname)
       target_realm.setEntity(pathname, obj)
       obj
     }      
@@ -656,7 +674,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.termNameBase = target_context.objectNameBase(modelPackage)
       obj.modelPackage = Some(modelPackage)
       obj.platformPackage = Some(ppkg)
-      obj.packageName = modelPackage.qualifiedName
+      obj.setKindedPackageName(modelPackage.qualifiedName)
       obj.xmlNamespace = modelPackage.xmlNamespace
 //      obj.modelObject = modelPackage
 //      build_properties(obj, modelPackage)
@@ -709,6 +727,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     def transform_Package(pkg: PPackageEntity) {
     }
 
+/*
     protected final def build_entity(obj: PObjectEntity, entity: PEntityEntity, name: String = null) {
       obj.name = if (name != null) name else make_object_name(entity.name)
       obj.term = entity.term
@@ -716,7 +735,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.term_ja = entity.term_ja
       obj.termName = entity.termName
       obj.termNameBase = entity.termNameBase
-      obj.packageName = entity.packageName
+      obj.setKindedPackageName(entity.packageName)
       obj.xmlNamespace = entity.xmlNamespace
 //      obj.modelObject = modelPackage
 //      build_properties(obj, modelPackage)
@@ -743,6 +762,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       target_realm.setEntity(pathname, obj)
       obj
     }
+*/
   }
 
   // XXX unify ResolveTransformerPhase methods with TransformerPhase methods
@@ -772,6 +792,14 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     def getEntity(aQName: String): PEntityEntity = {
       try {
         findEntity(aQName).get
+      } catch {
+        case _ => error("No entity = " + aQName)
+      }
+    }
+
+    def getModelEntity(aQName: String): PEntityEntity = {
+      try {
+        (findEntity(aQName) orElse findEntity(get_kinded_qname("model", aQName))).get
       } catch {
         case _ => error("No entity = " + aQName)
       }
@@ -880,7 +908,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       for (attr <- obj.attributes) {
         attr.attributeType match {
           case entityType: PEntityType => {
-            entityType.entity = getEntity(entityType.qualifiedName)
+            entityType.entity = getModelEntity(entityType.qualifiedName)
           }
           case partType: PEntityPartType => {
             partType.part = getPart(partType.qualifiedName)
@@ -995,5 +1023,13 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       }
     }
     throw new IllegalArgumentException("no name")
+  }
+
+  protected final def get_kinded_qname(kind: String, qname: String): String = {
+    require (kind != null && kind.nonEmpty, "get_kinded_qname: kind should not be empty.")
+    require (kind != null && kind.nonEmpty, "get_kinded_qname: qname should not be empty.")
+    (qname.split("[.]").toList.reverse match {
+      case (x :: xs) => x :: kind :: xs
+    }).reverse.mkString(".")
   }
 }

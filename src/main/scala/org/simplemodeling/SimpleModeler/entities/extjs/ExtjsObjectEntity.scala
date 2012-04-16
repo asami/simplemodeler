@@ -11,5 +11,4 @@ import org.simplemodeling.SimpleModeler.entities._
  * @author  ASAMI, Tomoharu
  */
 abstract class ExtjsObjectEntity(val extjsContext: ExtjsEntityContext) extends JavaScriptObjectEntityBase(extjsContext) {
-  val kind: String
 }

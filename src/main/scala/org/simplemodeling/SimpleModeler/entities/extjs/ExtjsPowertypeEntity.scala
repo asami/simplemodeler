@@ -11,5 +11,5 @@ import org.simplemodeling.SimpleModeler.entities._
  * @author  ASAMI, Tomoharu
  */
 class ExtjsPowertypeEntity(extjsContext: ExtjsEntityContext) extends ExtjsObjectEntity(extjsContext) with PPowertypeEntity {
-  val kind = "model"
+  kindName = "model"
 }

@@ -12,7 +12,7 @@ import org.simplemodeling.SimpleModeler.entities._
  * @author  ASAMI, Tomoharu
  */
 class ExtjsEntityEntity(aContext: ExtjsEntityContext) extends ExtjsObjectEntity(aContext) with PEntityEntity {
-  val kind = "model"
+  kindName = "model"
 
   override protected def write_Content(out: BufferedWriter) {
     val klass = new ModelExtjsClassDefinition(aContext, Nil, ExtjsEntityEntity.this)

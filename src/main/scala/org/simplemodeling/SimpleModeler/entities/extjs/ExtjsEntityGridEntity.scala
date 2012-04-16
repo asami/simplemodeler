@@ -12,7 +12,7 @@ import org.simplemodeling.SimpleModeler.entities._
  * @author  ASAMI, Tomoharu
  */
 class ExtjsEntityGridEntity(aContext: ExtjsEntityContext) extends ExtjsObjectEntity(aContext) {
-  val kind = "view"
+  kindName = "view"
 
   override protected def write_Content(out: BufferedWriter) {
     val klass = new GridExtjsClassDefinition(aContext, Nil, ExtjsEntityGridEntity.this)

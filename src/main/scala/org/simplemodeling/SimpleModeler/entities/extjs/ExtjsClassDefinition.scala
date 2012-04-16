@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr.  4, 2012
- * @version Apr. 15, 2012
+ * @version Apr. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class ExtjsClassDefinition(
@@ -23,9 +23,9 @@ abstract class ExtjsClassDefinition(
 
   require (pobject != null, "ExtjsClassDefinition: extjs object should not be null.")
   require (UString.notNull(extjsobject.name), "ExtjsClassDefinition: ExtjsObjectEntity.name should not be null.")
-  require (UString.notNull(extjsobject.kind), "ExtjsClassDefinition: extjsObjectEntity.kind should not be null.")
+  require (UString.notNull(extjsobject.kindName), "ExtjsClassDefinition: extjsObjectEntity.kindName should not be null.")
   val applicationName: String = extjsContext.applicationName(pobject)
-  val kindName: String = extjsobject.kind
+  val kindName: String = extjsobject.kindName
   var baseName: Option[String] = None // XXX
   var alias: Option[String] = None
 
@@ -70,7 +70,7 @@ abstract class ExtjsClassDefinition(
   }
 
   override protected def class_open_body {
-    jm_pln("Ext.define('%s.%s.%s', {", applicationName, kindName, name)
+    jm_pln("Ext.define('%s', {", qualifiedName)
     jm_indent_up
     for (n <- baseName) {
       jm_pln("extend: '%s',", n)

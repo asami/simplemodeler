@@ -113,11 +113,27 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
     }
 
     override protected def make_Entities(entity: SMDomainEntity): List[PObjectEntity] = {
-      List(new ExtjsEntityGridEntity(target_context),
-          new ExtjsEntityViewFormEntity(target_context),
-          new ExtjsEntityEditFormEntity(target_context),
-          new ExtjsEntityStoreEntity(target_context),
-          new ExtjsEntityControllerEntity(target_context))
+      List(
+        new ExtjsEntityGridEntity(target_context) {
+          name = target_context.entityGridName(entity)
+          setKindedPackageName(entity.packageName)
+        },
+        new ExtjsEntityViewFormEntity(target_context) {
+          name = target_context.entityViewFormName(entity)
+          setKindedPackageName(entity.packageName)
+        },
+        new ExtjsEntityEditFormEntity(target_context) {
+          name = target_context.entityEditFormName(entity)
+          setKindedPackageName(entity.packageName)
+        },
+        new ExtjsEntityStoreEntity(target_context) {
+          name = target_context.entityStoreName(entity)
+          setKindedPackageName(entity.packageName)
+        },
+        new ExtjsEntityControllerEntity(target_context) {
+          name = target_context.entityControllerName(entity)
+          setKindedPackageName(entity.packageName)
+        })
     }
  
     override protected def create_Entity_Part(entity: SMDomainEntityPart): DomainEntityPartTYPE = {

@@ -12,7 +12,7 @@ import org.simplemodeling.SimpleModeler.entities._
  * @author  ASAMI, Tomoharu
  */
 class ExtjsEntityEditFormEntity(aContext: ExtjsEntityContext) extends ExtjsObjectEntity(aContext) {
-  val kind = "view"
+  kindName = "view"
 
   override protected def write_Content(out: BufferedWriter) {
     val klass = new EditFormExtjsClassDefinition(aContext, Nil, ExtjsEntityEditFormEntity.this)
