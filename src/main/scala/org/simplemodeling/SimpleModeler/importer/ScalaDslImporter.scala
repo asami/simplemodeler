@@ -18,7 +18,7 @@ import com.asamioffice.goldenport.text.UString
 /*
  * @since   Oct. 31, 2008
  *  version Dec. 11, 2011
- * @version Mar. 31, 2012
+ * @version Apr. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
@@ -27,7 +27,7 @@ class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
     case None       => Nil
   }
   val packageName = (if (packageNames.isEmpty) "" else packageNames.head) match { // XXX temporary fix for cloud service
-      case "" => "model"
+      case "" => "app"
       case n => n    
   }
   private val _builder_policy: Policy = Policy.create(entityContext, packageName)(
