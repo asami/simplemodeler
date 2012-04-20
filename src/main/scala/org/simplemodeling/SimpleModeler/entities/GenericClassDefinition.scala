@@ -37,7 +37,8 @@ import org.goldenport.recorder.Recordable
  * 
  * @since   Jun.  4, 2011
  *  version Sep. 25, 2011
- * @version Feb. 20, 2012
+ *  version Feb. 20, 2012
+ * @version Apr. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -59,10 +60,10 @@ abstract class GenericClassDefinition(
   val term_en = pobject.term_en
   val term_ja = pobject.term_ja
   // URL (term_name)
-  val termName = pobject.termName
+  val asciiName = pobject.asciiName
   // Class Name base (TermName)
-  val termNameBase = pobject.termNameBase
-  lazy val xmlElementName = termName
+  val classNameBase = pobject.classNameBase
+  lazy val xmlElementName = asciiName
   lazy val contextName = pContext.contextName(packageName)
   lazy val moduleName = pContext.moduleName(packageName)
   lazy val factoryName = pContext.factoryName(packageName)
@@ -776,6 +777,14 @@ abstract class GenericClassDefinition(
    * Utility methods
    */
   protected def pln()
+
+  protected final def label_name() = {
+    pContext.labelName(pobject)
+  }
+
+  protected final def ascii_name() = {
+    pContext.asciiName(pobject)
+  }
 
   //
   final protected def attr_name(attr: PAttribute) = {

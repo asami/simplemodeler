@@ -194,12 +194,12 @@ class SimpleModel2AndroidRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
       restfeedrepository.entityDocumentName = Some(entity.documentName)
       restfeedrepository.driverIfName = Some(driverIfName)
       restfeedrepository.defaultDriverName = Some(g3DriverName)
-      build_entity(restfeedrepository, entity, target_context.className(entity.termNameBase + "RestFeedRepository"))
+      build_entity(restfeedrepository, entity, target_context.className(entity.classNameBase + "RestFeedRepository"))
       val restfeedadapter = new AndroidRestFeedAdapterEntity(target_context)
-      build_entity(restfeedadapter, entity, target_context.className(entity.termNameBase + "RestFeedAdapter"))
+      build_entity(restfeedadapter, entity, target_context.className(entity.classNameBase + "RestFeedAdapter"))
       val restview = new AndroidRestViewActivityEntity(target_context)
       build_entity(restview, entity, target_context.className(
-          entity.termNameBase + "RestViewActivity"))
+          entity.classNameBase + "RestViewActivity"))
     }
 
     override def transform_Package(pkg: PPackageEntity) {

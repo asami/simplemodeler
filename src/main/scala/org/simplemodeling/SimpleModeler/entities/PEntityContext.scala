@@ -10,7 +10,7 @@ import com.asamioffice.goldenport.text.{UString, UJavaString}
 /**
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
- * @version Apr. 16, 2012
+ * @version Apr. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) {
@@ -182,9 +182,17 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     pickup_name(modelElement.term_en, modelElement.term, modelElement.name_en, modelElement.name)
   }
 
+  final def localeName(modelElement: SMElement) = {
+    pickup_name(modelElement.name_ja, modelElement.term_ja, modelElement.name)
+  }
+
+  final def localeTerm(modelElement: SMElement) = {
+    pickup_name(modelElement.term_ja, modelElement.term, modelElement.name_ja, modelElement.name)
+  }
+
   // not base object
   final def entityNameBase(anEntity: PEntityEntity) = {
-    objectNameBase(anEntity.modelObject)
+    classNameBase(anEntity.modelObject)
   }
 
   final def serviceNameBase(aService: PServiceEntity) = {
@@ -197,17 +205,17 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   // not base object
-  final def objectNameBase(anObject: SMObject) = {
+  final def classNameBase(anObject: SMObject) = {
     pascal_case_name(enTerm(anObject))
   }
 
   // not base object
-  final def objectNameBase(pkg: SMPackage) = {
+  final def classNameBase(pkg: SMPackage) = {
     pascal_case_name(enTerm(pkg))
   }
 
   final def entityDocumentName(anObject: SMObject): String = {
-    "DD" + objectNameBase(anObject)
+    "DD" + classNameBase(anObject)
   }
 
   final def entityDocumentName(anObject: PObjectEntity): String = {
@@ -222,11 +230,43 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     pascal_case_name(enName(modelObject))
   }
 
+/*
   final def termName(anObject: PObjectEntity): String = {
     termName(anObject.modelObject)
   }
 
   final def termName(modelElement: SMElement): String = {
+//    underscore_name(enTerm(modelElement))
+    camel_case_name(enTerm(modelElement))
+  }
+*/
+
+  final def labelName(anObject: PObjectEntity): String = {
+    labelName(anObject.modelObject)
+  }
+
+  final def labelName(attr: PAttribute): String = {
+    labelName(attr.modelElement)
+  }
+
+  final def labelName(modelElement: SMElement): String = {
+//    underscore_name(enTerm(modelElement))
+    localeTerm(modelElement)
+  }
+
+  final def dataKey(attr: PAttribute): String = {
+    asciiName(attr)
+  }
+
+  final def asciiName(anObject: PObjectEntity): String = {
+    asciiName(anObject.modelObject)
+  }
+
+  final def asciiName(attr: PAttribute): String = {
+    asciiName(attr.modelElement)
+  }
+
+  final def asciiName(modelElement: SMElement): String = {
 //    underscore_name(enTerm(modelElement))
     camel_case_name(enTerm(modelElement))
   }
@@ -617,7 +657,7 @@ class EntityRepositoryServiceConfiguration(aContext: PEntityContext) extends PSe
   }
 
   override def controllerUrlPathname(anEntity: PEntityEntity): String = {
-    "/" + context.termName(anEntity)
+    "/" + context.asciiName(anEntity)
   }
 
   override def controllerServletName(anEntity: PEntityEntity): String = {
@@ -629,16 +669,16 @@ class EntityRepositoryServiceConfiguration(aContext: PEntityContext) extends PSe
   }
 
   override def controllerServletUrlPatterns(anEntity: PEntityEntity): Seq[String] = {
-    val controller = context.termName(anEntity)
+    val controller = context.asciiName(anEntity)
     Array("/" + controller + "*", "/" + controller + "/*")
   }
 
   override def viewFilePathname(anEntity: PEntityEntity): String = {
-    "/war/view/" + context.termName(anEntity)
+    "/war/view/" + context.asciiName(anEntity)
   }
 
   override def viewUrlPathname(anEntity: PEntityEntity): String = {
-    "/view/" + context.termName(anEntity)
+    "/view/" + context.asciiName(anEntity)
   }
 
   // gwt
@@ -712,7 +752,7 @@ class EventManagementServiceConfiguration(aContext: PEntityContext) extends PSer
   }
 
   override def controllerUrlPathname(anEntity: PEntityEntity): String = {
-    "/" + context.termName(anEntity)
+    "/" + context.asciiName(anEntity)
   }
 
   override def controllerServletName(anEntity: PEntityEntity): String = {
@@ -732,7 +772,7 @@ class EventManagementServiceConfiguration(aContext: PEntityContext) extends PSer
   }
 
   override def viewUrlPathname(anEntity: PEntityEntity): String = {
-    "/view/" + context.termName(anEntity)
+    "/view/" + context.asciiName(anEntity)
   }
 
   //
@@ -805,7 +845,7 @@ class PlainServiceConfiguration(aContext: PEntityContext) extends PServiceConfig
   }
 
   override def controllerUrlPathname(anEntity: PEntityEntity): String = {
-    "/" + context.termName(anEntity)
+    "/" + context.asciiName(anEntity)
   }
 
   override def controllerServletName(anEntity: PEntityEntity): String = {
@@ -825,7 +865,7 @@ class PlainServiceConfiguration(aContext: PEntityContext) extends PServiceConfig
   }
 
   override def viewUrlPathname(anEntity: PEntityEntity): String = {
-    "/view/" + context.termName(anEntity)
+    "/view/" + context.asciiName(anEntity)
   }
 
 /*
@@ -838,7 +878,7 @@ class PlainServiceConfiguration(aContext: PEntityContext) extends PServiceConfig
   }
 
   override def serviceServletUrlPatterns(aService: PServiceEntity): Seq[String] = {
-    val controller = context.termName(aService)
+    val controller = context.asciiName(aService)
     Array("/" + controller + "*", "/" + controller + "/??*")
   }
 */
@@ -861,7 +901,7 @@ class PlainServiceConfiguration(aContext: PEntityContext) extends PServiceConfig
   }
 
   override def gwtServiceServletUrlPatterns(aService: PServiceEntity): Seq[String] = {
-    Array("/" + context.gwtModuleName(aService.packageName) + "/gwt/" + context.termName(aService))
+    Array("/" + context.gwtModuleName(aService.packageName) + "/gwt/" + context.asciiName(aService))
   }
 
   // atom
@@ -882,7 +922,7 @@ class PlainServiceConfiguration(aContext: PEntityContext) extends PServiceConfig
   }
 
   override def atomServiceServletUrlPatterns(aService: PServiceEntity): Seq[String] = {
-    Array("/" + context.atomModuleName(aService.packageName) + "/atom/" + context.termName(aService))
+    Array("/" + context.atomModuleName(aService.packageName) + "/atom/" + context.asciiName(aService))
   }
 
   // rest
@@ -903,6 +943,6 @@ class PlainServiceConfiguration(aContext: PEntityContext) extends PServiceConfig
   }
 
   override def restServiceServletUrlPatterns(aService: PServiceEntity): Seq[String] = {
-    Array("/" + context.restModuleName(aService.packageName) + "/service/" + context.termName(aService) + "/*")
+    Array("/" + context.restModuleName(aService.packageName) + "/service/" + context.asciiName(aService) + "/*")
   }
 }

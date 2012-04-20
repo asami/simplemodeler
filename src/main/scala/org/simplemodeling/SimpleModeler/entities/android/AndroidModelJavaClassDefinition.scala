@@ -26,8 +26,8 @@ class AndroidModelJavaClassDefinition(
   customAttributes += new PAttribute("context", new PObjectReferenceType("Context", "android.os"), true, true)
   customAttributes += new PAttribute("driver", new PObjectReferenceType(driver, packageName), true, true)
 
-  private def _cache_name(entity: PEntityEntity) = entity.termNameBase + "RestFeedRepository";
-  private def _cache_var_name(entity: PEntityEntity) = entity.termName + "_repository"
+  private def _cache_name(entity: PEntityEntity) = entity.classNameBase + "RestFeedRepository";
+  private def _cache_var_name(entity: PEntityEntity) = entity.asciiName + "_repository"
 
   override protected def head_imports_Extension {
     super.head_imports_Extension
@@ -73,8 +73,8 @@ public void close() {
   
   override protected def package_methods_platform_Entity(entity: PEntityEntity) {
     val rep = _cache_var_name(entity)
-    jm_public_method("ListAdapter get%sRestFeedAdapter()", entity.termNameBase) {
-      jm_return("new %sRestFeedAdapter(context, this, %s)", entity.termNameBase, rep); 
+    jm_public_method("ListAdapter get%sRestFeedAdapter()", entity.classNameBase) {
+      jm_return("new %sRestFeedAdapter(context, this, %s)", entity.classNameBase, rep); 
     }
   }
 }

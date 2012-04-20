@@ -10,24 +10,24 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr.  4, 2012
- * @version Apr. 16, 2012
+ * @version Apr. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class ExtjsClassDefinition(
   val extjsContext: ExtjsEntityContext,
   aspects: Seq[ExtjsAspect],
-  extjsobject: ExtjsObjectEntity,
+  val extjsObject: ExtjsObjectEntity,
   maker: ExtjsTextMaker = null
-) extends GenericClassDefinition(extjsContext, aspects, extjsobject) with ExtjsMakerHolder {
+) extends GenericClassDefinition(extjsContext, aspects, extjsObject) with ExtjsMakerHolder {
   type ATTR_DEF = ExtjsClassAttributeDefinition
 
   require (pobject != null, "ExtjsClassDefinition: extjs object should not be null.")
-  require (UString.notNull(extjsobject.name), "ExtjsClassDefinition: ExtjsObjectEntity.name should not be null.")
-  require (UString.notNull(extjsobject.kindName), "ExtjsClassDefinition: extjsObjectEntity.kindName should not be null.")
+  require (UString.notNull(extjsObject.name), "ExtjsClassDefinition: ExtjsObjectEntity.name should not be null.")
+  require (UString.notNull(extjsObject.kindName), "ExtjsClassDefinition: extjsObjectEntity.kindName should not be null.")
   val applicationName: String = extjsContext.applicationName(pobject)
-  val kindName: String = extjsobject.kindName
+  val kindName: String = extjsObject.kindName
   var baseName: Option[String] = None // XXX
-  var alias: Option[String] = None
+  var aliasName: Option[String] = None
 
   if (maker == null) {
     ej_open(aspects)
@@ -43,7 +43,7 @@ abstract class ExtjsClassDefinition(
   }
 
   override protected def attribute(attr: PAttribute): ATTR_DEF = {
-    new ExtjsClassAttributeDefinition(pContext, aspects, attr, this, ejmaker)
+    new NullExtjsClassAttributeDefinition(extjsContext, aspects, attr, this, ejmaker)
   }
 
   override protected def pln() {
@@ -75,7 +75,7 @@ abstract class ExtjsClassDefinition(
     for (n <- baseName) {
       jm_pln("extend: '%s',", n)
     }
-    for (a <- alias) {
+    for (a <- aliasName) {
       jm_pln("alias: '%s',", a)
     }
   }

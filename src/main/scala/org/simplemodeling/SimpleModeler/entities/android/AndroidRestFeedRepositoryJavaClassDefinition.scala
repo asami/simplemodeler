@@ -55,6 +55,6 @@ protected List<GAEntry> load_Data(int start, int count) throws IOException {
     GADocumentFeed<%document%> feed = driver.query%term%(start, count);
     return feed.entries;
 }
-""", Map("%document%" -> entityDocumentName, "%term%" -> pobject.termNameBase))
+""", Map("%document%" -> entityDocumentName, "%term%" -> pobject.classNameBase))
   }
 }

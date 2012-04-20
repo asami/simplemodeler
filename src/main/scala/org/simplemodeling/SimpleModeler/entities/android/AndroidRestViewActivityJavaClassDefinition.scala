@@ -39,7 +39,7 @@ class AndroidRestViewActivityJavaClassDefinition(
   }
 
   override protected def object_auxiliary {
-  val adaptername = "get%sRestFeedAdapter".format(termNameBase)
+  val adaptername = "get%sRestFeedAdapter".format(classNameBase)
   jm_code("""
 // @LayoutView(R.id.header)
 // TextView mHeader;

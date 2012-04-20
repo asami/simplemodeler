@@ -11,34 +11,21 @@ import com.sun.xml.internal.bind.v2.schemagen.xmlschema.AttributeType
 
 /**
  * @since   Apr.  4, 2012
- * @version Apr. 13, 2012
+ * @version Apr. 20, 2012
  * @author  ASAMI, Tomoharu
  */
-class ExtjsClassAttributeDefinition(
-  pContext: PEntityContext,
+abstract class ExtjsClassAttributeDefinition(
+  val extjsContext: ExtjsEntityContext,
   aspects: Seq[ExtjsAspect],
   attr: PAttribute,
   owner: ExtjsClassDefinition,
-  maker: ExtjsTextMaker) extends GenericClassAttributeDefinition(pContext, aspects, attr, owner) with ExtjsMakerHolder {
+  maker: ExtjsTextMaker) extends GenericClassAttributeDefinition(extjsContext, aspects, attr, owner) with ExtjsMakerHolder {
   type ATTR_DEF = ExtjsClassAttributeDefinition
 
   ej_open(maker, aspects)
 
-  override protected def head_imports_Extension {
-  }
-
-  override def constant_property {
-  }
-
-  override protected def variable_plain_Inject_Annotation {
-  }
-
-  override protected def variable_plain_Attribute_Instance_Variable(typename: String, varname: String) {
-    val tname = attr.attributeType(_get_typename)
-    jm_pln("{name: '%s', type:'%s'},", varname, tname)
-  }
-
-  private val _get_typename = new PObjectTypeFunction[String] {
+  //
+  protected val model_typename = new PObjectTypeFunction[String] {
     override protected def apply_AnyURIType(datatype: PAnyURIType): String = {
       handle_xml(datatype)
     }
@@ -264,8 +251,484 @@ class ExtjsClassAttributeDefinition(
     }
   }
 
+  protected val grid_column = new PObjectTypeFunction[List[(Symbol, Any)]] {
+    override protected def apply_AnyURIType(datatype: PAnyURIType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_ByteStringType(datatype: PByteStringType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_BooleanType(datatype: PBooleanType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_ByteType(datatype: PByteType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_DateType(datatype: PDateType): List[(Symbol, Any)] = {
+      handle_fundamental(datatype)
+    }
+
+    override protected def apply_DateTimeType(datatype: PDateTimeType): List[(Symbol, Any)] = {
+      handle_fundamental(datatype)
+    }
+
+    override protected def apply_DecimalType(datatype: PDecimalType): List[(Symbol, Any)] = {
+      handle_fundamental(datatype)
+    }
+
+    override protected def apply_DoubleType(datatype: PDoubleType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_DurationType(datatype: PDurationType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_FloatType(datatype: PFloatType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_GDayType(datatype: PGDayType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_GMonthType(datatype: PGMonthType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_GMonthDayType(datatype: PGMonthDayType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_GYearType(datatype: PGYearType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_GYearMonthType(datatype: PGYearMonthType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_IntType(datatype: PIntType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_IntegerType(datatype: PIntegerType): List[(Symbol, Any)] = {
+      handle_fundamental(datatype)
+    }
+
+    override protected def apply_LanguageType(datatype: PLanguageType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_LongType(datatype: PLongType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_NegativeIntegerType(datatype: PNegativeIntegerType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_NonNegativeIntegerType(datatype: PNonNegativeIntegerType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_NonPositiveIntegerType(datatype: PNonPositiveIntegerType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_PositiveIntegerType(datatype: PPositiveIntegerType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_ShortType(datatype: PShortType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_StringType(datatype: PStringType): List[(Symbol, Any)] = {
+      handle_fundamental(datatype)
+    }
+
+    override protected def apply_TimeType(datatype: PTimeType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_UnsignedByteType(datatype: PUnsignedByteType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_UnsignedIntType(datatype: PUnsignedIntType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_UnsignedLongType(datatype: PUnsignedLongType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_UnsignedShortType(datatype: PUnsignedShortType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_CategoryType(datatype: PCategoryType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_EmailType(datatype: PEmailType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_GeoPtType(datatype: PGeoPtType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_IMType(datatype: PIMType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_LinkType(datatype: PLinkType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_PhoneNumberType(datatype: PPhoneNumberType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_PostalAddressType(datatype: PPostalAddressType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_RatingType(datatype: PRatingType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_TextType(datatype: PTextType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_UserType(datatype: PUserType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_BlobType(datatype: PBlobType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_UrlType(datatype: PUrlType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_MoneyType(datatype: PMoneyType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_ObjectReferenceType(datatype: PObjectReferenceType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def apply_ValueType(datatype: PValueType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def apply_DocumentType(datatype: PDocumentType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def apply_PowertypeType(datatype: PPowertypeType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def apply_EntityType(datatype: PEntityType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def apply_EntityPartType(datatype: PEntityPartType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def apply_GenericType(datatype: PGenericType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def handle_primitive(datatype: PObjectType): List[(Symbol, Any)] = {
+      handle_fundamental(datatype)
+    }
+
+    override protected def handle_fundamental(datatype: PObjectType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def handle_xml(datatype: PObjectType): List[(Symbol, Any)] = {
+      handle_all(datatype)
+    }
+
+    override protected def handle_auxiliary(datatype: PObjectType): List[(Symbol, Any)] = {
+      handle_all(datatype)
+    }
+
+    override protected def handle_model(datatype: PObjectType): List[(Symbol, Any)] = {
+      handle_all(datatype)
+    }
+
+    override protected def handle_all(datatype: PObjectType): List[(Symbol, Any)] = {
+      List('xtype -> "gridcolumn",
+           'text -> label_name,
+           'dataIndex -> data_key)
+    }
+  }
+
+  protected val form_item = new PObjectTypeFunction[List[(Symbol, Any)]] {
+    override protected def apply_AnyURIType(datatype: PAnyURIType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_ByteStringType(datatype: PByteStringType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_BooleanType(datatype: PBooleanType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_ByteType(datatype: PByteType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_DateType(datatype: PDateType): List[(Symbol, Any)] = {
+      handle_fundamental(datatype)
+    }
+
+    override protected def apply_DateTimeType(datatype: PDateTimeType): List[(Symbol, Any)] = {
+      handle_fundamental(datatype)
+    }
+
+    override protected def apply_DecimalType(datatype: PDecimalType): List[(Symbol, Any)] = {
+      handle_fundamental(datatype)
+    }
+
+    override protected def apply_DoubleType(datatype: PDoubleType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_DurationType(datatype: PDurationType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_FloatType(datatype: PFloatType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_GDayType(datatype: PGDayType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_GMonthType(datatype: PGMonthType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_GMonthDayType(datatype: PGMonthDayType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_GYearType(datatype: PGYearType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_GYearMonthType(datatype: PGYearMonthType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_IntType(datatype: PIntType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_IntegerType(datatype: PIntegerType): List[(Symbol, Any)] = {
+      handle_fundamental(datatype)
+    }
+
+    override protected def apply_LanguageType(datatype: PLanguageType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_LongType(datatype: PLongType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_NegativeIntegerType(datatype: PNegativeIntegerType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_NonNegativeIntegerType(datatype: PNonNegativeIntegerType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_NonPositiveIntegerType(datatype: PNonPositiveIntegerType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_PositiveIntegerType(datatype: PPositiveIntegerType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_ShortType(datatype: PShortType): List[(Symbol, Any)] = {
+      handle_primitive(datatype)
+    }
+
+    override protected def apply_StringType(datatype: PStringType): List[(Symbol, Any)] = {
+      handle_fundamental(datatype)
+    }
+
+    override protected def apply_TimeType(datatype: PTimeType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_UnsignedByteType(datatype: PUnsignedByteType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_UnsignedIntType(datatype: PUnsignedIntType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_UnsignedLongType(datatype: PUnsignedLongType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_UnsignedShortType(datatype: PUnsignedShortType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_CategoryType(datatype: PCategoryType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_EmailType(datatype: PEmailType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_GeoPtType(datatype: PGeoPtType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_IMType(datatype: PIMType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_LinkType(datatype: PLinkType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_PhoneNumberType(datatype: PPhoneNumberType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_PostalAddressType(datatype: PPostalAddressType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_RatingType(datatype: PRatingType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_TextType(datatype: PTextType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def apply_UserType(datatype: PUserType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_BlobType(datatype: PBlobType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_UrlType(datatype: PUrlType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_MoneyType(datatype: PMoneyType): List[(Symbol, Any)] = {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_ObjectReferenceType(datatype: PObjectReferenceType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def apply_ValueType(datatype: PValueType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def apply_DocumentType(datatype: PDocumentType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def apply_PowertypeType(datatype: PPowertypeType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def apply_EntityType(datatype: PEntityType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def apply_EntityPartType(datatype: PEntityPartType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def apply_GenericType(datatype: PGenericType): List[(Symbol, Any)] = {
+      handle_model(datatype)
+    }
+
+    override protected def handle_primitive(datatype: PObjectType): List[(Symbol, Any)] = {
+      handle_fundamental(datatype)
+    }
+
+    override protected def handle_fundamental(datatype: PObjectType): List[(Symbol, Any)] = {
+      handle_xml(datatype)
+    }
+
+    override protected def handle_xml(datatype: PObjectType): List[(Symbol, Any)] = {
+      handle_all(datatype)
+    }
+
+    override protected def handle_auxiliary(datatype: PObjectType): List[(Symbol, Any)] = {
+      handle_all(datatype)
+    }
+
+    override protected def handle_model(datatype: PObjectType): List[(Symbol, Any)] = {
+      handle_all(datatype)
+    }
+
+    override protected def handle_all(datatype: PObjectType): List[(Symbol, Any)] = {
+      List('xtype -> "textfield",
+           'fieldLabel -> label_name)
+    }
+  }
+
+  /*
+   * 
+   */
+//  protected final def labelName = {
+//    extjsContext.labelName(attr)
+//  }
+
+  /*
+   *
+   */
+  override protected def head_imports_Extension {
+  }
+
+  override def constant_property {
+  }
+
+  override protected def variable_plain_Inject_Annotation {
+  }
+
+  override protected def variable_plain_Attribute_Instance_Variable(typename: String, varname: String) {
+  }
+
   override protected def variable_plain_Transient_Instance_Variable(typename: String, varname: String) {
-    jm_pln("XYZ")
   }
 
   override protected def method_bean_single_plain() {
@@ -1577,3 +2040,10 @@ class ExtjsClassAttributeDefinition(
     }
   }
 }
+
+class NullExtjsClassAttributeDefinition(
+  pContext: ExtjsEntityContext,
+  aspects: Seq[ExtjsAspect],
+  attr: PAttribute,
+  owner: ExtjsClassDefinition,
+  maker: ExtjsTextMaker) extends ExtjsClassAttributeDefinition(pContext, aspects, attr, owner, maker)

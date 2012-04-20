@@ -56,7 +56,8 @@ import java.util.TimeZone
  * 
  * @since   Jun. 20, 2011
  *  version Aug. 19, 2011
- * @version Feb. 19, 2012
+ *  version Feb. 19, 2012
+ * @version Apr. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassAttributeDefinition(
@@ -127,6 +128,14 @@ abstract class GenericClassAttributeDefinition(
 
   final protected def doc_var_name() = {
     pContext.documentVariableName(attr)
+  }
+
+  final protected def label_name() = {
+    pContext.labelName(attr)
+  }
+
+  final protected def data_key() = {
+    pContext.dataKey(attr)
   }
 
   final protected def entity_ref_assoc_var_name() = {

@@ -31,8 +31,8 @@ class AndroidControllerJavaClassDefinition(
   }
 
   override protected def package_methods_platform_Entity(entity: PEntityEntity) {
-    jm_public_method("ListAdapter get%sRestFeedAdapter()", entity.termNameBase) {
-      jm_return("gmodel.get%sRestFeedAdapter()", entity.termNameBase)
+    jm_public_method("ListAdapter get%sRestFeedAdapter()", entity.classNameBase) {
+      jm_return("gmodel.get%sRestFeedAdapter()", entity.classNameBase)
     }
   }
 }

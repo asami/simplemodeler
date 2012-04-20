@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Apr. 15, 2012
+ * @version Apr. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class EditFormExtjsClassDefinition(
@@ -18,22 +18,34 @@ class EditFormExtjsClassDefinition(
   pobject: ExtjsObjectEntity,
   maker: ExtjsTextMaker = null
 ) extends ExtjsClassDefinition(context, aspects, pobject, maker) {
-  baseName = "Ext.grid.Panel".some
+  baseName = "Ext.form.Panel".some
+
+  override protected def attribute(attr: PAttribute): ATTR_DEF = {
+    new EditFormExtjsClassAttributeDefinition(context, aspects, attr, this, ejmaker)
+  }
 
   override protected def attribute_variables_Prologue {
-    jm_pln("fields: [")
+    js_ps("title", "XYZ")
+    jm_pln("items: [")
     jm_indent_up
   }
 
   override protected def attribute_variables_Epilogue {
     jm_indent_down
     jm_pln("],")
-    jm_pln("validations: [")
-    jm_indent_up
-    for (a <- attributeDefinitions) {
-      a.extjsValidation()
-    }
-    jm_indent_down
-    jm_pln("],")
+  }
+}
+
+class EditFormExtjsClassAttributeDefinition(
+  pContext: ExtjsEntityContext,
+  aspects: Seq[ExtjsAspect],
+  attr: PAttribute,
+  owner: ExtjsClassDefinition,
+  maker: ExtjsTextMaker) extends ExtjsClassAttributeDefinition(pContext, aspects, attr, owner, maker) {
+
+  override protected def variable_plain_Attribute_Instance_Variable(typename: String, varname: String) {
+    val xtypename = attr.attributeType(form_item)
+    js_o(attr.attributeType(form_item) :+ 
+        'anchor -> "100%")
   }
 }

@@ -24,7 +24,7 @@ import org.goldenport.recorder.Recordable
  * Derived from SimpleModel2JavaRealmTransformerBase (Feb. 3, 2011)
  * 
  * @since   Apr.  7, 2012
- * @version Apr. 16, 2012
+ * @version Apr. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -134,7 +134,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     protected def transform_Actor(actor: SMDomainActor): DomainActorTYPE = {
       val obj = create_Actor(actor)
       build_entity(obj, actor)
-      make_Actors(actor).foreach(store_object)
+      make_Actors(actor, obj).foreach(build_derived_object(actor, obj))
       obj
     }
 
@@ -142,14 +142,14 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Actors(entity: SMDomainActor): List[PObjectEntity] = {
-      make_Entities(entity)
+    protected def make_Actors(entity: SMDomainActor, po: DomainActorTYPE): List[PObjectEntity] = {
+      make_Entities(entity, po)
     }
 
     protected def transform_Resource(resource: SMDomainResource): DomainResourceTYPE = {
       val obj = create_Resource(resource)
       build_entity(obj, resource)
-      make_Resources(resource).foreach(store_object)
+      make_Resources(resource, obj).foreach(build_derived_object(resource, obj))
       obj
     }
 
@@ -157,14 +157,14 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Resources(entity: SMDomainResource): List[PObjectEntity] = {
-      make_Entities(entity)
+    protected def make_Resources(entity: SMDomainResource, po: DomainResourceTYPE): List[PObjectEntity] = {
+      make_Entities(entity, po)
     }
 
     protected def transform_Event(event: SMDomainEvent): DomainEventTYPE = {
       val obj = create_Event(event)
       build_entity(obj, event)
-      make_Events(event).foreach(store_object)
+      make_Events(event, obj).foreach(build_derived_object(event, obj))
       obj
     }
 
@@ -172,14 +172,14 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Events(entity: SMDomainEvent): List[PObjectEntity] = {
-      make_Entities(entity)
+    protected def make_Events(entity: SMDomainEvent, po: DomainEventTYPE): List[PObjectEntity] = {
+      make_Entities(entity, po)
     }
 
     protected def transform_Role(role: SMDomainRole): DomainRoleTYPE = {
       val obj = create_Role(role)
       build_entity(obj, role)
-      make_Roles(role).foreach(store_object)
+      make_Roles(role, obj).foreach(build_derived_object(role, obj))
       obj
     }
 
@@ -187,14 +187,14 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(role)
     }
 
-    protected def make_Roles(entity: SMDomainRole): List[PObjectEntity] = {
-      make_Entities(entity)
+    protected def make_Roles(entity: SMDomainRole, po: DomainRoleTYPE): List[PObjectEntity] = {
+      make_Entities(entity, po)
     }
 
     protected def transform_Summary(summary: SMDomainSummary): DomainSummaryTYPE = {
       val obj = create_Summary(summary)
       build_entity(obj, summary)
-      make_Summarys(summary).foreach(store_object)
+      make_Summarys(summary, obj).foreach(build_derived_object(summary, obj))
       obj
     }
 
@@ -202,14 +202,14 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Summarys(entity: SMDomainSummary): List[PObjectEntity] = {
-      make_Entities(entity)
+    protected def make_Summarys(entity: SMDomainSummary, po: DomainSummaryTYPE): List[PObjectEntity] = {
+      make_Entities(entity, po)
     }
 
     protected def transform_Entity(entity: SMDomainEntity): DomainEntityTYPE = {
       val obj = create_Entity(entity)
       build_entity(obj, entity)
-      make_Entities(entity).foreach(store_object)
+      make_Entities(entity, obj).foreach(build_derived_object(entity, obj))
       obj
     }
 
@@ -217,12 +217,12 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       throw new UnsupportedOperationException
     }
 
-    protected def make_Entities(entity: SMDomainEntity): List[PObjectEntity] = Nil
+    protected def make_Entities(entity: SMDomainEntity, obj: DomainEntityTYPE): List[PObjectEntity] = Nil
 
     protected def transform_Entity_Part(part: SMDomainEntityPart): DomainEntityPartTYPE = {
       val obj = create_Entity_Part(part)
       build_entity(obj, part)
-      make_Parts(part).foreach(store_object)
+      make_Parts(part, obj).foreach(build_derived_object(part, obj))
       obj
     }
 
@@ -230,52 +230,52 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       throw new UnsupportedOperationException
     }
 
-    protected def make_Parts(entity: SMDomainEntityPart): List[PObjectEntity] = Nil
+    protected def make_Parts(entity: SMDomainEntityPart, po: DomainEntityPartTYPE): List[PObjectEntity] = Nil
 
     protected def transform_Powertype(powertype: SMDomainPowertype) {
       if (!usePowertype) return;
       val obj = create_Powertype(powertype)
       build_object(obj, powertype)
-      make_Powertypes(powertype).foreach(store_object)
+      make_Powertypes(powertype, obj).foreach(build_derived_object(powertype, obj))
     }
 
     protected def create_Powertype(entity: SMDomainPowertype): DomainPowertypeTYPE = {
       throw new UnsupportedOperationException
     }
 
-    protected def make_Powertypes(entity: SMDomainPowertype): List[PObjectEntity] = Nil
+    protected def make_Powertypes(entity: SMDomainPowertype, po: DomainPowertypeTYPE): List[PObjectEntity] = Nil
 
     protected def transform_Id(id: SMDomainValueId) {
       if (!useValue) return
       val obj = create_ValueId(id)
       build_object(obj, id)
-      make_ValueIds(id).foreach(store_object)
+      make_ValueIds(id, obj).foreach(build_derived_object(id, obj))
     }
 
     protected def create_ValueId(id: SMDomainValueId): DomainValueTYPE = {
       create_Value(id)
     }
 
-    protected def make_ValueIds(value: SMDomainValueId): List[PObjectEntity] = Nil
+    protected def make_ValueIds(value: SMDomainValueId, po: DomainValueTYPE): List[PObjectEntity] = Nil
 
     protected def transform_Name(name: SMDomainValueName) {
       if (!useValue) return
       val obj = create_ValueName(name)
       build_object(obj, name)
-      make_ValueNames(name).foreach(store_object)
+      make_ValueNames(name, obj).foreach(build_derived_object(name, obj))
     }
 
     protected def create_ValueName(name: SMDomainValueName): DomainValueTYPE = {
       create_Value(name)
     }
 
-    protected def make_ValueNames(entity: SMDomainValueName): List[PObjectEntity] = Nil
+    protected def make_ValueNames(entity: SMDomainValueName, po: DomainValueTYPE): List[PObjectEntity] = Nil
 
     private def transform_Value(value: SMDomainValue) {
       if (!useValue) return
       val obj = create_Value(value)
       build_object(obj, value)
-      make_Values(value).foreach(store_object)
+      make_Values(value, obj).foreach(build_derived_object(value, obj))
     }
 
     protected def create_Value(entity: SMDomainValue): DomainValueTYPE = {
@@ -283,12 +283,12 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       throw new UnsupportedOperationException
     }
 
-    protected def make_Values(entity: SMDomainValue): List[PObjectEntity] = Nil
+    protected def make_Values(entity: SMDomainValue, po: DomainValueTYPE): List[PObjectEntity] = Nil
 
     private def transform_Document(document: SMDomainDocument): DomainDocumentTYPE = {
       val obj = create_Document(document)
       build_object(obj, document)
-      make_Documents(document).foreach(store_object)
+      make_Documents(document, obj).foreach(build_derived_object(document, obj))
       obj
     }
 
@@ -297,12 +297,12 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       throw new UnsupportedOperationException
     }
 
-    protected def make_Documents(entity: SMDomainDocument): List[PObjectEntity] = Nil
+    protected def make_Documents(entity: SMDomainDocument, po: DomainDocumentTYPE): List[PObjectEntity] = Nil
 
     private def transform_Rule(rule: SMDomainRule) {
       val obj = create_Rule(rule)
       build_object(obj, rule)
-      make_Rules(rule).foreach(store_object)
+      make_Rules(rule, obj).foreach(build_derived_object(rule, obj))
     }
 
     protected def create_Rule(entity: SMDomainRule): PRuleEntity = {
@@ -310,12 +310,12 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       throw new UnsupportedOperationException
     }
 
-    protected def make_Rules(entity: SMDomainRule): List[PObjectEntity] = Nil
+    protected def make_Rules(entity: SMDomainRule, po: PRuleEntity): List[PObjectEntity] = Nil
 
     private def transform_Service(service: SMDomainService): DomainServiceTYPE = {
       val obj = create_Service(service)
       build_object(obj, service)
-      make_Services(service).foreach(store_object)
+      make_Services(service, obj).foreach(build_derived_object(service, obj))
       obj
     }
 
@@ -324,7 +324,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       throw new UnsupportedOperationException
     }
 
-    protected def make_Services(entity: SMDomainService): List[PObjectEntity] = Nil
+    protected def make_Services(entity: SMDomainService, po: DomainServiceTYPE): List[PObjectEntity] = Nil
 
     protected def transform_Package(pkg: SMPackage) {
       val contextname = target_context.contextName(pkg)
@@ -512,8 +512,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.term = modelObject.term // XXX
       obj.term_en = modelObject.term_en // XXX
       obj.term_ja = modelObject.term_ja // XXX
-      obj.termName = target_context.termName(modelObject) // XXX
-      obj.termNameBase = target_context.objectNameBase(modelObject) // XXX
+      obj.asciiName = target_context.asciiName(modelObject)
+      obj.classNameBase = target_context.classNameBase(modelObject)
       obj.setKindedPackageName(make_PackageName(modelObject))
       obj.xmlNamespace = modelObject.xmlNamespace
       obj.modelObject = modelObject
@@ -532,8 +532,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.term = modelObject.term
       obj.term_en = modelObject.term_en
       obj.term_ja = modelObject.term_ja
-      obj.termName = target_context.termName(modelObject)
-      obj.termNameBase = target_context.objectNameBase(modelObject)
+      obj.asciiName = target_context.asciiName(modelObject)
+      obj.classNameBase = target_context.classNameBase(modelObject)
       obj.setKindedPackageName(make_PackageName(modelObject))
       obj.xmlNamespace = modelObject.xmlNamespace
       obj.modelObject = modelObject
@@ -543,6 +543,29 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         }
         case None => {}
       }
+      build_properties(obj, modelObject)
+      store_object(obj)
+    }
+
+    private def build_derived_object(modelObject: SMObject, source: PObjectEntity)(obj: PObjectEntity) = {
+      obj.modelObject = modelObject
+      obj.sourcePlatformObject = Some(source)
+      obj.term = modelObject.term
+      obj.term_en = modelObject.term_en
+      obj.term_ja = modelObject.term_ja
+      obj.asciiName = target_context.asciiName(modelObject)
+      obj.classNameBase = target_context.classNameBase(modelObject)
+      obj.setKindedPackageName(make_PackageName(modelObject))
+      obj.xmlNamespace = modelObject.xmlNamespace
+      obj.modelObject = modelObject
+/* XXX
+      modelObject.getBaseObject match {
+        case Some(base) => {
+          obj.setKindedBaseObjectType(make_class_name(base), base.packageName)
+        }
+        case None => {}
+      }
+*/
       build_properties(obj, modelObject)
       store_object(obj)
     }
@@ -670,8 +693,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.term = modelPackage.term
       obj.term_en = modelPackage.term_en
       obj.term_ja = modelPackage.term_ja
-      obj.termName = target_context.termName(modelPackage)
-      obj.termNameBase = target_context.objectNameBase(modelPackage)
+      obj.asciiName = target_context.asciiName(modelPackage)
+      obj.classNameBase = target_context.classNameBase(modelPackage)
       obj.modelPackage = Some(modelPackage)
       obj.platformPackage = Some(ppkg)
       obj.setKindedPackageName(modelPackage.qualifiedName)
@@ -688,8 +711,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.term = modelPackage.term
       obj.term_en = modelPackage.term_en
       obj.term_ja = modelPackage.term_ja
-      obj.termName = target_context.termName(modelPackage)
-      obj.termNameBase = target_context.objectNameBase(modelPackage)
+      obj.asciiName = target_context.asciiName(modelPackage)
+      obj.classNameBase = target_context.classNameBase(modelPackage)
       obj.modelPackage = Some(modelPackage)
       obj.platformPackage = Some(ppkg)
       obj.packageName = modelPackage.qualifiedName
@@ -751,7 +774,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.term_en = modelPackage.term_en
       obj.term_ja = modelPackage.term_ja
       obj.termName = target_context.termName(modelPackage)
-      obj.termNameBase = target_context.objectNameBase(modelPackage)
+      obj.termNameBase = target_context.classNameBase(modelPackage)
       obj.modelPackage = Some(modelPackage)
       obj.platformPackage = Some(pkg)
       obj.packageName = modelPackage.qualifiedName

@@ -435,8 +435,8 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
       obj.term = modelObject.term
       obj.term_en = modelObject.term_en
       obj.term_ja = modelObject.term_ja
-      obj.termName = target_context.termName(modelObject)
-      obj.termNameBase = target_context.objectNameBase(modelObject)
+      obj.asciiName = target_context.asciiName(modelObject)
+      obj.classNameBase = target_context.classNameBase(modelObject)
       obj.packageName = modelObject.packageName
       obj.xmlNamespace = modelObject.xmlNamespace
       obj.modelObject = modelObject
@@ -457,8 +457,8 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
       obj.term = modelObject.term
       obj.term_en = modelObject.term_en
       obj.term_ja = modelObject.term_ja
-      obj.termName = target_context.termName(modelObject)
-      obj.termNameBase = target_context.objectNameBase(modelObject)
+      obj.asciiName = target_context.asciiName(modelObject)
+      obj.classNameBase = target_context.classNameBase(modelObject)
       obj.packageName = modelObject.packageName
       obj.xmlNamespace = modelObject.xmlNamespace
       obj.modelObject = modelObject
@@ -588,8 +588,8 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
       obj.term = modelPackage.term
       obj.term_en = modelPackage.term_en
       obj.term_ja = modelPackage.term_ja
-      obj.termName = target_context.termName(modelPackage)
-      obj.termNameBase = target_context.objectNameBase(modelPackage)
+      obj.asciiName = target_context.asciiName(modelPackage)
+      obj.classNameBase = target_context.classNameBase(modelPackage)
       obj.modelPackage = Some(modelPackage)
       obj.platformPackage = Some(ppkg)
       obj.packageName = modelPackage.qualifiedName
@@ -606,8 +606,8 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
       obj.term = modelPackage.term
       obj.term_en = modelPackage.term_en
       obj.term_ja = modelPackage.term_ja
-      obj.termName = target_context.termName(modelPackage)
-      obj.termNameBase = target_context.objectNameBase(modelPackage)
+      obj.asciiName = target_context.asciiName(modelPackage)
+      obj.classNameBase = target_context.classNameBase(modelPackage)
       obj.modelPackage = Some(modelPackage)
       obj.platformPackage = Some(ppkg)
       obj.packageName = modelPackage.qualifiedName
@@ -650,8 +650,8 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
       obj.term = entity.term
       obj.term_en = entity.term_en
       obj.term_ja = entity.term_ja
-      obj.termName = entity.termName
-      obj.termNameBase = entity.termNameBase
+      obj.asciiName = entity.asciiName
+      obj.classNameBase = entity.classNameBase
       obj.packageName = entity.packageName
       obj.xmlNamespace = entity.xmlNamespace
 //      obj.modelObject = modelPackage
@@ -667,8 +667,8 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
       obj.term = modelPackage.term
       obj.term_en = modelPackage.term_en
       obj.term_ja = modelPackage.term_ja
-      obj.termName = target_context.termName(modelPackage)
-      obj.termNameBase = target_context.objectNameBase(modelPackage)
+      obj.asciiName = target_context.asciiName(modelPackage)
+      obj.classNameBase = target_context.classNameBase(modelPackage)
       obj.modelPackage = Some(modelPackage)
       obj.platformPackage = Some(pkg)
       obj.packageName = modelPackage.qualifiedName

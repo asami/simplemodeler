@@ -8,6 +8,7 @@ import org.simplemodeling.SimpleModeler.entity.domain._
 import org.simplemodeling.SimpleModeler.entity.requirement._
 import org.simplemodeling.SimpleModeler.entities._
 import org.simplemodeling.SimpleModeler.entities.extjs._
+import org.simplemodeling.SimpleModeler.entities.extjs.play._
 import org.simplemodeling.SimpleModeler.transformers.SimpleModel2ProgramRealmTransformerBase
 import org.goldenport.value._
 import org.goldenport.service.GServiceContext
@@ -23,7 +24,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /*
  * @since   Mar. 31, 2011
- * @version Apr. 15, 2012
+ * @version Apr. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
@@ -33,6 +34,7 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
   override val defaultFileSuffix = "js"
   override val target_context = new ExtjsEntityContext(sm.entityContext, sctx)
   override val target_realm = new ExtjsRealmEntity(target_context)  
+  srcMainDir = "/public" // XXX Play
   useEntityDocument = false
   useValue = false
   usePowertype = false
@@ -49,6 +51,8 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
   }
 
   override protected def make_Project() {
+    _make_project()
+    _make_play()
 /*
     make_service_utilities()
     _gaejRealm.traverse(new CrudMaker())
@@ -57,6 +61,24 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
     make_atom()
     make_rest()
 */
+  }
+
+  private def _make_project() {
+    val main = new ExtjsMainEntity(target_context)
+    target_realm.setEntity("main.js", main)
+  }
+
+  private def _make_play() {
+    val route = new PlayReadmeEntity(target_context)
+    target_realm.setEntity("/README", route)
+    val readme = new PlayRouteEntity(target_context)
+    target_realm.setEntity("/conf/route", readme)
+    val mainview = new PlayMainViewEntity(target_context)
+    target_realm.setEntity("/app/views/main.scala.html", mainview)
+    val indexcontroller = new PlayMainControllerEntity(target_context)
+    target_realm.setEntity("/app/controllers/Main.scala", indexcontroller)
+    val restcontroller = new PlayRestControllerEntity(target_context)
+    target_realm.setEntity("/app/controllers/Rest.scala", restcontroller)
   }
 
   class ExtjsBuilder extends BuilderBase {
@@ -112,27 +134,38 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
       new ExtjsEntityEntity(target_context)
     }
 
-    override protected def make_Entities(entity: SMDomainEntity): List[PObjectEntity] = {
+    override protected def make_Entities(entity: SMDomainEntity, po: PEntityObjectEntity): List[PObjectEntity] = {
+//      val pos = Some(po)
       List(
         new ExtjsEntityGridEntity(target_context) {
+//          modelObject = entity
+//          sourcePlatformObject = pos
           name = target_context.entityGridName(entity)
-          setKindedPackageName(entity.packageName)
+//          setKindedPackageName(entity.packageName)
         },
         new ExtjsEntityViewFormEntity(target_context) {
+//          modelObject = entity
+//          sourcePlatformObject = pos
           name = target_context.entityViewFormName(entity)
-          setKindedPackageName(entity.packageName)
+//          setKindedPackageName(entity.packageName)
         },
         new ExtjsEntityEditFormEntity(target_context) {
+//          modelObject = entity
+//          sourcePlatformObject = pos
           name = target_context.entityEditFormName(entity)
-          setKindedPackageName(entity.packageName)
+//          setKindedPackageName(entity.packageName)
         },
         new ExtjsEntityStoreEntity(target_context) {
+//          modelObject = entity
+//          sourcePlatformObject = pos
           name = target_context.entityStoreName(entity)
-          setKindedPackageName(entity.packageName)
+//          setKindedPackageName(entity.packageName)
         },
         new ExtjsEntityControllerEntity(target_context) {
+//          modelObject = entity
+//          sourcePlatformObject = pos
           name = target_context.entityControllerName(entity)
-          setKindedPackageName(entity.packageName)
+//          setKindedPackageName(entity.packageName)
         })
     }
  

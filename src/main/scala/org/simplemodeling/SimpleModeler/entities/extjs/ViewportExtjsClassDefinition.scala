@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Apr. 15, 2012
+ * @version Apr. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class ViewportExtjsClassDefinition(
@@ -20,20 +20,37 @@ class ViewportExtjsClassDefinition(
 ) extends ExtjsClassDefinition(context, aspects, extjsobject, maker) {
   baseName = "Ext.container.Viewport".some
 
-  override protected def attribute_variables_Prologue {
-    jm_pln("fields: [")
-    jm_indent_up
-  }
-
-  override protected def attribute_variables_Epilogue {
-    jm_indent_down
-    jm_pln("],")
-    jm_pln("validations: [")
-    jm_indent_up
-    for (a <- attributeDefinitions) {
-      a.extjsValidation()
+  override protected def lifecycle_variables {
+    js_po("layout") {
+      js_ps("type", "border")
+      js_pnumber("padding", 5)
     }
-    jm_indent_down
-    jm_pln("],")
+    js_pa("items") {
+      js_oo {
+        js_ps("region", "west")
+        js_ps("title", "一覧")
+        js_ptrue("collapsible")
+        js_pa("items") {
+          js_oo {
+            js_ps("xtype", "ABC")
+            js_ps("store", "ABC")
+          }
+        }
+      }
+      js_oo {
+        js_ps("region", "center")
+        js_ps("title", "ABC")
+        js_pa("items") {
+          js_oo {
+            js_ps("xtype", "tabpanel")
+            js_pa("items") {
+              js_oo {
+                js_ps("xtype", "ABC")
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }

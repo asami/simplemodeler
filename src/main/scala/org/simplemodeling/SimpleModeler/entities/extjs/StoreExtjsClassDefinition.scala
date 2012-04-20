@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Apr. 15, 2012
+ * @version Apr. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class StoreExtjsClassDefinition(
@@ -21,19 +21,19 @@ class StoreExtjsClassDefinition(
   baseName = "Ext.data.Store".some
 
   override protected def attribute_variables_Prologue {
-    jm_pln("fields: [")
-    jm_indent_up
-  }
-
-  override protected def attribute_variables_Epilogue {
-    jm_indent_down
-    jm_pln("],")
-    jm_pln("validations: [")
-    jm_indent_up
-    for (a <- attributeDefinitions) {
-      a.extjsValidation()
+    js_ptrue("autoLoad")
+    js_ptrue("autoSync")
+    js_ps("model", extjsobject.sourcePlatformObject.get.qualifiedName)
+    js_po("proxy") {
+      js_ps("type", "rest")
+      js_ps("url", extjsContext.applicationName(extjsobject) + "/rest/" + "XYZ")
+      js_po("reader") {
+        js_ps("type", "json")
+        js_ps("root", "data")
+      }
+      js_po("writer") {
+        js_ps("type", "json")
+      }
     }
-    jm_indent_down
-    jm_pln("],")
   }
 }

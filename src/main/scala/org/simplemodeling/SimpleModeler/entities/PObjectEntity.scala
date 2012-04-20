@@ -13,7 +13,7 @@ import org.simplemodeling.dsl._
  * @since   Apr. 21, 2011
  *  version Aug. 20, 2011
  *  version Dec. 15, 2011
- * @version Apr. 16, 2012
+ * @version Apr. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -40,14 +40,15 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   var term_en = ""
   var term_ja = ""
   // URL (term_name)
-  var termName = ""
+  var asciiName = ""
   // Class Name base (TermName)
-  var termNameBase = ""
+  var classNameBase = ""
   var modelPackage: Option[SMPackage] = None
   var modelObject: SMObject = SMNullObject
   var platformPackage: Option[PPackageEntity] = None
+  var sourcePlatformObject: Option[PObjectEntity] = None
   var containerNode: Option[GTreeNode[GContent]] = None
-  lazy val xmlElementName = termName
+  lazy val xmlElementName = asciiName
   lazy val factoryName = pContext.factoryName(packageName)
   lazy val contextName = pContext.contextName(packageName)
 

@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Apr. 15, 2012
+ * @version Apr. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class ModelExtjsClassDefinition(
@@ -19,6 +19,10 @@ class ModelExtjsClassDefinition(
   maker: ExtjsTextMaker = null
 ) extends ExtjsClassDefinition(context, aspects, extjsobject, maker) {
   baseName = "Ext.data.Model".some
+
+  override protected def attribute(attr: PAttribute): ATTR_DEF = {
+    new ModelExtjsClassAttributeDefinition(context, aspects, attr, this, ejmaker)
+  }
 
   override protected def attribute_variables_Prologue {
     jm_pln("fields: [")
@@ -35,5 +39,18 @@ class ModelExtjsClassDefinition(
     }
     jm_indent_down
     jm_pln("],")
+  }
+}
+
+class ModelExtjsClassAttributeDefinition(
+  pContext: ExtjsEntityContext,
+  aspects: Seq[ExtjsAspect],
+  attr: PAttribute,
+  owner: ExtjsClassDefinition,
+  maker: ExtjsTextMaker) extends ExtjsClassAttributeDefinition(pContext, aspects, attr, owner, maker) {
+
+  override protected def variable_plain_Attribute_Instance_Variable(typename: String, varname: String) {
+    val tname = attr.attributeType(model_typename)
+    jm_pln("{name: '%s', type: '%s'},", data_key, tname)
   }
 }

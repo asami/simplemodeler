@@ -14,7 +14,8 @@ import org.simplemodeling.SimpleModeler.entity._
  * 
  * @since   Apr. 22, 2011
  *  version Jul. 22, 2011
- * @version Feb. 19, 2012
+ *  version Feb. 19, 2012
+ * @version Apr. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 // XXX Should be immutable
@@ -24,6 +25,12 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   var modelAttribute: SMAttribute = null
   var modelAssociation: SMAssociation = null // XXX
   var modelPowertype: SMPowertypeRelationship = null // XXX
+  def modelElement: SMElement = {
+    if (modelAttribute != null) modelAttribute
+    else if (modelAssociation != null) modelAssociation
+    else if (modelPowertype != null) modelPowertype
+    else throw new IllegalArgumentException("modelElement should not be null.")
+  } 
 
   final def typeName: String = type_name
   final def objectTypeName: String = type_name_object

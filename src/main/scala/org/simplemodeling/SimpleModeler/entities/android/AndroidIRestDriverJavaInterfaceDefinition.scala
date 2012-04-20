@@ -53,8 +53,8 @@ class AndroidIRestDriverJavaInterfaceDefinition(
 
   override protected def package_methods_platform_Entity(entity: PEntityEntity) {
     val doc = pContext.entityDocumentName(entity)
-    val entityname = entity.termNameBase
-    val term = entity.termName
+    val entityname = entity.classNameBase
+    val term = entity.asciiName
     val pathname = term
     jm_interface_method("%s get%s(String id) throws IOException", doc, entityname)
     jm_interface_method("%s get%s(long id) throws IOException", doc, entityname)

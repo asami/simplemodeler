@@ -4,7 +4,7 @@ import com.asamioffice.goldenport.text.JavaScriptTextMaker
 
 /*
  * @since   Apr.  4, 2012
- * @version Apr.  8, 2012
+ * @version Apr. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaScriptMakerHolder {
@@ -33,7 +33,110 @@ trait JavaScriptMakerHolder {
     _maker
   }
 
-  //
+  // JavaScript Specific
+  protected final def js_ptrue(name: String) {
+    jm_pln(name + ": true,")
+  }
+
+  protected final def js_pfalse(name: String) {
+    jm_pln(name + ": false,")
+  }
+
+  protected final def js_pboolean(name: String, value: Boolean) {
+    jm_pln(name + ": " + value + ",")
+  }
+
+  protected final def js_pnumber(name: String, value: Int) {
+    jm_pln(name + ": " + value + ",")
+  }
+
+  protected final def js_pnumber(name: String, value: Long) {
+    jm_pln(name + ": " + value + ",")
+  }
+
+  protected final def js_pnumber(name: String, value: Float) {
+    jm_pln(name + ": " + value + ",")
+  }
+
+  protected final def js_pnumber(name: String, value: Double) {
+    jm_pln(name + ": " + value + ",")
+  }
+
+  protected final def js_ps(name: String, value: String) {
+    js_pstring(name, value)
+  }
+
+  protected final def js_pstring(name: String, value: String) {
+    jm_pln(name + ": '" + value + "',")
+  }
+
+  protected final def js_po(name: String)(body: => Unit) {
+    js_property_object(name)(body)
+  }
+
+  protected final def js_property_object(name: String)(body: => Unit) {
+    jm_pln(name + ": {")
+    jm_indent_up
+    body
+    jm_indent_down
+    jm_pln("},")
+  }
+
+  protected final def js_pa(name: String)(body: => Unit) {
+    js_property_array(name)(body)
+  }
+
+  protected final def js_property_array(name: String)(body: => Unit) {
+    jm_pln(name + ": [")
+    jm_indent_up
+    body
+    jm_indent_down
+    jm_pln("],")
+  }
+
+  protected final def js_oo(body: => Unit) {
+    js_open_object(body)
+  }
+
+  protected final def js_open_object(body: => Unit) {
+    jm_pln("{")
+    jm_indent_up
+    body
+    jm_indent_down
+    jm_pln("},")
+  }
+
+  protected final def js_o(props: List[(Symbol, Any)]) {
+    jm_pln(js_object_string(props))
+  }
+
+  protected final def js_object_string(props: List[(Symbol, Any)]): String = {
+    "{" + js_properties_string(props) + "},"
+  }
+
+  protected final def js_properties_string(props: List[(Symbol, Any)]): String = {
+    props.map(js_property_string).mkString(", ")
+  }
+
+  protected final def js_property_string(prop: (Symbol, Any)): String = {
+    val (k, v) = prop
+    k.name + ": " + js_value(v)
+  }
+
+  protected final def js_value(value: Any): String = {
+    value match {
+      case v: Boolean => v.toString
+      case v: Byte => v.toString
+      case v: Short => v.toString
+      case v: Int => v.toString
+      case v: Long => v.toString
+      case v: Float => v.toString
+      case v: Double => v.toString
+      case v => "'" + v + "'"
+    }
+  }
+
+  // derived from Java
   protected def jm_p(s: String, params: AnyRef*): String = {
     _maker.print(s, params: _*)
     s

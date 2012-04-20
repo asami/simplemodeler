@@ -58,8 +58,8 @@ class AndroidG3RestDriverJavaClassDefinition(
 
   override protected def package_methods_platform_Entity(entity: PEntityEntity) {
     val doc = pContext.entityDocumentName(entity)
-    val entityname = entity.termNameBase
-    val term = entity.termName
+    val entityname = entity.classNameBase
+    val term = entity.asciiName
     val pathname = term
 //    val pathname = term match { // XXX
 //      case "DEEBuy" => "buy"

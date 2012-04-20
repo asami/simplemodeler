@@ -39,11 +39,11 @@ class G3ApplicationScalaClassDefinition(
   }
 
   private def _package_port {
-    sm_pln("""port("/%s") invoke('ds)""", termName)
+    sm_pln("""port("/%s") invoke('ds)""", asciiName)
   }
 
   private def _schema_name(entity: PEntityEntity) = {
-    "schema_%s".format(entity.termName)
+    "schema_%s".format(entity.asciiName)
   }
 
   private def _entity_schema(entity: PEntityEntity) {
@@ -139,7 +139,7 @@ class G3ApplicationScalaClassDefinition(
       override protected def apply_PowertypeType(datatype: PPowertypeType) = "XPower"
 
       override protected def apply_EntityType(datatype: PEntityType) = {
-        "XEntityReference('%s)".format(datatype.entity.termName)
+        "XEntityReference('%s)".format(datatype.entity.asciiName)
         //_datatype(entity.entity.idAttr.attributeType)
       }
 
@@ -160,7 +160,7 @@ class G3ApplicationScalaClassDefinition(
     sm_pln("""datastore('ds, RecordClassSpace(""")
     sm_indent_up
     val classes = package_children_entity_map(e =>
-      "RecordClass('%s, %s)".format(e.termName, _schema_name(e)))
+      "RecordClass('%s, %s)".format(e.asciiName, _schema_name(e)))
     val last = classes.last
     sm_indent_up
     for (c <- classes) {
