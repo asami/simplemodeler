@@ -69,10 +69,12 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
   }
 
   private def _make_play() {
-    val route = new PlayReadmeEntity(target_context)
-    target_realm.setEntity("/README", route)
-    val readme = new PlayRouteEntity(target_context)
-    target_realm.setEntity("/conf/route", readme)
+    val readme = new PlayReadmeEntity(target_context)
+    target_realm.setEntity("/README", readme)
+    val route = new PlayRouteEntity(target_context)
+    target_realm.setEntity("/conf/route", route)
+    val evolution = new PlayEvolutionEntity(target_context)
+    target_realm.setEntity("/conf/evolutions/default/1.sql", evolution)
     val mainview = new PlayMainViewEntity(target_context)
     target_realm.setEntity("/app/views/main.scala.html", mainview)
     val indexcontroller = new PlayMainControllerEntity(target_context)
@@ -94,7 +96,7 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
       for (m <- module) {
         m.entries += PModuleEntry(providername, None, true)
       }
-      for (f <- factory) {
+      for (f <- ;) {
         f.entries += PModuleEntry(providername, None, true)
       }
       //

@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *
  *  since   Dec. 11, 2011
  * @since   Feb. 27, 2012
- * @version Apr.  1, 2012
+ * @version Apr. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, val outline: OutlineEntityBase) extends Recordable {
@@ -120,7 +120,6 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   private def _build_attribute_table(table: GTable[String], target: SMMEntityEntity) {
-    println("OutlineBuilderBase: build_attribute")
     _table_builder.buildObject(target, table)
   }
 
