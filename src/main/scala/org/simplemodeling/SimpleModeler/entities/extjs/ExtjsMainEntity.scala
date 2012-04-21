@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 20, 2012
- * @version Apr. 20, 2012
+ * @version Apr. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 class ExtjsMainEntity(extjsContext: ExtjsEntityContext) extends ExtjsObjectEntity(extjsContext) {
@@ -20,22 +20,29 @@ class ExtjsMainEntity(extjsContext: ExtjsEntityContext) extends ExtjsObjectEntit
 Ext.application({
     autoCreateViewport: true,
 
-    name: 'App1',
+    name: '%name%',
 
-    appFolder: 'assets/app', // important using 'assets'
+    appFolder: '%appFolder%',
+
+    models: [
+    ],
 
     controllers: [
-        'Account'
+        '%controller%'
     ],
 
     launch: function() {
-//        Ext.create('App1.view.AccountViewport');
+//        Ext.create('%viewport%');
     }
 });
 """
 
   override protected def write_Content(out: BufferedWriter) {
-    val text = new JavaScriptTextMaker(template, Map.empty)
+    val text = new JavaScriptTextMaker(template,
+                                       Map("%name%" -> "app",
+                                           "%appFolder%" -> "assets/app",
+                                           "%controller%" -> "AppController",
+                                           "%viewport%" -> "app.view.AppView"))
     out.append(text.toString)
     out.flush
   }  

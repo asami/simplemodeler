@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entities.extjs._
 
 /**
  * @since   Apr. 20, 2012
- * @version Apr. 20, 2012
+ * @version Apr. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 class PlayMainControllerEntity(pContext: PEntityContext) extends PObjectEntity(pContext) {
@@ -20,9 +20,9 @@ class PlayMainControllerEntity(pContext: PEntityContext) extends PObjectEntity(p
 import play.api._
 import play.api.mvc._
 
-object Account extends Controller {
+object AppMain extends Controller {
    def index = Action {
-    Ok(views.html.account())
+    Ok(views.html.app())
   }
  }
 """

@@ -24,7 +24,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /*
  * @since   Mar. 31, 2011
- * @version Apr. 20, 2012
+ * @version Apr. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
@@ -65,25 +65,33 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
 
   private def _make_project() {
     val main = new ExtjsMainEntity(target_context)
-    target_realm.setEntity("main.js", main)
+    target_realm.setEntity(srcMainDir + "/app.js", main)
   }
 
   private def _make_play() {
     val readme = new PlayReadmeEntity(target_context)
-    target_realm.setEntity("/README", readme)
+    target_realm.setEntity("/README.sm", readme)
     val route = new PlayRouteEntity(target_context)
-    target_realm.setEntity("/conf/route", route)
-    val evolution = new PlayEvolutionEntity(target_context)
-    target_realm.setEntity("/conf/evolutions/default/1.sql", evolution)
+    target_realm.setEntity("/conf/routes.sm", route)
     val mainview = new PlayMainViewEntity(target_context)
-    target_realm.setEntity("/app/views/main.scala.html", mainview)
+    target_realm.setEntity("/app/views/app.scala.html", mainview) // XXX
     val indexcontroller = new PlayMainControllerEntity(target_context)
-    target_realm.setEntity("/app/controllers/Main.scala", indexcontroller)
+    target_realm.setEntity("/app/controllers/AppMain.scala", indexcontroller)
     val restcontroller = new PlayRestControllerEntity(target_context)
-    target_realm.setEntity("/app/controllers/Rest.scala", restcontroller)
+    target_realm.setEntity("/app/controllers/AppRest.scala", restcontroller)
   }
 
   class ExtjsBuilder extends BuilderBase {
+    override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
+      println("SimpleModel2Extjs:" + ppkg.name)
+      val evolution = new PlayEvolutionEntity(target_context)
+      build_package_pathname(evolution, pkg, ppkg, "/conf/evolutions/default/1.sql.sm")
+
+      // XXX unify application view
+      val viewport = new ExtjsViewportEntity(target_context)
+      build_package(viewport, pkg, ppkg, "Viewport")
+    }
+
 /*
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
       val appname = target_context.className(pkg, "Application")

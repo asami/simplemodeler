@@ -23,11 +23,22 @@ class EvolutionPlayClassDefinition(
   override protected def class_open_body {
     sm_code("""# --- !Ups
 
+CREATE TABLE User (
+    id bigint(20) NOT NULL AUTO_INCREMENT,
+    email varchar(255) NOT NULL,
+    password varchar(255) NOT NULL,
+    fullname varchar(255) NOT NULL,
+    isAdmin boolean NOT NULL,
+    PRIMARY KEY (id)
+);
+
 """)
   }
 
   override protected def class_close_body {
     sm_code("""# --- !Downs
+
+DROP TABLE IF EXISTS User;
 
 """)
     for (t <- _table_names) {

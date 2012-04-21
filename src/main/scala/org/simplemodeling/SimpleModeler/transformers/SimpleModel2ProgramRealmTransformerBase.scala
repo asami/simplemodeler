@@ -15,7 +15,7 @@ import org.goldenport.entities.fs.FileStoreEntity
 import org.simplemodeling.dsl._
 import org.simplemodeling.dsl.domain._
 import org.simplemodeling.dsl.util.UDsl
-import com.asamioffice.goldenport.text.{UJavaString, UString}
+import com.asamioffice.goldenport.text.{UJavaString, UString, UPathString}
 import com.asamioffice.goldenport.io.UIO
 import com.asamioffice.goldenport.util.MultiValueMap
 import org.goldenport.recorder.Recordable
@@ -24,7 +24,7 @@ import org.goldenport.recorder.Recordable
  * Derived from SimpleModel2JavaRealmTransformerBase (Feb. 3, 2011)
  * 
  * @since   Apr.  7, 2012
- * @version Apr. 19, 2012
+ * @version Apr. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -688,7 +688,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       }
     }
 
-    protected final def build_package(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) {
+    protected final def build_package(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) = {
       obj.name = if (name != null) name else make_object_name(modelPackage.name)
       obj.term = modelPackage.term
       obj.term_en = modelPackage.term_en
@@ -706,7 +706,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj
     }
 
-    protected final def build_package_script(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) {
+    protected final def build_package_script(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) = {
       obj.name = if (name != null) name else make_object_name(modelPackage.name)
       obj.term = modelPackage.term
       obj.term_en = modelPackage.term_en
@@ -720,6 +720,23 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 //      obj.modelObject = modelPackage
 //      build_properties(obj, modelPackage)
       val pathname = scriptSrcDir + "/" + obj.name + "." + obj.fileSuffix
+      target_realm.setEntity(pathname, obj)
+      obj
+    }
+
+    protected final def build_package_pathname(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, pathname: String) = {
+      obj.name = UPathString.getLastComponent(pathname)
+      obj.term = modelPackage.term
+      obj.term_en = modelPackage.term_en
+      obj.term_ja = modelPackage.term_ja
+      obj.asciiName = target_context.asciiName(modelPackage)
+      obj.classNameBase = target_context.classNameBase(modelPackage)
+      obj.modelPackage = Some(modelPackage)
+      obj.platformPackage = Some(ppkg)
+      obj.packageName = modelPackage.qualifiedName
+      obj.xmlNamespace = modelPackage.xmlNamespace
+//      obj.modelObject = modelPackage
+//      build_properties(obj, modelPackage)
       target_realm.setEntity(pathname, obj)
       obj
     }

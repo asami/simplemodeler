@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entities.extjs._
 
 /**
  * @since   Apr. 20, 2012
- * @version Apr. 20, 2012
+ * @version Apr. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 class PlayRestControllerEntity(pContext: PEntityContext) extends PObjectEntity(pContext) {
@@ -24,15 +24,8 @@ import play.api.db._
 import play.api.Play.current
 import anorm._
 
-object AccountRest extends Controller {
-  def setupAccounts() = Action {
-    implicit val conn = DB.getConnection()
-    val create = SQL("CREATE TABLE sammple (id: integer, name: varchar(20))")
-    Ok("OK").as("application/json")
-  }
-
-  def listAccounts() = Action {
-    println("list")
+object AppRest extends Controller {
+  def list() = Action {
     implicit val conn = DB.getConnection()
     val query = SQL("Select * from account")
     val records = query().map(_to_json)
@@ -56,8 +49,7 @@ object AccountRest extends Controller {
     n.split("[.]").last.toLowerCase
   }
 
-  def getAccount(id: String) = Action {
-    println("get: " + id)
+  def get(id: String) = Action {
     val result = JsObject(List(
       "a" -> JsString("10")))
     Ok(result).as("application/json")

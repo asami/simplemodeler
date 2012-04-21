@@ -78,7 +78,7 @@ object Main {
 // TODO: append custom service feature
 class SimpleModelerDescriptor extends GApplicationDescriptor {
   name = "SimpleModeler"
-  version = "0.3.4-SNAPSHOT"
+  version = "0.4-SNAPSHOT"
   version_build = "20120421"
   copyright_years = "2008-2012"
   copyright_owner = "ASAMI, Tomoharu"
