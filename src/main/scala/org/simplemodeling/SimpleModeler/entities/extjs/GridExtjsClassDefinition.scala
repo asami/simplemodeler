@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Apr. 20, 2012
+ * @version Apr. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 class GridExtjsClassDefinition(
@@ -19,7 +19,8 @@ class GridExtjsClassDefinition(
   maker: ExtjsTextMaker = null
 ) extends ExtjsClassDefinition(context, aspects, extjsobject, maker) {
   baseName = "Ext.grid.Panel".some
-  aliasName = ("widget." + ascii_name).some
+  set_widget_name(ascii_name)
+//  aliasName = ("widget." + lower_ascii_name).some
 
   override protected def attribute(attr: PAttribute): ATTR_DEF = {
     new GridExtjsClassAttributeDefinition(context, aspects, attr, this, ejmaker)

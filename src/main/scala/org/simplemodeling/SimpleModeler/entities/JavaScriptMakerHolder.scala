@@ -82,6 +82,17 @@ trait JavaScriptMakerHolder {
     jm_pln("},")
   }
 
+  protected final def js_pa(name: String, values: List[String]) {
+    jm_pln(name + ": [")
+    jm_indent_up
+    for (s <- values) {
+      jm_p(s)
+      jm_pln(",")
+    }
+    jm_indent_down
+    jm_pln("],")
+  }
+
   protected final def js_pa(name: String)(body: => Unit) {
     js_property_array(name)(body)
   }

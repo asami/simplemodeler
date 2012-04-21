@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Apr. 15, 2012
+ * @version Apr. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class ControllerExtjsClassDefinition(
@@ -20,20 +20,7 @@ abstract class ControllerExtjsClassDefinition(
 ) extends ExtjsClassDefinition(context, aspects, pobject, maker) {
   baseName = "Ext.app.Controller".some
 
-  override protected def attribute_variables_Prologue {
-    jm_pln("fields: [")
-    jm_indent_up
-  }
-
-  override protected def attribute_variables_Epilogue {
-    jm_indent_down
-    jm_pln("],")
-    jm_pln("validations: [")
-    jm_indent_up
-    for (a <- attributeDefinitions) {
-      a.extjsValidation()
-    }
-    jm_indent_down
-    jm_pln("],")
+  override protected def lifecycle_variables {
+    js_pa("views", Nil)
   }
 }
