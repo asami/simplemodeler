@@ -12,7 +12,8 @@ import org.simplemodeling.dsl.datatype.ext._
 
 /*
  * @since   Jul. 21, 2011
- * @version Sep. 25, 2011
+ *  version Sep. 25, 2011
+ * @version May.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 class AndroidModelJavaClassDefinition(
@@ -58,7 +59,7 @@ class AndroidModelJavaClassDefinition(
       jm_pln("super.open();")
       jm_pln("gFactory = gContext.getFactory();")
       jm_pln("driver.open(get_pref_server_url());")
-      for (entity <- pobject.packageEntities) {
+      for (entity <- entities_in_module) {
         jm_assign_new(_cache_var_name(entity), _cache_name(entity), "driver")
       }
     }

@@ -1,21 +1,52 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import scala.util.control.Exception._
 import org.simplemodeling.SimpleModeler.entity._
 import org.goldenport.Goldenport.{Application_Version, Application_Version_Build}
 import org.goldenport.entity._
+import org.goldenport.entity.content._
 import org.goldenport.service.GServiceContext
 import com.asamioffice.goldenport.text.{UString, UJavaString}
+import scala.MatchError
 
 // derived from GaejEntityContext since Apr. 11, 2009
 /**
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
- * @version Apr. 20, 2012
+ * @version May.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) {
   final def simplemodelerVersion = serviceContext.parameter[String](Application_Version)
   final def simplemodelerBuild = serviceContext.parameter[String](Application_Version_Build)
+  // XXX abstract val
+  private var _model: Option[SimpleModelEntity] = None
+  private var _platform: Option[PRealmEntity] = None
+
+  protected def dbc_invariants {
+    assume (_model.isDefined, "model should be setted.")
+    assume (_platform.isDefined, "platform should be setted.")
+  }
+
+  def setModel(m: SimpleModelEntity) {
+    require (m != null, "model should not be null.")
+    assert (_model.isEmpty, "model should not be setted.")
+  }
+
+  def setPlatform(p: PRealmEntity) {
+    require (p != null, "model should not be null.")
+    assert (_platform.isEmpty, "model should not be setted.")
+  }
+
+  def model = {
+    dbc_invariants
+    _model.get
+  }
+
+  def platform = {
+    dbc_invariants
+    _platform.get
+  }
 
   def applicationName(po: PObjectEntity): String = {
     applicationName(po.packageName)
@@ -405,6 +436,61 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
       }
     }
     buf.toString
+  }
+
+  /*
+   * Utility methods 
+   */
+  final def collectModel[T](pf: PartialFunction[SMElement, T]): Seq[T] = {
+    model.collectContent(pf)
+  }
+
+  final def collectModel[T](pathname: String, pf: PartialFunction[SMElement, T]): Seq[T] = {
+    model.collectContent(pathname, pf)
+  }
+
+  final def traverseModel[T](pf: PartialFunction[SMElement, T]) {
+    model.traverseContent(pf)
+  }
+
+  final def traverseModel[T](pathname: String, pf: PartialFunction[SMElement, T]) {
+    model.traverseContent(pathname, pf)
+  }
+
+  // XXX
+  class GEntityContentPartialFunction[A <: GEntity, +B](pf: PartialFunction[A, B]) extends PartialFunction[GContent, B] {
+    val pfentity = pf.asInstanceOf[PartialFunction[GEntity, B]] 
+    def isDefinedAt(x: GContent): Boolean = {
+      failAsValue(classOf[MatchError])(false) {
+        x match {
+          case c: EntityContent => pfentity.isDefinedAt(c.entity)
+          case _ => false
+        }
+      } 
+    }
+
+    def apply(x: GContent): B = {
+      x match {
+        case c: EntityContent => pfentity.apply(c.entity)
+        case _ => sys.error("not reached")
+      }
+    }
+  }
+
+  final def collectPlatform[B](pf: PartialFunction[PObjectEntity, B]): Seq[B] = {
+    platform.collectContent(new GEntityContentPartialFunction(pf))
+  }
+
+  final def collectPlatform[B](pathname: String, pf: PartialFunction[PObjectEntity, B]): Seq[B] = {
+    platform.collectContent(pathname, new GEntityContentPartialFunction(pf))
+  }
+
+  final def traversePlatform(pf: PartialFunction[PObjectEntity, _]) {
+    platform.traverseContent(new GEntityContentPartialFunction(pf))
+  }
+
+  final def traversePlatform(pathname: String, pf: PartialFunction[PObjectEntity, _]) {
+    platform.traverseContent(pathname, new GEntityContentPartialFunction(pf))
   }
 
   /*

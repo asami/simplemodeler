@@ -13,7 +13,7 @@ import org.simplemodeling.dsl._
  * @since   Apr. 21, 2011
  *  version Aug. 20, 2011
  *  version Dec. 15, 2011
- * @version Apr. 19, 2012
+ * @version Apr. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -43,11 +43,14 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   var asciiName = ""
   // Class Name base (TermName)
   var classNameBase = ""
-  var modelPackage: Option[SMPackage] = None
+  var modelPackage: Option[SMPackage] = None // not used
   var modelObject: SMObject = SMNullObject
-  var platformPackage: Option[PPackageEntity] = None
-  var sourcePlatformObject: Option[PObjectEntity] = None
-  var containerNode: Option[GTreeNode[GContent]] = None
+  var platformPackage: Option[PPackageEntity] = None // not used
+  var sourcePlatformObject: Option[PObjectEntity] = None // not used
+  /**
+   * Holds platform package node which contains this node as child. 
+   */
+//  var containerNode: Option[GTreeNode[GContent]] = None
   lazy val xmlElementName = asciiName
   lazy val factoryName = pContext.factoryName(packageName)
   lazy val contextName = pContext.contextName(packageName)
@@ -464,6 +467,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     }
   }
 
+/*
   def packageChildren: Seq[PObjectEntity] = {
     val cn = containerNode match {
       case Some(n) => Some(n)
@@ -495,4 +499,5 @@ abstract class PObjectEntity(val pContext: PEntityContext)
       case entity: PEntityEntity => entity
     }
   }
+*/
 }

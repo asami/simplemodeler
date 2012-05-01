@@ -22,9 +22,9 @@ import com.asamioffice.goldenport.text.UJavaString
 import com.asamioffice.goldenport.io.UIO
 import com.asamioffice.goldenport.util.MultiValueMap
 
-/*
+/**
  * @since   Mar. 31, 2011
- * @version Apr. 21, 2012
+ * @version Apr. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
@@ -33,11 +33,14 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
 
   override val defaultFileSuffix = "js"
   override val target_context = new ExtjsEntityContext(sm.entityContext, sctx)
-  override val target_realm = new ExtjsRealmEntity(target_context)  
+  override val target_realm = new ExtjsRealmEntity(target_context)
+  target_context.setModel(sm)
+  target_context.setPlatform(target_realm)
   srcMainDir = "/public" // XXX Play
   useEntityDocument = false
   useValue = false
   usePowertype = false
+  useKindPackage = true
 
   def toExtjsRealm() = transform
 
@@ -85,11 +88,11 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
       println("SimpleModel2Extjs:" + ppkg.name)
       val evolution = new PlayEvolutionEntity(target_context)
-      build_package_pathname(evolution, pkg, ppkg, "/conf/evolutions/default/1.sql.sm")
+      build_object_for_package_at_pathname(evolution, pkg, ppkg, "/conf/evolutions/default/1.sql.sm")
 
       // XXX unify application view
       val viewport = new ExtjsViewportEntity(target_context)
-      build_package(viewport, pkg, ppkg, "Viewport")
+      build_object_for_package(viewport, pkg, ppkg, "Viewport")
     }
 
 /*

@@ -849,7 +849,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
     }
 
     def resolve_package(pkg: PPackageEntity, aNode: GTreeNode[GContent]) {
-      pkg.containerNode = Some(aNode.parent)
+//      pkg.containerNode = Some(aNode.parent)
     }
 
     override def enter(aNode: GTreeNode[GContent]) {

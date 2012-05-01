@@ -12,9 +12,10 @@ import org.simplemodeling.dsl.SDatatypeFunction
 import org.simplemodeling.dsl.datatype._
 import org.simplemodeling.dsl.datatype.ext._
 
-/*
+/**
  * @since   Jul. 17, 2011
- * @version Oct. 10, 2011
+ *  version Oct. 10, 2011
+ * @version May.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 class AndroidRepositoryJavaClassDefinition(
@@ -67,14 +68,14 @@ class AndroidRepositoryJavaClassDefinition(
   override protected def attribute_variables_extension {
     jm_pln("""private static final String DATABASE_NAME = "%s";""", "data")
     jm_pln("""private static final int DATABASE_VERSION = 1;""")
-    package_children_entity_map { entity =>
+    traverse_entities_in_module { entity =>
       jm_pln("""private static final String %s = "%s";""", _table_name_const(entity), entity.term_en)
     }
-    package_children_entity_map { entity =>
+    traverse_entities_in_module { entity =>
       jm_pln("private static HashMap<String, String> %s = new HashMap<String, String>();", _projection_map_name(entity));
     }
     jm_pln("{")
-    package_children_entity_map { entity =>
+    traverse_entities_in_module { entity =>
       val pmname = _projection_map_name(entity)
       val entitydef = _contract_name + "." + _entity_class_name(entity)
       jm_pln("""%s.put(%s._ID, "_id");""", pmname, entitydef)
@@ -233,7 +234,7 @@ return null;""", Map("%table%" -> tablename, "%class%" -> docname))
   override protected def object_auxiliary {
     jm_pln("private static class DatabaseHelper extends SQLiteOpenHelper {")
     jm_indent_up
-    package_children_entity_map { entity =>
+    traverse_entities_in_module { entity =>
       val tablename = _table_name_const(entity)
       val sqlcreate = _sql_create(entity)
       jm_pln("""private static final String CREATE_%s_TABLE_SQL = "create table " +""", tablename)
@@ -259,7 +260,7 @@ DatabaseHelper(Context context) {
 }
 """)
     jm_override_public_method("void onCreate(SQLiteDatabase db)") {
-      package_children_entity_map { entity =>
+      traverse_entities_in_module { entity =>
         val tablename = _table_name_const(entity)
         jm_pln("db.execSQL(CREATE_%s_TABLE_SQL);", tablename)
       }
@@ -275,7 +276,7 @@ DatabaseHelper(Context context) {
 */      
     }
     jm_override_public_method("void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)") {
-      package_children_entity_map { entity =>
+      traverse_entities_in_module { entity =>
         val tablename = _table_name_const(entity)
         jm_pln("db.execSQL(DROP_%s_TABLE_SQL);", tablename)
       }

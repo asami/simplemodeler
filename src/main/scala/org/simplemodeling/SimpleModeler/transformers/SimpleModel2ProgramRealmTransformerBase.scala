@@ -24,7 +24,7 @@ import org.goldenport.recorder.Recordable
  * Derived from SimpleModel2JavaRealmTransformerBase (Feb. 3, 2011)
  * 
  * @since   Apr.  7, 2012
- * @version Apr. 21, 2012
+ * @version Apr. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -42,6 +42,13 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
   var useValue = true
   var usePowertype = true
   var isMakeProject = true
+  var useKindPackage = false
+
+  var entityKindName = "model"
+  var viewKindName = "view"
+  var controllerKindName = "controller"
+  var docKindName = "doc"
+  var storeKindName = "store"
 
   setup_FowardingRecorder(serviceContext)
 
@@ -288,6 +295,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     private def transform_Document(document: SMDomainDocument): DomainDocumentTYPE = {
       val obj = create_Document(document)
       build_object(obj, document)
+      if (useKindPackage) {
+        obj.kindName = docKindName
+      }
       make_Documents(document, obj).foreach(build_derived_object(document, obj))
       obj
     }
@@ -346,27 +356,37 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         val model = create_Model()
         val errormodel = create_ErrorModel()
         val agent = create_Agent()
+        build_package(ppkg, pkg)
         // build_package(p, pkg, ppkg, "Package"); // XXX 
         for (c <- create_Context) { 
-          build_package(c, pkg, ppkg, target_context.contextName(pkg))
+          build_object_for_package(c, pkg, ppkg, target_context.contextName(pkg))
         }
         for (r <- repository) {
-          build_package(r, pkg, ppkg, repositoryname)
+          build_object_for_package(r, pkg, ppkg, repositoryname)
         }
         for (c <- controller) {
-          build_package(c, pkg, ppkg, controllername)
+          if (useKindPackage) {
+            c.kindName = controllerKindName
+          }
+          build_object_for_package(c, pkg, ppkg, controllername)
         }
         for (v <- view) {
-          build_package(v, pkg, ppkg, viewname)
+          if (useKindPackage) {
+            v.kindName = viewKindName
+          }
+          build_object_for_package(v, pkg, ppkg, viewname)
         }
         for (m <- model) {
-          build_package(m, pkg, ppkg, modelname)
+          if (useKindPackage) {
+            m.kindName = entityKindName
+          }
+          build_object_for_package(m, pkg, ppkg, modelname)
         }
         for (e <- errormodel) {
-          build_package(e, pkg, ppkg, errormodelname)
+          build_object_for_package(e, pkg, ppkg, errormodelname)
         }
         for (a <- agent) {
-          build_package(a, pkg, ppkg, agentname)
+          build_object_for_package(a, pkg, ppkg, agentname)
         }
         val moduleOption = for (module <- create_Module) yield {
           if (repository.isDefined) {
@@ -384,7 +404,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           if (agent.isDefined) {
             module.entries += PModuleEntry(agentname, None, true)
           }
-          build_package(module, pkg, ppkg, modulename)
+          build_object_for_package(module, pkg, ppkg, modulename)
           module
         }
         val factoryOption = for (factory <- create_Factory) yield {
@@ -403,7 +423,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           if (agent.isDefined) {
             factory.entries += PModuleEntry(agentname, None, true)
           }
-          build_package(factory, pkg, ppkg, factoryname)
+          build_object_for_package(factory, pkg, ppkg, factoryname)
           factory
         }
         transform_Package_Extension(pkg, ppkg, moduleOption, factoryOption)
@@ -500,6 +520,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 */
     private def build_entity(obj: PEntityObjectEntity, anObject: SMObject) {
       build_object(obj, anObject);
+      if (useKindPackage) {
+        obj.kindName = entityKindName
+      }
       if (useEntityDocument) {
         obj.documentName = make_entity_document_name(anObject)
         make_entity_document(obj.documentName, anObject)
@@ -688,7 +711,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       }
     }
 
-    protected final def build_package(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) = {
+    protected final def build_object_for_package(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) = {
       obj.name = if (name != null) name else make_object_name(modelPackage.name)
       obj.term = modelPackage.term
       obj.term_en = modelPackage.term_en
@@ -706,7 +729,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj
     }
 
-    protected final def build_package_script(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) = {
+    protected final def build_object_for_package_in_script(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) = {
       obj.name = if (name != null) name else make_object_name(modelPackage.name)
       obj.term = modelPackage.term
       obj.term_en = modelPackage.term_en
@@ -724,7 +747,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj
     }
 
-    protected final def build_package_pathname(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, pathname: String) = {
+    protected final def build_object_for_package_at_pathname(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, pathname: String) = {
       obj.name = UPathString.getLastComponent(pathname)
       obj.term = modelPackage.term
       obj.term_en = modelPackage.term_en
@@ -739,6 +762,24 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 //      build_properties(obj, modelPackage)
       target_realm.setEntity(pathname, obj)
       obj
+    }
+
+    protected final def build_package(ppkg: PPackageEntity, modelPackage: SMPackage) = {
+      ppkg.term = modelPackage.term
+      ppkg.term_en = modelPackage.term_en
+      ppkg.term_ja = modelPackage.term_ja
+      ppkg.asciiName = target_context.asciiName(modelPackage)
+      ppkg.classNameBase = target_context.classNameBase(modelPackage)
+//      ppkg.modelPackage = Some(modelPackage)
+//      ppkg.platformPackage = Some(ppkg)
+      ppkg.packageName = modelPackage.qualifiedName
+      ppkg.xmlNamespace = modelPackage.xmlNamespace
+//      ppkg.modelObject = modelPackage
+//      build_properties(ppkg, modelPackage)
+      val pathname = make_Pathname(modelPackage.qualifiedName)
+      val node = target_realm.setEntity(pathname, ppkg)
+//      ppkg.containerNode = Some(node)
+      ppkg      
     }
   }
 
@@ -985,7 +1026,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
 
     def resolve_package(pkg: PPackageEntity, aNode: GTreeNode[GContent]) {
-      pkg.containerNode = Some(aNode.parent)
+//      pkg.containerNode = Some(aNode.parent)
     }
 
     override def enter(aNode: GTreeNode[GContent]) {

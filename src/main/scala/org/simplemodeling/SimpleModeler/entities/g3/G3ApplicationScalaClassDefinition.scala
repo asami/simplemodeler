@@ -10,9 +10,10 @@ import org.simplemodeling.dsl.SDatatypeFunction
 import org.simplemodeling.dsl.datatype._
 import org.simplemodeling.dsl.datatype.ext._
 
-/*
+/**
  * @since   Aug. 15, 2011
- * @version Sep. 25, 2011
+ *  version Sep. 25, 2011
+ * @version May.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 class G3ApplicationScalaClassDefinition(
@@ -34,7 +35,7 @@ class G3ApplicationScalaClassDefinition(
 
   override protected def package_methods_Extension {
     _package_port
-    package_children_entity_map(_entity_schema)
+    traverse_entities_in_module(_entity_schema)
     _datastore
   }
 
@@ -159,7 +160,7 @@ class G3ApplicationScalaClassDefinition(
   private def _datastore {
     sm_pln("""datastore('ds, RecordClassSpace(""")
     sm_indent_up
-    val classes = package_children_entity_map(e =>
+    val classes = collect_entities_in_module(e =>
       "RecordClass('%s, %s)".format(e.asciiName, _schema_name(e)))
     val last = classes.last
     sm_indent_up

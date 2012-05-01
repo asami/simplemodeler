@@ -7,11 +7,12 @@ import java.text.SimpleDateFormat
 import java.util.TimeZone
 import com.asamioffice.goldenport.text.TextMaker
 import org.simplemodeling.SimpleModeler.entity._
+import org.simplemodeling.SimpleModeler.entity.domain._
 import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 21, 2012
- * @version Apr. 21, 2012
+ * @version Apr. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 class EvolutionPlayClassDefinition(
@@ -46,7 +47,11 @@ DROP TABLE IF EXISTS User;
     }
   }
 
+  override protected def package_methods_Entity(entity: SMDomainEntity) {
+    println("EvolutionPlayClassDefinition: model entity")
+  }
+
   override protected def package_methods_platform_Entity(entity: PEntityEntity) {
-    println("EvolutionPlayClassDefinition")
+    println("EvolutionPlayClassDefinition: platform entity")
   }
 }

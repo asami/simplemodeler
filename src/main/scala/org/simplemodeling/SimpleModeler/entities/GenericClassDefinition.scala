@@ -38,7 +38,7 @@ import org.goldenport.recorder.Recordable
  * @since   Jun.  4, 2011
  *  version Sep. 25, 2011
  *  version Feb. 20, 2012
- * @version Apr. 21, 2012
+ * @version May.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -310,7 +310,22 @@ abstract class GenericClassDefinition(
     package_variables_platformmodel
   }
 
+  val package_variables_platformmodel_visitor = new PObjectEntityFunction[Unit] {
+    override protected def apply_EntityEntity(entity: PEntityEntity) {
+      package_variables_EntityEntity(entity)
+    }
+
+    override protected def apply_PackageEntity(pkg: PPackageEntity) {
+      package_variables_PackageEntity(pkg)
+    }
+
+    override protected def apply_ObjectEntity(pkg: PObjectEntity) {
+    }
+  }
+
   protected def package_variables_platformmodel {
+    pContext.traversePlatform(package_variables_platformmodel_visitor)
+/*
     val children = pobject.packageChildren
     if (!children.isEmpty) {
       val f = new PObjectEntityFunction[Unit] {
@@ -328,11 +343,13 @@ abstract class GenericClassDefinition(
 //      println(this)
       children.map(f)
     }
+*/
   }
 
   protected def package_variables_EntityEntity(entity: PEntityEntity) {
   }
 
+  final
   protected def package_variables_PackageEntity(pkg: PPackageEntity) {
   }
 
@@ -696,7 +713,22 @@ abstract class GenericClassDefinition(
   protected def package_methods_Service(service: SMDomainService) {
   }
 
+  val package_methods_platformmodel_visitor = new PObjectEntityFunction[Unit] {
+    override protected def apply_EntityEntity(entity: PEntityEntity) {
+      package_methods_platform_Entity(entity)
+    }
+
+    override protected def apply_PackageEntity(pkg: PPackageEntity) {
+      package_methods_platform_Package(pkg)
+    }
+
+    override protected def apply_ObjectEntity(obj: PObjectEntity) {
+    }
+  }
+
   protected def package_methods_platformmodel {
+    pContext.traversePlatform(package_methods_platformmodel_visitor)
+/*    
     val children = pobject.packageChildren
     if (!children.isEmpty) {
       val f = new PObjectEntityFunction[Unit] {
@@ -713,31 +745,51 @@ abstract class GenericClassDefinition(
       }
       children.map(f)
     }
+*/
   }
 
   protected def package_methods_platform_Entity(entity: PEntityEntity) {
   }
 
-  protected def package_methods_platform_Package(pkg: PPackageEntity) {
+  final protected def package_methods_platform_Package(pkg: PPackageEntity) {
   }
 
   protected def package_methods_Extension {
   }
 
-  protected final def package_children_map[T](f: PObjectEntity => T): Seq[T] = {
-    pobject.packageChildren.map(f)
-  }
-
-  protected final def package_children_collect[T](f: PartialFunction[PObjectEntity, T]): Seq[T] = {
-    pobject.packageChildren.collect(f)
-  }
-
-  protected final def package_children_entity_map[T](f: PEntityEntity => T): Seq[T] = {
-    pobject.packageChildren.collect {
-      case e: PEntityEntity => f(e)
+  protected final def entities_in_module(): Seq[PEntityEntity] = {
+    collect_entities_in_module {
+      case x: PEntityEntity => x
     }
   }
 
+  protected final def collect_entities_in_module[T](f: PEntityEntity => T): Seq[T] = {
+    pContext.collectPlatform {
+      case x: PEntityEntity => f(x)
+    }
+  }
+
+  protected final def traverse_entities_in_module[T](f: PEntityEntity => T) {
+    pContext.traversePlatform {
+      case x: PEntityEntity => f(x)
+    }
+  }
+
+/*
+  protected final def package_children_map[T](f: PObjectEntity => T): Seq[T] = {
+//    pobject.packageChildren.map(f)
+  }
+
+  protected final def package_children_collect[T](f: PartialFunction[PObjectEntity, T]): Seq[T] = {
+//    pobject.packageChildren.collect(f)
+  }
+
+  protected final def package_children_entity_map[T](f: PEntityEntity => T): Seq[T] = {
+//    pobject.packageChildren.collect {
+//      case e: PEntityEntity => f(e)
+//    }
+  }
+*/
   /*
    * auxiliaryiliary object compartment
    */

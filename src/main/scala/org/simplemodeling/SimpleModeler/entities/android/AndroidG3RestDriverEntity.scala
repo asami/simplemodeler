@@ -13,15 +13,18 @@ import content.EntityContent
 
 /*
  * @since   Jul. 19, 2011
- * @version Sep.  1, 2011
+ *  version Sep.  1, 2011
+ * @version May.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 class AndroidG3RestDriverEntity(val androidContext: AndroidEntityContext) extends JavaObjectEntityBase(androidContext) with PServiceEntity {
+/*
   def entities = containerNode.get.children.map(_.content) collect {
     case entity: EntityContent => entity.entity
   } collect {
     case entity: PEntityEntity => entity
   }
+*/
   var interfaceName: Option[String] = None 
 
   override protected def write_Content(out: BufferedWriter) {
