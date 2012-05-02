@@ -13,7 +13,7 @@ import scala.MatchError
 /**
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
- * @version May.  1, 2012
+ * @version May.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) {
@@ -31,11 +31,13 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   def setModel(m: SimpleModelEntity) {
     require (m != null, "model should not be null.")
     assert (_model.isEmpty, "model should not be setted.")
+    _model = Some(m)
   }
 
   def setPlatform(p: PRealmEntity) {
     require (p != null, "model should not be null.")
     assert (_platform.isEmpty, "model should not be setted.")
+    _platform = Some(p)
   }
 
   def model = {

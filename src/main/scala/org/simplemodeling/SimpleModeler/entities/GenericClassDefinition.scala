@@ -38,7 +38,7 @@ import org.goldenport.recorder.Recordable
  * @since   Jun.  4, 2011
  *  version Sep. 25, 2011
  *  version Feb. 20, 2012
- * @version May.  1, 2012
+ * @version May.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -627,7 +627,7 @@ abstract class GenericClassDefinition(
   }
 
   /*
-   * Package scope methods compartment
+   * Package (module) scope methods compartment
    */
 
   protected def package_methods {
