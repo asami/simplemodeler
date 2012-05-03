@@ -13,7 +13,7 @@ import scala.MatchError
 /**
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
- * @version May.  2, 2012
+ * @version May.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) {
@@ -179,9 +179,15 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   final def sqlName(anObject: PObjectEntity): String = {
-    pascal_case_name(term_en(anObject))
+    // XXX SQL specific
+    pascal_case_name(asciiName(anObject))
   }
 
+  final def sqlName(attr: PAttribute): String = {
+    // XXX SQL specific
+    pascal_case_name(dataKey(attr))
+  }
+  
   final def name_en(anObject: PObjectEntity): String = {
     name_en(anObject.modelObject)
   }
@@ -438,6 +444,14 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
       }
     }
     buf.toString
+  }
+
+  /*
+   * SQL
+   */
+  final def sqlColumn(attr: PAttribute): String = {
+    val name = sqlName(attr)
+    name
   }
 
   /*

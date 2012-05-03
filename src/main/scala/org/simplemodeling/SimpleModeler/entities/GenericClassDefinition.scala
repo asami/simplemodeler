@@ -38,7 +38,7 @@ import org.goldenport.recorder.Recordable
  * @since   Jun.  4, 2011
  *  version Sep. 25, 2011
  *  version Feb. 20, 2012
- * @version May.  2, 2012
+ * @version May.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -304,10 +304,89 @@ abstract class GenericClassDefinition(
   protected def attribute_variables_Epilogue {}
 
   /*
-   * Package variables
+   * Package (module) scope variables compartment
    */
   protected def package_variables {
+    package_variables_simplemodel
     package_variables_platformmodel
+    package_variables_Extension
+  }
+
+  protected def package_variables_simplemodel {
+    for (pkg <- pobject.modelPackage; child <- pkg.children) {
+      child match {
+        case actor: SMDomainActor         => package_variables_Actor(actor)
+        case resource: SMDomainResource   => package_variables_Resource(resource)
+        case event: SMDomainEvent         => package_variables_Event(event)
+        case role: SMDomainRole           => package_variables_Role(role)
+        case summary: SMDomainSummary     => package_variables_Summary(summary)
+        case entity: SMDomainEntity       => package_variables_Entity(entity)
+        case part: SMDomainEntityPart     => package_variables_Entity_Part(part)
+        case id: SMDomainValueId          => package_variables_Id(id)
+        case name: SMDomainValueName      => package_variables_Name(name)
+        case value: SMDomainValue         => package_variables_Value(value)
+        case powertype: SMDomainPowertype => package_variables_Powertype(powertype)
+        case document: SMDomainDocument   => package_variables_Document(document)
+        case rule: SMDomainRule           => package_variables_Rule(rule)
+        case service: SMDomainService     => package_variables_Service(service)
+        //        case port: SMDomainPort => package_variables_Port(port)
+        //        case facade: SMDomainFacade => package_variables_Facade(facade)
+        case datatype: SMDatatype         => {}
+        case uc: SMBusinessUsecase        => {}
+        case task: SMBusinessTask         => {}
+        case pkg: SMPackage               => {}
+        case unknown                      => error("Unspported simple model object = " + unknown)
+      }
+    }
+  }
+
+  protected def package_variables_Actor(actor: SMDomainActor) {
+    package_variables_Entity(actor)
+  }
+
+  protected def package_variables_Resource(resource: SMDomainResource) {
+    package_variables_Entity(resource)
+  }
+
+  protected def package_variables_Event(event: SMDomainEvent) {
+    package_variables_Entity(event)
+  }
+
+  protected def package_variables_Role(role: SMDomainRole) {
+    package_variables_Entity(role)
+  }
+
+  protected def package_variables_Summary(summary: SMDomainSummary) {
+    package_variables_Entity(summary)
+  }
+
+  protected def package_variables_Entity(entity: SMDomainEntity) {
+  }
+
+  protected def package_variables_Entity_Part(part: SMDomainEntityPart) {
+  }
+
+  protected def package_variables_Powertype(powertype: SMDomainPowertype) {
+  }
+
+  protected def package_variables_Id(id: SMDomainValueId) {
+    package_variables_Value(id)
+  }
+
+  protected def package_variables_Name(name: SMDomainValueName) {
+    package_variables_Value(name)
+  }
+
+  protected def package_variables_Value(value: SMDomainValue) {
+  }
+
+  protected def package_variables_Document(document: SMDomainDocument) {
+  }
+
+  protected def package_variables_Rule(rule: SMDomainRule) {
+  }
+
+  protected def package_variables_Service(service: SMDomainService) {
   }
 
   val package_variables_platformmodel_visitor = new PObjectEntityFunction[Unit] {
@@ -349,8 +428,10 @@ abstract class GenericClassDefinition(
   protected def package_variables_EntityEntity(entity: PEntityEntity) {
   }
 
-  final
   protected def package_variables_PackageEntity(pkg: PPackageEntity) {
+  }
+
+  protected def package_variables_Extension {
   }
 
   /*
@@ -629,7 +710,6 @@ abstract class GenericClassDefinition(
   /*
    * Package (module) scope methods compartment
    */
-
   protected def package_methods {
     package_methods_simplemodel
     package_methods_platformmodel
@@ -751,7 +831,7 @@ abstract class GenericClassDefinition(
   protected def package_methods_platform_Entity(entity: PEntityEntity) {
   }
 
-  final protected def package_methods_platform_Package(pkg: PPackageEntity) {
+  protected def package_methods_platform_Package(pkg: PPackageEntity) {
   }
 
   protected def package_methods_Extension {

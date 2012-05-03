@@ -13,7 +13,7 @@ import org.simplemodeling.dsl._
  * @since   Apr. 21, 2011
  *  version Aug. 20, 2011
  *  version Dec. 15, 2011
- * @version Apr. 30, 2012
+ * @version May.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -89,6 +89,10 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     } else {
       attributes.toList
     }
+  }
+
+  def wholeAttributesWithoutId: List[PAttribute] = {
+    wholeAttributes.filter(!_.isId)
   }
 
   lazy val isId = wholeAttributes.find(_.isId).isDefined

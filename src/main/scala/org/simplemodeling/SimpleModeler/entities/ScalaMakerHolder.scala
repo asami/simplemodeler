@@ -1,8 +1,9 @@
 package org.simplemodeling.SimpleModeler.entities
 
-/*
+/**
  * @since   Aug. 19, 2011
- * @version Aug. 21, 2011
+ *  version Aug. 21, 2011
+ * @version May.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 trait ScalaMakerHolder {
@@ -43,6 +44,22 @@ trait ScalaMakerHolder {
 
   protected def sm_pln() {
     _maker.println()
+  }
+
+  protected def sm_block(o: String, ops: Any*)(c: String, cps: Any*)(b: => Unit) {
+    _maker.println(o, ops.map(_.asInstanceOf[AnyRef]): _*)
+    sm_indent_up
+    b
+    sm_indent_down
+    _maker.println(c, cps.map(_.asInstanceOf[AnyRef]): _*)
+  }
+
+  protected def sm_blockp(o: String, ops: Any*)(b: => Unit) {
+    _maker.println(o + " {", ops.map(_.asInstanceOf[AnyRef]): _*)
+    sm_indent_up
+    b
+    sm_indent_down
+    _maker.println("}")
   }
 
   protected final def sm_package(name: String) {
