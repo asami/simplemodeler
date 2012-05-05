@@ -13,7 +13,7 @@ import org.simplemodeling.dsl._
  * @since   Apr. 21, 2011
  *  version Aug. 20, 2011
  *  version Dec. 15, 2011
- * @version May.  3, 2012
+ * @version May.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -54,6 +54,11 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   lazy val xmlElementName = asciiName
   lazy val factoryName = pContext.factoryName(packageName)
   lazy val contextName = pContext.contextName(packageName)
+
+  final def modelEntity: SMEntity = {
+    require (modelObject.isInstanceOf[SMEntity], "modelObject should be SMEntity.")
+    modelObject.asInstanceOf[SMEntity]    
+  }
 
   def getBaseObject: Option[PObjectEntity] = {
     if (_baseObject != null) Some(_baseObject.reference) else None

@@ -9,7 +9,8 @@ import org.simplemodeling.dsl._
  * Scala Class Attribute Definition
  * 
  * @since   Aug. 19, 2011
- * @version Feb. 20, 2012
+ *  version Feb. 20, 2012
+ * @version May.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassAttributeDefinition(
@@ -77,48 +78,48 @@ class ScalaClassAttributeDefinition(
     mapping_multi_value_attribute_method("new BigDecimal(%s)", "%s.toString()")
   }
 
-  def method_bean_single_entity_Simple(e: PEntityType) {
+  override def method_bean_single_entity_Simple(e: PEntityType) {
     single_value_attribute_method
   }
 
-  def method_bean_single_entity_Composition_Reference_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_single_entity_Composition_Reference_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_single_entity_Aggregation_Reference_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_single_entity_Aggregation_Reference_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_single_entity_Association_Reference_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_single_entity_Association_Reference_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_single_entity_Composition_Id_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_single_entity_Composition_Id_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_single_entity_Aggregation_Id_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_single_entity_Aggregation_Id_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_single_entity_Association_Id_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_single_entity_Association_Id_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_single_entity_Composition_Id_Reference_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_single_entity_Composition_Id_Reference_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_single_entity_Aggregation_Id_Reference_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_single_entity_Aggregation_Id_Reference_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_single_entity_Association_Id_Reference_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_single_entity_Association_Id_Reference_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_single_entity_Query_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_single_entity_Query_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
 //     sm_public_void_method("set%s(%s %s)", attrName.capitalize, javaType, paramName) {
@@ -160,35 +161,35 @@ class ScalaClassAttributeDefinition(
     mapping_single_value_attribute_method("new BigDecimal(%s)", "%s.toString()")
   }
 
-  def method_bean_multi_entity_Simple(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_multi_entity_Simple(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_multi_entity_Composition_Reference_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_multi_entity_Composition_Reference_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_multi_entity_Aggregation_Reference_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_multi_entity_Aggregation_Reference_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_multi_entity_Association_Reference_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_multi_entity_Association_Reference_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_multi_entity_Composition_Id_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_multi_entity_Composition_Id_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_multi_entity_Aggregation_Id_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_multi_entity_Aggregation_Id_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_multi_entity_Association_Id_Property(e: PEntityType) {
-    error("not supported yet")
+  override def method_bean_multi_entity_Association_Id_Property(e: PEntityType) {
+    sys.error("not supported yet")
   }
 
-  def method_bean_multi_entity_Composition_Id_Reference_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Composition_Id_Reference_Property(e: PEntityType) {
     sm_pln("fill_%s();".format(attrName))
     sm_if_else(erAssocVarName + " != null") {
       sm_pln("return Collections.unmodifiableList(%s);", erAssocVarName)
@@ -198,13 +199,13 @@ class ScalaClassAttributeDefinition(
     }
   }
 
-  def method_bean_multi_entity_Aggregation_Id_Reference_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Aggregation_Id_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_multi_entity_Association_Id_Reference_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Association_Id_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_multi_entity_Query_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Query_Property(e: PEntityType) {
   }
 
   // part
@@ -2013,27 +2014,27 @@ class ScalaClassAttributeDefinition(
   }
 
   def method_document_make_single_entity_composition_reference_property(e: PEntityType) {
-    error("not supported yet")
+    sys.error("not supported yet")
   }
 
   def method_document_make_single_entity_aggregation_reference_property(e: PEntityType) {
-    error("not supported yet")
+    sys.error("not supported yet")
   }
 
   def method_document_make_single_entity_association_reference_property(e: PEntityType) {
-    error("not supported yet")
+    sys.error("not supported yet")
   }
 
   def method_document_make_single_entity_composition_id_property(e: PEntityType) {
-    error("not supported yet")
+    sys.error("not supported yet")
   }
 
   def method_document_make_single_entity_aggregation_id_property(e: PEntityType) {
-    error("not supported yet")
+    sys.error("not supported yet")
   }
 
   def method_document_make_single_entity_association_id_property(e: PEntityType) {
-    error("not supported yet")
+    sys.error("not supported yet")
   }
 
   def method_document_make_single_entity_composition_id_reference_property(entityType: PEntityType) {
@@ -2043,15 +2044,15 @@ class ScalaClassAttributeDefinition(
   }
 
   def method_document_make_single_entity_aggregation_id_reference_property(e: PEntityType) {
-    error("not supported yet")
+    sys.error("not supported yet")
   }
 
   def method_document_make_single_entity_association_id_reference_property(e: PEntityType) {
-    error("not supported yet")
+    sys.error("not supported yet")
   }
 
   def method_document_make_single_entity_query_property(e: PEntityType) {
-    error("not supported yet")
+    sys.error("not supported yet")
   }
 /*
           def id {
@@ -2250,7 +2251,7 @@ class ScalaClassAttributeDefinition(
             }
           }
         }
-        case p: PPowertypeType => error("not supported yet")
+        case p: PPowertypeType => sys.error("not supported yet")
         case v: PByteType      => update("%s.shortValue()")
         case v: PIntegerType   => update("%s.toString()")
         case v: PDecimalType   => update("%s.toString()")

@@ -9,12 +9,10 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   May.  3, 2012
- * @version May.  3, 2012
+ * @version May.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 class SqlEntityEntity(aContext: SqlEntityContext) extends SqlObjectEntity(aContext) with PEntityEntity {
-  def modelEntity: SMEntity = null // XXX
-
   override protected def write_Content(out: BufferedWriter) {
     val klass = new Sql92SqlClassDefinition(aContext, Nil, SqlEntityEntity.this)
     klass.build()

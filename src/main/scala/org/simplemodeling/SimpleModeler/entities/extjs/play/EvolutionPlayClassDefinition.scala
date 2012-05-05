@@ -9,10 +9,11 @@ import com.asamioffice.goldenport.text.TextMaker
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.domain._
 import org.simplemodeling.SimpleModeler.entities._
+import org.simplemodeling.SimpleModeler.entities.sql._
 
 /**
  * @since   Apr. 21, 2012
- * @version May.  3, 2012
+ * @version May.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class EvolutionPlayClassDefinition(
@@ -41,31 +42,11 @@ class EvolutionPlayClassDefinition(
   }
 
   private def _create_table(entity: PEntityEntity) {
-    var name = pContext.sqlName(entity)
-    sm_block("CREATE TABLE %s (", name)(");") {
-      entity.wholeAttributes.init |>| _column_colon
-      entity.wholeAttributes.last |> _column
-    }
+    val sqlrealm = SqlPlatform.create(pContext)
+    sqlrealm.open()
+    val sqlentity = sqlrealm.getSqlEntity(entity)
+    println("Evolution: " + sqlentity.toText)
   }
-
-  private def _column_colon(attr: PAttribute) {
-    sm_p(pContext.sqlColumn(attr))
-    sm_pln(",")
-  }
-
-  private def _column(attr: PAttribute) {
-    sm_pln(pContext.sqlColumn(attr))
-  }
-
-/*
-    id bigint(20) NOT NULL AUTO_INCREMENT,
-    email varchar(255) NOT NULL,
-    password varchar(255) NOT NULL,
-    fullname varchar(255) NOT NULL,
-    isAdmin boolean NOT NULL,
-    PRIMARY KEY (id)
-);
-*/
 
   private def _drop_table(entity: PEntityEntity) {
     var name = pContext.sqlName(entity)

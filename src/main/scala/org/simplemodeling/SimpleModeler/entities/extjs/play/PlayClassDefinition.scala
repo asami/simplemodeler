@@ -69,37 +69,37 @@ abstract class PlayClassAttributeDefinition(
   override protected def method_bean_single_decimal() {
   }
 
-  def method_bean_single_entity_Simple(e: PEntityType) {
+  override def method_bean_single_entity_Simple(e: PEntityType) {
   }
 
-  def method_bean_single_entity_Composition_Reference_Property(e: PEntityType) {
+  override def method_bean_single_entity_Composition_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_single_entity_Aggregation_Reference_Property(e: PEntityType) {
+  override def method_bean_single_entity_Aggregation_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_single_entity_Association_Reference_Property(e: PEntityType) {
+  override def method_bean_single_entity_Association_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_single_entity_Composition_Id_Property(e: PEntityType) {
+  override def method_bean_single_entity_Composition_Id_Property(e: PEntityType) {
   }
 
-  def method_bean_single_entity_Aggregation_Id_Property(e: PEntityType) {
+  override def method_bean_single_entity_Aggregation_Id_Property(e: PEntityType) {
   }
 
-  def method_bean_single_entity_Association_Id_Property(e: PEntityType) {
+  override def method_bean_single_entity_Association_Id_Property(e: PEntityType) {
   }
 
-  def method_bean_single_entity_Composition_Id_Reference_Property(e: PEntityType) {
+  override def method_bean_single_entity_Composition_Id_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_single_entity_Aggregation_Id_Reference_Property(e: PEntityType) {
+  override def method_bean_single_entity_Aggregation_Id_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_single_entity_Association_Id_Reference_Property(e: PEntityType) {
+  override def method_bean_single_entity_Association_Id_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_single_entity_Query_Property(e: PEntityType) {
+  override def method_bean_single_entity_Query_Property(e: PEntityType) {
   }
 
   // Part
@@ -121,37 +121,37 @@ abstract class PlayClassAttributeDefinition(
   override protected def method_bean_multi_decimal() {
   }
 
-  def method_bean_multi_entity_Simple(e: PEntityType) {
+  override def method_bean_multi_entity_Simple(e: PEntityType) {
   }
 
-  def method_bean_multi_entity_Composition_Reference_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Composition_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_multi_entity_Aggregation_Reference_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Aggregation_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_multi_entity_Association_Reference_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Association_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_multi_entity_Composition_Id_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Composition_Id_Property(e: PEntityType) {
   }
 
-  def method_bean_multi_entity_Aggregation_Id_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Aggregation_Id_Property(e: PEntityType) {
   }
 
-  def method_bean_multi_entity_Association_Id_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Association_Id_Property(e: PEntityType) {
   }
 
-  def method_bean_multi_entity_Composition_Id_Reference_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Composition_Id_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_multi_entity_Aggregation_Id_Reference_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Aggregation_Id_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_multi_entity_Association_Id_Reference_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Association_Id_Reference_Property(e: PEntityType) {
   }
 
-  def method_bean_multi_entity_Query_Property(e: PEntityType) {
+  override def method_bean_multi_entity_Query_Property(e: PEntityType) {
   }
 
   // part

@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   May.  3, 2012
- * @version May.  3, 2012
+ * @version May.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SqlClassDefinition(
@@ -44,13 +44,13 @@ abstract class SqlClassDefinition(
   }
 
   override protected def class_open_body {
-    jm_pln("CREATE TABLE '%s', {", qualifiedName)
+    jm_pln("CREATE TABLE '%s' (", qualifiedName)
     jm_indent_up
   }
 
   override protected def class_close_body {
     jm_indent_down
-    jm_pln("});")
+    jm_pln(");")
   }
 
   override protected def attribute_variables_Prologue {

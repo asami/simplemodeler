@@ -15,7 +15,8 @@ import com.asamioffice.goldenport.text.UString.notNull
 /*
  * @since   Apr. 22, 2011
  *  version Aug. 20, 2011
- * @version Dec. 15, 2011
+ *  version Dec. 15, 2011
+ * @version May.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class JavaObjectEntityBase(val javaContext: JavaEntityContextBase)
@@ -26,7 +27,7 @@ abstract class JavaObjectEntityBase(val javaContext: JavaEntityContextBase)
   private val _aspects = new ArrayBuffer[JavaAspect]
   private var _maker: JavaMaker = null
 
-  def modelEntity = modelObject.asInstanceOf[SMEntity]
+//  def modelEntity = modelObject.asInstanceOf[SMEntity]
 //  val documentName = ""
   var documentName: String = ""
 

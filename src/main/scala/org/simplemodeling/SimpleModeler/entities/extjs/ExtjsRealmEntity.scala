@@ -13,7 +13,7 @@ import org.simplemodeling.SimpleModeler.entities.PRealmEntity
 
 /*
  * @since   Mar. 31, 2012
- * @version Mar. 31, 2012
+ * @version May. 31, 2012
  * @author  ASAMI, Tomoharu
  */
 class ExtjsRealmEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends PRealmEntity(aIn, aOut, aContext) {

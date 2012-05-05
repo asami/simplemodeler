@@ -57,7 +57,7 @@ import java.util.TimeZone
  * @since   Jun. 20, 2011
  *  version Aug. 19, 2011
  *  version Feb. 19, 2012
- * @version Apr. 20, 2012
+ * @version May.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassAttributeDefinition(
@@ -66,8 +66,6 @@ abstract class GenericClassAttributeDefinition(
     val attr: PAttribute,
     val owner: GenericClassDefinition) {
   type ATTR_DEF <: GenericClassAttributeDefinition
-
-  
 
   var isImmutable: Boolean = false // XXX attr.readonly
   def isInject = attr.inject
@@ -673,18 +671,18 @@ abstract class GenericClassAttributeDefinition(
     }
   }
 
-  protected def method_bean_single_plain()
-  protected def method_bean_single_byte()
-  protected def method_bean_single_integer()
-  protected def method_bean_single_decimal()
-  protected def method_bean_single_part(p: PEntityPartType)
-  protected def method_bean_single_powertype(e: PPowertypeType)
-  protected def method_bean_multi_plain()
-  protected def method_bean_multi_byte()
-  protected def method_bean_multi_integer()
-  protected def method_bean_multi_decimal()
-  protected def method_bean_multi_part(p: PEntityPartType)
-  protected def method_bean_multi_powertype(e: PPowertypeType)
+  protected def method_bean_single_plain() {}
+  protected def method_bean_single_byte() {}
+  protected def method_bean_single_integer() {}
+  protected def method_bean_single_decimal() {}
+  protected def method_bean_single_part(p: PEntityPartType) {}
+  protected def method_bean_single_powertype(e: PPowertypeType) {}
+  protected def method_bean_multi_plain() {}
+  protected def method_bean_multi_byte() {}
+  protected def method_bean_multi_integer() {}
+  protected def method_bean_multi_decimal() {}
+  protected def method_bean_multi_part(p: PEntityPartType) {}
+  protected def method_bean_multi_powertype(e: PPowertypeType) {}
 
   protected def method_bean_single_entity(e: PEntityType) {
     entityPersistentKind {
@@ -704,17 +702,17 @@ abstract class GenericClassAttributeDefinition(
     }
   }
 
-  def method_bean_single_entity_Simple(e: PEntityType)
-  def method_bean_single_entity_Composition_Reference_Property(e: PEntityType)
-  def method_bean_single_entity_Aggregation_Reference_Property(e: PEntityType)
-  def method_bean_single_entity_Association_Reference_Property(e: PEntityType)
-  def method_bean_single_entity_Composition_Id_Property(e: PEntityType)
-  def method_bean_single_entity_Aggregation_Id_Property(e: PEntityType)
-  def method_bean_single_entity_Association_Id_Property(e: PEntityType)
-  def method_bean_single_entity_Composition_Id_Reference_Property(e: PEntityType)
-  def method_bean_single_entity_Aggregation_Id_Reference_Property(e: PEntityType)
-  def method_bean_single_entity_Association_Id_Reference_Property(e: PEntityType)
-  def method_bean_single_entity_Query_Property(e: PEntityType)
+  def method_bean_single_entity_Simple(e: PEntityType) {}
+  def method_bean_single_entity_Composition_Reference_Property(e: PEntityType) {}
+  def method_bean_single_entity_Aggregation_Reference_Property(e: PEntityType) {}
+  def method_bean_single_entity_Association_Reference_Property(e: PEntityType) {}
+  def method_bean_single_entity_Composition_Id_Property(e: PEntityType) {}
+  def method_bean_single_entity_Aggregation_Id_Property(e: PEntityType) {}
+  def method_bean_single_entity_Association_Id_Property(e: PEntityType) {}
+  def method_bean_single_entity_Composition_Id_Reference_Property(e: PEntityType) {}
+  def method_bean_single_entity_Aggregation_Id_Reference_Property(e: PEntityType) {}
+  def method_bean_single_entity_Association_Id_Reference_Property(e: PEntityType) {}
+  def method_bean_single_entity_Query_Property(e: PEntityType) {}
 
   protected def method_bean_multi_entity(e: PEntityType) {
     entityPersistentKind {
@@ -734,17 +732,17 @@ abstract class GenericClassAttributeDefinition(
     }
   }
 
-  def method_bean_multi_entity_Simple(e: PEntityType)
-  def method_bean_multi_entity_Composition_Reference_Property(e: PEntityType)
-  def method_bean_multi_entity_Aggregation_Reference_Property(e: PEntityType)
-  def method_bean_multi_entity_Association_Reference_Property(e: PEntityType)
-  def method_bean_multi_entity_Composition_Id_Property(e: PEntityType)
-  def method_bean_multi_entity_Aggregation_Id_Property(e: PEntityType)
-  def method_bean_multi_entity_Association_Id_Property(e: PEntityType)
-  def method_bean_multi_entity_Composition_Id_Reference_Property(e: PEntityType)
-  def method_bean_multi_entity_Aggregation_Id_Reference_Property(e: PEntityType)
-  def method_bean_multi_entity_Association_Id_Reference_Property(e: PEntityType)
-  def method_bean_multi_entity_Query_Property(e: PEntityType)
+  def method_bean_multi_entity_Simple(e: PEntityType) {}
+  def method_bean_multi_entity_Composition_Reference_Property(e: PEntityType) {}
+  def method_bean_multi_entity_Aggregation_Reference_Property(e: PEntityType) {}
+  def method_bean_multi_entity_Association_Reference_Property(e: PEntityType) {}
+  def method_bean_multi_entity_Composition_Id_Property(e: PEntityType) {}
+  def method_bean_multi_entity_Aggregation_Id_Property(e: PEntityType) {}
+  def method_bean_multi_entity_Association_Id_Property(e: PEntityType) {}
+  def method_bean_multi_entity_Composition_Id_Reference_Property(e: PEntityType) {}
+  def method_bean_multi_entity_Aggregation_Id_Reference_Property(e: PEntityType) {}
+  def method_bean_multi_entity_Association_Id_Reference_Property(e: PEntityType) {}
+  def method_bean_multi_entity_Query_Property(e: PEntityType) {}
 
   /*
    * method_as

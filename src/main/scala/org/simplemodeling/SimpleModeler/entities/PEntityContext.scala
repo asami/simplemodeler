@@ -7,13 +7,13 @@ import org.goldenport.entity._
 import org.goldenport.entity.content._
 import org.goldenport.service.GServiceContext
 import com.asamioffice.goldenport.text.{UString, UJavaString}
-import scala.MatchError
+import org.simplemodeling.SimpleModeler.entities.sql._
 
 // derived from GaejEntityContext since Apr. 11, 2009
 /**
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
- * @version May.  3, 2012
+ * @version May.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) {
@@ -204,36 +204,33 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     pickup_name(modelElement.term_en, modelElement.term, modelElement.name_en, modelElement.name)
   }
 
-  // OLD features
-  final def isProject = {
-    serviceContext.getParameter("gaej.project").isDefined
-  }
-
-  final def applicationName = {
-    serviceContext.getParameter("gaej.project").get.toString
-  }
-
+  @deprecated("candidate old feature", "before 0.3.3")
   final def enName(modelElement: SMElement) = {
     pickup_name(modelElement.name_en, modelElement.term_en, modelElement.name)
   }
 
+  @deprecated("candidate old feature", "before 0.3.3")
   final def enTerm(modelElement: SMElement) = {
     pickup_name(modelElement.term_en, modelElement.term, modelElement.name_en, modelElement.name)
   }
 
+  @deprecated("candidate old feature", "before 0.3.3")
   final def localeName(modelElement: SMElement) = {
     pickup_name(modelElement.name_ja, modelElement.term_ja, modelElement.name)
   }
 
+  @deprecated("candidate old feature", "before 0.3.3")
   final def localeTerm(modelElement: SMElement) = {
     pickup_name(modelElement.term_ja, modelElement.term, modelElement.name_ja, modelElement.name)
   }
 
+  @deprecated("candidate old feature", "before 0.3.3")
   // not base object
   final def entityNameBase(anEntity: PEntityEntity) = {
     classNameBase(anEntity.modelObject)
   }
 
+  @deprecated("candidate old feature", "before 0.3.3")
   final def serviceNameBase(aService: PServiceEntity) = {
     val modelObject = aService.modelObject
     if (modelObject == SMNullObject) {
@@ -243,28 +240,34 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     }
   }
 
+  @deprecated("candidate old feature", "before 0.3.3")
   // not base object
   final def classNameBase(anObject: SMObject) = {
     pascal_case_name(enTerm(anObject))
   }
 
+  @deprecated("candidate old feature", "before 0.3.3")
   // not base object
   final def classNameBase(pkg: SMPackage) = {
     pascal_case_name(enTerm(pkg))
   }
 
+  @deprecated("candidate old feature", "before 0.3.3")
   final def entityDocumentName(anObject: SMObject): String = {
     "DD" + classNameBase(anObject)
   }
 
+  @deprecated("candidate old feature", "before 0.3.3")
   final def entityDocumentName(anObject: PObjectEntity): String = {
     entityDocumentName(anObject.modelObject)
   }
 
+  @deprecated("candidate old feature", "before 0.3.3")
   final def className(anObject: PObjectEntity): String = {
     className(anObject.modelObject)
   }
 
+  @deprecated("candidate old feature", "before 0.3.3")
   final def className(modelObject: SMObject): String = {
     pascal_case_name(enName(modelObject))
   }
@@ -310,6 +313,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     camel_case_name(enTerm(modelElement))
   }
 
+  @deprecated("candidate old feature", "before 0.3.3")
   final def queryName(anEntity: PEntityEntity): String = {
     entityNameBase(anEntity) + "Query"
   }
@@ -447,14 +451,6 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   /*
-   * SQL
-   */
-  final def sqlColumn(attr: PAttribute): String = {
-    val name = sqlName(attr)
-    name
-  }
-
-  /*
    * Utility methods 
    */
   final def collectModel[T](pf: PartialFunction[SMElement, T]): Seq[T] = {
@@ -507,6 +503,19 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
 
   final def traversePlatform(pathname: String, pf: PartialFunction[PObjectEntity, _]) {
     platform.traverseContent(pathname, new GEntityContentPartialFunction(pf))
+  }
+
+  /*
+   * Old features
+   */
+  @deprecated("old feature", "before 0.3.3")
+  final def isProject = {
+    serviceContext.getParameter("gaej.project").isDefined
+  }
+
+  @deprecated("old feature", "before 0.3.3")
+  final def applicationName = {
+    serviceContext.getParameter("gaej.project").get.toString
   }
 
   /*
