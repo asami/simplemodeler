@@ -19,6 +19,10 @@ import org.simplemodeling.SimpleModeler.entities.sql._
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) {
   final def simplemodelerVersion = serviceContext.parameter[String](Application_Version)
   final def simplemodelerBuild = serviceContext.parameter[String](Application_Version_Build)
+
+  var srcMainDir = "/src"
+  var defaultFileSuffix = "bak"
+
   // XXX abstract val
   private var _model: Option[SimpleModelEntity] = None
   private var _platform: Option[PRealmEntity] = None
@@ -31,6 +35,10 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   def setModel(m: SimpleModelEntity) {
     require (m != null, "model should not be null.")
     assert (_model.isEmpty, "model should not be setted.")
+    println("PEntityContext: start")
+    m.open
+    m.print
+    println("PEntityContext: end")
     _model = Some(m)
   }
 
@@ -450,6 +458,25 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     buf.toString
   }
 
+  def makePathname(obj: PObjectEntity): String = {
+//    val kind = if (UString.isNull(obj.kindName)) "" else "/" + obj.kindName 
+//    srcMainDir + UJavaString.packageName2pathname(obj.packageName) + kind + "/" + obj.name + "." + obj.fileSuffix
+    srcMainDir + UJavaString.packageName2pathname(obj.packageName) + "/" + obj.name + "." + obj.fileSuffix
+  }
+
+  def makePathname(qname: String): String = {
+    srcMainDir + UJavaString.className2pathname(qname) + "." + defaultFileSuffix
+  }
+
+  /*
+   * SQL
+   */
+  lazy val sqlRealm = SqlPlatform.create(this)
+
+  final def getSqlEntity(entity: PEntityEntity): SqlEntityEntity = {
+    sqlRealm.getEntityEntity(entity)
+  }
+
   /*
    * Utility methods 
    */
@@ -530,7 +557,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   def eventManagementServiceConfig = serviceConfigs("event")
   def plainServiceConfig = serviceConfigs("plain")
 
-  final def packagePathname(aPackageName: String): String = {
+  final def packagePathname0(aPackageName: String): String = {
     "/src" + UJavaString.className2pathname(aPackageName)
   }
 

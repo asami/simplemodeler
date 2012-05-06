@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.transformers.extjs
 
+import scalaz._, Scalaz._
 import _root_.java.io.File
 import scala.collection.mutable.{ArrayBuffer}
 import org.simplemodeling.SimpleModeler.entity._
@@ -24,19 +25,19 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /**
  * @since   Mar. 31, 2011
- * @version Apr. 30, 2012
+ * @version May.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
   type EntityContextTYPE = ExtjsEntityContext
   type TargetRealmTYPE = ExtjsRealmEntity
 
+  override val srcMainDir = "/public" // XXX Play
   override val defaultFileSuffix = "js"
   override val target_context = new ExtjsEntityContext(sm.entityContext, sctx)
   override val target_realm = new ExtjsRealmEntity(target_context)
   target_context.setModel(sm)
   target_context.setPlatform(target_realm)
-  srcMainDir = "/public" // XXX Play
   useEntityDocument = false
   useValue = false
   usePowertype = false
@@ -186,22 +187,22 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
       new ExtjsEntityPartEntity(target_context)
     }
 
-    override protected def create_Powertype(entity: SMDomainPowertype): DomainPowertypeTYPE = {
+    override protected def create_Powertype(entity: SMDomainPowertype): Option[DomainPowertypeTYPE] = {
       val r = new ExtjsPowertypeEntity(target_context)
       r.modelPowertype = entity
-      r
+      r.some
     }
 
-    override protected def create_Value(entity: SMDomainValue): DomainValueTYPE = {
-      new ExtjsValueEntity(target_context)
+    override protected def create_Value(entity: SMDomainValue): Option[DomainValueTYPE] = {
+      new ExtjsValueEntity(target_context).some
     }
 
-    override protected def create_Document(entity: SMDomainDocument): DomainDocumentTYPE = {
-      new ExtjsDocumentEntity(target_context)
+    override protected def create_Document(entity: SMDomainDocument): Option[DomainDocumentTYPE] = {
+      new ExtjsDocumentEntity(target_context).some
     }
 
-    override protected def create_Service(entity: SMDomainService): DomainServiceTYPE = {
-      new ExtjsServiceEntity(target_context)
+    override protected def create_Service(entity: SMDomainService): Option[DomainServiceTYPE] = {
+      new ExtjsServiceEntity(target_context).some
     }
 
     // platform specific models

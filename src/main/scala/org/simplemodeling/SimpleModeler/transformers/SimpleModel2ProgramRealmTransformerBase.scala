@@ -24,7 +24,7 @@ import org.goldenport.recorder.Recordable
  * Derived from SimpleModel2JavaRealmTransformerBase (Feb. 3, 2011)
  * 
  * @since   Apr.  7, 2012
- * @version Apr. 30, 2012
+ * @version May.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -35,8 +35,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
   val target_context: EntityContextTYPE
   val target_realm: TargetRealmTYPE
   val defaultFileSuffix: String
+  val srcMainDir: String
 
-  var srcMainDir = "/src"
   var scriptSrcDir= ""
   var useEntityDocument = true
   var useValue = true
@@ -53,10 +53,17 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
   setup_FowardingRecorder(serviceContext)
 
   def transform(): TargetRealmTYPE = {
+    target_context.defaultFileSuffix = defaultFileSuffix
+    target_context.srcMainDir = srcMainDir
     simpleModel.open()
     target_realm.open()
+    println("SimpleModel2ProgramRealTransform.transform: SimpleModel start")
+    simpleModel.print
+    println("SimpleModel2ProgramRealTransform.transform: SimpleModel end")
     simpleModel.traverse(make_Builder)
+    println("SimpleModel2ProgramRealTransform.transform: start")
     target_realm.print
+    println("SimpleModel2ProgramRealTransform.transform: end")
     for (phase <- make_Phases) {
       target_realm.traverse(phase)
     }
@@ -80,14 +87,12 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     obj.packageName
   }
 
-  protected def make_Pathname(obj: PObjectEntity): String = {
-//    val kind = if (UString.isNull(obj.kindName)) "" else "/" + obj.kindName 
-//    srcMainDir + UJavaString.packageName2pathname(obj.packageName) + kind + "/" + obj.name + "." + obj.fileSuffix
-    srcMainDir + UJavaString.packageName2pathname(obj.packageName) + "/" + obj.name + "." + obj.fileSuffix
+  protected final def make_pathname(obj: PObjectEntity): String = {
+    target_context.makePathname(obj)
   }
 
-  protected def make_Pathname(qname: String): String = {
-    srcMainDir + UJavaString.className2pathname(qname) + "." + defaultFileSuffix
+  protected final def make_pathname(qname: String): String = {
+    target_context.makePathname(qname)
   }
 
   abstract class BuilderBase extends GTreeVisitor[SMElement] { 
@@ -241,12 +246,13 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     protected def transform_Powertype(powertype: SMDomainPowertype) {
       if (!usePowertype) return;
-      val obj = create_Powertype(powertype)
-      build_object(obj, powertype)
-      make_Powertypes(powertype, obj).foreach(build_derived_object(powertype, obj))
+      for (obj <- create_Powertype(powertype)) {
+        build_object(obj, powertype)
+        make_Powertypes(powertype, obj).foreach(build_derived_object(powertype, obj))
+      }
     }
 
-    protected def create_Powertype(entity: SMDomainPowertype): DomainPowertypeTYPE = {
+    protected def create_Powertype(entity: SMDomainPowertype): Option[DomainPowertypeTYPE] = {
       throw new UnsupportedOperationException
     }
 
@@ -254,12 +260,13 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     protected def transform_Id(id: SMDomainValueId) {
       if (!useValue) return
-      val obj = create_ValueId(id)
-      build_object(obj, id)
-      make_ValueIds(id, obj).foreach(build_derived_object(id, obj))
+      for (obj <- create_ValueId(id)) {
+        build_object(obj, id)
+        make_ValueIds(id, obj).foreach(build_derived_object(id, obj))
+      }
     }
 
-    protected def create_ValueId(id: SMDomainValueId): DomainValueTYPE = {
+    protected def create_ValueId(id: SMDomainValueId): Option[DomainValueTYPE] = {
       create_Value(id)
     }
 
@@ -267,12 +274,13 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     protected def transform_Name(name: SMDomainValueName) {
       if (!useValue) return
-      val obj = create_ValueName(name)
-      build_object(obj, name)
-      make_ValueNames(name, obj).foreach(build_derived_object(name, obj))
+      for (obj <- create_ValueName(name)) {
+        build_object(obj, name)
+        make_ValueNames(name, obj).foreach(build_derived_object(name, obj))
+      }
     }
 
-    protected def create_ValueName(name: SMDomainValueName): DomainValueTYPE = {
+    protected def create_ValueName(name: SMDomainValueName): Option[DomainValueTYPE] = {
       create_Value(name)
     }
 
@@ -280,59 +288,51 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     private def transform_Value(value: SMDomainValue) {
       if (!useValue) return
-      val obj = create_Value(value)
-      build_object(obj, value)
-      make_Values(value, obj).foreach(build_derived_object(value, obj))
+      for (obj <- create_Value(value)) {
+        build_object(obj, value)
+        make_Values(value, obj).foreach(build_derived_object(value, obj))
+      }
     }
 
-    protected def create_Value(entity: SMDomainValue): DomainValueTYPE = {
-//      new PValueEntity(target_context)
-      throw new UnsupportedOperationException
-    }
+    protected def create_Value(entity: SMDomainValue): Option[DomainValueTYPE] = None
 
     protected def make_Values(entity: SMDomainValue, po: DomainValueTYPE): List[PObjectEntity] = Nil
 
-    private def transform_Document(document: SMDomainDocument): DomainDocumentTYPE = {
-      val obj = create_Document(document)
-      build_object(obj, document)
-      if (useKindPackage) {
-        obj.kindName = docKindName
+    private def transform_Document(document: SMDomainDocument) {
+      for (obj <- create_Document(document)) {
+        build_object(obj, document)
+        if (useKindPackage) {
+          obj.kindName = docKindName
+        }
+        make_Documents(document, obj).foreach(build_derived_object(document, obj))
+        obj
       }
-      make_Documents(document, obj).foreach(build_derived_object(document, obj))
-      obj
     }
 
-    protected def create_Document(entity: SMDomainDocument): DomainDocumentTYPE = {
-      //new PDocumentEntity(target_context)
-      throw new UnsupportedOperationException
-    }
+    protected def create_Document(entity: SMDomainDocument): Option[DomainDocumentTYPE] = None
 
     protected def make_Documents(entity: SMDomainDocument, po: DomainDocumentTYPE): List[PObjectEntity] = Nil
 
     private def transform_Rule(rule: SMDomainRule) {
-      val obj = create_Rule(rule)
-      build_object(obj, rule)
-      make_Rules(rule, obj).foreach(build_derived_object(rule, obj))
+      for (obj <- create_Rule(rule)) {
+        build_object(obj, rule)
+        make_Rules(rule, obj).foreach(build_derived_object(rule, obj))
+      }
     }
 
-    protected def create_Rule(entity: SMDomainRule): PRuleEntity = {
-//      new PRuleEntity(target_context)
-      throw new UnsupportedOperationException
-    }
+    protected def create_Rule(entity: SMDomainRule): Option[PRuleEntity] = None
 
     protected def make_Rules(entity: SMDomainRule, po: PRuleEntity): List[PObjectEntity] = Nil
 
-    private def transform_Service(service: SMDomainService): DomainServiceTYPE = {
-      val obj = create_Service(service)
-      build_object(obj, service)
-      make_Services(service, obj).foreach(build_derived_object(service, obj))
-      obj
+    private def transform_Service(service: SMDomainService) {
+      for (obj <- create_Service(service)) {
+        build_object(obj, service)
+        make_Services(service, obj).foreach(build_derived_object(service, obj))
+        obj
+      }
     }
 
-    protected def create_Service(entity: SMDomainService): DomainServiceTYPE = {
-//      new PServiceEntity(target_context)
-      throw new UnsupportedOperationException
-    }
+    protected def create_Service(entity: SMDomainService): Option[DomainServiceTYPE] = None
 
     protected def make_Services(entity: SMDomainService, po: DomainServiceTYPE): List[PObjectEntity] = Nil
 
@@ -530,24 +530,25 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
 
     private def make_entity_document(docName: String, modelObject: SMObject) = {
-      val obj = create_Document(null)
-      obj.name = docName
-      obj.term = modelObject.term // XXX
-      obj.term_en = modelObject.term_en // XXX
-      obj.term_ja = modelObject.term_ja // XXX
-      obj.asciiName = target_context.asciiName(modelObject)
-      obj.classNameBase = target_context.classNameBase(modelObject)
-      obj.setKindedPackageName(make_PackageName(modelObject))
-      obj.xmlNamespace = modelObject.xmlNamespace
-      obj.modelObject = modelObject
-      modelObject.getBaseObject match { // XXX doc name
-        case Some(base) => {
-          obj.setBaseObjectType(make_class_name(base), base.packageName)
+      for (obj <- create_Document(null)) {
+        obj.name = docName
+        obj.term = modelObject.term // XXX
+        obj.term_en = modelObject.term_en // XXX
+        obj.term_ja = modelObject.term_ja // XXX
+        obj.asciiName = target_context.asciiName(modelObject)
+        obj.classNameBase = target_context.classNameBase(modelObject)
+        obj.setKindedPackageName(make_PackageName(modelObject))
+        obj.xmlNamespace = modelObject.xmlNamespace
+        obj.modelObject = modelObject
+        modelObject.getBaseObject match { // XXX doc name
+          case Some(base) => {
+            obj.setBaseObjectType(make_class_name(base), base.packageName)
+          }
+          case None => {}
         }
-        case None => {}
+        build_properties(obj, modelObject)
+        store_object(obj)
       }
-      build_properties(obj, modelObject)
-      store_object(obj)
     }
 
     private def build_object(obj: PObjectEntity, modelObject: SMObject) = {
@@ -596,7 +597,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     private def store_object(obj: PObjectEntity) = {
       require (obj != null, "store_object: object should be not null: " + obj)
       require (obj.name != null && obj.name.nonEmpty, "store_object: object name should not be empty:" + obj)
-      val pathname = make_Pathname(obj)
+      val pathname = make_pathname(obj)
       println("store_object = " + pathname)
       target_realm.setEntity(pathname, obj)
       obj
@@ -724,7 +725,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.xmlNamespace = modelPackage.xmlNamespace
 //      obj.modelObject = modelPackage
 //      build_properties(obj, modelPackage)
-      val pathname = make_Pathname(obj)
+      val pathname = make_pathname(obj)
       target_realm.setEntity(pathname, obj)
       obj
     }
@@ -776,7 +777,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       ppkg.xmlNamespace = modelPackage.xmlNamespace
 //      ppkg.modelObject = modelPackage
 //      build_properties(ppkg, modelPackage)
-      val pathname = make_Pathname(modelPackage.qualifiedName)
+      val pathname = make_pathname(modelPackage.qualifiedName)
       val node = target_realm.setEntity(pathname, ppkg)
 //      ppkg.containerNode = Some(node)
       ppkg      
@@ -820,7 +821,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.xmlNamespace = entity.xmlNamespace
 //      obj.modelObject = modelPackage
 //      build_properties(obj, modelPackage)
-      val pathname = make_Pathname(obj)
+      val pathname = make_pathname(obj)
       target_realm.setEntity(pathname, obj)
       obj
     }
@@ -839,7 +840,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.xmlNamespace = modelPackage.xmlNamespace
 //      obj.modelObject = modelPackage
 //      build_properties(obj, modelPackage)
-      val pathname = make_Pathname(obj)
+      val pathname = make_pathname(obj)
       target_realm.setEntity(pathname, obj)
       obj
     }
@@ -849,7 +850,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
   // XXX unify ResolveTransformerPhase methods with TransformerPhase methods
   abstract class ResolvePhase extends TransformerPhase {
     def findObject(aQName: String): Option[PObjectEntity] = {
-      target_realm.getNode(make_Pathname(aQName)) match {
+      target_realm.getNode(make_pathname(aQName)) match {
         case Some(node) => node.entity.asInstanceOf[Some[PObjectEntity]]
         case None => None
       }
@@ -864,7 +865,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
 
     def findEntity(aQName: String): Option[PEntityEntity] = {
-      target_realm.getNode(make_Pathname(aQName)) match {
+      target_realm.getNode(make_pathname(aQName)) match {
         case Some(node) => node.entity.asInstanceOf[Some[PEntityEntity]]
         case None => None
       }
@@ -887,7 +888,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
 
     def findPart(aQName: String): Option[PEntityPartEntity] = {
-      target_realm.getNode(make_Pathname(aQName)) match {
+      target_realm.getNode(make_pathname(aQName)) match {
         case Some(node) => node.entity.asInstanceOf[Some[PEntityPartEntity]]
         case None => None
       }
@@ -902,7 +903,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
 
     def findPowertype(aQName: String): Option[PPowertypeEntity] = {
-      target_realm.getNode(make_Pathname(aQName)) match {
+      target_realm.getNode(make_pathname(aQName)) match {
         case Some(node) => node.entity.asInstanceOf[Some[PPowertypeEntity]]
         case None => None
       }
@@ -917,7 +918,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
 
     def findDocument(aQName: String): Option[PDocumentEntity] = {
-      target_realm.getNode(make_Pathname(aQName)) match {
+      target_realm.getNode(make_pathname(aQName)) match {
         case Some(node) => node.entity.asInstanceOf[Some[PDocumentEntity]]
         case None => None
       }
@@ -932,7 +933,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
 
     def findValue(aQName: String): Option[PValueEntity] = {
-      target_realm.getNode(make_Pathname(aQName)) match {
+      target_realm.getNode(make_pathname(aQName)) match {
         case Some(node) => node.entity.asInstanceOf[Some[PValueEntity]]
         case None => None
       }
@@ -1088,7 +1089,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     aName.capitalize // XXX
   }
 
-  @deprecated
+  @deprecated("candidate", "before 20120506")
   protected final def make_document_name(anObject: SMObject): String = {
     "DD" + UString.capitalize(make_term_name(anObject))
   }

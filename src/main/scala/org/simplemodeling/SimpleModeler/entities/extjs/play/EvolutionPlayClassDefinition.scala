@@ -42,9 +42,7 @@ class EvolutionPlayClassDefinition(
   }
 
   private def _create_table(entity: PEntityEntity) {
-    val sqlrealm = SqlPlatform.create(pContext)
-    sqlrealm.open()
-    val sqlentity = sqlrealm.getSqlEntity(entity)
+    val sqlentity = pContext.getSqlEntity(entity)
     println("Evolution: " + sqlentity.toText)
   }
 

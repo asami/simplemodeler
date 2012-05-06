@@ -16,6 +16,6 @@ class Sql92SqlClassDefinition(
   maker: JavaMaker = null
 ) extends SqlClassDefinition(aContext, anAspects, sqlObject, maker) {
   override protected def attribute(attr: PAttribute): ATTR_DEF = {
-    new Sql92SqlClassAttributeDefinition(aContext, anAspects, attr, this)
+    new Sql92SqlClassAttributeDefinition(aContext, anAspects, attr, this, jm_maker)
   }
 }
