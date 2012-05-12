@@ -44,6 +44,7 @@ class EvolutionPlayClassDefinition(
   private def _create_table(entity: PEntityEntity) {
     val sqlentity = pContext.getSqlEntity(entity)
     println("Evolution: " + sqlentity.toText)
+    // XXX
   }
 
   private def _drop_table(entity: PEntityEntity) {
