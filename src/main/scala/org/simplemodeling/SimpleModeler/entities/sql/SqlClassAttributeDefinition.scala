@@ -10,7 +10,7 @@ import java.util.TimeZone
 
 /**
  * @since   May.  3, 2012
- * @version May.  6, 2012
+ * @version May. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SqlClassAttributeDefinition(
@@ -27,8 +27,8 @@ abstract class SqlClassAttributeDefinition(
     jm_pln()
   }
 
-  //
-  protected val sql_typename = new PObjectTypeFunction[String] {
+  // Play2 H2 Database & MySQL
+  protected val sql_typename: PObjectTypeFunction[String] = new PObjectTypeFunction[String] {
     override protected def apply_AnyURIType(datatype: PAnyURIType): String = {
       handle_xml(datatype)
     }
@@ -38,27 +38,27 @@ abstract class SqlClassAttributeDefinition(
     }
 
     override protected def apply_BooleanType(datatype: PBooleanType): String = {
-      "boolean"
+      "BOOLEAN"
     }
 
     override protected def apply_ByteType(datatype: PByteType): String = {
-      "int"
+      "TINYINT"
     }
 
     override protected def apply_DateType(datatype: PDateType): String = {
-      "date"
+      "DATE"
     }
 
     override protected def apply_DateTimeType(datatype: PDateTimeType): String = {
-      handle_fundamental(datatype)
+      "DATETIME"
     }
 
     override protected def apply_DecimalType(datatype: PDecimalType): String = {
-      "number"
+      "DECIMAL"
     }
 
     override protected def apply_DoubleType(datatype: PDoubleType): String = {
-      "number"
+      "DOUBLE"
     }
 
     override protected def apply_DurationType(datatype: PDurationType): String = {
@@ -66,7 +66,7 @@ abstract class SqlClassAttributeDefinition(
     }
 
     override protected def apply_FloatType(datatype: PFloatType): String = {
-      "float"
+      "REAL"
     }
 
     override protected def apply_GDayType(datatype: PGDayType): String = {
@@ -90,11 +90,11 @@ abstract class SqlClassAttributeDefinition(
     }
 
     override protected def apply_IntType(datatype: PIntType): String = {
-      "int"
+      "INT"
     }
 
     override protected def apply_IntegerType(datatype: PIntegerType): String = {
-      "integer"
+      "INTEGER"
     }
 
     override protected def apply_LanguageType(datatype: PLanguageType): String = {
@@ -102,7 +102,7 @@ abstract class SqlClassAttributeDefinition(
     }
 
     override protected def apply_LongType(datatype: PLongType): String = {
-      "number"
+      "BIGINT"
     }
 
     override protected def apply_NegativeIntegerType(datatype: PNegativeIntegerType): String = {
@@ -122,15 +122,15 @@ abstract class SqlClassAttributeDefinition(
     }
 
     override protected def apply_ShortType(datatype: PShortType): String = {
-      "int"
+      "SMALLINT"
     }
 
     override protected def apply_StringType(datatype: PStringType): String = {
-      "string"
+      "VARCHAR(64)"
     }
 
     override protected def apply_TimeType(datatype: PTimeType): String = {
-      handle_xml(datatype)
+      "TIME"
     }
 
     override protected def apply_UnsignedByteType(datatype: PUnsignedByteType): String = {
@@ -214,11 +214,11 @@ abstract class SqlClassAttributeDefinition(
     }
 
     override protected def apply_PowertypeType(datatype: PPowertypeType): String = {
-      handle_model(datatype)
+      "INT"
     }
 
     override protected def apply_EntityType(datatype: PEntityType): String = {
-      handle_model(datatype)
+      datatype.entity.idAttr.attributeType(sql_typename)
     }
 
     override protected def apply_EntityPartType(datatype: PEntityPartType): String = {
@@ -250,20 +250,21 @@ abstract class SqlClassAttributeDefinition(
     }
 
     override protected def handle_all(datatype: PObjectType): String = {
-      "auto"
+      datatype.getClass.toString // debug
     }
   }
 
   override protected def variable_id_Id(typeName: String, varName: String): Boolean = {
-    _column
     true
   }
 
   override protected def variable_plain_Attribute_Instance_Variable(typename: String, varname: String) {
-    _column
   }
 
   protected def variable_plain_Transient_Instance_Variable(typename: String, varname: String) {
+  }
+
+  def ddl {
     _column
   }
 
@@ -271,10 +272,10 @@ abstract class SqlClassAttributeDefinition(
     val typename = attr.attributeType(sql_typename)
     jm_p(sqlContext.sqlName(attr))
     jm_p(" ")
-    if (attr.multiplicity == POne) {
-      jm_p("NOT NULL ")
-    }
     jm_p(typename)
+    if (attr.multiplicity == POne) {
+      jm_p(" NOT NULL")
+    }
   }
 }
 

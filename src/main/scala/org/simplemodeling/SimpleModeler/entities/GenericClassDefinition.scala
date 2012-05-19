@@ -38,7 +38,7 @@ import org.goldenport.recorder.Recordable
  * @since   Jun.  4, 2011
  *  version Sep. 25, 2011
  *  version Feb. 20, 2012
- * @version May.  3, 2012
+ * @version May. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -106,7 +106,15 @@ abstract class GenericClassDefinition(
       _.reference.wholeAttributes.map(attribute(_)).toList
     } orZero
   }
-  lazy val wholeAttributeDefinitions: List[ATTR_DEF] = attributeDefinitions ::: parentAttributeDefinitions
+  lazy val wholeAttributeDefinitions: List[ATTR_DEF] = parentAttributeDefinitions ::: attributeDefinitions 
+
+  def effectiveAttributeDefinitions: List[ATTR_DEF] = {
+    if (useWholeAttributes) {
+      wholeAttributeDefinitions
+    } else {
+      attributeDefinitions
+    }
+  }
 
   //
   var useDocument: Boolean = false
@@ -124,6 +132,7 @@ abstract class GenericClassDefinition(
   val customAttributes = new ArrayBuffer[PAttribute]
   var isCustomVariableImplementation = false
   var isSingleton = false
+  var useWholeAttributes = false
 
 //  private val _maker = new JavaMaker
 
@@ -187,7 +196,7 @@ abstract class GenericClassDefinition(
       val entity = attr.attributeType.asInstanceOf[PEntityType]
       head_imports_Entity(entity)
     }
-    attributeDefinitions.foreach(_.head_imports)
+    effectiveAttributeDefinitions.foreach(_.head_imports)
     aspects.foreach(_.weaveImports)
     head_imports_Extension
     if (useBuilder) {
@@ -253,12 +262,18 @@ abstract class GenericClassDefinition(
   protected def attribute_variables_Prologue {}
 
   protected def attribute_variables_constants {
-    for (attr <- attributeDefinitions) {
+    for (attr <- effectiveAttributeDefinitions) {
       attr.constant_property
     }
   }
 
   protected def attribute_variables_id {
+    for (attr <- effectiveAttributeDefinitions.find(_.attr.isId)) {
+      attr.variable_id
+    }
+  }
+
+  protected def attribute_variables_id0 {
     if (isId && isRootObject) {
       attribute(idAttr).variable_id
     }
@@ -267,6 +282,12 @@ abstract class GenericClassDefinition(
   protected def attribute(attr: PAttribute): ATTR_DEF
 
   protected def attribute_variables_plain {
+    for (attr <- effectiveAttributeDefinitions if !attr.attr.isId) {
+      attr.variable_plain
+    }
+  }
+
+  protected def attribute_variables_plain0 {
     for (attr <- attributes if !attr.isId) {
       attribute(attr).variable_plain
     }

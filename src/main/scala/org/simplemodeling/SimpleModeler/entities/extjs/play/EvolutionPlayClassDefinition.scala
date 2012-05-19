@@ -13,7 +13,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
 
 /**
  * @since   Apr. 21, 2012
- * @version May.  6, 2012
+ * @version May. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 class EvolutionPlayClassDefinition(
@@ -44,7 +44,7 @@ class EvolutionPlayClassDefinition(
   private def _create_table(entity: PEntityEntity) {
     val sqlentity = pContext.getSqlEntity(entity)
     println("Evolution: " + sqlentity.toText)
-    // XXX
+    sm_pln(sqlentity.toText)
   }
 
   private def _drop_table(entity: PEntityEntity) {

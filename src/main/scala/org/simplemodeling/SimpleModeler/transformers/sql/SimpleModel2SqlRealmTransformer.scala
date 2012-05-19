@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.transformers.sql
 
+import scalaz._, Scalaz._
 import _root_.java.io.File
 import scala.collection.mutable.{ArrayBuffer}
 import org.simplemodeling.SimpleModeler.entity._
@@ -23,7 +24,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /**
  * @since   May.  6, 2012
- * @version May.  6, 2012
+ * @version May. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2SqlRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
@@ -38,7 +39,7 @@ class SimpleModel2SqlRealmTransformer(sm: SimpleModelEntity, sctx: GServiceConte
   target_context.setPlatform(target_realm)
   useEntityDocument = false
   useValue = false
-  usePowertype = false
+//  usePowertype = false
   useKindPackage = true
 
   def toSqlRealm() = transform
@@ -60,17 +61,17 @@ class SimpleModel2SqlRealmTransformer(sm: SimpleModelEntity, sctx: GServiceConte
       new SqlEntityEntity(target_context)
     }
  
-/*
     override protected def create_Entity_Part(entity: SMDomainEntityPart): DomainEntityPartTYPE = {
       new SqlEntityPartEntity(target_context)
     }
 
-    override protected def create_Powertype(entity: SMDomainPowertype): DomainPowertypeTYPE = {
+    override protected def create_Powertype(entity: SMDomainPowertype): Option[DomainPowertypeTYPE] = {
       new SqlPowertypeEntity(target_context) {
         modelPowertype = entity
-      }
+      }.some
     }
 
+/*
     override protected def create_Value(entity: SMDomainValue): DomainValueTYPE = {
       new SqlValueEntity(target_context)
     }
