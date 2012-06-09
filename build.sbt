@@ -28,7 +28,7 @@ libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.1.2"
 
 libraryDependencies += "org.goldenport" %% "goldenport-record" % "0.1.1"
 
-libraryDependencies += "org.smartdox" %% "smartdox" % "0.2.4"
+libraryDependencies += "org.smartdox" %% "smartdox" % "0.2.5"
 
 libraryDependencies += "org.scalatest" % "scalatest_2.9.1" % "1.6.1" % "test"
 
