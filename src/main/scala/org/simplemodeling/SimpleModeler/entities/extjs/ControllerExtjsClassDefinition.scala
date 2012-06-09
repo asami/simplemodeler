@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Apr. 22, 2012
+ * @version Jun.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class ControllerExtjsClassDefinition(
@@ -21,6 +21,13 @@ abstract class ControllerExtjsClassDefinition(
   baseName = "Ext.app.Controller".some
 
   override protected def lifecycle_variables {
-    js_pa("views", Nil)
+    def stringnize(s: String) = "'" + s + "'"
+    js_pa("views", view_QNames.map(stringnize))
+    js_pa("models", model_QNames.map(stringnize))
+    js_pa("stores", store_QNames.map(stringnize))
   }
+
+  def view_QNames: Seq[String] = Nil
+  def model_QNames: Seq[String] = Nil
+  def store_QNames: Seq[String] = Nil
 }

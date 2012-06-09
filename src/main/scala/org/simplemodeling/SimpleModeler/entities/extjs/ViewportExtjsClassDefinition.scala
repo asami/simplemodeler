@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Apr. 21, 2012
+ * @version Jun.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class ViewportExtjsClassDefinition(
@@ -32,6 +32,7 @@ class ViewportExtjsClassDefinition(
         js_ps("title", "一覧")
         js_pnumber("width", 200)
         js_ptrue("collapsible")
+        js_ps("store", "app.store.EntityTreeStore") // XXX app
       }
       js_oo {
         js_ps("region", "center")

@@ -10,24 +10,48 @@ import com.asamioffice.goldenport.text.{UString, UJavaString}
 
 /*
  * @since   Mar. 31, 2012
- * @version Apr. 15, 2012
+ * @version Jun.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 class ExtjsEntityContext(ectx: GEntityContext, sctx: GServiceContext) extends JavaScriptEntityContextBase(ectx, sctx) {
-  def entityGridName(obj: SMDomainEntity) = {
+  def entityModelQualifiedName(obj: PObjectEntity) = {
+    _entity_qname(obj)
+  }
+
+  private def _entity_qname(obj: PObjectEntity): String = {
+    obj.sourcePlatformObject.map(_.qualifiedName) getOrElse obj.qualifiedName
+  }
+
+  def entityGridViewName(obj: SMDomainEntity) = {
     className(obj) + "Grid"
   }
 
-  def entityViewFormName(obj: SMDomainEntity) = {
+  def entityGridViewQualifiedName(obj: PObjectEntity) = {
+    (_entity_qname(obj) + "Grid").replace(".model.", ".view.") // XXX
+  }
+
+  def entityFormViewName(obj: SMDomainEntity) = {
     className(obj) + "ViewForm"
   }
 
-  def entityEditFormName(obj: SMDomainEntity) = {
+  def entityFormViewQualifiedName(obj: PObjectEntity) = {
+    (_entity_qname(obj) + "ViewForm").replace(".model.", ".view.") // XXX
+  }
+
+  def entityEditFormViewName(obj: SMDomainEntity) = {
     className(obj) + "EditForm"
+  }
+
+  def entityEditFormViewQualifiedName(obj: PObjectEntity) = {
+    (_entity_qname(obj) + "EditForm").replace(".model.", ".view.") // XXX
   }
 
   def entityStoreName(obj: SMDomainEntity) = {
     className(obj) + "Store"
+  }
+
+  def entityStoreQualifiedName(obj: PObjectEntity) = {
+    (_entity_qname(obj) + "Store").replace(".model.", ".store.") // XXX
   }
 
   def entityControllerName(obj: SMDomainEntity) = {

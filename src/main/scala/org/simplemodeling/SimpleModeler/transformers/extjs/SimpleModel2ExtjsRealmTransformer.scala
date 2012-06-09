@@ -25,7 +25,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /**
  * @since   Mar. 31, 2011
- * @version May.  6, 2012
+ * @version Jun.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
@@ -94,6 +94,9 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
       // XXX unify application view
       val viewport = new ExtjsViewportEntity(target_context)
       build_object_for_package(viewport, pkg, ppkg, "Viewport")
+
+      val navi = new ExtjsNavigationStoreEntity(target_context)
+      build_object_for_package(navi, pkg, ppkg, "NavigationStore")
     }
 
 /*
@@ -154,19 +157,19 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
         new ExtjsEntityGridEntity(target_context) {
 //          modelObject = entity
 //          sourcePlatformObject = pos
-          name = target_context.entityGridName(entity)
+          name = target_context.entityGridViewName(entity)
 //          setKindedPackageName(entity.packageName)
         },
         new ExtjsEntityViewFormEntity(target_context) {
 //          modelObject = entity
 //          sourcePlatformObject = pos
-          name = target_context.entityViewFormName(entity)
+          name = target_context.entityFormViewName(entity)
 //          setKindedPackageName(entity.packageName)
         },
         new ExtjsEntityEditFormEntity(target_context) {
 //          modelObject = entity
 //          sourcePlatformObject = pos
-          name = target_context.entityEditFormName(entity)
+          name = target_context.entityEditFormViewName(entity)
 //          setKindedPackageName(entity.packageName)
         },
         new ExtjsEntityStoreEntity(target_context) {

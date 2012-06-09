@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Apr. 21, 2012
+ * @version Jun.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 class MainControllerExtjsClassDefinition(
@@ -18,4 +18,22 @@ class MainControllerExtjsClassDefinition(
   pobject: ExtjsObjectEntity,
   maker: ExtjsTextMaker = null
 ) extends ControllerExtjsClassDefinition(context, aspects, pobject, maker) {
+
+  override def view_QNames: Seq[String] = {
+    def views(e: PEntityEntity) = {
+      List(
+        extjsContext.entityGridViewQualifiedName(e),
+        extjsContext.entityFormViewQualifiedName(e),
+        extjsContext.entityEditFormViewQualifiedName(e))
+    }
+    entities_in_module.flatMap(views)
+  }
+
+  override def model_QNames: Seq[String] = {
+    entities_in_module.map(extjsContext.entityModelQualifiedName)
+  }
+
+  override def store_QNames: Seq[String] = {
+    "app.store.EntityTreeStore" +: entities_in_module.map(extjsContext.entityStoreQualifiedName)
+  }
 }

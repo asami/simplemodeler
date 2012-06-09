@@ -4,7 +4,8 @@ import com.asamioffice.goldenport.text.JavaScriptTextMaker
 
 /*
  * @since   Apr.  4, 2012
- * @version Apr. 20, 2012
+ *  version Apr. 20, 2012
+ * @version Jun.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaScriptMakerHolder {
@@ -82,7 +83,7 @@ trait JavaScriptMakerHolder {
     jm_pln("},")
   }
 
-  protected final def js_pa(name: String, values: List[String]) {
+  protected final def js_pa(name: String, values: Seq[String]) {
     jm_pln(name + ": [")
     jm_indent_up
     for (s <- values) {
