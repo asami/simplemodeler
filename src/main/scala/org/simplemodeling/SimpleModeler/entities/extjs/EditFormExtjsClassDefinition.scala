@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Apr. 20, 2012
+ * @version Jun. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 class EditFormExtjsClassDefinition(
@@ -45,7 +45,7 @@ class EditFormExtjsClassAttributeDefinition(
 
   override protected def variable_plain_Attribute_Instance_Variable(typename: String, varname: String) {
     val xtypename = attr.attributeType(form_item)
-    js_o(attr.attributeType(form_item) :+ 
+    js_os(attr.attributeType(form_item) :+ 
         'anchor -> "100%")
   }
 }

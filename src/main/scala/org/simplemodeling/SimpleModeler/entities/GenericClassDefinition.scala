@@ -39,7 +39,7 @@ import org.goldenport.recorder.Recordable
  *  version Sep. 25, 2011
  *  version Feb. 20, 2012
  *  version May. 15, 2012
- * @version Jun.  9, 2012
+ * @version Jun. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -1106,6 +1106,33 @@ abstract class GenericClassDefinition(
   protected final def traverse(visitor: SimpleModelVisitor) { 
     for (pkg <- pobject.modelPackage; child <- pkg.children) {
       visitor.visit(child.content)
+    }
+  }
+
+  /*
+   * Used in NavigationStoreExtjsClassDefinition
+   */
+  protected final def actor_entities = {
+    collect_entities_in_module {
+      case x: PEntityEntity if (x.modelEntity.isInstanceOf[SMDomainActor]) => x
+    }
+  }
+
+  protected final def role_entities = {
+    collect_entities_in_module {
+      case x: PEntityEntity if (x.modelEntity.isInstanceOf[SMDomainRole]) => x
+    }
+  }
+
+  protected final def event_entities = {
+    collect_entities_in_module {
+      case x: PEntityEntity if (x.modelEntity.isInstanceOf[SMDomainEvent]) => x
+    }
+  }
+
+  protected final def resource_entities = {
+    collect_entities_in_module {
+      case x: PEntityEntity if (x.modelEntity.isInstanceOf[SMDomainResource]) => x
     }
   }
 }

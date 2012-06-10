@@ -39,19 +39,25 @@ class ViewportExtjsClassDefinition(
         js_ps("xtype", "tabpanel")
         js_ps("title", "情報")
         js_pa("items") {
-          js_o {
-            js_ps("xtype", "panel")
-            js_ps("title", "情報1")
-          }
-          js_o {
-            js_ps("xtype", "panel")
-            js_ps("title", "情報2")
-          }
-          js_o {
-            js_ps("xtype", "panel")
-            js_ps("title", "情報3")
-          }
+          _entities
         }
+      }
+    }
+  }
+
+  private def _entities {
+    _entities(
+      actor_entities
+      ++ role_entities
+      ++ event_entities
+      ++ resource_entities)
+  }
+
+  private def _entities(xs: Seq[PEntityEntity]) {
+    for (x <- xs) {
+      js_o {
+        js_ps("xtype", extjsContext.entityGridViewWidgetName(x))
+        js_ps("title", x.label)
       }
     }
   }

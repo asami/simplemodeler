@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr.  4, 2012
- * @version Apr. 21, 2012
+ * @version Jun. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class ExtjsClassDefinition(
@@ -180,11 +180,11 @@ abstract class ExtjsClassDefinition(
   override protected def builder_auxiliary {
   }
 
-  /*
+  /**
    *
    */
   protected final def set_widget_name(n: String) {
     require (n != null)
-    aliasName = Some("widget." + n.toLowerCase)
+    aliasName = Some("widget." + n)
   }
 }

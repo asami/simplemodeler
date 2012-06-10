@@ -43,7 +43,7 @@ class NavigationStoreExtjsClassDefinition(
       js_pboolean("leaf", false)
       js_pboolean("expanded", false)
       js_pa("children") {
-        _defs(_actor_entities)
+        _defs(actor_entities)
       }
     }
   }
@@ -54,7 +54,7 @@ class NavigationStoreExtjsClassDefinition(
       js_pboolean("leaf", false)
       js_pboolean("expanded", false)
       js_pa("children") {
-        _defs(_role_entities)
+        _defs(role_entities)
       }
     }
   }
@@ -65,7 +65,7 @@ class NavigationStoreExtjsClassDefinition(
       js_pboolean("leaf", false)
       js_pboolean("expanded", false)
       js_pa("children") {
-        _defs(_event_entities)
+        _defs(event_entities)
       }
     }
   }
@@ -76,7 +76,7 @@ class NavigationStoreExtjsClassDefinition(
       js_pboolean("leaf", false)
     js_pboolean("expanded", false)
       js_pa("children") {
-        _defs(_resource_entities)
+        _defs(resource_entities)
       }
     }
   }
@@ -91,50 +91,4 @@ class NavigationStoreExtjsClassDefinition(
       }
     }
   }
-
-  private def _actor_entities = {
-    collect_entities_in_module {
-      case x: PEntityEntity if (x.modelEntity.isInstanceOf[SMDomainActor]) => x
-    }
-  }
-
-  private def _role_entities = {
-    collect_entities_in_module {
-      case x: PEntityEntity if (x.modelEntity.isInstanceOf[SMDomainRole]) => x
-    }
-  }
-
-  private def _event_entities = {
-    collect_entities_in_module {
-      case x: PEntityEntity if (x.modelEntity.isInstanceOf[SMDomainEvent]) => x
-    }
-  }
-
-  private def _resource_entities = {
-    collect_entities_in_module {
-      case x: PEntityEntity if (x.modelEntity.isInstanceOf[SMDomainResource]) => x
-    }
-  }
 }
-
-/*
-Ext.define('app.store.EntityTreeStore', {
-    extend: 'Ext.data.TreeStore',
-    root: {
-        expanded: true,
-	text: 'Entity',
-        children: [{
-            text: 'Actor',
-            leaf: false,
-            expanded: true,
-            children: [{
-                text: 'Customer',
-                leaf: true
-            }, { 
-                text: 'Clerk',
-                leaf: true
-            }]
-        }]
-    }
-});
-*/

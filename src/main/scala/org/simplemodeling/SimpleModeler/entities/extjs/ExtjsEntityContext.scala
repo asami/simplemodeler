@@ -10,7 +10,7 @@ import com.asamioffice.goldenport.text.{UString, UJavaString}
 
 /*
  * @since   Mar. 31, 2012
- * @version Jun.  5, 2012
+ * @version Jun. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 class ExtjsEntityContext(ectx: GEntityContext, sctx: GServiceContext) extends JavaScriptEntityContextBase(ectx, sctx) {
@@ -28,6 +28,10 @@ class ExtjsEntityContext(ectx: GEntityContext, sctx: GServiceContext) extends Ja
 
   def entityGridViewQualifiedName(obj: PObjectEntity) = {
     (_entity_qname(obj) + "Grid").replace(".model.", ".view.") // XXX
+  }
+
+  def entityGridViewWidgetName(obj: PObjectEntity) = {
+    asciiName(obj) + "grid"
   }
 
   def entityFormViewName(obj: SMDomainEntity) = {
