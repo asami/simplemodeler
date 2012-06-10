@@ -5,7 +5,7 @@ import com.asamioffice.goldenport.text.JavaScriptTextMaker
 /*
  * @since   Apr.  4, 2012
  *  version Apr. 20, 2012
- * @version Jun.  5, 2012
+ * @version Jun. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaScriptMakerHolder {
@@ -106,11 +106,11 @@ trait JavaScriptMakerHolder {
     jm_pln("],")
   }
 
-  protected final def js_oo(body: => Unit) {
-    js_open_object(body)
+  protected final def js_o(body: => Unit) {
+    js_object(body)
   }
 
-  protected final def js_open_object(body: => Unit) {
+  protected final def js_object(body: => Unit) {
     jm_pln("{")
     jm_indent_up
     body
@@ -118,7 +118,7 @@ trait JavaScriptMakerHolder {
     jm_pln("},")
   }
 
-  protected final def js_o(props: List[(Symbol, Any)]) {
+  protected final def js_os(props: List[(Symbol, Any)]) {
     jm_pln(js_object_string(props))
   }
 

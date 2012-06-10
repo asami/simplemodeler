@@ -34,11 +34,26 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   def qualifiedName = if (packageName != "") packageName + "." + name else name
   val attributes = new ArrayBuffer[PAttribute]
   val operations = new ArrayBuffer[POperation]
+  /**
+   * name in program.
+   * 
+   * "name" is defined in GEntity.
+   */
   var name_en = ""
   var name_ja = ""
+  /**
+   * Name in glossary.
+   */
   var term = ""
   var term_en = ""
   var term_ja = ""
+  /**
+   * 
+   */
+  def label = {
+    require (term != null && term_en != null && term_ja != null)
+    pContext.localeTerm(modelObject)
+  }
   // URL (term_name)
   var asciiName = ""
   // Class Name base (TermName)

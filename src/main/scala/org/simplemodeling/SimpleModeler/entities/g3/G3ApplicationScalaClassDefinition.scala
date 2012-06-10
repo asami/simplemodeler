@@ -13,7 +13,8 @@ import org.simplemodeling.dsl.datatype.ext._
 /**
  * @since   Aug. 15, 2011
  *  version Sep. 25, 2011
- * @version May.  1, 2012
+ *  version May.  1, 2012
+ * @version Jun. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 class G3ApplicationScalaClassDefinition(
@@ -160,7 +161,7 @@ class G3ApplicationScalaClassDefinition(
   private def _datastore {
     sm_pln("""datastore('ds, RecordClassSpace(""")
     sm_indent_up
-    val classes = collect_entities_in_module(e =>
+    val classes = map_entities_in_module(e =>
       "RecordClass('%s, %s)".format(e.asciiName, _schema_name(e)))
     val last = classes.last
     sm_indent_up

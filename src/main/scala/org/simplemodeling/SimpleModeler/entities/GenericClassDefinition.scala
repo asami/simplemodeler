@@ -38,7 +38,8 @@ import org.goldenport.recorder.Recordable
  * @since   Jun.  4, 2011
  *  version Sep. 25, 2011
  *  version Feb. 20, 2012
- * @version May. 15, 2012
+ *  version May. 15, 2012
+ * @version Jun.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -859,15 +860,21 @@ abstract class GenericClassDefinition(
   }
 
   protected final def entities_in_module(): Seq[PEntityEntity] = {
-    collect_entities_in_module {
+    map_entities_in_module {
       case x: PEntityEntity => x
     }
   }
 
-  protected final def collect_entities_in_module[T](f: PEntityEntity => T): Seq[T] = {
+  protected final def map_entities_in_module[T](f: PEntityEntity => T): Seq[T] = {
     pContext.collectPlatform {
       case x: PEntityEntity => f(x)
     }
+  }
+
+  protected final def collect_entities_in_module[T](f: PartialFunction[PEntityEntity,T]): Seq[T] = {
+    pContext.collectPlatform {
+      case x: PEntityEntity => x
+    } collect f
   }
 
   protected final def traverse_entities_in_module[T](f: PEntityEntity => T) {
