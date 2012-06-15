@@ -1,5 +1,5 @@
 [app]
-  version: 0.4-SNAPSHOT
+  version: 0.4a-SNAPSHOT
   org: org.simplemodeling
   name: simplemodeler
   class: org.simplemodeling.SimpleModeler.AppMain

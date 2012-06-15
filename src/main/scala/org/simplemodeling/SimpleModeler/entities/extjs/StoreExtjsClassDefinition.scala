@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Apr. 18, 2012
+ * @version Jun. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class StoreExtjsClassDefinition(
@@ -26,7 +26,7 @@ class StoreExtjsClassDefinition(
     js_ps("model", extjsobject.sourcePlatformObject.get.qualifiedName)
     js_po("proxy") {
       js_ps("type", "rest")
-      js_ps("url", extjsContext.applicationName(extjsobject) + "/rest/" + "XYZ")
+      js_ps("url", extjsContext.restUri(extjsobject))
       js_po("reader") {
         js_ps("type", "json")
         js_ps("root", "data")

@@ -13,7 +13,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
 /**
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
- * @version May.  6, 2012
+ * @version Jun. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) {
@@ -308,17 +308,54 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     asciiName(attr)
   }
 
+  /**
+   * Program oriented name. Capitalize nuetral.
+   */
   final def asciiName(anObject: PObjectEntity): String = {
     asciiName(anObject.modelObject)
   }
 
+  /**
+   * Program oriented name. Capitalized nuetral.
+   */
   final def asciiName(attr: PAttribute): String = {
     asciiName(attr.modelElement)
   }
 
+  /**
+   * Program oriented name. Capitalized nuetral.
+   */
   final def asciiName(modelElement: SMElement): String = {
 //    underscore_name(enTerm(modelElement))
     camel_case_name(enTerm(modelElement))
+  }
+
+  /**
+   * Program oriented name. Lower case term.
+   * 
+   * Use cases: URI
+   */
+  final def uriName(anObject: PObjectEntity): String = {
+    uriName(anObject.modelObject)
+  }
+
+  /**
+   * Program oriented name. Lower case term.
+   * 
+   * Use cases: URI
+   */
+  final def uriName(attr: PAttribute): String = {
+    uriName(attr.modelElement)
+  }
+
+  /**
+   * Program oriented name. Lower case term.
+   * 
+   * Use cases: URI
+   */
+  final def uriName(modelElement: SMElement): String = {
+//    underscore_name(enTerm(modelElement))
+    camel_case_name(enTerm(modelElement)).toLowerCase
   }
 
   @deprecated("candidate old feature", "before 0.3.3")
@@ -419,7 +456,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   /**
-   * camel case
+   * camel case (capitalize nuetral)
    */
   private def camel_case_name(name: String): String = {
     val buf = new StringBuilder

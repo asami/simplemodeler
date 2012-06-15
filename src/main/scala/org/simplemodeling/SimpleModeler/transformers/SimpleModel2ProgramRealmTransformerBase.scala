@@ -24,7 +24,8 @@ import org.goldenport.recorder.Recordable
  * Derived from SimpleModel2JavaRealmTransformerBase (Feb. 3, 2011)
  * 
  * @since   Apr.  7, 2012
- * @version May.  6, 2012
+ *  version May.  6, 2012
+ * @version Jun. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -536,6 +537,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         obj.term_en = modelObject.term_en // XXX
         obj.term_ja = modelObject.term_ja // XXX
         obj.asciiName = target_context.asciiName(modelObject)
+        obj.uriName = target_context.uriName(modelObject)
         obj.classNameBase = target_context.classNameBase(modelObject)
         obj.setKindedPackageName(make_PackageName(modelObject))
         obj.xmlNamespace = modelObject.xmlNamespace
@@ -557,6 +559,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.term_en = modelObject.term_en
       obj.term_ja = modelObject.term_ja
       obj.asciiName = target_context.asciiName(modelObject)
+      obj.uriName = target_context.uriName(modelObject)
       obj.classNameBase = target_context.classNameBase(modelObject)
       obj.setKindedPackageName(make_PackageName(modelObject))
       obj.xmlNamespace = modelObject.xmlNamespace
@@ -578,6 +581,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.term_en = modelObject.term_en
       obj.term_ja = modelObject.term_ja
       obj.asciiName = target_context.asciiName(modelObject)
+      obj.uriName = target_context.uriName(modelObject)
       obj.classNameBase = target_context.classNameBase(modelObject)
       obj.setKindedPackageName(make_PackageName(modelObject))
       obj.xmlNamespace = modelObject.xmlNamespace
@@ -718,6 +722,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.term_en = modelPackage.term_en
       obj.term_ja = modelPackage.term_ja
       obj.asciiName = target_context.asciiName(modelPackage)
+      obj.uriName = target_context.uriName(modelPackage)
       obj.classNameBase = target_context.classNameBase(modelPackage)
       obj.modelPackage = Some(modelPackage)
       obj.platformPackage = Some(ppkg)
@@ -736,6 +741,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.term_en = modelPackage.term_en
       obj.term_ja = modelPackage.term_ja
       obj.asciiName = target_context.asciiName(modelPackage)
+      obj.uriName = target_context.uriName(modelPackage)
       obj.classNameBase = target_context.classNameBase(modelPackage)
       obj.modelPackage = Some(modelPackage)
       obj.platformPackage = Some(ppkg)
@@ -754,6 +760,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.term_en = modelPackage.term_en
       obj.term_ja = modelPackage.term_ja
       obj.asciiName = target_context.asciiName(modelPackage)
+      obj.uriName = target_context.uriName(modelPackage)
       obj.classNameBase = target_context.classNameBase(modelPackage)
       obj.modelPackage = Some(modelPackage)
       obj.platformPackage = Some(ppkg)
@@ -770,6 +777,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       ppkg.term_en = modelPackage.term_en
       ppkg.term_ja = modelPackage.term_ja
       ppkg.asciiName = target_context.asciiName(modelPackage)
+      ppkg.uriName = target_context.uriName(modelPackage)
       ppkg.classNameBase = target_context.classNameBase(modelPackage)
 //      ppkg.modelPackage = Some(modelPackage)
 //      ppkg.platformPackage = Some(ppkg)

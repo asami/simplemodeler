@@ -13,7 +13,8 @@ import org.simplemodeling.dsl._
  * @since   Apr. 21, 2011
  *  version Aug. 20, 2011
  *  version Dec. 15, 2011
- * @version May.  5, 2012
+ *  version May.  5, 2012
+ * @version Jun. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -35,14 +36,14 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   val attributes = new ArrayBuffer[PAttribute]
   val operations = new ArrayBuffer[POperation]
   /**
-   * name in program.
+   * Name in program. Defined in the specification DSL.
    * 
    * "name" is defined in GEntity.
    */
   var name_en = ""
   var name_ja = ""
   /**
-   * Name in glossary.
+   * Name in glossary. Defined in the specification DSL.
    */
   var term = ""
   var term_en = ""
@@ -55,7 +56,16 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     pContext.localeTerm(modelObject)
   }
   // URL (term_name)
+  /**
+   * Program oriented name. Case Neutral. (preserved)
+   */
   var asciiName = ""
+  /**
+   * Program oriented name. Lower case term.
+   *
+   * Use case: URI
+   */
+  var uriName = ""
   // Class Name base (TermName)
   var classNameBase = ""
   var modelPackage: Option[SMPackage] = None // not used

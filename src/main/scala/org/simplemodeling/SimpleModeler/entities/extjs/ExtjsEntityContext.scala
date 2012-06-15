@@ -10,7 +10,7 @@ import com.asamioffice.goldenport.text.{UString, UJavaString}
 
 /*
  * @since   Mar. 31, 2012
- * @version Jun. 10, 2012
+ * @version Jun. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class ExtjsEntityContext(ectx: GEntityContext, sctx: GServiceContext) extends JavaScriptEntityContextBase(ectx, sctx) {
@@ -60,5 +60,9 @@ class ExtjsEntityContext(ectx: GEntityContext, sctx: GServiceContext) extends Ja
 
   def entityControllerName(obj: SMDomainEntity) = {
     className(obj) + "Controller"
+  }
+
+  def restUri(obj: ExtjsObjectEntity) = {
+    "app/rest/" + obj.uriName
   }
 }
