@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Jun. 10, 2012
+ * @version Jun. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class ViewportExtjsClassDefinition(
@@ -29,7 +29,7 @@ class ViewportExtjsClassDefinition(
       js_o {
         js_ps("region", "west")
         js_ps("xtype", "treepanel")
-        js_ps("title", "一覧")
+        js_ps("title", "エンティティ一覧")
         js_pnumber("width", 200)
         js_ptrue("collapsible")
         js_ps("store", "app.store.NavigationStore")
@@ -37,9 +37,12 @@ class ViewportExtjsClassDefinition(
       js_o {
         js_ps("region", "center")
         js_ps("xtype", "tabpanel")
-        js_ps("title", "情報")
+        js_ps("title", "エンティティ")
+        js_ps("id", "tables-panel")
         js_pa("items") {
+          jm_pln("/*")
           _entities
+          jm_pln("*/")
         }
       }
     }
