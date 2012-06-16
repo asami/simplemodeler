@@ -301,7 +301,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
 
   final def labelName(modelElement: SMElement): String = {
 //    underscore_name(enTerm(modelElement))
-    localeTerm(modelElement)
+    UString.capitalize(localeTerm(modelElement))
   }
 
   final def dataKey(attr: PAttribute): String = {

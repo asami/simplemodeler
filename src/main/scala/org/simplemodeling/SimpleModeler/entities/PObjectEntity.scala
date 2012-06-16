@@ -53,7 +53,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
    */
   def label = {
     require (term != null && term_en != null && term_ja != null)
-    pContext.localeTerm(modelObject)
+    pContext.labelName(modelObject)
   }
   // URL (term_name)
   /**

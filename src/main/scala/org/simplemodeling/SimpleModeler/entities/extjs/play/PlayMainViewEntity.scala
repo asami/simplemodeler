@@ -10,7 +10,8 @@ import org.simplemodeling.SimpleModeler.entities.extjs._
 
 /**
  * @since   Apr. 20, 2012
- * @version May. 26, 2012
+ *  version May. 26, 2012
+ * @version Jun. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class PlayMainViewEntity(pContext: PEntityContext) extends PObjectEntity(pContext) {
@@ -25,7 +26,7 @@ class PlayMainViewEntity(pContext: PEntityContext) extends PObjectEntity(pContex
     <script type="text/javascript" src="@routes.Assets.at("extjs/bootstrap.js")"></script>
     <script type="text/javascript" src="@routes.Assets.at("app.js")"></script>
   </head>
-  <body><div class="app-dev" style="padding: 100px">Ext-JS library should be deployed in the directory 'public' named as 'extjs'.</div></body>
+  <body><!-- <div class="app-dev" style="padding: 100px">Ext-JS library should be deployed in the directory 'public' named as 'extjs'.</div> --></body>
 </html>
 """
 

@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   May.  3, 2012
- * @version May. 15, 2012
+ * @version Jun. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SqlClassDefinition(
@@ -53,7 +53,7 @@ abstract class SqlClassDefinition(
   }
 
   override protected def attribute_variables_Epilogue {
-    jm_pln("CREATE TABLE '%s' (", sqlContext.sqlName(sqlObject))
+    jm_pln("CREATE TABLE %s (", sqlContext.sqlName(sqlObject))
     jm_indent_up
     wholeAttributeDefinitions.map { x =>
       () => x.ddl

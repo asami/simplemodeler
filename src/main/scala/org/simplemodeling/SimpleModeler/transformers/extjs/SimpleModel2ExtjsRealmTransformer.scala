@@ -25,7 +25,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /**
  * @since   Mar. 31, 2011
- * @version Jun.  5, 2012
+ * @version Jun. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
@@ -77,6 +77,9 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
     target_realm.setEntity("/README.sm", readme)
     val route = new PlayRouteEntity(target_context)
     target_realm.setEntity("/conf/routes.sm", route)
+    if (true) {
+      target_realm.setEntity("/conf/routes", route)
+    }
     val mainview = new PlayMainViewEntity(target_context)
     target_realm.setEntity("/app/views/app.scala.html", mainview) // XXX
     val indexcontroller = new PlayMainControllerEntity(target_context)
@@ -90,6 +93,9 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
       println("SimpleModel2Extjs:" + ppkg.name)
       val evolution = new PlayEvolutionEntity(target_context)
       build_object_for_package_at_pathname(evolution, pkg, ppkg, "/conf/evolutions/default/1.sql.sm")
+      if (true) {
+        build_object_for_package_at_pathname(evolution, pkg, ppkg, "/conf/evolutions/default/1.sql")
+      }
 
       // XXX unify application view
       val viewport = new ExtjsViewportEntity(target_context)

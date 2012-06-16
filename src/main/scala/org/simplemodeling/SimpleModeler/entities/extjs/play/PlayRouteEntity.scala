@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entities.extjs._
 
 /**
  * @since   Apr. 20, 2012
- * @version Apr. 21, 2012
+ * @version Jun. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class PlayRouteEntity(pContext: PEntityContext) extends PObjectEntity(pContext) {
@@ -24,9 +24,9 @@ GET     /                           controllers.Application.index
 
 GET     /app                        controllers.AppMain.index
 
-GET	/app/rest/list	            controllers.AppRest.list
+GET	/app/rest/:name	            controllers.AppRest.list(name)
 
-GET	/app/rest/:id	            controllers.AppRest.get(id)
+GET	/app/rest/:name/:id	    controllers.AppRest.get(name, id)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
