@@ -8,14 +8,15 @@ import org.goldenport.entity._
 import org.goldenport.entities.csv.CsvEntity
 import org.goldenport.entities.xmind.XMindEntity
 import org.goldenport.entities.orgmode.OrgmodeEntity
+import org.simplemodeling.SimpleModeler.SimpleModelerConstants._
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
 import org.simplemodeling.SimpleModeler.converters._
 import org.simplemodeling.SimpleModeler.builder._
 
 /**
  * @since   Feb.  3, 2009
- *  version Feb. 27, 2009
- * @version Feb. 28, 2012
+ *  version Feb. 28, 2012
+ * @version Jun. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class ConvertService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -32,7 +33,7 @@ class ConvertService(aCall: GServiceCall, serviceClass: GServiceClass) extends G
       case None       => Nil
     }
     val packageName = (if (packageNames.isEmpty) "" else packageNames.head) match { // XXX temporary fix for cloud service
-      case "" => "model"
+      case "" => DEFAULT_PACKAGE_NAME
       case n => n    
     }
     val policy: Policy = Policy.create(entityContext, packageName)(

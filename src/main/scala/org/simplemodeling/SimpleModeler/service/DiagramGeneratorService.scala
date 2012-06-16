@@ -4,6 +4,7 @@ import org.goldenport.service._
 import org.goldenport.entity._
 import org.goldenport.entities.workspace.TreeWorkspaceEntity
 import org.goldenport.GoldenportConstants
+import org.simplemodeling.SimpleModeler.SimpleModelerConstants._
 import org.simplemodeling.SimpleModeler.entity.SimpleModelEntity
 import org.simplemodeling.SimpleModeler.generators.uml.ClassDiagramGenerator
 import com.asamioffice.goldenport.text.UString
@@ -14,7 +15,8 @@ import org.smartdox.Text
 /*
  * @since   Nov.  7, 2011
  *  version Dec.  6, 2011
- * @version Feb. 28, 2012
+ *  version Feb. 28, 2012
+ * @version Jun. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class DiagramGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -23,13 +25,22 @@ class DiagramGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) 
     val pkgname = (pkgs match {
       case Nil => ""
       case _ => pkgs.head
-    }) match { // XXX temporary fix for cloud service
-      case "" => "model"
+    }) match {
+      case "" => DEFAULT_PACKAGE_NAME
       case n => n
     }
     val simpleModel = aRequest.entity.asInstanceOf[SimpleModelEntity]
     simpleModel.open()
-    val smpkg = simpleModel.activePackages.filter(_.qualifiedName == pkgname).head
+    val smpkg = {
+      val xs = simpleModel.activePackages
+      val a = xs.find(_.qualifiedName == pkgname) orElse xs.headOption
+      a match {
+        case Some(pkg) => pkg
+        case None => {
+          throw new IllegalArgumentException("bad model")
+        }
+      }
+    }
     val baseRealm = new TreeWorkspaceEntity(entityContext)
     baseRealm.open()
     val generator = new ClassDiagramGenerator(simpleModel)

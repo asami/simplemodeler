@@ -2,6 +2,7 @@ package org.simplemodeling.SimpleModeler.transformers
 
 import _root_.java.io.File
 import scala.collection.mutable.{ArrayBuffer}
+import org.simplemodeling.SimpleModeler.SimpleModelerConstants
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.business._
 import org.simplemodeling.SimpleModeler.entity.domain._
@@ -25,11 +26,11 @@ import org.goldenport.recorder.Recordable
  * 
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
- * @version Jun. 16, 2012
+ * @version Jun. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
-    ) extends Recordable {
+    ) extends Recordable with SimpleModelerConstants {
   type EntityContextTYPE <: PEntityContext
   type TargetRealmTYPE <: PRealmEntity
 
@@ -45,11 +46,11 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
   var isMakeProject = true
   var useKindPackage = false
 
-  var entityKindName = "model"
-  var viewKindName = "view"
-  var controllerKindName = "controller"
-  var docKindName = "doc"
-  var storeKindName = "store"
+  var entityKindName = DEFAULT_MODEL_KIND
+  var viewKindName = DEFAULT_VIEW_KIND
+  var controllerKindName = DEFAULT_CONTROLLER_KIND
+  var docKindName = DEFAULT_DOC_KIND
+  var storeKindName = DEFAULT_STORE_KIND
 
   setup_FowardingRecorder(serviceContext)
 
@@ -58,13 +59,13 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     target_context.srcMainDir = srcMainDir
     simpleModel.open()
     target_realm.open()
-    println("SimpleModel2ProgramRealTransform.transform: SimpleModel start")
+    record_trace("SimpleModel2ProgramRealTransform.transform: SimpleModel start")
     simpleModel.print
-    println("SimpleModel2ProgramRealTransform.transform: SimpleModel end")
+    record_trace("SimpleModel2ProgramRealTransform.transform: SimpleModel end")
     simpleModel.traverse(make_Builder)
-    println("SimpleModel2ProgramRealTransform.transform: start")
+    record_trace("SimpleModel2ProgramRealTransform.transform: start")
     target_realm.print
-    println("SimpleModel2ProgramRealTransform.transform: end")
+    record_trace("SimpleModel2ProgramRealTransform.transform: end")
     for (phase <- make_Phases) {
       target_realm.traverse(phase)
     }
@@ -140,7 +141,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         case uc: SMBusinessUsecase => null
         case task: SMBusinessTask => null
         case pkg: SMPackage => transform_Package(pkg)
-        case unknown => error("Unspported simple model object = " + unknown)
+        case unknown => sys.error("Unspported simple model object = " + unknown)
       }
     }
 
@@ -712,7 +713,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         case m: SMMultiplicityOneMore => POneMore
         case m: SMMultiplicityZeroMore => PZeroMore
         case m: SMMultiplicityRange => new PRange // XXX
-        case _ => error("Unkown multiplicity = " + aMultiplicity.kind)
+        case _ => sys.error("Unkown multiplicity = " + aMultiplicity.kind)
       }
     }
 
@@ -868,7 +869,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       try {
         findObject(aQName).get
       } catch {
-        case _ => error("No object = " + aQName)
+        case _ => sys.error("No object = " + aQName)
       }
     }
 
@@ -883,7 +884,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       try {
         findEntity(aQName).get
       } catch {
-        case _ => error("No entity = " + aQName)
+        case _ => sys.error("No entity = " + aQName)
       }
     }
 
@@ -891,7 +892,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       try {
         (findEntity(aQName) orElse findEntity(get_kinded_qname("model", aQName))).get
       } catch {
-        case _ => error("No entity = " + aQName)
+        case _ => sys.error("No entity = " + aQName)
       }
     }
 
@@ -906,7 +907,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       try {
         findPart(aQName).get
       } catch {
-        case _ => error("No part = " + aQName)
+        case _ => sys.error("No part = " + aQName)
       }
     }
 
@@ -921,7 +922,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       try {
         findPowertype(aQName).get
       } catch {
-        case _ => error("No powertype = " + aQName)
+        case _ => sys.error("No powertype = " + aQName)
       }
     }
 
@@ -936,7 +937,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       try {
         findDocument(aQName).get
       } catch {
-        case _ => error("No document = " + aQName)
+        case _ => sys.error("No document = " + aQName)
       }
     }
 
@@ -951,7 +952,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       try {
         findValue(aQName).get
       } catch {
-        case _ => error("No value = " + aQName)
+        case _ => sys.error("No value = " + aQName)
       }
     }
 

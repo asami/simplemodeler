@@ -25,7 +25,8 @@ import com.asamioffice.goldenport.text.UJavaString
 /*
  * @since   Sep. 13, 2008
  *  version Sep. 19, 2011
- * @version Jan. 30, 2012
+ *  version Jan. 30, 2012
+ * @version Jun. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) {
@@ -68,7 +69,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
     try {
       findObject(aQName).get
     } catch {
-      case _ => error("No object = " + aQName)
+      case _ => sys.error("No object = " + aQName)
     }
   }
 
@@ -177,7 +178,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
       case ds: DataSet => _build_dataset(ds)
       case ds: DataSource => _build_datasource(ds)
       case flow: Flow => _build_flow(flow)
-      case any => error("unimplemnted object = " + any)
+      case any => sys.error("unimplemnted object = " + any)
     }
   }
 
@@ -496,7 +497,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
               case None => //
             }
           }
-          case step => error("Unkonwn step = " + step)
+          case step => sys.error("Unkonwn step = " + step)
         }
       }
     })
@@ -557,7 +558,7 @@ record_trace("build_powertype_object = " + aPowertype)
 
   private def build_attribute_object(anAttr: SAttribute) {
     if (anAttr.attributeType == null) {
-      error("build_attribute_object = " + anAttr.name)
+      sys.error("build_attribute_object = " + anAttr.name)
 //      record_trace("build_attribute_object = " + anAttr.name)
     }
     build_object(anAttr.attributeType)
@@ -565,7 +566,7 @@ record_trace("build_powertype_object = " + aPowertype)
 
   private def build_association_object(anAssoc: SAssociation) {
     if (anAssoc.entity == null) {
-      error("build_association_object = " + anAssoc.name)
+      sys.error("build_association_object = " + anAssoc.name)
 //      record_trace("build_association_object = " + anAssoc.name)
     }
     build_object(anAssoc.entity)
@@ -655,6 +656,7 @@ record_trace("build_powertype_object = " + aPowertype)
     val pkgs = new mutable.ArrayBuffer[SMPackage]
     override def startEnter(aNode: GTreeNode[SMElement]) {
       if (!aNode.isInstanceOf[SMPackage]) return
+      if (aNode.pathname.startsWith("/org/simplemodeling/dsl/datatype")) return
       if (aNode.children.exists(_.isInstanceOf[SMObject])) {
         pkgs += aNode.asInstanceOf[SMPackage]
       }
@@ -720,7 +722,7 @@ record_trace("build_powertype_object = " + aPowertype)
         def setup_container(aParent: GTreeNode[SMDocumentSlot], aContainerDoc: SMDocument) {
           for (child <- aParent.children) {
             child.content match {
-              case null => error("illegal slot")
+              case null => sys.error("illegal slot")
               case leaf: SMLeafDocumentSlot => {
                 leaf.containerDocument = aContainerDoc
               }
@@ -762,10 +764,10 @@ record_trace("build_powertype_object = " + aPowertype)
               import_attributes(aSlot.containerEntity, aSlot.containerDocument)
             }
             case _: DateTimeDocumentSlotKind => {
-//              error("???")
+//              sys.error("???")
             }
             case _: IdDocumentSlotKind => {
-//              error("???")
+//              sys.error("???")
             }
           }
         }
@@ -790,7 +792,7 @@ record_trace("build_powertype_object = " + aPowertype)
         aDoc.slots.traverse(new GTreeVisitor[SMDocumentSlot] {
           override def enter(aNode: GTreeNode[SMDocumentSlot]) {
             aNode.content match {
-              case null => error("???")
+              case null => sys.error("???")
               case leaf: SMLeafDocumentSlot => resolve_leaf(leaf)
               case container: SMContainerDocumentSlot => resolve_container(container)
             }
@@ -836,7 +838,7 @@ record_trace("build_powertype_object = " + aPowertype)
               transition.postState = aMachine.getState(transition.dslTransition.postState)
               transition.event match {
                 case event: SMDomainEvent => event.resourceTransitions += transition
-                case _ => error("not event = " + transition.event)
+                case _ => sys.error("not event = " + transition.event)
               }
             }
             for (subState <- aState.subStates) {
@@ -855,7 +857,7 @@ record_trace("build_powertype_object = " + aPowertype)
             transition.postState = aMachine.getState(transition.dslTransition.postState) // 2008-12-25 new SMState(transition.dslTransition.postState)
             transition.event match {
               case event: SMDomainEvent => event.resourceTransitions += transition
-              case _ => error("not event = " + transition.event)
+              case _ => sys.error("not event = " + transition.event)
             }
           }
 */
@@ -1175,7 +1177,7 @@ record_trace("build_powertype_object = " + aPowertype)
 
   // context
   protected final def syntax_error(aMessage: String) {
-    error(aMessage)
+    sys.error(aMessage)
   }
 
   // configuration : XXX separate

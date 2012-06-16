@@ -7,9 +7,10 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Mar. 31, 2012
- * @version Apr. 15, 2012
+ *  version Apr. 15, 2012
+ * @version Jun. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class ExtjsEntityPartEntity(aContext: ExtjsEntityContext) extends ExtjsObjectEntity(aContext) with PEntityPartEntity {
-  kindName = "model"
+  kindName = DEFAULT_MODEL_KIND
 }

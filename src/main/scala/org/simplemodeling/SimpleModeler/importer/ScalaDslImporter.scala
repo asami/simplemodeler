@@ -10,6 +10,7 @@ import org.goldenport.entities.csv.CsvEntity
 import org.goldenport.entities.xmind.XMindEntity
 import org.goldenport.entities.opml.OpmlEntity
 import org.goldenport.entities.outline.OutlineEntityBase
+import org.simplemodeling.SimpleModeler.SimpleModelerConstants._
 import org.simplemodeling.SimpleModeler.builder.Policy
 import org.simplemodeling.SimpleModeler.builder.DefaultPolicy
 import com.asamioffice.goldenport.text.UPathString
@@ -18,7 +19,7 @@ import com.asamioffice.goldenport.text.UString
 /*
  * @since   Oct. 31, 2008
  *  version Dec. 11, 2011
- * @version Apr. 16, 2012
+ * @version Jun. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
@@ -27,7 +28,7 @@ class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
     case None       => Nil
   }
   val packageName = (if (packageNames.isEmpty) "" else packageNames.head) match { // XXX temporary fix for cloud service
-      case "" => "app"
+      case "" => DEFAULT_PACKAGE_NAME
       case n => n    
   }
   private val _builder_policy: Policy = Policy.create(entityContext, packageName)(

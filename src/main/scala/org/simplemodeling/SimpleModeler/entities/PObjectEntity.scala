@@ -2,6 +2,7 @@ package org.simplemodeling.SimpleModeler.entities
 
 import scala.collection.mutable.ArrayBuffer
 import com.asamioffice.goldenport.text.{JavaTextMaker, UString}
+import org.simplemodeling.SimpleModeler.SimpleModelerConstants
 import org.simplemodeling.SimpleModeler.entity._
 import org.goldenport.value._
 import org.goldenport.entity.{GEntity, GEntityContext} 
@@ -14,11 +15,11 @@ import org.simplemodeling.dsl._
  *  version Aug. 20, 2011
  *  version Dec. 15, 2011
  *  version May.  5, 2012
- * @version Jun. 16, 2012
+ * @version Jun. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
-  extends GEntity(pContext) {
+  extends GEntity(pContext) with SimpleModelerConstants {
   type DataSource_TYPE = GDataSource
   type AttributeTYPE <: PAttribute
 

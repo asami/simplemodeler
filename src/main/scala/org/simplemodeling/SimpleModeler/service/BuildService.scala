@@ -15,14 +15,16 @@ import org.goldenport.entities.fs.FileStoreEntity
 import org.goldenport.entities.csv.CsvEntity
 import org.goldenport.record._
 import org.smartdox.Text
+import org.simplemodeling.SimpleModeler.SimpleModelerConstants._
 import org.simplemodeling.SimpleModeler.entity.SimpleModelEntity
 import org.simplemodeling.SimpleModeler.generators.uml.ClassDiagramGenerator
 import org.simplemodeling.SimpleModeler.importer.ScalaDslImporter
 import org.simplemodeling.SimpleModeler.transformers.java.SimpleModel2Java6RealmTransformer
 
-/*
+/**
  * @since   Jan. 29, 2012
- * @version Feb. 28, 2012
+ *  version Feb. 28, 2012
+ * @version Jun. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -37,7 +39,7 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
       case Nil => ""
       case _ => pkgs.head
     }) match { // XXX temporary fix for cloud service
-      case "" => "model"
+      case "" => DEFAULT_PACKAGE_NAME
       case n => n
     }
     val srcdir: Either[String, FileStoreEntity] = _src_dir(aRequest)
