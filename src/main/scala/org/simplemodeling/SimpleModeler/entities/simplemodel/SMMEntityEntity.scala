@@ -53,7 +53,8 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  * @since   Jan. 30, 2009
  *  version Dec.  8, 2011
  *  version Jan. 30, 2012
- * @version Mar. 25, 2012
+ *  version Mar. 25, 2012
+ * @version Jun. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) {
@@ -777,7 +778,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     for (role <- roles) {
       _role_ref(role.associationType.name, entities) match {
         case r: DomainRole => entity.role(role.name, r, _dsl_multiplicity(role.multiplicity))
-        case entity => record_debug("SMMEntityEntity: " + entity)
+        case entity => record_warning("%s refers %s as role entity.".format(name, entity.name))
       }
     }
   }
@@ -914,10 +915,11 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
-  private def _role_ref(name: String, entities: Map[String, SObject]): DomainRole = {
-    entities(name) match {
-      case r: DomainRole => r
-      case x => error("not role: " + x)
+  private def _role_ref(name: String, entities: Map[String, SObject]) = {
+    entities.get(name) match {
+      case Some(r: DomainRole) => r
+      case Some(o: SObject) => o
+      case None => error("no role: " + name)
     }
   }
 

@@ -18,7 +18,8 @@ import org.simplemodeling.SimpleModeler.builder.UseTerm
  * @since   Jan. 30, 2009
  *  version Nov.  5, 2011
  *  version Dec. 11, 2011
- * @version Feb.  7, 2012
+ *  version Feb.  7, 2012
+ * @version Jun. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelMakerEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext, val policy: Policy)
@@ -209,7 +210,11 @@ class SimpleModelMakerEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEnt
         }
 
         def get_role_by_term(aTerm: String): (String, SMMEntityEntity, GRMultiplicity) = {
-          (get_name_by_term(aTerm), get_entity_by_term(aTerm), get_multiplicity_by_term(aTerm))
+          val rule = get_entity_by_term_in_entities(entities, aTerm) getOrElse {
+            record_warning("Term is not found: %s, creates a rule entity implicitly.", aTerm)
+            builder.createObject(RuleKind, aTerm)
+          }
+          (get_name_by_term(aTerm), rule, get_multiplicity_by_term(aTerm))
         }
 
         def get_attribute_by_term(aTerm: String): (String, SMMObjectType, GRMultiplicity) = {
@@ -271,10 +276,6 @@ class SimpleModelMakerEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEnt
       case ""       => ""
       case pathname => UJavaString.pathname2classifierName(pathname)
     }
-  }
-
-  private def record_warning(message: String, args: Any*) {
-    aContext.record_warning(message, args: _*)
   }
 }
 /*
