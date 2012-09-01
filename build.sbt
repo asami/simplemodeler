@@ -6,9 +6,9 @@ organization := "org.simplemodeling"
 
 version := "0.4.0-SNAPSHOT"
 
-scalaVersion := "2.9.1"
+// scalaVersion := "2.9.1"
 
-// crossScalaVersions := Seq("2.9.1", "2.9.2")
+crossScalaVersions := Seq("2.9.2", "2.9.1")
 
 scalacOptions += "-deprecation"
 
@@ -20,13 +20,13 @@ resolvers += Classpaths.typesafeResolver
 
 resolvers += "Asami Maven Repository" at "http://www.asamioffice.com/maven"
 
-libraryDependencies += "org.scala-lang" % "scala-compiler" % "2.9.1"
+libraryDependencies <+= scalaVersion { "org.scala-lang" % "scala-compiler" % _ }
 
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "6.0.4"
 
 libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.0-SNAPSHOT"
 
-libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.1.2"
+libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.2.0"
 
 libraryDependencies += "org.goldenport" %% "goldenport-record" % "0.1.1"
 
