@@ -1,10 +1,10 @@
 [app]
-  version: 0.4a-SNAPSHOT
+  version: 0.4.0-RC
   org: org.simplemodeling
   name: simplemodeler
   class: org.simplemodeling.SimpleModeler.AppMain
 [scala]
-  version: 2.9.1
+  version: 2.9.2
 [repositories]
   local
   scala-tools-releases
