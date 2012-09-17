@@ -4,7 +4,7 @@ name := "simplemodeler"
 
 organization := "org.simplemodeling"
 
-version := "0.4.0-RC2-SNAPSHOT"
+version := "0.4.0-RC2"
 
 scalaVersion := "2.9.2"
 
@@ -24,7 +24,7 @@ libraryDependencies <+= scalaVersion { "org.scala-lang" % "scala-compiler" % _ }
 
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "6.0.4"
 
-libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.0"
+libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.1"
 
 libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.2.0"
 

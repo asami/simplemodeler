@@ -7,13 +7,12 @@ import org.goldenport.entities.graphviz._
 import org.simplemodeling.SimpleModeler.entity._
 
 /*
- * Jan. 28, 2009
- * Mar. 19, 2009
+ * @since   Jan. 28, 2009
+ *  version Mar. 19, 2009
+ * @version Sep. 18, 2012
  * ASAMI, Tomoharu
  */
-class StateMachineDiagramGenerator(val simpleModel: SimpleModelEntity) {
-  val context = simpleModel.entityContext
-
+class StateMachineDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
 //  final def makeStateMachineDiagramPng(anObject: SMObject): BinaryContent = {
 //    make_statemachine_diagram_png(makeStateMachineDiagramDot(anObject))
 //  }
@@ -46,6 +45,10 @@ class StateMachineDiagramGenerator(val simpleModel: SimpleModelEntity) {
 */
 
   private def make_statemachine_diagram_png(text: StringContent): BinaryContent = {
+    make_diagram_png(text)
+  }
+/*
+  private def make_statemachine_diagram_png(text: StringContent): BinaryContent = {
     val dot: Process = context.executeCommand("dot -Tpng -Kdot -q")
     val in = dot.getInputStream()
     val out = dot.getOutputStream()
@@ -65,6 +68,7 @@ class StateMachineDiagramGenerator(val simpleModel: SimpleModelEntity) {
 //      println("finish process = " + dot)
     }
   }
+*/
 
   final def makeStateMachineDiagramDot(aStateMachine: SMStateMachine): StringContent = {
     val graphviz = new GraphvizEntity(context)

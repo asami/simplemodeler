@@ -10,7 +10,8 @@ import org.goldenport.value._
  * derived from BusinessUsecase.java since Nov. 22, 2007
  *
  * @since   Nov.  6, 2008
- * @version Nov.  6, 2011
+ *  version Nov.  6, 2011
+ * @version Sep. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class BusinessUsecase(name:String, packageName: String) extends SUsecase(name, packageName) with BusinessStory {
@@ -79,7 +80,7 @@ class BusinessUsecase(name:String, packageName: String) extends SUsecase(name, p
 //      node.addChild(child.asInstanceOf[node.TreeNode_TYPE])
     }
 //    record_trace("adjust_Embedded_Task - clean")
-    UDsl.printFlow(basicFlow.root)
+//    UDsl.printFlow(basicFlow.root)
     val task = create_embedded_task("BT" + name, children)
     task.taskKind = TaskKind.WholeTask
     val node: GTreeNode[SStep] = aRoot.addContent(new BusinessTaskStep(task))
@@ -88,7 +89,7 @@ class BusinessUsecase(name:String, packageName: String) extends SUsecase(name, p
       node.addChild(child.asInstanceOf[node.TreeNode_TYPE])
     }
 //    record_trace("adjust_Embedded_Task")
-    UDsl.printFlow(basicFlow.root)
+//    UDsl.printFlow(basicFlow.root)
   }
 
   private def create_embedded_task(aName: String, children: Seq[GTreeNode[SStep]]) = {
