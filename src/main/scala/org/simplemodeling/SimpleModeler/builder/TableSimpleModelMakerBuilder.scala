@@ -7,10 +7,17 @@ import org.goldenport.value._
 import org.goldenport.sdoc.SDoc
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
 
-/**
+/*
+ * TODO refactors a relation with TabularBuilderBase.
+ * 
  * @since   Mar.  6, 2012
- * @version Mar. 25, 2012
+ *  version Mar. 25, 2012
+ *  version Sep. 30, 2012
+ * @version Oct.  2, 2012
  * @author  ASAMI, Tomoharu
+ */
+/**
+ * OutlineBuilderBase uses this class to build SimpleModel from tables.
  */
 class TableSimpleModelMakerBuilder(
   builder: SimpleModelMakerBuilder,
@@ -20,6 +27,9 @@ class TableSimpleModelMakerBuilder(
 
   override protected def build_Model {}
 
+  /**
+   * OutlineBuilderBase uses the methed.
+   */
   def createObjects(kind: ElementKind, table: GTable[String]): List[SMMEntityEntity] = {
     val rows: Seq[List[(String, String)]] = for (row <- table.rows) yield {
       _columns(table.headAsStringList).zip(row)
@@ -88,7 +98,10 @@ class TableSimpleModelMakerBuilder(
     head | _default_columns 
   }
 
-  def buildObject(entity: SMMEntityEntity, table: GTable[String]) {
+  /**
+   * OutlineBuilderBase uses the method.
+   */
+  def buildAttribute(entity: SMMEntityEntity, table: GTable[String]) {
     val rows = for (row <- table.rows) yield {
       _columns(table.headAsStringList).zip(row)
     }
@@ -96,8 +109,8 @@ class TableSimpleModelMakerBuilder(
   }
 
   protected final def add_attribute(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
-    val attrtype: SMMObjectType = _object_type(entry)
-    val attr = obj.attribute(_name(entry), attrtype)
+    val otype: SMMObjectType = _object_type(entry)
+    val attr = obj.attribute(_name(entry), otype)
     for ((key, value) <- entry) {
       NaturalLabel(key) match {
         case NameLabel => {}
@@ -128,5 +141,90 @@ class TableSimpleModelMakerBuilder(
 
   protected def is_type_field(string: String): Boolean = {
     NaturalLabel.isDatatype(string)
+  }
+
+  /**
+   * OutlineBuilderBase uses the method.
+   */
+  def buildComposition(entity: SMMEntityEntity, table: GTable[String]) {
+    val rows = for (row <- table.rows) yield {
+      _columns(table.headAsStringList).zip(row)
+    }
+    rows.map(entry => add_composition(entity, entry))
+  }
+
+  protected final def add_composition(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
+    val entitytype: SMMEntityType = _entity_type(entry)
+    val assoc = entity.composition(_name(entry), entitytype)
+    _build_association(assoc, entry)
+  }
+
+  /**
+   * OutlineBuilderBase uses the method.
+   */
+  def buildAggregation(entity: SMMEntityEntity, table: GTable[String]) {
+    val rows = for (row <- table.rows) yield {
+      _columns(table.headAsStringList).zip(row)
+    }
+    rows.map(entry => add_aggregation(entity, entry))
+  }
+
+  protected final def add_aggregation(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
+    val entitytype: SMMEntityType = _entity_type(entry)
+    val assoc = entity.aggregation(_name(entry), entitytype)
+    _build_association(assoc, entry)
+  }
+
+  /**
+   * OutlineBuilderBase uses the method.
+   */
+  def buildAssociation(entity: SMMEntityEntity, table: GTable[String]) {
+    val rows = for (row <- table.rows) yield {
+      _columns(table.headAsStringList).zip(row)
+    }
+    rows.map(entry => add_association(entity, entry))
+  }
+
+  protected final def add_association(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
+    val entitytype: SMMEntityType = _entity_type(entry)
+    val assoc = entity.association(_name(entry), entitytype)
+    _build_association(assoc, entry)
+  }
+
+  private def _build_association(assoc: SMMAssociation, entry: Seq[(String, String)]) {
+    for ((key, value) <- entry) {
+      NaturalLabel(key) match {
+        case NameLabel => {}
+        case DatatypeLabel => {}
+        case MultiplicityLabel => assoc.multiplicity = GRMultiplicity(value)
+        case NameJaLabel => assoc.name_ja = value
+        case NameEnLabel => assoc.name_en = value
+        case TermLabel => assoc.term = value
+        case TermJaLabel => assoc.term_ja = value
+        case TermEnLabel => assoc.term_en = value
+        case TitleLabel => assoc.title = value
+        case SubtitleLabel => assoc.subtitle = value
+        case CaptionLabel => assoc.caption = value
+        case BriefLabel => assoc.brief = value
+        case SummaryLabel => assoc.brief = value
+        case DescriptionLabel => assoc.description = value
+        case ColumnNameLabel => assoc.columnName = value
+        case SqlDatatypeLabel => assoc.sqlDatatype = SMMObjectType.get(value)
+        case _ => {}
+      }
+    }
+  }
+
+  private def _entity_type(entry: Seq[(String, String)]): SMMEntityType = {
+    val name = NameLabel.find(entry)
+    val term = TermLabel.find(entry)
+    name match {
+      case Some(n) => {
+        val etype = new SMMEntityType(n, packageName)
+        term.foreach(x => etype.term = x)
+        etype
+      }
+      case None => sys.error("not implemented yet.")
+    }
   }
 }

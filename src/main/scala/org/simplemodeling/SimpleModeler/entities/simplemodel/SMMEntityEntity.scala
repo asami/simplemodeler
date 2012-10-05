@@ -54,23 +54,16 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Dec.  8, 2011
  *  version Jan. 30, 2012
  *  version Mar. 25, 2012
- * @version Jun. 17, 2012
+ *  version Jun. 17, 2012
+ *  version Sep. 30, 2012
+ * @version Oct.  2, 2012
  * @author  ASAMI, Tomoharu
  */
-class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) {
+class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) with SMMElement {
   type DataSource_TYPE = GDataSource
 
   var packageName: String = ""
   var kind: ElementKind = null
-  var name_en: String = ""
-  var name_ja: String = ""
-  var term: String = ""
-  var term_en: String = ""
-  var term_ja: String = ""
-  var caption: String = ""
-  var brief: String = ""
-  var summary: String = ""
-  var description: String = ""
   var tableName: String = ""
   var base: SMMEntityEntity = NullEntityEntity
   val powertypes = new ArrayBuffer[SMMAttribute]
@@ -91,6 +84,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val narrativeRoles = new ArrayBuffer[String]
   val narrativeAttributes = new ArrayBuffer[String]
   val narrativeParts = new ArrayBuffer[String]
+  val narrativeCompositions = new ArrayBuffer[String]
+  val narrativeAggregations = new ArrayBuffer[String]
+  val narrativeAssociations = new ArrayBuffer[String]
   val narrativeStateMachines = new ArrayBuffer[String]
   val narrativeAnnotations = new ArrayBuffer[String]
   val narrativePrimaryActors = new ArrayBuffer[String]
@@ -99,7 +95,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val narrativeGoals = new ArrayBuffer[String]
   val narrativeStateTransitions = new ArrayBuffer[String]
   val narrativeScenarioSteps = new ArrayBuffer[String]
-  val narrativeCompositions = new ArrayBuffer[(String, SMMEntityEntity)]
+  /**
+   * SimpleModelDslBuilder uses to collect composition classes in narrative.
+   */
+  val narrativeOwnCompositions = new ArrayBuffer[(String, SMMEntityEntity)]
   private val private_objects = new ArrayBuffer[SMMEntityEntity]
 
   private var _sobject: Option[SObject] = None
@@ -204,23 +203,47 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   final def association(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
     val assocType = new SMMEntityType(anObject.name, anObject.packageName)
     assocType.term = anObject.term
-    val assoc = new SMMAssociation(aName, assocType)
+    association(aName, assocType)
+  }
+
+  /**
+   * @see TableSimpleModelMakerBuilder
+   */
+  final def association(aName: String, entityType: SMMEntityType): SMMAssociation = {
+    val assoc = new SMMAssociation(aName, entityType)
     associations += assoc
     assoc
   }
 
+  /**
+   * 
+   */
   final def aggregation(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
-    val assocType = new SMMEntityType(anObject.name, anObject.packageName)
-    assocType.term = anObject.term
-    val assoc = new SMMAssociation(aName, assocType)
+    val entityType = new SMMEntityType(anObject.name, anObject.packageName)
+    entityType.term = anObject.term
+    aggregation(aName, entityType)
+  }
+
+  /**
+   * @see TableSimpleModelMakerBuilder
+   */
+  final def aggregation(aName: String, entityType: SMMEntityType): SMMAssociation = {
+    val assoc = new SMMAssociation(aName, entityType)
     aggregations += assoc
     assoc
   }
 
   final def composition(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
-    val assocType = new SMMEntityType(anObject.name, anObject.packageName)
-    assocType.term = anObject.term
-    val assoc = new SMMAssociation(aName, assocType)
+    val entityType = new SMMEntityType(anObject.name, anObject.packageName)
+    entityType.term = anObject.term
+    composition(aName, entityType)
+  }
+
+  /**
+   * @see TableSimpleModelMakerBuilder
+   */
+  final def composition(aName: String, entityType: SMMEntityType): SMMAssociation = {
+    val assoc = new SMMAssociation(aName, entityType)
     compositions += assoc
     assoc
   }
@@ -247,17 +270,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     sm
   }
 
-  final def annotation(aKey: String, aValue: String) {
-    aKey match {
-      case "name_en"     => name_en = aValue
-      case "name_ja"     => name_ja = aValue
-      case "term"        => term = aValue
-      case "caption"     => caption = aValue
-      case "brief"       => brief = aValue
-      case "summary"     => summary = aValue
-      case "description" => description = aValue
-      case "tableName"   => tableName = aValue
-      case _             => description = "bad key [" + aKey + "] = " + aValue
+  override protected def set_Annotation_Pf(key: String, value: String) = {
+    key match {
+      case "tableName"   => tableName = value; true
+      case _ => false
     }
   }
 

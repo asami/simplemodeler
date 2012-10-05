@@ -9,106 +9,208 @@ import org.goldenport.entities.outline._
 import org.goldenport.value.{GTable, PlainTable}
 import com.asamioffice.goldenport.text.CsvUtility
 import org.smartdox._
+import org.simplemodeling.SimpleModeler.builder._
 
-/**
+/*
  * Nov. 6, 2011 (derived from MindmapModelingXMind)
  * @since   Nov. 30, 2011 
- * @version Apr.  8, 2012
+ *  version Apr.  8, 2012
+ * @version Sep. 30, 2012
  * @author  ASAMI, Tomoharu
  */
+/**
+ * Builds a MindmapModeling model from an outline data by OutlineEntityBase.
+ *
+ * Concrete classes of OutlineEntityBase are [TODO] at the moment.
+ *
+ * OutlineBuilderBase uses this class.
+ */
 class MindmapModelingOutliner(val outline: OutlineEntityBase) {
-  val thema = outline.firstThema
+  val thema = outline.firstThema // TODO variation point
+
+  def entityTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(EntityLabel)
+  }
 
   def actors: List[TopicNode] = {
-    structure_node_children(thema, "登場人物")
+    structure_node_children(thema, ActorLabel)
   }
 
   def actorTables: List[GTable[String]] = {
-    val a = boi("登場人物")
-    val b = thema
-    val r = List(boi("登場人物"), thema.some).flatten.flatMap {
-      _structure_node_tables(_, "登場人物")
-    }
-//    println(r)
-    r
+    _structure_node_thema_boi_tables(ActorLabel)
   }
 
   def resources = {
-    structure_node_children(thema, "道具")
+    structure_node_children(thema, ResourceLabel)
+  }
+
+  def resourceTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(ResourceLabel)
   }
 
   def events = {
-    structure_node_children(thema, "出来事")
+    structure_node_children(thema, EventLabel)
+  }
+
+  def eventTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(EventLabel)
   }
 
   def roles = {
-    structure_node_children(thema, "役割")
+    structure_node_children(thema, RoleLabel)
+  }
+
+  def roleTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(RoleLabel)
   }
 
   def rules = {
-    structure_node_children(thema, "規則")
+    structure_node_children(thema, RuleLabel)
+  }
+
+  def ruleTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(RuleLabel)
   }
 
   def usecases = {
-    structure_node_children(thema, "物語")
+    structure_node_children(thema, UsecaseLabel)
+  }
+
+  def usecaseTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(UsecaseLabel)
+  }
+
+  /*
+   * structure nodes
+   */
+  def parts(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, PartLabel)
+  }
+
+  def compositions(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, CompositionLabel)
+  }
+
+  def compositionTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, CompositionLabel)
   }
 
   def aggregations(term: TopicNode): List[TopicNode] = {
-    structure_node_children(term, "部品")
+    structure_node_children(term, AggregationLabel)
   }
 
   def aggregationTables(term: TopicNode): List[GTable[String]] = {
-    _structure_node_tables(term, "部品")
+    _structure_node_tables(term, AggregationLabel)
+  }
+
+  def associations(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, AssociationLabel)
+  }
+
+  def associationTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, AssociationLabel)
   }
 
   def attributes(term: TopicNode): List[TopicNode] = {
-    structure_node_children(term, "属性") // 特長
+    structure_node_children(term, AttributeLabel) // 特長
   }
 
   def attributeTables(term: TopicNode): List[GTable[String]] = {
-    _structure_node_tables(term, "属性")
+    _structure_node_tables(term, AttributeLabel)
   }
 
   def derivations(term: TopicNode): List[TopicNode] = {
-    structure_node_children(term, "種類")
+    structure_node_children(term, IsaLabel)
+  }
+
+  def derivationTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, IsaLabel)
   }
 
   def powertypes(term: TopicNode): List[TopicNode] = {
-    structure_node_children(term, "区分")
+    structure_node_children(term, PowertypeLabel)
+  }
+
+  def powertypeTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, PowertypeLabel)
   }
 
   def roles(term: TopicNode): List[TopicNode] = {
-    structure_node_children(term, "役割")
+    structure_node_children(term, RoleLabel)
+  }
+
+  def roleTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, RoleLabel)
   }
 
   def states(term: TopicNode): List[TopicNode] = {
-    structure_node_children(term, "状況")
+    structure_node_children(term, StateLabel)
+  }
+
+  def stateTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, StateLabel)
   }
 
   def annotations(term: TopicNode): List[TopicNode] = {
-    structure_node_children(term, "注記")
+    structure_node_children(term, AnnotationLabel)
+  }
+
+  def annotationTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, AnnotationLabel)
   }
 
   def primaryActors(term: TopicNode): List[TopicNode] = {
-    structure_node_children(term, "主役")
+    structure_node_children(term, PrimaryActorLabel)
+  }
+
+  def primaryActorTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, PrimaryActorLabel)
   }
 
   def secondaryActors(term: TopicNode): List[TopicNode] = {
-    structure_node_children(term, "相手役")
+    structure_node_children(term, SecondaryActorLabel)
+  }
+
+  def secondaryActorTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, SecondaryActorLabel)
   }
 
   def supportingActors(term: TopicNode): List[TopicNode] = {
-    structure_node_children(term, "脇役")
+    structure_node_children(term, SupportingActorLabel)
+  }
+
+  def supportingActorTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, SupportingActorLabel)
   }
 
   def goals(term: TopicNode): List[TopicNode] = {
-    structure_node_children(term, "目標")
+    structure_node_children(term, GoalLabel)
+  }
+
+  def goalTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, GoalLabel)
   }
 
   def scenario(term: TopicNode): List[TopicNode] = {
-    structure_node_children(term, "脚本")
+    structure_node_children(term, ScenarioLabel)
   }
 
+  def scenarioTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, ScenarioLabel)
+  }
+
+  /*
+   *
+   */
+  def boi(name: NaturalLabel): Seq[TopicNode] = {
+    structure_node(thema, name)
+  }
+
+  def structure_node(aParent: OutlineNode, label: NaturalLabel): Seq[TopicNode] = {
+    structure_node(aParent, _is_match(label) _)
+  }
+
+/*
   def boi(name: String): Option[TopicNode] = {
     structure_node(thema, name)
   }
@@ -120,11 +222,37 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
   def structure_node(aParent: OutlineNode, names: Seq[String]): Option[TopicNode] = {
     structure_node(aParent, _is_match(names, _))
   }
+)
+*/
 
-  def structure_node(aParent: OutlineNode, ismatch: OutlineNode => Boolean): Option[TopicNode] = {
-    aParent.children.find(ismatch).asInstanceOf[Option[TopicNode]]
+  protected final def structure_node(aParent: OutlineNode, ismatch: OutlineNode => Boolean): Seq[TopicNode] = {
+    aParent.children.collect {
+      case x: TopicNode if ismatch(x) => x
+    }
   }
 
+  protected final def structure_node_children(aParent: OutlineNode, label: NaturalLabel): List[TopicNode] = {
+    structure_node_children(aParent, _is_match(label) _)
+  }
+
+  private def _is_match(label: NaturalLabel)(node: OutlineNode): Boolean = {
+    _is_match(label, node.title)
+  }
+
+  private def _is_match(label: NaturalLabel, title: String): Boolean = {
+    label.isMatch(_normalize_title(title))
+  }
+
+  private def _isignore(x: Char) = {
+    x == ' ' || x == '(' || x == ')' || x == '[' || x == ']' || x == '{' || x == '}' ||
+    x == '\n' || x == '\r' || x == '\t' || x == '\f'
+  }
+
+  private def _normalize_title(s: String): String = {
+    s.dropWhile(_isignore).reverse.dropWhile(_isignore).reverse
+  }
+
+/*
   def structure_node_children(aParent: OutlineNode, aName: String): List[TopicNode] = {
     structure_node_children(aParent, List(aName))
   }
@@ -137,8 +265,9 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
     val candidates = names.flatMap(n => List(n, "[" + n + "]"))
     candidates.exists(_ == node.title)
   }
-  
-  def structure_node_children(aParent: OutlineNode, ismatch: OutlineNode => Boolean): List[TopicNode] = {
+*/
+
+  protected final def structure_node_children(aParent: OutlineNode, ismatch: OutlineNode => Boolean): List[TopicNode] = {
     val mayNodes = aParent.children.find(ismatch)
     if (mayNodes.isEmpty) Nil
     else {
@@ -146,9 +275,11 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
     }
   }
 
+/*
   private def _structure_node_tables(node: OutlineNode, name: String): List[GTable[String]] = {
     _structure_node_tables(node, List(name))
   }
+*/
 
   private def _to_gtable(src: Table): GTable[String] = {
     val r = new PlainTable[String]
@@ -192,6 +323,35 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
     }
   }
 
+  protected final def _structure_node_thema_boi_tables(
+    label: NaturalLabel
+  ): List[GTable[String]] = {
+    _structure_node_thema_boi_tables(label, label)
+  }
+
+  protected final def _structure_node_thema_boi_tables(
+    boilabel: NaturalLabel, tablelabel: NaturalLabel
+  ): List[GTable[String]] = {
+    List(boi(boilabel), Seq(thema)).flatten.flatMap {
+      _structure_node_tables(_, tablelabel)
+    }
+  }
+
+  protected final def _structure_node_tables(node: OutlineNode, label: NaturalLabel): List[GTable[String]] = {
+    def isaccept(t: Table): Boolean = {
+//      println(t.caption + "/" + candidates)
+      t.caption.map(c => _is_match(label, c.toText())) | false
+    }
+    val t = node.doc.tree
+    ZTrees.collect(t) {
+      case t => t.rootLabel
+    }.toList.collect {
+      case t: Table if isaccept(t) => t
+    }.map(_to_gtable)
+  }
+
+
+/*
   private def _structure_node_tables(node: OutlineNode, names: List[String]): List[GTable[String]] = {
     val candidates: List[String] = names.flatMap(n => List(n, n + "一覧")) 
     def isaccept(t: Table): Boolean = {
@@ -205,8 +365,9 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
       case t: Table if isaccept(t) => t 
     }.map(_to_gtable)
   }
+*/
 
-  def name_labels_mark(aNode: OutlineNode): String = {
+  protected final def name_labels_mark(aNode: OutlineNode): String = {
     val (term, mayMultiplicity) = CsvUtility.makeNameMark(aNode.title)
     if (aNode.isEmpty) {
       term + (if (mayMultiplicity.isDefined) mayMultiplicity.get)

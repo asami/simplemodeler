@@ -16,8 +16,13 @@ import org.goldenport.recorder.Recordable
  * @since   Sep. 15, 2011
  *  version Dec. 11, 2011
  *  version Feb.  8, 2012
- * @version Sep. 17, 2012
+ *  version Sep. 29, 2012
+ * @version Oct.  2, 2012
  * @author  ASAMI, Tomoharu
+ */
+/**
+ * SimpleModelMakerBuilder extends this class and override the create_Object method
+ * to save a created object in the SimpleModelMakerEntity.
  */
 class SimpleModelDslBuilder(
     private val entityContext: GEntityContext, 
@@ -167,9 +172,21 @@ class SimpleModelDslBuilder(
       val (name, target, multiplicity) = get_attribute_by_term(term)
       entity.attribute(name, target) multiplicity_is multiplicity
     }
-    for (term <- entity.narrativeParts) {
+    for (term <- entity.narrativeParts) { // TODO 
       val (name, target, multiplicity) = get_association_by_term(term)
       entity.aggregation(name, target) multiplicity_is multiplicity
+    }
+    for (term <- entity.narrativeCompositions) {
+      val (name, target, multiplicity) = get_association_by_term(term)
+      entity.composition(name, target) multiplicity_is multiplicity
+    }
+    for (term <- entity.narrativeAggregations) {
+      val (name, target, multiplicity) = get_association_by_term(term)
+      entity.aggregation(name, target) multiplicity_is multiplicity
+    }
+    for (term <- entity.narrativeAssociations) {
+      val (name, target, multiplicity) = get_association_by_term(term)
+      entity.association(name, target) multiplicity_is multiplicity
     }
     for (term <- entity.narrativeStateTransitions) {
       val (name, target, multiplicity) = get_association_by_term(term)
@@ -206,7 +223,7 @@ class SimpleModelDslBuilder(
         }
       }
     }
-    for ((term, part) <- entity.narrativeCompositions) {
+    for ((term, part) <- entity.narrativeOwnCompositions) {
       val name = get_name_by_term(term)
       val mul = get_multiplicity_by_term(term)
       entity.composition(name, part) multiplicity_is mul

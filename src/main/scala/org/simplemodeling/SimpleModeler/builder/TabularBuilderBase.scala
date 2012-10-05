@@ -12,12 +12,15 @@ import com.asamioffice.goldenport.text.UJavaString
 import org.goldenport.service.GServiceCall
 
 /*
- * 9Derived from CsvBuilder and CsvImporter.)
+ * TODO NameLabel for CSV.
+ * 
+ * (Derived from CsvBuilder and CsvImporter.)
  * Derived from CsvBuilderBase.
  * 
- *  since   Dec. 11, 2011
- * @since   Jan. 24, 2012
- * @version Mar. 17, 2012
+ * @since   Dec. 11, 2011
+ *  since   Jan. 24, 2012
+ *  version Mar. 17, 2012
+ * @version Sep. 27, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class TabularBuilderBase(val policy: Policy, val packageName: String) {
@@ -29,6 +32,9 @@ abstract class TabularBuilderBase(val policy: Policy, val packageName: String) {
 
   protected def build_Model: Unit
 
+  /**
+   * OutlineBuilderBase does not use the method as TableSimpleModelMakerBuilder at the moment.
+   */
   protected final def build_model(tabular: AnnotatedCsvTabular) {
     val packagePathname = UJavaString.packageName2pathname(packageName)
 //    for (y <- 0 until tabular.height if (tabular.annotations.get(0, y).key != "memo")) {
