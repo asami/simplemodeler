@@ -3,129 +3,290 @@ package org.simplemodeling.SimpleModeler.builder
 import scalaz._
 import Scalaz._
 
-/**
+/*
  * @since   Mar. 24, 2012
- * @version Mar. 25, 2012
+ *  version Mar. 25, 2012
+ * @version Oct.  2, 2012
  * @author  ASAMI, Tomoharu
  */
-sealed abstract trait NaturalLabel
-object KindLabel extends NaturalLabel
-object ActorLabel extends NaturalLabel
-object ResourceLabel extends NaturalLabel
-object EventLabel extends NaturalLabel
-object RoleLabel extends NaturalLabel
-object SummaryLabel extends NaturalLabel
-object DatatypeLabel extends NaturalLabel
-object PowertypeLabel extends NaturalLabel
-object StateLabel extends NaturalLabel
-object StatemachineLabel extends NaturalLabel
-object RuleLabel extends NaturalLabel
-object ServiceLabel extends NaturalLabel
-object UsecaseLabel extends NaturalLabel
-object NameLabel extends NaturalLabel
-object NameJaLabel extends NaturalLabel
-object NameEnLabel extends NaturalLabel
-object TermLabel extends NaturalLabel
-object TermJaLabel extends NaturalLabel
-object TermEnLabel extends NaturalLabel
-object TitleLabel extends NaturalLabel
-object SubtitleLabel extends NaturalLabel
-object CaptionLabel extends NaturalLabel
-object BriefLabel extends NaturalLabel
+/**
+ * MindmapModelingOutliner uses this class.
+ */
+sealed abstract trait NaturalLabel {
+  def candidates: Seq[String]
+  def allCandidates: Seq[String] = {
+    def augumentsSpace(s: String): Seq[String] = {
+      if (s.contains(" ")) {
+        List(s, s.replace(" ", ""), s.replace(" ", "-"))
+      } else Seq(s)
+    }
+
+    def augumentsList(s: String): Seq[String] = {
+      val l = Seq(s, s + " list", s + " 一覧", s + " リスト")
+      val a = s.plural(0)
+      if (s == a) l :+ a else l
+    }
+
+    candidates >>= augumentsList >>= augumentsSpace
+  }
+
+  def isMatch(name: String) = {
+    val n = name.toLowerCase
+    allCandidates.contains(n)
+  }
+
+  def find(entries: Seq[(String, String)]): Option[String] = {
+    entries.find(x => isMatch(x._1)).map(_._2)
+  }
+}
+
+object KindLabel extends NaturalLabel {
+  val candidates = List("kind", "カインド", "種別")
+}
+
+object EntityLabel extends NaturalLabel {
+  val candidates = List("entity", "エンティティ")
+}
+
+object ActorLabel extends NaturalLabel {
+  val candidates = List("actor", "アクター", "アクタ", "登場人物")
+}
+
+object ResourceLabel extends NaturalLabel {
+  val candidates = List("resource", "リソース", "道具")
+}
+
+object EventLabel extends NaturalLabel {
+  val candidates = List("event", "イベント", "出来事")
+}
+
+object RoleLabel extends NaturalLabel {
+  val candidates = List("role", "役割")
+}
+
+object SummaryLabel extends NaturalLabel {
+  val candidates = List("summary", "サマリ", "サマリー", "要約")
+}
+
+object DatatypeLabel extends NaturalLabel {
+  val candidates = List("type", "data types", "型", "データ型", "データタイプ")
+}
+
+object PowertypeLabel extends NaturalLabel {
+  val candidates = List("powertype", "powers", "パワータイプ", "区分")
+}
+
+object StateLabel extends NaturalLabel {
+  val candidates = List("state", "ステート", "状態")
+  
+}
+
+object StatemachineLabel extends NaturalLabel {
+  val candidates = List("state machine", "ステート マシーン", "ステート チャート", "状態機械")
+  
+}
+
+object RuleLabel extends NaturalLabel {
+  val candidates = List("rule", "ルール", "規則")
+  
+}
+
+object ServiceLabel extends NaturalLabel {
+  val candidates = List("service", "サービス")
+  
+}
+
+object UsecaseLabel extends NaturalLabel {
+  val candidates = List("use case", "ユースケース", "物語")
+  
+}
+
+object NameLabel extends NaturalLabel {
+  val candidates = List("name", "名前")
+  
+}
+
+object NameJaLabel extends NaturalLabel {
+  val candidates = List("name(ja)", "names(ja)", "japanese name", "日本語名")
+  
+}
+
+object NameEnLabel extends NaturalLabel {
+  val candidates = List("name(en)", "names(en)", "english name", "英語名")
+  
+}
+
+object TermLabel extends NaturalLabel {
+  val candidates = List("term", "用語")
+  
+}
+
+object TermJaLabel extends NaturalLabel {
+  val candidates = List("term(ja)", "terms(ja)", "japanese term", "日本語用語", "用語(日本語)")
+  
+}
+
+object TermEnLabel extends NaturalLabel {
+  val candidates = List("term(en)", "terms(en)", "english term", "英語用語", "用語(英語)")
+  
+}
+
+object TitleLabel extends NaturalLabel {
+  val candidates = List("title", "タイトル", "表題")
+  
+}
+
+object SubtitleLabel extends NaturalLabel {
+  val candidates = List("subtitle", "サブタイトル", "副題")
+  
+}
+
+object CaptionLabel extends NaturalLabel {
+  val candidates = List("caption")
+  
+}
+
+object BriefLabel extends NaturalLabel {
+   val candidates = List("brief")
+}
 // object SummaryLabel extends NaturalLabel
-object DescriptionLabel extends NaturalLabel
-object AttributeLabel extends NaturalLabel
-object AssociationLabel extends NaturalLabel
-object AggregationLabel extends NaturalLabel
-object CompositionLabel extends NaturalLabel
-object BaseLabel extends NaturalLabel
-object MultiplicityLabel extends NaturalLabel
+
+object DescriptionLabel extends NaturalLabel {
+  val candidates = List("description", "説明")
+}
+
+object AttributeLabel extends NaturalLabel {
+  val candidates = List("attr", "attrs", "attribute", "属性名")
+}
+
+object AssociationLabel extends NaturalLabel {
+  val candidates = List("assoc", "association", "関連", "参照")
+}
+
+object AggregationLabel extends NaturalLabel {
+  val candidates = List("aggregation", "集約")
+}
+
+object CompositionLabel extends NaturalLabel {
+  val candidates = List("composition", "合成", "合成集約")
+}
+
+/**
+ * Almost aggregation.
+ * Selection between composition and aggregation is evaluated later.
+ */
+object PartLabel extends NaturalLabel {
+  val candidates = List("tool", "部品")
+}
+
+object IsaLabel extends NaturalLabel {
+  val candidates = List("isa", "is-a", "subclass", "サブクラス", "種類")
+}
+
+object BaseLabel extends NaturalLabel {
+  val candidates = List("base", "extend", "ベース", "継承", "基底")
+}
+
+object MultiplicityLabel extends NaturalLabel {
+  val candidates = List("multiplicity", "mul", "多重度")
+}
+
+object PrimaryActorLabel extends NaturalLabel {
+  val candidates = List("primary actor", "primary", "プライマリ アクタ", "主役")
+}
+
+object SecondaryActorLabel extends NaturalLabel {
+  val candidates = List("secondary actor", "secondary", "セカンダリ アクタ", "相手役")
+}
+
+object SupportingActorLabel extends NaturalLabel {
+  val candidates = List("supporting actor", "supporting", "サポーティング アクタ", "脇役")
+}
+
+object GoalLabel extends NaturalLabel {
+  val candidates = List("goal", "ゴール", "目的")
+}
+
+object ScenarioLabel extends NaturalLabel {
+  val candidates = List("scenario", "シナリオ", "脚本")
+}
+
+object AnnotationLabel extends NaturalLabel {
+  val candidates = List("annotation", "注記")
+}
+
+// SQL
+object TableNameLabel extends NaturalLabel {
+  val candidates = List("table name", "テーブル名")
+  
+}
+
+object ColumnNameLabel extends NaturalLabel {
+  val candidates = List("column name", "カラム名")
+  
+}
+
+object SqlDatatypeLabel extends NaturalLabel {
+  val candidates = List("sql type", "sql data type",
+      "SQL型", "SQLデータ型", "SQLデータタイプ")
+  
+}
 //
-object TableNameLabel extends NaturalLabel
-object ColumnNameLabel extends NaturalLabel
-object SqlDatatypeLabel extends NaturalLabel
-//
-object NullNaturalLabel extends NaturalLabel
+object NullNaturalLabel extends NaturalLabel {
+  val candidates = Nil
+}
 
 object NaturalLabel {
-  val kind_candidates = List("kind", "kinds", "カインド", "種別")
-  val actor_candidates = List("actor", "actors", "アクター", "アクタ", "登場人物")
-  val resource_candidates = List("resource", "resources", "リソース", "道具")
-  val event_candidates = List("event", "events", "イベント", "出来事")
-  val role_candidates = List("role", "roles", "役割")
-  val summary_candidates = List("summary", "summaries", "サマリ", "サマリー", "要約")
-  val powertype_candidates = List("powertype", "powertypes", "powers", "パワータイプ", "区分")
-  val state_candidates = List("state", "states", "ステート", "状態")
-  val statemachine_candidates = List("statemachine", "state machine", "statemachines", "state machines", "ステートマシーン", "ステートチャート", "状態機械")
-  val rule_candidates = List("rule", "rules", "ルール", "規則")
-  val service_candidates = List("service", "services", "サービス")
-  val usecase_candidates = List("usecase", "usecases", "use case", "use cases", "ユースケース", "物語")
-  val name_candidates = List("name", "names", "名前")
-  val name_ja_candidates = List("name(ja)", "names(ja)", "japanese name", "日本語名")
-  val name_en_candidates = List("name(en)", "names(en)", "english name", "英語名")
-  val term_candidates = List("term", "terms", "用語")
-  val term_ja_candidates = List("term(ja)", "terms(ja)", "japanese term", "日本語用語", "用語(日本語)")
-  val term_en_candidates = List("term(en)", "terms(en)", "english term", "英語用語", "用語(英語)")
-  val title_candidates = List("title", "タイトル", "表題")
-  val subtitle_candidates = List("subtitle", "サブタイトル", "副題")
-  val caption_candidates = List("caption")
-  val brief_candidates = List("brief")
 //  val summary_candidates = List("summary")
-  val description_candidates = List("description", "説明")
-  val attribute_candidates = List("attr", "attrs", "attribute", "attributes", "属性名")
-  val association_candidates = List("assoc", "assocs", "associations", "関連", "参照")
-  val aggregation_candidates = List("aggregation", "aggregations", "集約", "部品")
-  val composition_candidates = List("composition", "compositions", "合成", "合成集約")
-  val base_candidates = List("base", "bases", "extend", "extends", "ベース", "継承", "基底")
-  val datatype_candidates = List("type", "datatype", "datatypes", "data type", "data types", "型", "データ型", "データタイプ")
-  val multiplicity_candidates = List("multiplicity", "mul", "多重度")
-  // SQL
-  val tableName_candidates = List("tablename", "tablenames", "table name", "table names", "テーブル名")
-  val columnName_candidates = List("columnname", "columnnames", "column name", "column names", "カラム名")
-  val sqlDatatype_candidates = List("sql type", "sql datatype", "sql datatypes", "sql data type", "sql data types",
-      "SQL型", "SQLデータ型", "SQLデータタイプ")
+  val candidates = List(
+    KindLabel,
+    ActorLabel,
+    ResourceLabel,
+    EventLabel,
+    RoleLabel,
+    SummaryLabel,
+    PowertypeLabel,
+    StateLabel,
+    StatemachineLabel,
+    RuleLabel,
+    ServiceLabel,
+    UsecaseLabel,
+    NameLabel,
+    NameJaLabel,
+    NameEnLabel,
+    TermLabel,
+    TermJaLabel,
+    TermEnLabel,
+    TitleLabel,
+    SubtitleLabel,
+    CaptionLabel,
+    BriefLabel,
+    SummaryLabel,
+    DescriptionLabel,
+    AttributeLabel,
+    AssociationLabel,
+    AggregationLabel,
+    CompositionLabel,
+    BaseLabel,
+    IsaLabel,
+    MultiplicityLabel,
+    PrimaryActorLabel,
+    SecondaryActorLabel,
+    SupportingActorLabel,
+    GoalLabel,
+    ScenarioLabel,
+    AnnotationLabel,
+    DatatypeLabel,
+    TableNameLabel,
+    ColumnNameLabel,
+    SqlDatatypeLabel)
 
   def apply(string: String): NaturalLabel = {
-    val a = string.toLowerCase
-    if (kind_candidates.contains(a)) KindLabel
-    else if (actor_candidates.contains(a)) ActorLabel
-    else if (resource_candidates.contains(a)) ResourceLabel
-    else if (event_candidates.contains(a)) EventLabel
-    else if (role_candidates.contains(a)) RoleLabel
-    else if (summary_candidates.contains(a)) SummaryLabel
-    else if (powertype_candidates.contains(a)) PowertypeLabel
-    else if (state_candidates.contains(a)) StateLabel
-    else if (statemachine_candidates.contains(a)) StatemachineLabel
-    else if (rule_candidates.contains(a)) RuleLabel
-    else if (service_candidates.contains(a)) ServiceLabel
-    else if (usecase_candidates.contains(a)) UsecaseLabel
-    else if (name_candidates.contains(a)) NameLabel
-    else if (name_ja_candidates.contains(a)) NameJaLabel
-    else if (name_en_candidates.contains(a)) NameEnLabel
-    else if (term_candidates.contains(a)) TermLabel
-    else if (term_ja_candidates.contains(a)) TermJaLabel
-    else if (term_en_candidates.contains(a)) TermEnLabel
-    else if (title_candidates.contains(a)) TitleLabel
-    else if (subtitle_candidates.contains(a)) SubtitleLabel
-    else if (caption_candidates.contains(a)) CaptionLabel
-    else if (brief_candidates.contains(a)) BriefLabel
-    else if (summary_candidates.contains(a)) SummaryLabel
-    else if (description_candidates.contains(a)) DescriptionLabel
-    else if (attribute_candidates.contains(a)) AttributeLabel
-    else if (association_candidates.contains(a)) AssociationLabel
-    else if (aggregation_candidates.contains(a)) AggregationLabel
-    else if (composition_candidates.contains(a)) CompositionLabel
-    else if (base_candidates.contains(a)) BaseLabel
-    else if (multiplicity_candidates.contains(a)) MultiplicityLabel
-    else if (datatype_candidates.contains(a)) DatatypeLabel
-    else if (tableName_candidates.contains(a)) TableNameLabel
-    else if (columnName_candidates.contains(a)) ColumnNameLabel
-    else if (sqlDatatype_candidates.contains(a)) SqlDatatypeLabel
-    else NullNaturalLabel;
+    candidates.find(_.isMatch(string)) | NullNaturalLabel
   }
 
   def isKind(string: String): Boolean = {
-    kind_candidates.contains(string.toLowerCase)
+    KindLabel.isMatch(string)
   }
 
   def isKindKey(kv: (String, _)): Boolean = {
@@ -133,7 +294,7 @@ object NaturalLabel {
   }
 
   def isName(string: String): Boolean = {
-    name_candidates.contains(string.toLowerCase)
+    NameLabel.isMatch(string)
   }
 
   def isNameKey(kv: (String, _)): Boolean = {
@@ -141,6 +302,6 @@ object NaturalLabel {
   }
 
   def isDatatype(string: String): Boolean = {
-    datatype_candidates.contains(string.toLowerCase)
+    DatatypeLabel.isMatch(string)
   }
 }

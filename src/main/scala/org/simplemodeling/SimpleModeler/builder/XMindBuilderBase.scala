@@ -20,7 +20,8 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingXMind
  * Derived from XMindBuilder and XMindImporter
  * 
  * @since   Dec. 11, 2011
- * @version Feb. 27, 2012
+ *  version Feb. 27, 2012
+ * @version Oct.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 @deprecated("use OutlineBuilderBase")
@@ -96,7 +97,7 @@ abstract class XMindBuilderBase(val policy: Policy, val packageName: String, val
     if (_mmx.isDefinition(source)) {
       record_report("implicit composition: " + term)
       val part = _create_object(ResourceKind, source, _build_object)
-      target.narrativeCompositions += Pair(term, part)
+      target.narrativeOwnCompositions += Pair(term, part)
     } else {
       target.addNarrativePart(term)
     }

@@ -13,10 +13,16 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  * Derived from XMindBuilder and XMindImporter
  * Derived XMindBuilderBase
  *
- *  since   Dec. 11, 2011
- * @since   Feb. 27, 2012
- * @version Apr. 21, 2012
+ * @since   Dec. 11, 2011
+ *  version Feb. 27, 2012
+ *  version Apr. 21, 2012
+ * @version Sep. 30, 2012
  * @author  ASAMI, Tomoharu
+ */
+/**
+ * OutlineImporter is OutlineBuilderBase.
+ *
+ * OutlineImporter uses SimpleModeMakerBuilder as model_Builder.
  */
 abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, val outline: OutlineEntityBase) extends Recordable {
   import UXMind._
@@ -83,8 +89,13 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   private def _build_object_common(aNode: TopicNode, target: SMMEntityEntity) {
+    _mmx.parts(aNode).foreach(_build_part(_, target))
+    _mmx.compositions(aNode).foreach(_build_composition(_, target))
     _mmx.aggregations(aNode).foreach(_build_aggregation(_, target))
+    _mmx.associations(aNode).foreach(_build_association(_, target))
+    _mmx.compositionTables(aNode).foreach(_build_composition_table(_, target))
     _mmx.aggregationTables(aNode).foreach(_build_aggregation_table(_, target))
+    _mmx.associationTables(aNode).foreach(_build_association_table(_, target))
     _mmx.attributes(aNode).foreach(_build_attribute(_, target))
     _mmx.attributeTables(aNode).foreach(_build_attribute_table(_, target))
     _mmx.derivations(aNode).foreach(_build_derivation(_, target))
@@ -98,20 +109,42 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     _mmx.goals(aNode).foreach(_build_goal(_, target))
   }
 
-  private def _build_aggregation(source: TopicNode, target: SMMEntityEntity) {
+  private def _build_part(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     if (_mmx.isDefinition(source)) {
       record_report("implicit composition: " + term)
       val part = _create_object(ResourceKind, source, _build_object)
-      target.narrativeCompositions += Pair(term, part)
+      target.narrativeOwnCompositions += Pair(term, part)
     } else {
       target.addNarrativePart(term)
     }
   }
 
+  private def _build_composition(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    target.narrativeCompositions += term
+  }
+
+  private def _build_aggregation(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    target.narrativeAggregations += term
+  }
+
+  private def _build_association(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    target.narrativeAssociations += term
+  }
+
+  private def _build_composition_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildComposition(target, table)
+  }
+
   private def _build_aggregation_table(table: GTable[String], target: SMMEntityEntity) {
-    println("build_aggregation")
-    sys.error("not implemented yet")
+    _table_builder.buildAggregation(target, table)
+  }
+
+  private def _build_association_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildAssociation(target, table)
   }
 
   private def _build_attribute(source: TopicNode, target: SMMEntityEntity) {
@@ -120,7 +153,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   private def _build_attribute_table(table: GTable[String], target: SMMEntityEntity) {
-    _table_builder.buildObject(target, table)
+    _table_builder.buildAttribute(target, table)
   }
 
   private def _build_derivation(source: TopicNode, target: SMMEntityEntity) {

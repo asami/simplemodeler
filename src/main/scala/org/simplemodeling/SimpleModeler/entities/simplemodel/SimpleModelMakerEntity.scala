@@ -19,7 +19,8 @@ import org.simplemodeling.SimpleModeler.builder.UseTerm
  *  version Nov.  5, 2011
  *  version Dec. 11, 2011
  *  version Feb.  7, 2012
- * @version Jun. 17, 2012
+ *  version Jun. 17, 2012
+ * @version Sep. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelMakerEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext, val policy: Policy)

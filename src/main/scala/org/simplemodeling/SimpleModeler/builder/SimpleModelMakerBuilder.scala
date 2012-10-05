@@ -15,8 +15,12 @@ import org.simplemodeling.dsl.SObject
  * @since   Feb.  2, 2009
  *  version Mar.  6, 2009
  *  version Dec. 12, 2011
- * @version Feb.  8, 2012
+ *  version Feb.  8, 2012
+ * @version Sep. 27, 2012
  * @author  ASAMI, Tomoharu
+ */
+/**
+ * OutlineBuilderBase uses this class to build a SimpleModel.
  */
 class SimpleModelMakerBuilder(
     private val simplemodel: SimpleModelMakerEntity,
@@ -31,7 +35,7 @@ class SimpleModelMakerBuilder(
     simplemodel.setEntity(pathname, entity)
   }
 }
-
+/*
 class SimpleModelMakerBuilder0(
     private val simplemodel: SimpleModelMakerEntity,
     private val packageName: String,
@@ -85,3 +89,4 @@ class SimpleModelMakerBuilder0(
     sys.error("not implemented yet.")
   }
 }
+*/

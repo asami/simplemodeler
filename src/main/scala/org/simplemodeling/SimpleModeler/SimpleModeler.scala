@@ -14,7 +14,7 @@ import org.goldenport.exporter.FirstLeafResultExporterClass
 import org.goldenport.entities.opml.OpmlEntity
 import org.goldenport.entities.yaml.YamlEntity
 import org.goldenport.entities.orgmode.OrgmodeEntity
-import org.goldenport.entities.excel.ExcelTableEntity
+import org.goldenport.entities.excel.{ExcelTableEntity, ExcelxTableEntity}
 import org.goldenport.exporter.FirstLeafOrZipResultExporterClass
 
 /*
@@ -22,7 +22,12 @@ import org.goldenport.exporter.FirstLeafOrZipResultExporterClass
  *  version Dec. 13, 2011
  *  version May. 19, 2012
  *  version Jun. 17, 2012
+<<<<<<< HEAD
  * @version Sep. 16, 2012
+=======
+ *  version Sep. 25, 2012
+ * @version Oct.  2, 2012
+>>>>>>> 34389b7573722963eb8e987b92dc41c0c7b38073
  * @auther  ASAMI, Tomoharu
  */
 class SimpleModeler(args: Array[String]) {
@@ -80,8 +85,13 @@ object Main {
 // TODO: append custom service feature
 class SimpleModelerDescriptor extends GApplicationDescriptor {
   name = "SimpleModeler"
+<<<<<<< HEAD
   version = "0.4.0-RC2-SNAPSHOT"
   version_build = "20120916"
+=======
+  version = "0.4.0-RC2"
+  version_build = "20121002"
+>>>>>>> 34389b7573722963eb8e987b92dc41c0c7b38073
   copyright_years = "2008-2012"
   copyright_owner = "ASAMI, Tomoharu"
   command_name = "sm"
@@ -89,7 +99,8 @@ class SimpleModelerDescriptor extends GApplicationDescriptor {
   classpath("target/classes")
   classpath("target/scala-2.9.2/classes")
   importers(ScalaDslImporter)
-  entities(CsvEntity, XMindEntity, OpmlEntity, ExcelTableEntity, 
+  entities(CsvEntity, XMindEntity, OpmlEntity,
+           ExcelTableEntity, ExcelxTableEntity,
       OrgmodeEntity, YamlEntity)
   services(ProjectRealmGeneratorService,
 	   ImportService,

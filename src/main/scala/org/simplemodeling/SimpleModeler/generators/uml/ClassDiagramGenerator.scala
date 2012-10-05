@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.generators.uml
 
+import java.io.{InputStream, OutputStream, IOException}
 import scala.collection.mutable.{ArrayBuffer, HashMap}
 import org.goldenport.entity.content._
 import org.goldenport.entity.GEntityContext
@@ -12,12 +13,11 @@ import org.goldenport.Strings
 
 /*
  * @since   Jan. 15, 2009
- * @version Nov. 20, 2011
+ *  version Nov. 20, 2011
+ * @version Sep. 18, 2012
  * @author  ASAMI, Tomoharu
  */
-class ClassDiagramGenerator(val simpleModel: SimpleModelEntity) {
-  val context = simpleModel.entityContext
-
+class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
   final def makeClassDiagramPng(aPackage: SMPackage, aThema: String): BinaryContent = {
     make_class_diagram_png(makeClassDiagramDot(aPackage, aThema))
   }
@@ -27,14 +27,17 @@ class ClassDiagramGenerator(val simpleModel: SimpleModelEntity) {
   }
 
   private def make_class_diagram_png(text: StringContent): BinaryContent = {
+    make_diagram_png(text, Some("classdiagram.png"))
+  }
+/*
+  private def make_class_diagram_png(text: StringContent): BinaryContent = {
     val layout = "dot"
-    // val layout = "neato"
-    val dot: Process = context.executeCommand("dot -Tpng -K%s -q".format(layout))
-    //    val dot: Process = context.executeCommand("cat") 2009-01-17
-    val in = dot.getInputStream()
-    val out = dot.getOutputStream()
-    //    println("start process = " + dot)
+    var in: InputStream = null
+    var out: OutputStream = null
     try {
+      val dot: Process = context.executeCommand("dot -Tpng -K%s -q".format(layout))
+      in = dot.getInputStream()
+      out = dot.getOutputStream()
 //      println("dot(class diagram) = " + text.string)
       text.write(out)
       out.flush
@@ -42,11 +45,19 @@ class ClassDiagramGenerator(val simpleModel: SimpleModelEntity) {
       //      val b = com.asamioffice.goldenport.io.UIO.stream2Bytes(in)
       //      println("b size = " + b.length)
       BinaryContent(in, context, "classdiagram.png", Strings.mimetype.image_png)
+    } catch {
+      case e: IOException => {
+        // Cannot run program "dot": error=2, No such file or directory
+        throw new IOException("graphvizのdotコマンドが動作しませんでした。graphvizについてはhttp://www.graphviz.org/を参照してください。(詳細エラー:%s)".format(e.getMessage))
+      }
     } finally {
-      in.close
+      if (in != null) {
+        in.close
+      }
       //      println("finish process = " + dot)
     }
   }
+*/
 
   final def makeClassDiagramDot(aPackage: SMPackage, aThema: String): StringContent = {
     val graphviz = new GraphvizEntity(context)

@@ -24,13 +24,13 @@ libraryDependencies <+= scalaVersion { "org.scala-lang" % "scala-compiler" % _ }
 
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "6.0.4"
 
-libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.0"
+libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.2-SNAPSHOT"
 
 libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.2.0"
 
 libraryDependencies += "org.goldenport" %% "goldenport-record" % "0.2.0"
 
-libraryDependencies += "org.smartdox" %% "smartdox" % "0.3.0"
+libraryDependencies += "org.smartdox" %% "smartdox" % "0.3.1-SNAPSHOT"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "1.6.1" % "test"
 
