@@ -13,7 +13,7 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
  * @since   Mar.  6, 2012
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
- * @version Oct.  2, 2012
+ * @version Oct.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -102,6 +102,7 @@ class TableSimpleModelMakerBuilder(
    * OutlineBuilderBase uses the method.
    */
   def buildAttribute(entity: SMMEntityEntity, table: GTable[String]) {
+    println("buildAttribute:" + table)
     val rows = for (row <- table.rows) yield {
       _columns(table.headAsStringList).zip(row)
     }
