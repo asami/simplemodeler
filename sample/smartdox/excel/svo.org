@@ -1,0 +1,16 @@
+#+title: Excel
+
+* 登場人物
+
+#+caption: 属性一覧
+#+table: "svo.xlsx#顧客"
+
+* 道具
+
+#+caption: 属性一覧
+#+table: "svo.xlsx#商品"
+
+* 出来事
+
+#+caption: 特性一覧
+#+table: "svo.xlsx#購入"
