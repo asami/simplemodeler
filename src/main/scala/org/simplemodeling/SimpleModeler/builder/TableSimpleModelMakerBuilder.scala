@@ -13,7 +13,7 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
  * @since   Mar.  6, 2012
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
- * @version Oct.  5, 2012
+ * @version Oct.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -98,11 +98,14 @@ class TableSimpleModelMakerBuilder(
     head | _default_columns 
   }
 
+  /*
+   *
+   */
   /**
    * OutlineBuilderBase uses the method.
    */
   def buildAttribute(entity: SMMEntityEntity, table: GTable[String]) {
-    println("buildAttribute:" + table)
+    println("buildAttributeTable:" + table)
     val rows = for (row <- table.rows) yield {
       _columns(table.headAsStringList).zip(row)
     }
@@ -112,6 +115,16 @@ class TableSimpleModelMakerBuilder(
   protected final def add_attribute(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
     val otype: SMMObjectType = _object_type(entry)
     val attr = obj.attribute(_name(entry), otype)
+    _build_attribute(attr, entry)
+  }
+
+  protected final def add_id(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
+    val otype: SMMObjectType = _object_type(entry)
+    val attr = obj.attribute(_name(entry), otype, true)
+    _build_attribute(attr, entry)
+  }
+
+  private def _build_attribute(attr: SMMAttribute, entry: Seq[(String, String)]) {
     for ((key, value) <- entry) {
       NaturalLabel(key) match {
         case NameLabel => {}
@@ -142,6 +155,34 @@ class TableSimpleModelMakerBuilder(
 
   protected def is_type_field(string: String): Boolean = {
     NaturalLabel.isDatatype(string)
+  }
+
+  /**
+   * OutlineBuilderBase uses the method.
+   */
+  def buildFeature(entity: SMMEntityEntity, table: GTable[String]) {
+    val rows = for (row <- table.rows) yield {
+      _columns(table.headAsStringList).zip(row)
+    }
+    rows.map(entry => add_feature(entity, entry))
+  }
+
+  protected final def add_feature(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
+    _kind(entry) match {
+      case IdLabel => add_id(entity, entry)
+      case AttributeLabel => add_attribute(entity, entry)
+      case CompositionLabel => add_composition(entity, entry)
+      case AggregationLabel => add_aggregation(entity, entry)
+      case AssociationLabel => add_association(entity, entry)
+      case _ => add_attribute(entity, entry)
+    }
+  }
+
+  private def _kind(entry: Seq[(String, String)]): NaturalLabel = {
+    val feature = FeatureLabel.find(entry)
+    feature.collect {
+      case NaturalLabel(label) => label
+    } | AttributeLabel
   }
 
   /**

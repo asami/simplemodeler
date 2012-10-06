@@ -8,12 +8,13 @@ import org.goldenport.entities.graphviz._
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.flow._
 import org.goldenport.recorder.Recordable
-import org.goldenport.Strings
+import org.goldenport.util.MimeType
 
 /*
  * @since   Mar. 21, 2011
  *  version Mar. 26, 2011
- * @version Sep. 18, 2012
+ *  version Sep. 18, 2012
+ * @version Oct.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class DiagramGeneratorBase(val simpleModel: SimpleModelEntity) extends Recordable {
@@ -38,8 +39,8 @@ abstract class DiagramGeneratorBase(val simpleModel: SimpleModelEntity) extends 
 //      record_trace("bytes = " + bytes.length)
 //      new BinaryContent(bytes, context)
       name match {
-        case Some(s) => BinaryContent(in, context, s, Strings.mimetype.image_png)
-        case None => BinaryContent(in, context, null, Strings.mimetype.image_png)
+        case Some(s) => BinaryContent.createInputStream(in, context, s, MimeType.image_png)
+        case None => BinaryContent.createInputStream(in, context, null, MimeType.image_png)
       }
     } catch {
       case e: IOException => {

@@ -6,7 +6,7 @@ import Scalaz._
 /*
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
- * @version Oct.  5, 2012
+ * @version Oct.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -14,7 +14,7 @@ import Scalaz._
  */
 sealed abstract trait NaturalLabel {
   def candidates: Seq[String]
-  def allCandidates: Seq[String] = {
+  lazy val allCandidates: Seq[String] = {
     def augumentsSpace(s: String): Seq[String] = {
       if (s.contains(" ")) {
         List(s, s.replace(" ", ""), s.replace(" ", "-"))
@@ -22,21 +22,26 @@ sealed abstract trait NaturalLabel {
     }
 
     def augumentsList(s: String): Seq[String] = {
-      val l = Seq(s, s + " list", s + " 一覧", s + " リスト")
-      val a = s.plural(0)
-      if (s == a) l :+ a else l
+      Seq(s, s + " list", s + " 一覧", s + " リスト")
     }
 
-    candidates >>= augumentsList >>= augumentsSpace
+    def augumentPlural(s: String): Seq[String] = {
+      val a = s.plural(0)
+      if (s == a) Seq(s) else Seq(s, a)
+    }
+
+    candidates >>= augumentPlural >>= augumentsList >>= augumentsSpace
   }
 
   def isMatch(name: String) = {
     val n = name.toLowerCase
     allCandidates.contains(n)
-  } ensuring( x => {
-    println("NaturalLabel[%s]#isMatch(%s) = %s".format(this, name, x))
-    true
-  })
+  }
+//  } ensuring( x => {
+//    println("NaturalLabel[%s][%s]#isMatch(%s) = %s".format(this, allCandidates, name, x))
+//    println("NaturalLabel[%s]#isMatch(%s) = %s".format(this, name, x))
+//    true
+//  })
 
   def find(entries: Seq[(String, String)]): Option[String] = {
     entries.find(x => isMatch(x._1)).map(_._2)
@@ -144,8 +149,16 @@ case object DescriptionLabel extends NaturalLabel {
   val candidates = List("description", "説明")
 }
 
+case object FeatureLabel extends NaturalLabel {
+  val candidates = List("feature", "特性")
+}
+
 case object AttributeLabel extends NaturalLabel {
-  val candidates = List("attr", "attrs", "attribute", "属性名")
+  val candidates = List("attr", "attribute", "属性")
+}
+
+case object IdLabel extends NaturalLabel {
+  val candidates = List("id")
 }
 
 case object AssociationLabel extends NaturalLabel {
@@ -253,6 +266,7 @@ object NaturalLabel {
     SummaryLabel,
     DescriptionLabel,
     AttributeLabel,
+    IdLabel,
     AssociationLabel,
     AggregationLabel,
     CompositionLabel,
@@ -271,7 +285,11 @@ object NaturalLabel {
     SqlDatatypeLabel)
 
   def apply(string: String): NaturalLabel = {
-    candidates.find(_.isMatch(string)) | NullNaturalLabel
+    unapply(string) | NullNaturalLabel
+  }
+
+  def unapply(string: String): Option[NaturalLabel] = {
+    candidates.find(_.isMatch(string))
   }
 
   def isKind(string: String): Boolean = {

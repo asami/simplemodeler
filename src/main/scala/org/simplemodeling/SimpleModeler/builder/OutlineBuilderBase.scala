@@ -16,7 +16,8 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  * @since   Dec. 11, 2011
  *  version Feb. 27, 2012
  *  version Apr. 21, 2012
- * @version Sep. 30, 2012
+ *  version Sep. 30, 2012
+ * @version Oct.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -93,6 +94,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     _mmx.compositions(aNode).foreach(_build_composition(_, target))
     _mmx.aggregations(aNode).foreach(_build_aggregation(_, target))
     _mmx.associations(aNode).foreach(_build_association(_, target))
+    _mmx.featureTables(aNode).foreach(_build_feature_table(_, target))
     _mmx.compositionTables(aNode).foreach(_build_composition_table(_, target))
     _mmx.aggregationTables(aNode).foreach(_build_aggregation_table(_, target))
     _mmx.associationTables(aNode).foreach(_build_association_table(_, target))
@@ -133,6 +135,10 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _build_association(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     target.narrativeAssociations += term
+  }
+
+  private def _build_feature_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildFeature(target, table)
   }
 
   private def _build_composition_table(table: GTable[String], target: SMMEntityEntity) {

@@ -1,6 +1,6 @@
 #+title: SmartDox DSLサンプル文書
 
-SmartDox DSLを使ったモデルの記述の
+SmartDox DSLを使って記述したモデルの
 サンプル文書です。
 
 文書でサンプルモデルの定義をします。

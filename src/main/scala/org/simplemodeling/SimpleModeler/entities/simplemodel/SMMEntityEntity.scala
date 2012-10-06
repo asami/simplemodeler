@@ -56,7 +56,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Mar. 25, 2012
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
- * @version Oct.  2, 2012
+ * @version Oct.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) with SMMElement {
@@ -170,7 +170,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     powertype.packageName = aPowertypeType.packageName
     powertype.powertypeKinds ++= aPowertypeType.instances
     addPrivateObject(powertype)
-    val pt = new SMMAttribute(aName, aPowertypeType)
+    val pt = new SMMAttribute(aName, aPowertypeType, false) // XXX
     powertypes += pt
     pt
   }
@@ -188,14 +188,15 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case IdKind => new SMMValueIdType(anObject.name, anObject.packageName)
       case _    => new SMMValueType(anObject.name, anObject.packageName)
     }
+    val isId = anObject.kind == IdKind
     attrType.term = anObject.term
-    val attr = new SMMAttribute(aName, attrType)
+    val attr = new SMMAttribute(aName, attrType, isId)
     attributes += attr
     attr
   }
 
-  final def attribute(aName: String, anObjectType: SMMObjectType = SMMStringType): SMMAttribute = {
-    val attr = new SMMAttribute(aName, new SMMValueType(anObjectType.name, anObjectType.packageName))
+  final def attribute(aName: String, anObjectType: SMMObjectType = SMMStringType, isId: Boolean = false): SMMAttribute = {
+    val attr = new SMMAttribute(aName, new SMMValueType(anObjectType.name, anObjectType.packageName), isId)
     attributes += attr
     attr
   }
@@ -265,7 +266,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       s.packageName = aStateMachineType.packageName
       addPrivateObject(s)
     }
-    val sm = new SMMAttribute(aName, aStateMachineType)
+    val sm = new SMMAttribute(aName, aStateMachineType, false) // XXX
     statemachines += sm
     sm
   }

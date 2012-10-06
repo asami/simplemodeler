@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * Nov. 6, 2011 (derived from MindmapModelingXMind)
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
- * @version Sep. 30, 2012
+ * @version Oct.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -85,6 +85,10 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
    */
   def parts(term: TopicNode): List[TopicNode] = {
     structure_node_children(term, PartLabel)
+  }
+
+  def featureTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, FeatureLabel)
   }
 
   def compositions(term: TopicNode): List[TopicNode] = {
@@ -349,7 +353,6 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
       case t: Table if isaccept(t) => t
     }.map(_to_gtable)
   }
-
 
 /*
   private def _structure_node_tables(node: OutlineNode, names: List[String]): List[GTable[String]] = {

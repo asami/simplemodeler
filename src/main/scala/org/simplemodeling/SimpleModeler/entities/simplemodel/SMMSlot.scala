@@ -1,11 +1,11 @@
 package org.simplemodeling.SimpleModeler.entities.simplemodel
 
 /*
- * @version Oct.  2, 2012
- * @version Oct.  2, 2012
+ * @version Oct.  6, 2012
+ * @version Oct.  6, 2012
  * @author  ASAMI, Tomoharu
  */
-trait SMMRelationship extends SMMElement {
+trait SMMSlot extends SMMElement {
   var columnName: String = ""
   var sqlDatatype: Option[SMMObjectType] = None
   var multiplicity: GRMultiplicity = GROne
