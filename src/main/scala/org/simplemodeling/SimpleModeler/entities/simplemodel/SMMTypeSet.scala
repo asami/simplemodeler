@@ -35,6 +35,12 @@ class SMMAttributeTypeSet(
     dataType.map(_.name) orElse
     sqlDataType.map(_.name) getOrElse "Unknown"
   }
+
+  def effectiveAttributeType: SMMValueDataType = {
+    attributeType orElse
+    dataType orElse
+    sqlDataType.map(_.dataType) getOrElse SMMStringType
+  }
 }
 
 object SMMAttributeTypeSet {

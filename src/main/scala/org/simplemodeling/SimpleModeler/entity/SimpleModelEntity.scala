@@ -10,6 +10,7 @@ import org.goldenport.sdoc._
 import org.simplemodeling.dsl._
 import org.simplemodeling.dsl.datatype._
 import org.simplemodeling.dsl.datatype.ext._
+import org.simplemodeling.dsl.datatype.business._
 import org.simplemodeling.dsl.domain._
 import org.simplemodeling.dsl.business._
 import org.simplemodeling.dsl.requirement._
@@ -26,7 +27,8 @@ import com.asamioffice.goldenport.text.UJavaString
  * @since   Sep. 13, 2008
  *  version Sep. 19, 2011
  *  version Jan. 30, 2012
- * @version Jun. 17, 2012
+ *  version Jun. 17, 2012
+ * @version Oct.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) {
@@ -111,6 +113,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
     build_datatype(XUnsignedInt)
     build_datatype(XUnsignedLong)
     build_datatype(XUnsignedShort)
+    //
     build_datatype(XText)
     build_datatype(XLink)
     build_datatype(XCategory)
@@ -121,6 +124,10 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
     build_datatype(XPhoneNumber)
     build_datatype(XPostalAddress)
     build_datatype(XRating)
+    //
+    build_datatype(XMoney)
+    build_datatype(XPercent)
+    build_datatype(XUnit)
   }
 
   private def _build_objects(ds: SObjectDataSource) {

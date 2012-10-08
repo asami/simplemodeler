@@ -19,6 +19,12 @@ import org.simplemodeling.dsl.datatype.XInteger
 import org.simplemodeling.dsl.datatype.XLong
 import org.simplemodeling.dsl.datatype.XShort
 import org.simplemodeling.dsl.datatype.XString
+import org.simplemodeling.dsl.datatype.XDate
+import org.simplemodeling.dsl.datatype.XTime
+import org.simplemodeling.dsl.datatype.XDateTime
+import org.simplemodeling.dsl.datatype.business.XMoney
+import org.simplemodeling.dsl.datatype.business.XPercent
+import org.simplemodeling.dsl.datatype.business.XUnit
 import org.simplemodeling.dsl.domain.DomainActor
 import org.simplemodeling.dsl.domain.DomainEntity
 import org.simplemodeling.dsl.domain.DomainEvent
@@ -899,7 +905,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _dsl_type(atype: SMMAttributeTypeSet): SAttributeType = {
-    _dsl_type(atype.attributeType.get) // XXX
+    _dsl_type(atype.effectiveAttributeType)
   }
 
   private def _dsl_type(otype: SMMObjectType): SAttributeType = {
@@ -921,6 +927,12 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case _: SMMDoubleType => XDouble
       case _: SMMIntegerType => XInteger
       case _: SMMDecimalType => XDecimal
+      case _: SMMDateType => XDate
+      case _: SMMTimeType => XTime
+      case _: SMMDateTimeType => XDateTime
+      case _: SMMMoneyType => XMoney
+      case _: SMMPercentType => XPercent
+      case _: SMMUnitType => XUnit
     }
   }
 

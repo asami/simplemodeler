@@ -139,6 +139,21 @@ class SMMDecimalType extends SMMDataType("XDecimal", "org.simplemodeling.dsl.dat
 }
 object SMMDecimalType extends SMMDecimalType
 
+class SMMDateType extends SMMDataType("XDate", "org.simplemodeling.dsl.datatype") {
+  val candidates = List("date")
+}
+object SMMDateType extends SMMDateType
+
+class SMMTimeType extends SMMDataType("XTime", "org.simplemodeling.dsl.datatype") {
+  val candidates = List("time")
+}
+object SMMTimeType extends SMMTimeType
+
+class SMMDateTimeType extends SMMDataType("XDateTime", "org.simplemodeling.dsl.datatype") {
+  val candidates = List("datetime")
+}
+object SMMDateTimeType extends SMMDateTimeType
+
 // Business datatype
 class SMMMoneyType extends SMMDataType("XMoney", "org.simplemodeling.dsl.datatype.business") {
   val candidates = List("money")
@@ -164,17 +179,15 @@ class SMMUnknownDataType(val unkonwn: String) extends SMMDataType("XString", "or
  * SQL DataType
  */
 abstract class SMMSqlDataType(name: String, pkg: String) extends SMMObjectType(name, pkg) {
+  def dataType: SMMDataType
 }
 
 trait SMMSqlDataTypeFactory {
   def unapply(string: String): Option[SMMSqlDataType]
 }
 
-trait NoParam {
-  self: SMMSqlDataType =>
-}
-
 class SMMSqlCharType(val length: Int) extends SMMSqlDataType("SChar", "org.simplemodeling.dsl.datatype.sql") {
+  val dataType = SMMStringType
 }
 
 object SMMSqlCharType extends SMMSqlDataTypeFactory {
@@ -188,6 +201,7 @@ object SMMSqlCharType extends SMMSqlDataTypeFactory {
 }
 
 class SMMSqlVarCharType(val length: Int) extends SMMSqlDataType("SChar", "org.simplemodeling.dsl.datatype.sql") {
+  val dataType = SMMStringType
 }
 
 object SMMSqlVarCharType extends SMMSqlDataTypeFactory {
@@ -201,6 +215,7 @@ object SMMSqlVarCharType extends SMMSqlDataTypeFactory {
 }
 
 class SMMSqlDateType extends SMMSqlDataType("SChar", "org.simplemodeling.dsl.datatype.sql") {
+  val dataType = SMMDateType
 }
 
 object SMMSqlDateType extends SMMSqlDateType with SMMSqlDataTypeFactory {
@@ -211,6 +226,7 @@ object SMMSqlDateType extends SMMSqlDateType with SMMSqlDataTypeFactory {
 }
 
 class SMMSqlIntType extends SMMSqlDataType("SChar", "org.simplemodeling.dsl.datatype.sql") {
+  val dataType = SMMIntType
 }
 
 object SMMSqlIntType extends SMMSqlIntType with SMMSqlDataTypeFactory {
@@ -223,6 +239,7 @@ object SMMSqlIntType extends SMMSqlIntType with SMMSqlDataTypeFactory {
 // Special datatype
 class SMMSqlUnknownDataType(val unkonwn: String) extends SMMSqlDataType("TEXT", "org.simplemodeling.dsl.datatype.sql") {
   val candidates = Nil
+  val dataType = SMMStringType
 }
 
 /*
