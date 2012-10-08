@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
 /**
  * @since   Feb.  7, 2012
  *  version Feb.  9, 2012
- * @version Sep. 17, 2012
+ * @version Oct.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 trait UseTerm {
@@ -63,6 +63,12 @@ trait UseTerm {
     get_type_name_explicitly(term) | trim_adornment(term)
   }
 
+  protected def get_attribute_type_by_term(aTerm: String): SMMAttributeTypeSet = {
+    val t = get_type_name_explicitly(aTerm).flatMap(SMMObjectType.getDataType) | SMMStringType
+    new SMMAttributeTypeSet(t.some)
+  }
+
+/*
   protected def get_attribute_type_by_term(aTerm: String): SMMObjectType = {
     def get_type(aTypeName: String) = {
       aTypeName match {
@@ -85,6 +91,7 @@ trait UseTerm {
 
     get_type_name_explicitly(aTerm).fold(get_type, SMMStringType)
   }
+*/
 
   protected def get_type_name_explicitly(term: String): Option[String] = {
     val index = term.indexOf(':')

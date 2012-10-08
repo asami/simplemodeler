@@ -6,7 +6,7 @@ import Scalaz._
 /*
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
- * @version Oct.  6, 2012
+ * @version Oct.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -34,7 +34,7 @@ sealed abstract trait NaturalLabel {
   }
 
   def isMatch(name: String) = {
-    val n = name.toLowerCase
+    val n = name.trim.toLowerCase
     allCandidates.contains(n)
   }
 //  } ensuring( x => {
@@ -76,8 +76,16 @@ case object SummaryLabel extends NaturalLabel {
   val candidates = List("summary", "サマリ", "サマリー", "要約")
 }
 
+case object TypeLabel extends NaturalLabel {
+  val candidates = List("type", "型")
+}
+
 case object DatatypeLabel extends NaturalLabel {
-  val candidates = List("type", "data types", "型", "データ型", "データタイプ")
+  val candidates = List("data type", "データ型", "データタイプ")
+}
+
+case object ObjecttypeLabel extends NaturalLabel {
+  val candidates = List("object type", "オブジェクト型")
 }
 
 case object PowertypeLabel extends NaturalLabel {
@@ -279,7 +287,9 @@ object NaturalLabel {
     GoalLabel,
     ScenarioLabel,
     AnnotationLabel,
+    TypeLabel,
     DatatypeLabel,
+    ObjecttypeLabel,
     TableNameLabel,
     ColumnNameLabel,
     SqlDatatypeLabel)
@@ -308,7 +318,17 @@ object NaturalLabel {
     isName(kv._1)
   }
 
+/*
   def isDatatype(string: String): Boolean = {
     DatatypeLabel.isMatch(string)
+  }
+*/
+  def getObjectTypeName(entry: Seq[(String, String)]): Option[String] = {
+    val candidates = Stream(ObjecttypeLabel, TypeLabel, DatatypeLabel, SqlDatatypeLabel)
+    candidates.flatMap(c => {
+      entry.find(kv => {
+        c.isMatch(kv._1)
+      })
+    }).headOption.map(_._2)
   }
 }

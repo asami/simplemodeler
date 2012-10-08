@@ -1,15 +1,13 @@
 package org.simplemodeling.SimpleModeler.entities.simplemodel
 
+import scalaz._, Scalaz._
 import scala.collection.mutable.ArrayBuffer
-import java.io._
-import org.goldenport.entity._
-import org.goldenport.entity.datasource.GDataSource
-import org.goldenport.entity.datasource.GContentDataSource
 
 /*
  * @since   Jan. 30, 2009
  *  version Jul. 12, 2009
- * @version Mar. 24, 2012
+ *  version Mar. 24, 2012
+ * @version Oct.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SMMObjectType(val name: String, val packageName: String) {
@@ -22,12 +20,14 @@ abstract class SMMObjectType(val name: String, val packageName: String) {
   def isEntity: Boolean = false
 }
 
+trait SMMValueDataType extends SMMObjectType
+
 class SMMEntityType(aName: String, aPackageName: String) extends SMMObjectType(aName, aPackageName) {
   def this(anEntity: SMMEntityEntity) = this(anEntity.name, anEntity.packageName)
   override def isEntity = true
 }
 
-class SMMValueType(aName: String, aPackageName: String) extends SMMObjectType(aName, aPackageName) {
+class SMMValueType(aName: String, aPackageName: String) extends SMMObjectType(aName, aPackageName) with SMMValueDataType {
 }
 
 class SMMValueIdType(aName: String, aPackageName: String) extends SMMValueType(aName, aPackageName) {
@@ -44,58 +44,231 @@ class SMMStateMachineType(aName: String, aPackageName: String) extends SMMEntity
   val states = new ArrayBuffer[(String, String)]
 }
 
-class SMMStringType extends SMMObjectType("XString", "org.simplemodeling.dsl.datatype")
+/*
+ * DataType
+ */
+abstract class SMMDataType(name: String, pkg: String) extends SMMObjectType(name, pkg) with SMMValueDataType {
+  def candidates: Seq[String]
+  lazy val allCandidates: Seq[String] = {
+    def augumentsSpace(s: String): Seq[String] = {
+      if (s.contains(" ")) {
+        List(s, s.replace(" ", ""), s.replace(" ", "-"))
+      } else Seq(s)
+    }
+
+    def augumentsPrefix(s: String): Seq[String] = {
+      Seq(s, "x" + s)
+    }
+
+    candidates >>= augumentsPrefix >>= augumentsSpace
+  }
+
+  def isMatch(name: String) = {
+    val n = name.trim.toLowerCase
+    allCandidates.contains(n)
+  }
+}
+
+class SMMStringType extends SMMDataType("XString", "org.simplemodeling.dsl.datatype") {
+  val candidates = List("string")
+}
 object SMMStringType extends SMMStringType
 
-class SMMBooleanType extends SMMObjectType("XBoolean", "org.simplemodeling.dsl.datatype")
+class SMMBooleanType extends SMMDataType("XBoolean", "org.simplemodeling.dsl.datatype") {
+  val candidates = List("boolean")
+}
 object SMMBooleanType extends SMMBooleanType
 
-class SMMByteType extends SMMObjectType("XByte", "org.simplemodeling.dsl.datatype")
+class SMMByteType extends SMMDataType("XByte", "org.simplemodeling.dsl.datatype") {
+  val candidates = List("byte")
+}
 object SMMByteType extends SMMByteType
 
-class SMMShortType extends SMMObjectType("XShort", "org.simplemodeling.dsl.datatype")
+class SMMShortType extends SMMDataType("XShort", "org.simplemodeling.dsl.datatype") {
+    val candidates = List("short")
+}
 object SMMShortType extends SMMShortType
 
-class SMMIntType extends SMMObjectType("XInt", "org.simplemodeling.dsl.datatype")
+class SMMIntType extends SMMDataType("XInt", "org.simplemodeling.dsl.datatype") {
+    val candidates = List("int")
+}
 object SMMIntType extends SMMIntType
 
-class SMMLongType extends SMMObjectType("XLong", "org.simplemodeling.dsl.datatype")
+class SMMLongType extends SMMDataType("XLong", "org.simplemodeling.dsl.datatype") {
+    val candidates = List("long")
+}
 object SMMLongType extends SMMLongType
 
-class SMMFloatType extends SMMObjectType("XFloat", "org.simplemodeling.dsl.datatype")
+class SMMFloatType extends SMMDataType("XFloat", "org.simplemodeling.dsl.datatype") {
+    val candidates = List("float")
+}
 object SMMFloatType extends SMMFloatType
 
-class SMMDoubleType extends SMMObjectType("XDouble", "org.simplemodeling.dsl.datatype")
+class SMMDoubleType extends SMMDataType("XDouble", "org.simplemodeling.dsl.datatype") {
+    val candidates = List("double")
+}
 object SMMDoubleType extends SMMDoubleType
 
-class SMMUnsignedByteType extends SMMObjectType("XUnsignedByte", "org.simplemodeling.dsl.datatype")
+class SMMUnsignedByteType extends SMMDataType("XUnsignedByte", "org.simplemodeling.dsl.datatype") {
+    val candidates = List("unsigned byte")
+}
 object SMMUnsignedByteType extends SMMUnsignedByteType
 
-class SMMUnsignedShortType extends SMMObjectType("XUnsignedShort", "org.simplemodeling.dsl.datatype")
+class SMMUnsignedShortType extends SMMDataType("XUnsignedShort", "org.simplemodeling.dsl.datatype") {
+    val candidates = List("unsigned short")
+}
 object SMMUnsignedShortType extends SMMUnsignedShortType
 
-class SMMUnsignedIntType extends SMMObjectType("XUnsignedInt", "org.simplemodeling.dsl.datatype")
+class SMMUnsignedIntType extends SMMDataType("XUnsignedInt", "org.simplemodeling.dsl.datatype") {
+    val candidates = List("unsigned int")
+}
 object SMMUnsignedIntType extends SMMUnsignedIntType
 
-class SMMUnsignedLongType extends SMMObjectType("XUnsignedLong", "org.simplemodeling.dsl.datatype")
+class SMMUnsignedLongType extends SMMDataType("XUnsignedLong", "org.simplemodeling.dsl.datatype") {
+    val candidates = List("unsigned long")
+}
 object SMMUnsignedLongType extends SMMUnsignedLongType
 
-class SMMIntegerType extends SMMObjectType("XInteger", "org.simplemodeling.dsl.datatype")
+class SMMIntegerType extends SMMDataType("XInteger", "org.simplemodeling.dsl.datatype") {
+    val candidates = List("integer")
+}
 object SMMIntegerType extends SMMIntegerType
 
-class SMMDecimalType extends SMMObjectType("XDecimal", "org.simplemodeling.dsl.datatype")
+class SMMDecimalType extends SMMDataType("XDecimal", "org.simplemodeling.dsl.datatype") {
+  val candidates = List("decimal")
+}
 object SMMDecimalType extends SMMDecimalType
 
-object SMMObjectType {
-  def get(string: String): Option[SMMObjectType] = {
-    val a = string.toLowerCase
-    a match {
-      case "string" => Some(SMMStringType)
-      case "int" => Some(SMMIntType)
-      case "long" => Some(SMMLongType)
-      case "float" => Some(SMMLongType)
-      case "double" => Some(SMMLongType)
-      case _ => None
+// Business datatype
+class SMMMoneyType extends SMMDataType("XMoney", "org.simplemodeling.dsl.datatype.business") {
+  val candidates = List("money")
+}
+object SMMMoneyType extends SMMMoneyType
+
+class SMMPercentType extends SMMDataType("XPercent", "org.simplemodeling.dsl.datatype.business") {
+  val candidates = List("percent")
+}
+object SMMPercentType extends SMMPercentType
+
+class SMMUnitType extends SMMDataType("XUnit", "org.simplemodeling.dsl.datatype.business") {
+  val candidates = List("unit")
+}
+object SMMUnitType extends SMMUnitType
+
+// Special datatype
+class SMMUnknownDataType(val unkonwn: String) extends SMMDataType("XString", "org.simplemodeling.dsl.datatype") {
+  val candidates = Nil
+}
+
+/*
+ * SQL DataType
+ */
+abstract class SMMSqlDataType(name: String, pkg: String) extends SMMObjectType(name, pkg) {
+}
+
+trait SMMSqlDataTypeFactory {
+  def unapply(string: String): Option[SMMSqlDataType]
+}
+
+trait NoParam {
+  self: SMMSqlDataType =>
+}
+
+class SMMSqlCharType(val length: Int) extends SMMSqlDataType("SChar", "org.simplemodeling.dsl.datatype.sql") {
+}
+
+object SMMSqlCharType extends SMMSqlDataTypeFactory {
+  def unapply(string: String): Option[SMMSqlCharType] = {
+    val r = """CHAR[(]([0-9]+)[)]""".r
+    string.toUpperCase match {
+      case r(n) => new SMMSqlCharType(n.toInt).some
+      case _ => none
     }
+  }
+}
+
+class SMMSqlVarCharType(val length: Int) extends SMMSqlDataType("SChar", "org.simplemodeling.dsl.datatype.sql") {
+}
+
+object SMMSqlVarCharType extends SMMSqlDataTypeFactory {
+  def unapply(string: String): Option[SMMSqlVarCharType] = {
+    val r = """VARCHAR[(]([0-9]+)[)]""".r
+    string.toUpperCase match {
+      case r(n) => new SMMSqlVarCharType(n.toInt).some
+      case _ => none
+    }
+  }
+}
+
+class SMMSqlDateType extends SMMSqlDataType("SChar", "org.simplemodeling.dsl.datatype.sql") {
+}
+
+object SMMSqlDateType extends SMMSqlDateType with SMMSqlDataTypeFactory {
+  def unapply(string: String): Option[SMMSqlDateType] = {
+    if (string.toUpperCase == "DATE") SMMSqlDateType.some
+    else none
+  }
+}
+
+class SMMSqlIntType extends SMMSqlDataType("SChar", "org.simplemodeling.dsl.datatype.sql") {
+}
+
+object SMMSqlIntType extends SMMSqlIntType with SMMSqlDataTypeFactory {
+  def unapply(string: String): Option[SMMSqlIntType] = {
+    if (string.toUpperCase == "INT") SMMSqlIntType.some
+    else none
+  }
+}
+
+// Special datatype
+class SMMSqlUnknownDataType(val unkonwn: String) extends SMMSqlDataType("TEXT", "org.simplemodeling.dsl.datatype.sql") {
+  val candidates = Nil
+}
+
+/*
+ * Factory
+ */
+object SMMObjectType {
+  val datatypes = List(
+    SMMShortType,
+    SMMBooleanType,
+    SMMByteType,
+    SMMShortType,
+    SMMIntType,
+    SMMLongType,
+    SMMFloatType,
+    SMMDoubleType,
+    SMMUnsignedByteType,
+    SMMUnsignedShortType,
+    SMMUnsignedIntType,
+    SMMUnsignedLongType,
+    SMMIntegerType,
+    SMMDecimalType,
+    SMMMoneyType,
+    SMMPercentType,
+    SMMUnitType)
+
+  def getDataType(string: String): Option[SMMDataType] = {
+    datatypes.find(_.isMatch(string))
+  }
+
+  def getDataTypeOrUnkonwn(string: String): SMMDataType = {
+    getDataType(string) | new SMMUnknownDataType(string)
+  }
+
+  // SQL
+  val sqlDatatypes = Stream(
+    SMMSqlCharType,
+    SMMSqlVarCharType,
+    SMMSqlDateType,
+    SMMSqlIntType
+  )
+
+  def getSqlDataType(string: String): Option[SMMSqlDataType] = {
+    sqlDatatypes.flatMap(_.unapply(string)).headOption
+  }
+
+  def getSqlDataTypeOrUnkonwn(string: String): SMMSqlDataType = {
+    getSqlDataType(string) | new SMMSqlUnknownDataType(string)
   }
 }

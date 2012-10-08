@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entities.simplemodel
 
+import scalaz._, Scalaz._
 import java.io.BufferedWriter
 import scala.collection.mutable.Set
 import scala.collection.mutable.ArrayBuffer
@@ -56,7 +57,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Mar. 25, 2012
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
- * @version Oct.  6, 2012
+ * @version Oct.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) with SMMElement {
@@ -66,13 +67,13 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   var kind: ElementKind = null
   var tableName: String = ""
   var base: SMMEntityEntity = NullEntityEntity
-  val powertypes = new ArrayBuffer[SMMAttribute]
+  val powertypes = new ArrayBuffer[SMMPowertype]
   val roles = new ArrayBuffer[SMMAssociation]
   val attributes = new ArrayBuffer[SMMAttribute]
   val associations = new ArrayBuffer[SMMAssociation]
   val aggregations = new ArrayBuffer[SMMAssociation]
   val compositions = new ArrayBuffer[SMMAssociation]
-  val statemachines = new ArrayBuffer[SMMAttribute]
+  val statemachines = new ArrayBuffer[SMMStateMachine]
   val powertypeKinds = new ArrayBuffer[String]
   val primaryActors = new ArrayBuffer[SMMAssociation]
   val secondaryActors = new ArrayBuffer[SMMAssociation]
@@ -162,7 +163,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     private_objects += anObject
   }
 
-  final def powertype(aName: String, aPowertypeType: SMMPowertypeType): SMMAttribute = {
+  final def powertype(aName: String, aPowertypeType: SMMPowertypeType): SMMPowertype = {
     val powertype = new SMMEntityEntity(entityContext)
     powertype.name = aPowertypeType.name
     powertype.kind = PowertypeKind
@@ -170,7 +171,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     powertype.packageName = aPowertypeType.packageName
     powertype.powertypeKinds ++= aPowertypeType.instances
     addPrivateObject(powertype)
-    val pt = new SMMAttribute(aName, aPowertypeType, false) // XXX
+    val pt = new SMMPowertype(aName, aPowertypeType)
     powertypes += pt
     pt
   }
@@ -178,11 +179,14 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   final def role(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
     val roleType = new SMMEntityType(anObject.name, anObject.packageName)
     roleType.term = anObject.term
-    val role = new SMMAssociation(aName, roleType)
+    val role = new SMMAssociation(aName, new SMMEntityTypeSet(roleType.some))
     roles += role
     role
   }
 
+  /**
+   * Creates an attribute for Value object.
+   */
   final def attribute(aName: String, anObject: SMMEntityEntity): SMMAttribute = {
     val attrType = anObject.kind match {
       case IdKind => new SMMValueIdType(anObject.name, anObject.packageName)
@@ -190,13 +194,22 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
     val isId = anObject.kind == IdKind
     attrType.term = anObject.term
-    val attr = new SMMAttribute(aName, attrType, isId)
+    val attr = new SMMAttribute(aName, new SMMAttributeTypeSet(attrType.some), isId)
     attributes += attr
     attr
   }
 
-  final def attribute(aName: String, anObjectType: SMMObjectType = SMMStringType, isId: Boolean = false): SMMAttribute = {
-    val attr = new SMMAttribute(aName, new SMMValueType(anObjectType.name, anObjectType.packageName), isId)
+  final def attribute(aName: String): SMMAttribute = {
+    attribute(aName, SMMStringType)
+  }
+
+  final def attribute(aName: String, atype: SMMValueDataType): SMMAttribute = {
+    val attrtype = new SMMAttributeTypeSet(atype.some)
+    attribute(aName, attrtype)
+  }
+
+  final def attribute(aName: String, attrtype: SMMAttributeTypeSet, isId: Boolean = false): SMMAttribute = {
+    val attr = new SMMAttribute(aName, attrtype, isId)
     attributes += attr
     attr
   }
@@ -207,14 +220,19 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     association(aName, assocType)
   }
 
+  final def association(aName: String, entityType: SMMEntityType): SMMAssociation = {
+    association(aName, new SMMEntityTypeSet(entityType.some))
+  }
+
   /**
    * @see TableSimpleModelMakerBuilder
    */
-  final def association(aName: String, entityType: SMMEntityType): SMMAssociation = {
+  final def association(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
     val assoc = new SMMAssociation(aName, entityType)
     associations += assoc
     assoc
   }
+
 
   /**
    * 
@@ -229,6 +247,13 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * @see TableSimpleModelMakerBuilder
    */
   final def aggregation(aName: String, entityType: SMMEntityType): SMMAssociation = {
+    aggregation(aName, new SMMEntityTypeSet(entityType.some))
+  }
+
+  /**
+   * @see TableSimpleModelMakerBuilder
+   */
+  final def aggregation(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
     val assoc = new SMMAssociation(aName, entityType)
     aggregations += assoc
     assoc
@@ -240,16 +265,20 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     composition(aName, entityType)
   }
 
+  final def composition(aName: String, entityType: SMMEntityType): SMMAssociation = {
+    composition(aName, new SMMEntityTypeSet(entityType.some))
+  }
+
   /**
    * @see TableSimpleModelMakerBuilder
    */
-  final def composition(aName: String, entityType: SMMEntityType): SMMAssociation = {
+  final def composition(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
     val assoc = new SMMAssociation(aName, entityType)
     compositions += assoc
     assoc
   }
 
-  final def statemachine(aName: String, aStateMachineType: SMMStateMachineType): SMMAttribute = {
+  final def statemachine(aName: String, aStateMachineType: SMMStateMachineType): SMMStateMachine = {
     val states = aStateMachineType.states
     val statemachine = new SMMEntityEntity(entityContext)
     statemachine.name = aStateMachineType.name
@@ -266,7 +295,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       s.packageName = aStateMachineType.packageName
       addPrivateObject(s)
     }
-    val sm = new SMMAttribute(aName, aStateMachineType, false) // XXX
+    val sm = new SMMStateMachine(aName, aStateMachineType)
     statemachines += sm
     sm
   }
@@ -302,7 +331,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _association(name: String, entity: SMMEntityEntity): SMMAssociation = {
     val assocType = new SMMEntityType(entity.name, entity.packageName)
     assocType.term = entity.term
-    new SMMAssociation(name, assocType)
+    new SMMAssociation(name, new SMMEntityTypeSet(assocType.some))
   }
 
   final def setNarrativeBase(aName: String) {
@@ -496,7 +525,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
         buffer.print("\"")
         buffer.print(power.name)
         buffer.print("\", ")
-        buffer.print(power.attributeType.name)
+        buffer.print(power.powertypeType.name)
         buffer.print("()")
         make_multiplicity_parameter(power.multiplicity)
         buffer.print(")")
@@ -594,7 +623,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       for (machine <- statemachines) {
         buffer.print("statemachine")
         buffer.print("(")
-        buffer.print(machine.attributeType.name)
+        buffer.print(machine.statemachineType.name)
         buffer.print("()")
         buffer.print(")")
         buffer.println()
@@ -784,7 +813,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_powertypes(entities: Map[String, SObject], entity: DomainEntity) {
     for (power <- powertypes) {
-      _powertype_ref(power.attributeType.name, entities) match {
+      _powertype_ref(power.powertypeType.name, entities) match {
         case sp: DomainPowertype => entity.powertype(power.name, sp, _dsl_multiplicity(power.multiplicity))
         case entity => record_debug("SMMEntityEntity: " + entity)
       }
@@ -867,6 +896,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _dsl_text(s: String): Option[String] = {
     if (UString.isNull(s)) None
     else Some(s)
+  }
+
+  private def _dsl_type(atype: SMMAttributeTypeSet): SAttributeType = {
+    _dsl_type(atype.attributeType.get) // XXX
   }
 
   private def _dsl_type(otype: SMMObjectType): SAttributeType = {

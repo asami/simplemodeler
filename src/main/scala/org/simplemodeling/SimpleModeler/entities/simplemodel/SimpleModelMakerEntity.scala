@@ -20,7 +20,8 @@ import org.simplemodeling.SimpleModeler.builder.UseTerm
  *  version Dec. 11, 2011
  *  version Feb.  7, 2012
  *  version Jun. 17, 2012
- * @version Sep. 17, 2012
+ *  version Sep. 17, 2012
+ * @version Oct.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelMakerEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext, val policy: Policy)
@@ -218,7 +219,7 @@ class SimpleModelMakerEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEnt
           (get_name_by_term(aTerm), rule, get_multiplicity_by_term(aTerm))
         }
 
-        def get_attribute_by_term(aTerm: String): (String, SMMObjectType, GRMultiplicity) = {
+        def get_attribute_by_term(aTerm: String): (String, SMMAttributeTypeSet, GRMultiplicity) = {
           (get_name_by_term(aTerm), get_attribute_type_by_term(aTerm), get_multiplicity_by_term(aTerm))
         }
 

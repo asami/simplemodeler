@@ -13,7 +13,7 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
  * @since   Mar.  6, 2012
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
- * @version Oct.  6, 2012
+ * @version Oct.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -113,14 +113,14 @@ class TableSimpleModelMakerBuilder(
   }
 
   protected final def add_attribute(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
-    val otype: SMMObjectType = _object_type(entry)
-    val attr = obj.attribute(_name(entry), otype)
+    val atype = SMMAttributeTypeSet(entry)
+    val attr = obj.attribute(_name(entry), atype)
     _build_attribute(attr, entry)
   }
 
   protected final def add_id(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
-    val otype: SMMObjectType = _object_type(entry)
-    val attr = obj.attribute(_name(entry), otype, true)
+    val atype = SMMAttributeTypeSet(entry)
+    val attr = obj.attribute(_name(entry), atype, true)
     _build_attribute(attr, entry)
   }
 
@@ -128,7 +128,9 @@ class TableSimpleModelMakerBuilder(
     for ((key, value) <- entry) {
       NaturalLabel(key) match {
         case NameLabel => {}
+        case TypeLabel => {}
         case DatatypeLabel => {}
+        case ObjecttypeLabel => {}
         case MultiplicityLabel => attr.multiplicity = GRMultiplicity(value)
         case NameJaLabel => attr.name_ja = value
         case NameEnLabel => attr.name_en = value
@@ -142,10 +144,15 @@ class TableSimpleModelMakerBuilder(
         case SummaryLabel => attr.brief = value
         case DescriptionLabel => attr.description = value
         case ColumnNameLabel => attr.columnName = value
-        case SqlDatatypeLabel => attr.sqlDatatype = SMMObjectType.get(value)
+        case SqlDatatypeLabel => attr.sqlDatatype = SMMObjectType.getSqlDataType(value)
         case _ => {}
       }
     }
+  }
+
+/*
+  private def _value_data_type(entry: Seq[(String, String)]): SMMValueDataType = {
+    NaturalLabel.getObjectTypeName(entry).map(SMMObjectType.getOrUnkonwn) | SMMStringType
   }
 
   private def _object_type(entry: Seq[(String, String)]): SMMObjectType = {
@@ -156,6 +163,7 @@ class TableSimpleModelMakerBuilder(
   protected def is_type_field(string: String): Boolean = {
     NaturalLabel.isDatatype(string)
   }
+*/
 
   /**
    * OutlineBuilderBase uses the method.
@@ -196,7 +204,7 @@ class TableSimpleModelMakerBuilder(
   }
 
   protected final def add_composition(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
-    val entitytype: SMMEntityType = _entity_type(entry)
+    val entitytype = SMMEntityTypeSet(entity.packageName, entry)
     val assoc = entity.composition(_name(entry), entitytype)
     _build_association(assoc, entry)
   }
@@ -212,7 +220,7 @@ class TableSimpleModelMakerBuilder(
   }
 
   protected final def add_aggregation(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
-    val entitytype: SMMEntityType = _entity_type(entry)
+    val entitytype = SMMEntityTypeSet(entity.packageName, entry)
     val assoc = entity.aggregation(_name(entry), entitytype)
     _build_association(assoc, entry)
   }
@@ -228,7 +236,7 @@ class TableSimpleModelMakerBuilder(
   }
 
   protected final def add_association(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
-    val entitytype: SMMEntityType = _entity_type(entry)
+    val entitytype = SMMEntityTypeSet(entity.packageName, entry)
     val assoc = entity.association(_name(entry), entitytype)
     _build_association(assoc, entry)
   }
@@ -237,7 +245,9 @@ class TableSimpleModelMakerBuilder(
     for ((key, value) <- entry) {
       NaturalLabel(key) match {
         case NameLabel => {}
+        case TypeLabel => {}
         case DatatypeLabel => {}
+        case ObjecttypeLabel => {}
         case MultiplicityLabel => assoc.multiplicity = GRMultiplicity(value)
         case NameJaLabel => assoc.name_ja = value
         case NameEnLabel => assoc.name_en = value
@@ -251,22 +261,9 @@ class TableSimpleModelMakerBuilder(
         case SummaryLabel => assoc.brief = value
         case DescriptionLabel => assoc.description = value
         case ColumnNameLabel => assoc.columnName = value
-        case SqlDatatypeLabel => assoc.sqlDatatype = SMMObjectType.get(value)
+        case SqlDatatypeLabel => {}
         case _ => {}
       }
-    }
-  }
-
-  private def _entity_type(entry: Seq[(String, String)]): SMMEntityType = {
-    val name = NameLabel.find(entry)
-    val term = TermLabel.find(entry)
-    name match {
-      case Some(n) => {
-        val etype = new SMMEntityType(n, packageName)
-        term.foreach(x => etype.term = x)
-        etype
-      }
-      case None => sys.error("not implemented yet.")
     }
   }
 }
