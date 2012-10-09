@@ -63,7 +63,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Mar. 25, 2012
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
- * @version Oct.  8, 2012
+ * @version Oct. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) with SMMElement {
@@ -218,6 +218,17 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     val attr = new SMMAttribute(aName, attrtype, isId)
     attributes += attr
     attr
+  }
+
+  /**
+   * Lift pure attribute to id if needed.
+   */
+  final def adjustAttributes() {
+    if (!attributes.exists(_.id)) {
+      attributes.headOption.collect {
+        case a if a.name.toLowerCase.endsWith("id") => a.id = true
+      }
+    }
   }
 
   final def association(aName: String, anObject: SMMEntityEntity): SMMAssociation = {

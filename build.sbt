@@ -22,6 +22,8 @@ resolvers += "Asami Maven Repository" at "http://www.asamioffice.com/maven"
 
 libraryDependencies <+= scalaVersion { "org.scala-lang" % "scala-compiler" % _ }
 
+libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.1"
+
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "6.0.4"
 
 libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.2-SNAPSHOT"

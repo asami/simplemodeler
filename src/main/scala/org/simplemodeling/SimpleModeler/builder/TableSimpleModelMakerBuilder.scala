@@ -13,7 +13,7 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
  * @since   Mar.  6, 2012
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
- * @version Oct.  8, 2012
+ * @version Oct. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -99,7 +99,7 @@ class TableSimpleModelMakerBuilder(
   }
 
   /*
-   *
+   * build
    */
   /**
    * OutlineBuilderBase uses the method.
@@ -110,15 +110,22 @@ class TableSimpleModelMakerBuilder(
       _columns(table.headAsStringList).zip(row)
     }
     rows.map(entry => add_attribute(entity, entry))
+    entity.adjustAttributes // XXX more upper position.
   }
 
   protected final def add_attribute(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
-    val atype = SMMAttributeTypeSet(entry)
-    val attr = obj.attribute(_name(entry), atype)
-    _build_attribute(attr, entry)
+    _kind(entry) match {
+      case IdLabel => add_id(obj, entry)
+      case _ => {
+        val atype = SMMAttributeTypeSet(entry)
+        val attr = obj.attribute(_name(entry), atype)
+        _build_attribute(attr, entry)
+      }
+    }
   }
 
   protected final def add_id(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
+    println("TableSimpleModelMakerBuilder#add_id:" + entry)
     val atype = SMMAttributeTypeSet(entry)
     val attr = obj.attribute(_name(entry), atype, true)
     _build_attribute(attr, entry)
@@ -187,10 +194,15 @@ class TableSimpleModelMakerBuilder(
   }
 
   private def _kind(entry: Seq[(String, String)]): NaturalLabel = {
+    import org.apache.commons.lang3.StringUtils.isNotBlank
     val feature = FeatureLabel.find(entry)
     feature.collect {
       case NaturalLabel(label) => label
-    } | AttributeLabel
+    } orElse {
+      IdLabel.find(entry).flatMap(x => {
+        isNotBlank(x).option(IdLabel)
+      })
+    } getOrElse AttributeLabel
   }
 
   /**

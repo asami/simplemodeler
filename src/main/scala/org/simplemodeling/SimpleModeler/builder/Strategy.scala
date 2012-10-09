@@ -5,7 +5,8 @@ import org.goldenport.entity.GEntityContext
 
 /*
  * @since   Dec.  8, 2011
- * @version Dec. 12, 2011
+ *  version Dec. 12, 2011
+ * @version Oct.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 case class Strategy(naming: NamingStrategy, slot: SlotStrategy)
@@ -49,10 +50,15 @@ abstract class SlotStrategy(val context: GEntityContext, val packageName: String
   }
 
   protected final def build_id_if_needed(obj: SMMEntityEntity) {
+/*
     val id = obj.attributes.collect {
       case it: SMMValueIdType => it
     }
     if (id.isEmpty) {
+      build_id(obj)
+    }
+*/
+    if (!obj.attributes.exists(_.id)) {
       build_id(obj)
     }
   }
