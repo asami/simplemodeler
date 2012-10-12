@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Feb. 27, 2012
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
- * @version Oct.  5, 2012
+ * @version Oct. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -25,7 +25,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *
  * OutlineImporter uses SimpleModeMakerBuilder as model_Builder.
  */
-abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, val outline: OutlineEntityBase) extends Recordable {
+abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, val outline: OutlineEntityBase) extends Recordable with UseTerm {
   import UXMind._
 
   val entityContext = outline.entityContext
@@ -56,8 +56,8 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   private def _create_object(kind: ElementKind, source: TopicNode, builder: (TopicNode, SMMEntityEntity) => Unit) = {
-    val term = source.title
-    val target = model_Builder.createObject(kind, term)
+    val name = get_name_by_term(source.title)
+    val target = model_Builder.createObject(kind, name)
     builder(source, target)
     target
   }
@@ -113,7 +113,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 
   private def _build_part(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
-    if (_mmx.isDefinition(source)) {
+    if (_mmx.isDefinition(source)) { // XXX
       record_report("implicit composition: " + term)
       val part = _create_object(ResourceKind, source, _build_object)
       target.narrativeOwnCompositions += Pair(term, part)
@@ -123,8 +123,18 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   private def _build_composition(source: TopicNode, target: SMMEntityEntity) {
+    println("_build_composition")
     val term = source.title
-    target.narrativeCompositions += term
+    val name = get_name_by_term(term)
+    if (!_mmx.isDefined(name)) {
+      println("_build_composition 1")
+      record_report("合成対象のクラスを生成しました: " + name)
+      val part = _create_object(EntityPartKind, source, _build_object)
+      target.narrativeOwnCompositions += Pair(term, part)
+    } else {
+      println("_build_composition 2")
+      target.narrativeCompositions += name
+    }
   }
 
   private def _build_aggregation(source: TopicNode, target: SMMEntityEntity) {

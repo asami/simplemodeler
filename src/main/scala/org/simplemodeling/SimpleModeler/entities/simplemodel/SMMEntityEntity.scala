@@ -27,6 +27,7 @@ import org.simplemodeling.dsl.datatype.business.XPercent
 import org.simplemodeling.dsl.datatype.business.XUnit
 import org.simplemodeling.dsl.domain.DomainActor
 import org.simplemodeling.dsl.domain.DomainEntity
+import org.simplemodeling.dsl.domain.DomainEntityPart
 import org.simplemodeling.dsl.domain.DomainEvent
 import org.simplemodeling.dsl.domain.DomainPowertype
 import org.simplemodeling.dsl.domain.DomainResource
@@ -63,14 +64,14 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Mar. 25, 2012
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
- * @version Oct. 10, 2012
+ * @version Oct. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) with SMMElement {
   type DataSource_TYPE = GDataSource
 
   var packageName: String = ""
-  var kind: ElementKind = null
+  var kind: ElementKind = NoneKind
   var tableName: String = ""
   var base: SMMEntityEntity = NullEntityEntity
   val powertypes = new ArrayBuffer[SMMPowertype]
@@ -742,6 +743,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       }
       case EntityKind   => new DomainEntity(name, packageName) {
 //        override def isObjectScope = true
+        isMasterSingleton = true
+      }
+      case EntityPartKind => new DomainEntityPart(name, packageName) {
         isMasterSingleton = true
       }
       case RuleKind         => new DomainRule(name, packageName) {

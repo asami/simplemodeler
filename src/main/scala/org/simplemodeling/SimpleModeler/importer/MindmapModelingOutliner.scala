@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * Nov. 6, 2011 (derived from MindmapModelingXMind)
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
- * @version Oct.  5, 2012
+ * @version Oct. 11, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -25,7 +25,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *
  * OutlineBuilderBase uses this class.
  */
-class MindmapModelingOutliner(val outline: OutlineEntityBase) {
+class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
   val thema = outline.firstThema // TODO variation point
 
   def entityTables: List[GTable[String]] = {
@@ -387,6 +387,7 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
     }
   }
 
+  // XXX usage?
   def isDefinition(term: TopicNode): Boolean = {
     aggregations(term).nonEmpty ||
     attributes(term).nonEmpty ||
@@ -400,5 +401,23 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) {
     supportingActors(term).nonEmpty ||
     goals(term).nonEmpty ||
     scenario(term).nonEmpty
+  }
+
+  def isDefined(name: String): Boolean = {
+    val a: List[TopicNode] = actors ::: resources ::: events ::: roles ::: rules ::: usecases
+    val b = entityTables ::: actorTables ::: resourceTables ::: eventTables ::: roleTables ::: ruleTables ::: usecaseTables
+    _is_defined_in_boi(name, a) || _is_defined_in_table(name, b)
+  }
+
+  private def _is_defined_in_boi(name: String, nodes: List[TopicNode]): Boolean = {
+    nodes.exists(_is_defined_in_boi(name, _))
+  }
+
+  private def _is_defined_in_boi(name: String, node: TopicNode): Boolean = {
+    name == get_name_by_term(node.title)
+  }
+
+  private def _is_defined_in_table(name: String, tables: List[GTable[String]]): Boolean = {
+    false // XXX
   }
 }
