@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * Nov. 6, 2011 (derived from MindmapModelingXMind)
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
- * @version Oct. 11, 2012
+ * @version Oct. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -30,6 +30,14 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def entityTables: List[GTable[String]] = {
     _structure_node_thema_boi_tables(EntityLabel)
+  }
+
+  def traits: List[TopicNode] = {
+    structure_node_children(thema, TraitLabel)
+  }
+
+  def traitTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(TraitLabel)
   }
 
   def actors: List[TopicNode] = {

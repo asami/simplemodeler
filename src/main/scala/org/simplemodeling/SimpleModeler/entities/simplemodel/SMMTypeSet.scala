@@ -5,7 +5,7 @@ import org.simplemodeling.SimpleModeler.builder._
 
 /*
  * @since   Oct.  8, 2012
- * @version Oct.  8, 2012
+ * @version Oct. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMTypeSet {
@@ -77,6 +77,10 @@ object SMMEntityTypeSet {
   }
 
   private def _entity_type(packageName: String, entry: Seq[(String, String)]): Option[SMMEntityType] = {
+    NaturalLabel.getEntityTypeName(entry).map(x => {
+      new SMMEntityType(x, packageName)
+    })
+/*
     val name = NameLabel.find(entry)
     val term = TermLabel.find(entry)
     name.flatMap(n => {
@@ -84,5 +88,6 @@ object SMMEntityTypeSet {
       term.foreach(x => etype.term = x)
       etype.some
     })
+*/
   }
 }

@@ -28,9 +28,10 @@ import org.simplemodeling.dsl.datatype.business.XUnit
 import org.simplemodeling.dsl.domain.DomainActor
 import org.simplemodeling.dsl.domain.DomainEntity
 import org.simplemodeling.dsl.domain.DomainEntityPart
+import org.simplemodeling.dsl.domain.DomainTrait
 import org.simplemodeling.dsl.domain.DomainEvent
-import org.simplemodeling.dsl.domain.DomainPowertype
 import org.simplemodeling.dsl.domain.DomainResource
+import org.simplemodeling.dsl.domain.DomainPowertype
 import org.simplemodeling.dsl.domain.DomainRole
 import org.simplemodeling.dsl.domain.DomainRule
 import org.simplemodeling.dsl.domain.DomainState
@@ -44,6 +45,7 @@ import org.simplemodeling.dsl.OneMore
 import org.simplemodeling.dsl.SAttribute
 import org.simplemodeling.dsl.SAttributeType
 import org.simplemodeling.dsl.SEntity
+import org.simplemodeling.dsl.STrait
 import org.simplemodeling.dsl.SMultiplicity
 import org.simplemodeling.dsl.SObject
 import org.simplemodeling.dsl.SValue
@@ -64,7 +66,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Mar. 25, 2012
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
- * @version Oct. 12, 2012
+ * @version Oct. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) with SMMElement {
@@ -74,6 +76,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   var kind: ElementKind = NoneKind
   var tableName: String = ""
   var base: SMMEntityEntity = NullEntityEntity
+  val traits = new ArrayBuffer[SMMTrait]
   val powertypes = new ArrayBuffer[SMMPowertype]
   val roles = new ArrayBuffer[SMMAssociation]
   val attributes = new ArrayBuffer[SMMAttribute]
@@ -721,6 +724,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _create_object(): SObject = {
     kind match {
+      case TraitKind => new DomainTrait(name, packageName) {
+        isMasterSingleton = true
+      }
       case ActorKind    => new DomainActor(name, packageName) {
 //        override def isObjectScope = true
         isMasterSingleton = true
@@ -788,6 +794,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   // produce SObject
   def buildSObjects(entities: Map[String, SObject]) {
     _sobject match {
+      case Some(tr: DomainTrait) => _build_trait(tr, entities)
       case Some(event: DomainEvent) => _build_event(event, entities)
       case Some(entity: DomainEntity) => _build_entity(entity, entities)
       case Some(value: DomainValue) => _build_value(value)
@@ -800,6 +807,12 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     private_objects.foreach(_.buildSObjects(entities))
   }
 
+  private def _build_trait(tr: DomainTrait, entities: Map[String, SObject]): DomainTrait = {
+    println("_build_trait: " + tr.name)
+    _build_entity(tr, entities)
+    tr
+  }
+
   private def _build_event(event: DomainEvent, entities: Map[String, SObject]): DomainEntity = {
     _build_entity(event, entities)
     primaryActors.foreach(_describe_association(entities, event.primary_actor.apply, _))
@@ -807,10 +820,11 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     event
   }
 
-  private def _build_entity(entity: DomainEntity, entities: Map[String, SObject]): DomainEntity = {
+  private def _build_entity(entity: SObject, entities: Map[String, SObject]): SObject = {
     entity.term = if (UString.isNull(term)) name else term
     _build_specifications(entity)
     _build_base(entities, entity)
+    _build_traits(entities, entity)
     _build_powertypes(entities, entity)
     _build_roles(entities, entity)
     _build_attributes(entity)
@@ -822,17 +836,26 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     entity
   }
 
-  private def _build_specifications(entity: DomainEntity) {
-
+  private def _build_specifications(entity: SObject) {
+    // TODO
   }
 
-  private def _build_base(entities: Map[String, SObject], entity: DomainEntity) {
+  private def _build_base(entities: Map[String, SObject], entity: SObject) {
     if (base != NullEntityEntity) {
       entity.base(_entity_ref(base.name, entities))
     }
   }
 
-  private def _build_powertypes(entities: Map[String, SObject], entity: DomainEntity) {
+  private def _build_traits(entities: Map[String, SObject], entity: SObject) {
+    for (tr <- traits) {
+      _trait_ref(tr.traitType.name, entities) match {
+        case dtrait: DomainTrait => entity.mixinTrait(dtrait)
+        case entity => record_debug("SMMEntityEntity: " + entity)
+      }
+    }
+  }
+
+  private def _build_powertypes(entities: Map[String, SObject], entity: SObject) {
     for (power <- powertypes) {
       _powertype_ref(power.powertypeType.name, entities) match {
         case sp: DomainPowertype => entity.powertype(power.name, sp, _dsl_multiplicity(power.multiplicity))
@@ -841,7 +864,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
-  private def _build_roles(entities: Map[String, SObject], entity: DomainEntity) {
+  private def _build_roles(entities: Map[String, SObject], entity: SObject) {
     for (role <- roles) {
       _role_ref(role.associationType.name, entities) match {
         case r: DomainRole => entity.role(role.name, r, _dsl_multiplicity(role.multiplicity))
@@ -850,7 +873,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
-  private def _build_attributes(entity: DomainEntity) {
+  private def _build_attributes(entity: SObject) {
     for (attr <- attributes) {
       attr.attributeType match {
         case t: SMMValueIdType => {
@@ -865,6 +888,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
+/*
   private def _build_attributes(value: SObject) {
     for (attr <- attributes) {
       attr.attributeType match {
@@ -875,7 +899,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       }
     }
   }
-
+*/
   private def _build_attribute(attr: SAttribute, src: SMMAttribute) {
     for (a <- _dsl_text(src.name_ja)) {
       attr.name_ja = a
@@ -960,28 +984,37 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
-  private def _build_associations(entity: DomainEntity, entities: Map[String, SObject]) {
+  private def _build_associations(entity: SObject, entities: Map[String, SObject]) {
       for (assoc <- associations) {
         entity.association(assoc.name, _entity_ref(assoc.associationType.name, entities), _dsl_multiplicity(assoc.multiplicity))
       }
   }
 
-  private def _build_aggregations(entity: DomainEntity, entities: Map[String, SObject]) {
+  private def _build_aggregations(entity: SObject, entities: Map[String, SObject]) {
       for (assoc <- aggregations) {
         entity.aggregation(assoc.name, _entity_ref(assoc.associationType.name, entities), _dsl_multiplicity(assoc.multiplicity))
       }
   }
 
-  private def _build_compositions(entity: DomainEntity, entities: Map[String, SObject]) {
+  private def _build_compositions(entity: SObject, entities: Map[String, SObject]) {
       for (assoc <- compositions) {
         entity.composition(assoc.name, _entity_ref(assoc.associationType.name, entities), _dsl_multiplicity(assoc.multiplicity))
       }
   }
 
   private def _entity_ref(name: String, entities: Map[String, SObject]): SEntity = {
+    println("_entity_ref: " + name)
+    entities.get(name) match {
+      case Some(entity: SEntity) => entity
+      case Some(x) => sys.error("not entity: " + x)
+      case None => sys.error("unknown: " + name)
+    }
+  }
+
+  private def _trait_ref(name: String, entities: Map[String, SObject]): STrait = {
     entities(name) match {
-      case entity: SEntity => entity
-      case x => error("not entity: " + x)
+      case tr: STrait => tr
+      case x => error("not trait: " + x)
     }
   }
 
@@ -1000,11 +1033,11 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
-  private def _build_statemachines(entity: DomainEntity) {
+  private def _build_statemachines(entity: SObject) {
     // TODO
   }
 
-  private def _build_statemachineStates(entity: DomainEntity) {
+  private def _build_statemachineStates(entity: SObject) {
     // TODO
   }
 

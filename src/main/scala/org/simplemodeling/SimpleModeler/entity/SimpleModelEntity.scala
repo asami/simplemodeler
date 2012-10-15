@@ -28,7 +28,7 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Sep. 19, 2011
  *  version Jan. 30, 2012
  *  version Jun. 17, 2012
- * @version Oct.  8, 2012
+ * @version Oct. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) {
@@ -165,6 +165,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
       case part: DomainEntityPart => build_domain_entity_part(part)
       case generic: GenericDomainEntity => build_generic_domain_entity(generic)
       case entity: DomainEntity => build_domain_entity(entity)
+      case tr: DomainTrait => build_domain_trait(tr)
       case id: DomainValueId => build_domain_id(id)
       case name: DomainValueName => build_domain_name(name)
       case value: DomainValue => build_domain_value(value)
@@ -283,6 +284,14 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
     build_object(entity, anEntity)
     pkg.addChild(entity)
     build_relation_objects(anEntity)
+  }
+
+  private def build_domain_trait(anTrait: DomainTrait) {
+    val pkg = build_package(anTrait)
+    val tr = new SMDomainTrait(anTrait)
+    build_object(tr, anTrait)
+    pkg.addChild(tr)
+    build_relation_objects(anTrait)
   }
 
   private def build_domain_id(anId: DomainValueId) {

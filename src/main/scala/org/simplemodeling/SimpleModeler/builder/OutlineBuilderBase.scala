@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Feb. 27, 2012
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
- * @version Oct. 12, 2012
+ * @version Oct. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -38,6 +38,8 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   protected final def build_model {
     outline.open()
     try {
+      _mmx.traits.foreach(_create_object(TraitKind, _, _build_object))
+      _mmx.traitTables.foreach(create_object_table(TraitKind, _))
       _mmx.actors.foreach(_create_object(ActorKind, _, _build_object))
       _mmx.actorTables.foreach(create_object_table(ActorKind, _))
       _mmx.resources.foreach(_create_object(ResourceKind, _, _build_object))

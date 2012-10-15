@@ -2,11 +2,13 @@ package org.simplemodeling.SimpleModeler.builder
 
 import scalaz._
 import Scalaz._
+import org.simplemodeling.SimpleModeler.entities.simplemodel._
+import org.apache.commons.lang3.StringUtils.isNotBlank
 
 /*
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
- * @version Oct.  7, 2012
+ * @version Oct. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -50,6 +52,10 @@ sealed abstract trait NaturalLabel {
 
 case object KindLabel extends NaturalLabel {
   val candidates = List("kind", "カインド", "種別")
+}
+
+case object TraitLabel extends NaturalLabel {
+  val candidates = List("trait", "トレイト", "特色")
 }
 
 case object EntityLabel extends NaturalLabel {
@@ -137,7 +143,7 @@ case object TermEnLabel extends NaturalLabel {
 }
 
 case object TitleLabel extends NaturalLabel {
-  val candidates = List("title", "タイトル", "表題")
+  val candidates = List("title", "タイトル", "表題", "題")
 }
 
 case object SubtitleLabel extends NaturalLabel {
@@ -228,12 +234,10 @@ case object AnnotationLabel extends NaturalLabel {
 // SQL
 case object TableNameLabel extends NaturalLabel {
   val candidates = List("table name", "テーブル名")
-  
 }
 
 case object ColumnNameLabel extends NaturalLabel {
-  val candidates = List("column name", "カラム名")
-  
+  val candidates = List("column name", "column", "カラム名", "カラム")
 }
 
 case object SqlDatatypeLabel extends NaturalLabel {
@@ -301,7 +305,7 @@ object NaturalLabel {
   def unapply(string: String): Option[NaturalLabel] = {
     candidates.find(_.isMatch(string))
   }
-
+/*
   def isKind(string: String): Boolean = {
     KindLabel.isMatch(string)
   }
@@ -317,18 +321,61 @@ object NaturalLabel {
   def isNameKey(kv: (String, _)): Boolean = {
     isName(kv._1)
   }
-
+*/
 /*
   def isDatatype(string: String): Boolean = {
     DatatypeLabel.isMatch(string)
   }
 */
   def getObjectTypeName(entry: Seq[(String, String)]): Option[String] = {
-    val candidates = Stream(ObjecttypeLabel, TypeLabel, DatatypeLabel, SqlDatatypeLabel)
-    candidates.flatMap(c => {
-      entry.find(kv => {
-        c.isMatch(kv._1)
-      })
-    }).headOption.map(_._2)
+    val cs = Stream(ObjecttypeLabel, TypeLabel, DatatypeLabel, SqlDatatypeLabel)
+    _find_candidate(cs, entry)
   }
+
+  def getObjectKind(entry: Seq[(String, String)]): Option[ElementKind] = {
+    val cs = Stream(KindLabel)
+    cs.flatMap(c => {
+      entry.find(kv => {
+        c.isMatch(kv._1) && isNotBlank(kv._2)
+      })
+    }).headOption.flatMap(t => NaturalLabel(t._2) match {
+      case ActorLabel => ActorKind.some
+      case ResourceLabel => ResourceKind.some
+      case EventLabel => EventKind.some
+      case RoleLabel => RoleKind.some
+      case RuleLabel => RuleKind.some
+      case UsecaseLabel => UsecaseKind.some
+      case _ => none
+    })
+  }
+
+  def getObjectName(entry: Seq[(String, String)]): Option[String] = {
+    val cs = Stream(NameLabel, NameJaLabel, NameEnLabel, TermLabel, TermJaLabel, TermEnLabel, ColumnNameLabel, TitleLabel, CaptionLabel)
+    _find_candidate(cs, entry)
+  }
+
+  def getSlotName(entry: Seq[(String, String)]): Option[String] = {
+    val cs = Stream(NameLabel, NameJaLabel, NameEnLabel, TermLabel, TermJaLabel, TermEnLabel, ColumnNameLabel, TypeLabel, TitleLabel, CaptionLabel)
+    _find_candidate(cs, entry)
+  }
+
+  def getEntityTypeName(entry: Seq[(String, String)]): Option[String] = {
+    val cs = Stream(TypeLabel, NameLabel, TermLabel)
+    _find_candidate(cs, entry)
+  }
+
+  private def _find_candidate(cs: Stream[NaturalLabel], entry: Seq[(String, String)]): Option[String] = {
+    cs.flatMap(c => {
+      entry.find(kv => {
+        c.isMatch(kv._1) && isNotBlank(kv._2)
+      })
+    }).map(x => { println("match = " + x); x
+    }).headOption.flatMap(_._2 match {
+      case "" => None
+      case s => Some(s)
+    })
+  } ensuring (x => {
+    println("_find_candidate: " + entry + " => " + x)
+    true
+  })
 }

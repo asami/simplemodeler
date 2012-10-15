@@ -13,7 +13,7 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
  * @since   Mar.  6, 2012
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
- * @version Oct. 10, 2012
+ * @version Oct. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -37,6 +37,17 @@ class TableSimpleModelMakerBuilder(
     rows.map(entry => createObject(kind, entry)).toList
   }
 
+  private def _object_kind(kind: ElementKind, entry: Seq[(String, String)]): ElementKind = {
+    NaturalLabel.getObjectKind(entry) | kind
+  }
+
+  private def _object_name(entry: Seq[(String, String)]): String = {
+    NaturalLabel.getObjectName(entry) match {
+      case Some(s) => s
+      case None => "Unknown"
+    }
+  }
+/*
   private def _kind(kind: ElementKind, entry: Seq[(String, String)]): ElementKind = {
     entry.find(NaturalLabel.isKindKey).flatMap(t => NaturalLabel(t._2) match {
       case ActorLabel => ActorKind.some
@@ -52,9 +63,10 @@ class TableSimpleModelMakerBuilder(
   private def _name(entry: Seq[(String, String)]): String = {
     entry.find(NaturalLabel.isNameKey).map(_._2).get
   }
+*/
 
   def createObject(kind: ElementKind, entry: Seq[(String, String)]): SMMEntityEntity = {
-    val obj = model_Builder.createObject(_kind(kind, entry), _name(entry))
+    val obj = model_Builder.createObject(_object_kind(kind, entry), _object_name(entry))
     build_object(obj, entry)
     obj
   }
@@ -114,11 +126,11 @@ class TableSimpleModelMakerBuilder(
   }
 
   protected final def add_attribute(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
-    _kind(entry) match {
+    _slot_kind(entry) match {
       case IdLabel => add_id(obj, entry)
       case _ => {
         val atype = SMMAttributeTypeSet(entry)
-        val attr = obj.attribute(_name(entry), atype)
+        val attr = obj.attribute(_slot_name(entry), atype)
         _build_attribute(attr, entry)
       }
     }
@@ -127,7 +139,7 @@ class TableSimpleModelMakerBuilder(
   protected final def add_id(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
     println("TableSimpleModelMakerBuilder#add_id:" + entry)
     val atype = SMMAttributeTypeSet(entry)
-    val attr = obj.attribute(_name(entry), atype, true)
+    val attr = obj.attribute(_slot_name(entry), atype, true)
     _build_attribute(attr, entry)
   }
 
@@ -183,7 +195,7 @@ class TableSimpleModelMakerBuilder(
   }
 
   protected final def add_feature(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
-    _kind(entry) match {
+    _slot_kind(entry) match {
       case IdLabel => add_id(entity, entry)
       case AttributeLabel => add_attribute(entity, entry)
       case CompositionLabel => add_composition(entity, entry)
@@ -193,7 +205,14 @@ class TableSimpleModelMakerBuilder(
     }
   }
 
-  private def _kind(entry: Seq[(String, String)]): NaturalLabel = {
+  private def _slot_name(entry: Seq[(String, String)]): String = {
+    NaturalLabel.getSlotName(entry) match {
+      case Some(s) => s
+      case None => "Unknown"
+    }
+  }
+
+  private def _slot_kind(entry: Seq[(String, String)]): NaturalLabel = {
     import org.apache.commons.lang3.StringUtils.isNotBlank
     val feature = FeatureLabel.find(entry)
     feature.collect {
@@ -217,7 +236,7 @@ class TableSimpleModelMakerBuilder(
 
   protected final def add_composition(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
     val entitytype = SMMEntityTypeSet(entity.packageName, entry)
-    val assoc = entity.composition(_name(entry), entitytype)
+    val assoc = entity.composition(_slot_name(entry), entitytype)
     _build_association(assoc, entry)
   }
 
@@ -233,7 +252,7 @@ class TableSimpleModelMakerBuilder(
 
   protected final def add_aggregation(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
     val entitytype = SMMEntityTypeSet(entity.packageName, entry)
-    val assoc = entity.aggregation(_name(entry), entitytype)
+    val assoc = entity.aggregation(_slot_name(entry), entitytype)
     _build_association(assoc, entry)
   }
 
@@ -249,7 +268,7 @@ class TableSimpleModelMakerBuilder(
 
   protected final def add_association(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
     val entitytype = SMMEntityTypeSet(entity.packageName, entry)
-    val assoc = entity.association(_name(entry), entitytype)
+    val assoc = entity.association(_slot_name(entry), entitytype)
     _build_association(assoc, entry)
   }
 
