@@ -66,8 +66,11 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Mar. 25, 2012
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
- * @version Oct. 15, 2012
+ * @version Oct. 16, 2012
  * @author  ASAMI, Tomoharu
+ */
+/**
+ * SmpleModelDslBuilder setups a resolved model from the narrative model.
  */
 class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) with SMMElement {
   type DataSource_TYPE = GDataSource
@@ -76,7 +79,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   var kind: ElementKind = NoneKind
   var tableName: String = ""
   var base: SMMEntityEntity = NullEntityEntity
-  val traits = new ArrayBuffer[SMMTrait]
+  val traits = new ArrayBuffer[SMMEntityEntity]
   val powertypes = new ArrayBuffer[SMMPowertype]
   val roles = new ArrayBuffer[SMMAssociation]
   val attributes = new ArrayBuffer[SMMAttribute]
@@ -91,6 +94,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val statemachineStates = new ArrayBuffer[(String, String)]
   val scenarioSteps = new ArrayBuffer[SMMAssociation]
   var narrativeBase: String = ""
+  val narrativeTraits = new ArrayBuffer[String]
   val narrativePowertypes = new ArrayBuffer[String]
   val narrativeRoles = new ArrayBuffer[String]
   val narrativeAttributes = new ArrayBuffer[String]
@@ -171,6 +175,11 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   final def addPrivateObject(anObject: SMMEntityEntity) {
     private_objects += anObject
+  }
+
+  final def mixinTrait(tr: SMMEntityEntity): SMMEntityEntity = {
+    traits += tr
+    tr
   }
 
   final def powertype(aName: String, aPowertypeType: SMMPowertypeType): SMMPowertype = {
@@ -358,6 +367,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   final def setNarrativeBase(aName: String) {
     require(aName != null)
     narrativeBase = aName
+  }
+
+  final def addNarrativeTrait(aName: String) {
+    narrativeTraits += aName
   }
 
   final def addNarrativePowertype(aName: String) {
@@ -848,7 +861,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_traits(entities: Map[String, SObject], entity: SObject) {
     for (tr <- traits) {
-      _trait_ref(tr.traitType.name, entities) match {
+      _entity_ref(tr.name, entities) match {
         case dtrait: DomainTrait => entity.mixinTrait(dtrait)
         case entity => record_debug("SMMEntityEntity: " + entity)
       }
@@ -1011,12 +1024,15 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
+/*
   private def _trait_ref(name: String, entities: Map[String, SObject]): STrait = {
+    println("_trait_ref(%s) = %s".format(name, entities))
     entities(name) match {
       case tr: STrait => tr
       case x => error("not trait: " + x)
     }
   }
+*/
 
   private def _powertype_ref(name: String, entities: Map[String, SObject]): DomainPowertype = {
     entities(name) match {

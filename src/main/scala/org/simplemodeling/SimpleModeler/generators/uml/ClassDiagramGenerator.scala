@@ -14,7 +14,8 @@ import org.goldenport.Strings
 /*
  * @since   Jan. 15, 2009
  *  version Nov. 20, 2011
- * @version Sep. 18, 2012
+ *  version Sep. 18, 2012
+ * @version Oct. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -66,12 +67,14 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
       val graph = new Graph(graphviz.graph, context)
       val classes: Seq[SMObject] = aPackage.children.collect {
         case entity: SMEntity       => entity
+        case tr: SMTrait => tr
         case rule: SMRule if !rule.associations.isEmpty => rule
         case powertype: SMPowertype => powertype
         case service: SMService     => service
         case flow: SMFlow           => flow
         case uc: SMUsecase          => uc
       }
+      println("makeClassDiagramDot: " + classes)
       //        filter(child => child.isInstanceOf[SMEntity] || child.isInstanceOf[SMRule] || child.isInstanceOf[SMPowertype] || child.isInstanceOf[SMService]).map(_.asInstanceOf[SMObject])
 
       var counter = 1
@@ -90,6 +93,7 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
       }
 
       def add_object(anObject: SMObject) {
+        println("add_object: " + anObject.name)
         val id = "class" + counter
         counter += 1
         ids.put(anObject, id)
@@ -99,7 +103,7 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
               case "perspective" => graph.addPowertypeSimple(powertype, id)
               case "hilight"     => graph.addPowertypeSimple(powertype, id)
               case "detail"      => graph.addPowertypeFull(powertype, id)
-              case _             => error("illegal thema: " + aThema)
+              case _             => sys.error("illegal thema: " + aThema)
             }
           }
           case _ => {
@@ -107,7 +111,7 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
               case "perspective" => graph.addClassSimple(anObject, id)
               case "hilight"     => graph.addClassSimple(anObject, id)
               case "detail"      => graph.addClassFull(anObject, id)
-              case _             => error("illegal thema: " + aThema)
+              case _             => sys.error("illegal thema: " + aThema)
             }
           }
         }
@@ -122,6 +126,21 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
               graph.addGeneralization(childId, parentId)
             }
             case None => //
+          }
+        }
+
+        def add_trait_relationships(obj: SMObject) {
+          for (rel <- obj.traits) {
+            val target = rel.mixinTrait
+            println("add_trait_relationships: " + ids + " / " + target)
+            val sourceId = get_id(obj)
+            val targetId = get_id(target)
+            aThema match {
+              case "perspective" => graph.addSimpleTraitRelationship(sourceId, targetId, rel)
+              case "hilight"     => graph.addPlainTraitRelationship(sourceId, targetId, rel)
+              case "detail"      => graph.addTraitRelationship(sourceId, targetId, rel)
+              case _             => graph.addSimpleTraitRelationship(sourceId, targetId, rel)
+            }
           }
         }
 
@@ -209,6 +228,7 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
         }
 
         add_generalization_relationships(anObject)
+        add_trait_relationships(anObject)
         add_powertype_relationships(anObject)
         add_role_relationships(anObject)
         if (anObject.isInstanceOf[SMUsecase]) {

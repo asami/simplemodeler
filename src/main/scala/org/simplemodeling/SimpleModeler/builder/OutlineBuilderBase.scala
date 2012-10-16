@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Feb. 27, 2012
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
- * @version Oct. 15, 2012
+ * @version Oct. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -92,6 +92,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   private def _build_object_common(aNode: TopicNode, target: SMMEntityEntity) {
+    _mmx.propertyTables(aNode).foreach(_build_property_table(_, target))
     _mmx.parts(aNode).foreach(_build_part(_, target))
     _mmx.compositions(aNode).foreach(_build_composition(_, target))
     _mmx.aggregations(aNode).foreach(_build_aggregation(_, target))
@@ -111,6 +112,10 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     _mmx.secondaryActors(aNode).foreach(_build_secondary_actor(_, target))
     _mmx.supportingActors(aNode).foreach(_build_supporting_actor(_, target))
     _mmx.goals(aNode).foreach(_build_goal(_, target))
+  }
+
+  private def _build_property_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildProperty(target, table)
   }
 
   private def _build_part(source: TopicNode, target: SMMEntityEntity) {

@@ -11,7 +11,8 @@ import com.asamioffice.goldenport.text.UPathString
  * @since   Sep. 13, 2008
  *  version Jul. 13, 2011
  *  version Feb.  7, 2012
- * @version Apr.  8, 2012
+ *  version Apr.  8, 2012
+ * @version Oct. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
@@ -22,6 +23,7 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   // resolved in SimpleModelEntity#ParicipationBuilder.
   val derivedObjects: Buffer[SMObject] = new ArrayBuffer[SMObject]
 
+  private val _traits = new ArrayBuffer[SMTraitRelationship]
   val _powertypes = new ArrayBuffer[SMPowertypeRelationship]
   val _attributes = new ArrayBuffer[SMAttribute]
   val _associations = new ArrayBuffer[SMAssociation]
@@ -165,6 +167,7 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
     else term
   }
 
+  dslObject.getTraits.foreach(add_trait)
   dslObject.getPowertypes.foreach(add_powertype)
   dslObject.getAttributes.foreach(add_attribute)
   dslObject.getAssociations.foreach(add_association)
@@ -176,6 +179,7 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   dslObject.getRules.foreach(add_rule)
   dslObject.getDocuments.foreach(add_document)
 
+  def traits: Seq[SMTraitRelationship] = _traits
   def powertypes: Seq[SMPowertypeRelationship] = _powertypes
   def attributes: Seq[SMAttribute] = _attributes
   def associations: Seq[SMAssociation] = _associations
@@ -188,6 +192,10 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   def documents: Seq[SMDocumentRelationship] = _documents
   def uses: Seq[SMUse] = _uses
   def participations: Seq[SMParticipation] = _participations
+
+  private def add_trait(aTrait: STraitRelationship) {
+    _traits += new SMTraitRelationship(aTrait)
+  }
 
   private def add_powertype(aPowertype: SPowertypeRelationship) {
     _powertypes += new SMPowertypeRelationship(aPowertype)

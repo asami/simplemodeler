@@ -6,6 +6,7 @@ import org.goldenport.entities.csv._
 import org.goldenport.value._
 import org.goldenport.sdoc.SDoc
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
+import org.apache.commons.lang3.StringUtils.isNotBlank
 
 /*
  * TODO refactors a relation with TabularBuilderBase.
@@ -13,7 +14,7 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
  * @since   Mar.  6, 2012
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
- * @version Oct. 15, 2012
+ * @version Oct. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -187,6 +188,60 @@ class TableSimpleModelMakerBuilder(
   /**
    * OutlineBuilderBase uses the method.
    */
+  def buildProperty(entity: SMMEntityEntity, table: GTable[String]) {
+    val rows = for (row <- table.rows) yield {
+      if (row.isEmpty) ("", "", Nil)
+      else if (row.length == 1) (row.head, "", Nil)
+      else (row(0), row(1), row.drop(2))
+    }
+    rows.map(entry => add_property(entity, entry))
+  }
+
+  protected final def add_property(entity: SMMEntityEntity, entry: (String, String, Seq[String])) {
+    _property_kind(entry).collect {
+      case BaseLabel => add_base(entity, entry)
+      case TraitLabel => add_traits(entity, entry)
+      case TableNameLabel => add_table_name(entity, entry)
+    }
+  }
+
+  private def _property_kind(entry: (String, String, Seq[String])): Option[NaturalLabel] = {
+    NaturalLabel.getLabel(entry._1)
+  }
+
+  protected final def add_base(entity: SMMEntityEntity, entry: (String, String, Seq[String])) {
+    _set_property_one(entry, x => {
+      entity.narrativeBase = x
+    })
+  }
+
+  protected final def add_traits(entity: SMMEntityEntity, entry: (String, String, Seq[String])) {
+    _set_property_seq(entry, xs => {
+      xs.foreach(entity.addNarrativeTrait)
+    })
+  }
+
+  protected final def add_table_name(entity: SMMEntityEntity, entry: (String, String, Seq[String])) {
+    _set_property_one(entry, x => {
+      entity.tableName = x
+    })
+  }
+
+  private def _set_property_one(entry: (String, String, Seq[String]),
+                                f: String => Unit) {
+    if (isNotBlank(entry._2)) f(entry._2.trim)
+  }
+
+  private def _set_property_seq(entry: (String, String, Seq[String]),
+                                f: Seq[String] => Unit) {
+    if (isNotBlank(entry._2)) {
+      f(entry._2.split("[ ,;]+").map(_.trim).filter(isNotBlank))
+    }
+  }
+
+  /**
+   * OutlineBuilderBase uses the method.
+   */
   def buildFeature(entity: SMMEntityEntity, table: GTable[String]) {
     val rows = for (row <- table.rows) yield {
       _columns(table.headAsStringList).zip(row)
@@ -213,7 +268,6 @@ class TableSimpleModelMakerBuilder(
   }
 
   private def _slot_kind(entry: Seq[(String, String)]): NaturalLabel = {
-    import org.apache.commons.lang3.StringUtils.isNotBlank
     val feature = FeatureLabel.find(entry)
     feature.collect {
       case NaturalLabel(label) => label

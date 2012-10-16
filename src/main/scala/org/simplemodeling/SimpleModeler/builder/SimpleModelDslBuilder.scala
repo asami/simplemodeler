@@ -8,7 +8,7 @@ import org.simplemodeling.dsl.SObject
 import com.asamioffice.goldenport.text.UJavaString
 import com.asamioffice.goldenport.text.UString
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
-import org.simplemodeling.dsl.SEntity
+import org.simplemodeling.dsl.{SEntity, STrait}
 import org.goldenport.recorder.ForwardingRecorder
 import org.goldenport.recorder.Recordable
 
@@ -17,7 +17,7 @@ import org.goldenport.recorder.Recordable
  *  version Dec. 11, 2011
  *  version Feb.  8, 2012
  *  version Sep. 29, 2012
- * @version Oct.  8, 2012
+ * @version Oct. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -40,11 +40,12 @@ class SimpleModelDslBuilder(
   def dslObjects: List[SObject] = {
     import org.simplemodeling.dsl.domain._
     _resolve_entities()
+    println("dslObjects = " + entities)
     val entitylist = entities.values.toList 
     val objs = entitylist.flatMap(_.createSObjects)
     val names = objs.map(_.name)
     val sentities: List[SObject] = objs collect {
-      case e: SEntity => e
+      case e: SEntity => e // include STrait
       case p: DomainPowertype => p
     }
     val tuples: List[(String, SObject)] = sentities.map(_.name) zip sentities
@@ -111,6 +112,7 @@ class SimpleModelDslBuilder(
 
   final def createObject(aKind: ElementKind, aName: String): SMMEntityEntity = {
     val name = _naming_strategy.makeName(aName, aKind)
+    println("createObject(%s, %s, %s)".format(aKind, aName, name))
     entities.get(name) match {
       case Some(entity) => entity
       case None => {
@@ -158,7 +160,11 @@ class SimpleModelDslBuilder(
 
   private def _resolve_entity(entity: SMMEntityEntity) {
     if (entity.narrativeBase != "") {
+      println("narrativeBase = " + entity.name + " / " + entity.narrativeBase)
       entity.base = get_entity_by_term(entity.narrativeBase)
+    }
+    for (term <- entity.narrativeTraits) {
+      entity.mixinTrait(get_trait_by_term(term))
     }
     for (term <- entity.narrativePowertypes) {
       val (name, target, multiplicity) = get_powertype_by_term(term)
@@ -234,6 +240,7 @@ class SimpleModelDslBuilder(
     get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
 //      record_warning("Term is not found: %s, creates a resource entity implicitly.", aTerm)
       record_warning("用語「%s」の定義が見つからなかったので自動で作成します。", aTerm)
+//      println("get_entity_by_term(%s): %s".format(aTerm, entities.values.map(x => x.name + "/" + x.term )))
       createObject(ResourceKind, aTerm)
     }
   }
@@ -283,6 +290,10 @@ class SimpleModelDslBuilder(
     None
   }
 */
+  def get_trait_by_term(aTerm: String): SMMEntityEntity = {
+    get_entity_by_term(aTerm)
+  }
+
   def get_powertype_by_term(aTerm: String): (String, SMMPowertypeType, GRMultiplicity) = {
     val name = get_name_by_term(aTerm)
     val labels = get_labels_by_term(aTerm)

@@ -7,7 +7,7 @@ import scala.collection.mutable.ArrayBuffer
  * @since   Jan. 30, 2009
  *  version Jul. 12, 2009
  *  version Mar. 24, 2012
- * @version Oct. 15, 2012
+ * @version Oct. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SMMObjectType(val name: String, val packageName: String) {
@@ -27,6 +27,7 @@ class SMMEntityType(aName: String, aPackageName: String) extends SMMObjectType(a
   override def isEntity = true
 }
 
+@deprecated
 class SMMTraitType(aName: String, aPackageName: String) extends SMMObjectType(aName, aPackageName) {
 }
 

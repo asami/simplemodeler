@@ -12,7 +12,7 @@ import org.simplemodeling.dsl.datatype.ext._
  *
  * @since   Sep. 10, 2008
  *  version Sep. 18, 2011
- * @version Oct. 15, 2012
+ * @version Oct. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) {
@@ -202,6 +202,7 @@ abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) 
     case null => None
     case _ => Some(xmlNamespace)
   }
+  def getTraits = mixinTrait.traits
   def getPowertypes = powertype.powertypes
   def getAttributes = attribute.attributes
   def getAssociations = association.associations

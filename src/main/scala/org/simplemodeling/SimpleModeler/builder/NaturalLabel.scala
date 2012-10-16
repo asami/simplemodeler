@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
 /*
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
- * @version Oct. 15, 2012
+ * @version Oct. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -163,7 +163,11 @@ case object DescriptionLabel extends NaturalLabel {
   val candidates = List("description", "説明")
 }
 
-case object FeatureLabel extends NaturalLabel {
+case object PropertyLabel extends NaturalLabel {
+  val candidates = List("property", "性質")
+}
+
+case object FeatureLabel extends NaturalLabel { // feature is used as class slot (e.g. attribute, association) at the time.
   val candidates = List("feature", "特性")
 }
 
@@ -254,6 +258,7 @@ object NaturalLabel {
 //  val summary_candidates = List("summary")
   val candidates = List(
     KindLabel,
+    TraitLabel,
     ActorLabel,
     ResourceLabel,
     EventLabel,
@@ -277,6 +282,8 @@ object NaturalLabel {
     BriefLabel,
     SummaryLabel,
     DescriptionLabel,
+    PropertyLabel,
+    FeatureLabel,
     AttributeLabel,
     IdLabel,
     AssociationLabel,
@@ -327,6 +334,10 @@ object NaturalLabel {
     DatatypeLabel.isMatch(string)
   }
 */
+  def getLabel(s: String): Option[NaturalLabel] = {
+    candidates.find(_.isMatch(s))
+  }
+
   def getObjectTypeName(entry: Seq[(String, String)]): Option[String] = {
     val cs = Stream(ObjecttypeLabel, TypeLabel, DatatypeLabel, SqlDatatypeLabel)
     _find_candidate(cs, entry)

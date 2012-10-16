@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
 /**
  * @since   Feb.  7, 2012
  *  version Feb.  9, 2012
- * @version Oct.  8, 2012
+ * @version Oct. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 trait UseTerm {
@@ -55,8 +55,8 @@ trait UseTerm {
 */
 
   protected def get_entity_by_term_in_entities(entities: Traversable[SMMEntityEntity], term: String): Option[SMMEntityEntity] = {
-    val entityname = get_entity_type_name_by_term(term)
-    entities.find(_.term == entityname)
+    val entityname = get_entity_type_name_by_term(term).toLowerCase
+    entities.find(_.term.toLowerCase == entityname)
   } 
 
   protected def get_entity_type_name_by_term(term: String): String = {

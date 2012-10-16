@@ -1077,6 +1077,13 @@ record_trace("build_powertype_object = " + aPowertype)
         }
       }
 
+      def resolve_trait(aTraitRel: SMTraitRelationship) {
+        val relType = aTraitRel.relationshipType
+        val target = getObject(relType.qualifiedName)
+        relType.typeObject = target
+        aTraitRel.mixinTrait = target.asInstanceOf[SMTrait]
+      }
+
       def resolve_relationship_with_participation(aRel: SMRelationship, aParticipationRole: SMParticipationRole) {
         val relType = aRel.relationshipType
         val target = getObject(relType.qualifiedName)
@@ -1148,6 +1155,7 @@ record_trace("build_powertype_object = " + aPowertype)
       }
 
       resolve_base_object()
+      anObject.traits.foreach(resolve_trait)
       anObject.roles.foreach(resolve_role)
       anObject.services.foreach(resolve_service)
       anObject.rules.foreach(resolve_rule)

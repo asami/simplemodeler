@@ -13,8 +13,9 @@ import com.asamioffice.goldenport.text.UString
  * Derived from Graph in ClassDiagram Generator.
  * 
  * @since   Jan. 15, 2009
- * Mar. 27, 2011
- * @version Nov. 20, 2011
+ *  version Mar. 27, 2011
+ *  version Nov. 20, 2011
+ * @version Oct. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
@@ -264,6 +265,37 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     edge.arrowtail = "onormal"
     edge.color = "#a22041" // 真紅 しんく
     graph.edges += edge
+  }
+
+  final def addTraitRelationship(aSourceId: String, aTargetId: String, aRel: SMTraitRelationship) {
+    addTraitRelationship(aSourceId, aTargetId, aRel, false)
+  }
+
+  final def addDerivedTraitRelationship(aSourceId: String, aTargetId: String, aRel: SMTraitRelationship) {
+    addTraitRelationship(aSourceId, aTargetId, aRel, true)
+  }
+
+  final def addTraitRelationship(aSourceId: String, aTargetId: String, aRel: SMTraitRelationship, aDerived: Boolean) {
+    val edge = make_trait_edge(aSourceId, aTargetId)
+    graph.edges += edge
+  }
+
+  final def addPlainTraitRelationship(aSourceId: String, aTargetId: String, aRel: SMTraitRelationship) {
+    val edge = make_trait_edge(aSourceId, aTargetId)
+    graph.edges += edge
+  }
+
+  final def addSimpleTraitRelationship(aSourceId: String, aTargetId: String, aRel: SMTraitRelationship) {
+    val edge = make_trait_edge(aSourceId, aTargetId)
+    graph.edges += edge
+  }
+
+  private def make_trait_edge(aSourceId: String, aTargetId: String): GVEdge = {
+    val edge = new GVEdge(aTargetId, "p", aSourceId, "p")
+    edge.arrowhead = "none"
+    edge.arrowtail = "normal"
+    edge.color = "#640125" // 葡萄色 えびいろ
+    edge
   }
 
   final def addPowertypeRelationship(aSourceId: String, aTargetId: String, aRel: SMPowertypeRelationship) {
@@ -549,6 +581,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     else if (anObject.kindName == "extension") "#ffffff"
     else if (anObject.kindName == "") "#f8fbf8" /// 白磁 はくじ
     else if (anObject.typeName == "entity") "#c1e4e9" // 白藍 しらあい
+    else if (anObject.typeName == "trait") "#b3ada0" // 利休白茶
     else if (anObject.typeName == "datatype") "#b3ada0" // 利休白茶 りきゅうしろちゃ
     else if (anObject.typeName == "powertype") "#7ebea5" // 青磁色 せいじいろ
     else if (anObject.typeName == "document") "#93ca76" // 淡萌黄 うすもえぎ

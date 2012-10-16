@@ -15,4 +15,4 @@ class SMTrait(val dslTrait: STrait) extends SMObject(dslTrait) {
 //  def appEngine = dslTrait.appEngine
 }
 
-// object SMNullTrait extends SMTrait(NullTrait)
+object SMNullTrait extends SMTrait(NullTrait)
