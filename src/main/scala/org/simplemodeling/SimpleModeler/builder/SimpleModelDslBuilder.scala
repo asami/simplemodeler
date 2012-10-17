@@ -40,7 +40,7 @@ class SimpleModelDslBuilder(
   def dslObjects: List[SObject] = {
     import org.simplemodeling.dsl.domain._
     _resolve_entities()
-    println("dslObjects = " + entities)
+//    println("dslObjects = " + entities)
     val entitylist = entities.values.toList 
     val objs = entitylist.flatMap(_.createSObjects)
     val names = objs.map(_.name)
@@ -112,7 +112,7 @@ class SimpleModelDslBuilder(
 
   final def createObject(aKind: ElementKind, aName: String): SMMEntityEntity = {
     val name = _naming_strategy.makeName(aName, aKind)
-    println("createObject(%s, %s, %s)".format(aKind, aName, name))
+//    println("createObject(%s, %s, %s)".format(aKind, aName, name))
     entities.get(name) match {
       case Some(entity) => entity
       case None => {
@@ -160,7 +160,7 @@ class SimpleModelDslBuilder(
 
   private def _resolve_entity(entity: SMMEntityEntity) {
     if (entity.narrativeBase != "") {
-      println("narrativeBase = " + entity.name + " / " + entity.narrativeBase)
+//      println("narrativeBase = " + entity.name + " / " + entity.narrativeBase)
       entity.base = get_entity_by_term(entity.narrativeBase)
     }
     for (term <- entity.narrativeTraits) {

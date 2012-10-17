@@ -74,7 +74,7 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
         case flow: SMFlow           => flow
         case uc: SMUsecase          => uc
       }
-      println("makeClassDiagramDot: " + classes)
+//      println("makeClassDiagramDot: " + classes)
       //        filter(child => child.isInstanceOf[SMEntity] || child.isInstanceOf[SMRule] || child.isInstanceOf[SMPowertype] || child.isInstanceOf[SMService]).map(_.asInstanceOf[SMObject])
 
       var counter = 1
@@ -93,7 +93,7 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
       }
 
       def add_object(anObject: SMObject) {
-        println("add_object: " + anObject.name)
+//        println("add_object: " + anObject.name)
         val id = "class" + counter
         counter += 1
         ids.put(anObject, id)
@@ -132,7 +132,7 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
         def add_trait_relationships(obj: SMObject) {
           for (rel <- obj.traits) {
             val target = rel.mixinTrait
-            println("add_trait_relationships: " + ids + " / " + target)
+//            println("add_trait_relationships: " + ids + " / " + target)
             val sourceId = get_id(obj)
             val targetId = get_id(target)
             aThema match {

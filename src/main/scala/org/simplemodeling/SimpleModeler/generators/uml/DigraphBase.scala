@@ -293,7 +293,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
   private def make_trait_edge(aSourceId: String, aTargetId: String): GVEdge = {
     val edge = new GVEdge(aTargetId, "p", aSourceId, "p")
     edge.arrowhead = "none"
-    edge.arrowtail = "normal"
+    edge.arrowtail = "onormal"
     edge.color = "#640125" // 葡萄色 えびいろ
     edge
   }

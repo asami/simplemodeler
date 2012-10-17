@@ -130,16 +130,16 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   private def _build_composition(source: TopicNode, target: SMMEntityEntity) {
-    println("_build_composition")
+//    println("_build_composition")
     val term = source.title
     val name = get_name_by_term(term)
     if (!_mmx.isDefined(name)) {
-      println("_build_composition 1")
+//      println("_build_composition 1")
       record_report("合成対象のクラスを生成しました: " + name)
       val part = _create_object(EntityPartKind, source, _build_object)
       target.narrativeOwnCompositions += Pair(term, part)
     } else {
-      println("_build_composition 2")
+//      println("_build_composition 2")
       target.narrativeCompositions += name
     }
   }

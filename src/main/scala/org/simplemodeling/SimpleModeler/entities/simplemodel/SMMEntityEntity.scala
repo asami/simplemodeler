@@ -821,7 +821,6 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _build_trait(tr: DomainTrait, entities: Map[String, SObject]): DomainTrait = {
-    println("_build_trait: " + tr.name)
     _build_entity(tr, entities)
     tr
   }
@@ -1016,7 +1015,6 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _entity_ref(name: String, entities: Map[String, SObject]): SEntity = {
-    println("_entity_ref: " + name)
     entities.get(name) match {
       case Some(entity: SEntity) => entity
       case Some(x) => sys.error("not entity: " + x)

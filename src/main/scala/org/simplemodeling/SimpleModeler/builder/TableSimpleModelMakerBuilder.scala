@@ -118,7 +118,7 @@ class TableSimpleModelMakerBuilder(
    * OutlineBuilderBase uses the method.
    */
   def buildAttribute(entity: SMMEntityEntity, table: GTable[String]) {
-    println("buildAttributeTable:" + table)
+//    println("buildAttributeTable:" + table)
     val rows = for (row <- table.rows) yield {
       _columns(table.headAsStringList).zip(row)
     }
@@ -138,7 +138,7 @@ class TableSimpleModelMakerBuilder(
   }
 
   protected final def add_id(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
-    println("TableSimpleModelMakerBuilder#add_id:" + entry)
+//    println("TableSimpleModelMakerBuilder#add_id:" + entry)
     val atype = SMMAttributeTypeSet(entry)
     val attr = obj.attribute(_slot_name(entry), atype, true)
     _build_attribute(attr, entry)

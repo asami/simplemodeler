@@ -380,13 +380,14 @@ object NaturalLabel {
       entry.find(kv => {
         c.isMatch(kv._1) && isNotBlank(kv._2)
       })
-    }).map(x => { println("match = " + x); x
+//    }).map(x => { println("match = " + x); x
     }).headOption.flatMap(_._2 match {
       case "" => None
       case s => Some(s)
     })
-  } ensuring (x => {
-    println("_find_candidate: " + entry + " => " + x)
-    true
-  })
+  }
+//  } ensuring (x => {
+//    println("_find_candidate: " + entry + " => " + x)
+//    true
+//  })
 }
