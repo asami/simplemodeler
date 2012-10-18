@@ -138,7 +138,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   override protected def open_Entity_Update(aDataSource: GDataSource) {
-    error("not implemented yet")
+    sys.error("not implemented yet")
   }
 
   final def isDerived = base != NullEntityEntity || narrativeBase != ""
@@ -162,7 +162,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case StateMachineKind => "org.simplemodeling.dsl.domain.DomainStateMachine"
       case StateMachineStateKind        => "org.simplemodeling.dsl.domain.DomainState"
       case UsecaseKind      => "org.simplemodeling.dsl.business.BusinessUsecase"
-      case _              => error("not implemented yet = " + kind)
+      case _              => sys.error("not implemented yet = " + kind)
     }
   }
 
@@ -180,7 +180,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case StateMachineKind => "DomainStateMachine"
       case StateMachineStateKind        => "DomainState"
       case UsecaseKind      => "BusinessUsecase"
-      case _              => error("not implemented yet = " + kind)
+      case _              => sys.error("not implemented yet = " + kind)
     }
   }
 
@@ -213,6 +213,16 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     powertypes += pt
     pt
   }
+
+  final def powertype(aName: String, entitytype: SMMEntityTypeSet): SMMPowertype = {
+    val ptpkg = entitytype.entityType.get.packageName
+    val ptname = entitytype.entityType.get.name
+    val ptt = new SMMPowertypeType(ptname, ptpkg)
+    val pt = new SMMPowertype(aName, ptt)
+    powertypes += pt
+    pt
+  }
+
 
   final def role(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
     val roleType = new SMMEntityType(anObject.name, anObject.packageName)
@@ -819,7 +829,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case gk: GenericKind => new GenericDomainEntity(name, packageName, List(gk.name)) {
 //        override def isObjectScope = true
       }
-      case _          => error("not implemented yet = " + kind)
+      case _          => sys.error("not implemented yet = " + kind)
     }
   }
 
@@ -1051,10 +1061,11 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 */
 
-  private def _powertype_ref(name: String, entities: Map[String, SObject]): DomainPowertype = {
-    entities(name) match {
-      case p: DomainPowertype => p
-      case x => error("not powertype: " + x)
+  private def _powertype_ref(name: String, entities: Map[String, SObject]) = {
+    entities.get(name) match {
+      case Some(p: DomainPowertype) => p
+      case Some(o: SObject) => sys.error("not powertype: " + o)
+      case None => sys.error("no powertype: " + name + "/" + entities)
     }
   }
 
@@ -1062,7 +1073,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     entities.get(name) match {
       case Some(r: DomainRole) => r
       case Some(o: SObject) => o
-      case None => error("no role: " + name)
+      case None => sys.error("no role: " + name + "/" + entities)
     }
   }
 

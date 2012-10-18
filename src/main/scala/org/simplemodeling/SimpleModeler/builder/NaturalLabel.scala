@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
 /*
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
- * @version Oct. 16, 2012
+ * @version Oct. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -114,6 +114,7 @@ case object ServiceLabel extends NaturalLabel {
   val candidates = List("service", "サービス")
 }
 
+// XXX Business use case and Requirement use case
 case object UsecaseLabel extends NaturalLabel {
   val candidates = List("use case", "ユースケース", "物語")
 }

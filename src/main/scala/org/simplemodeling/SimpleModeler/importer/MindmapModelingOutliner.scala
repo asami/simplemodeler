@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * Nov. 6, 2011 (derived from MindmapModelingXMind)
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
- * @version Oct. 16, 2012
+ * @version Oct. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -70,6 +70,14 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def roleTables: List[GTable[String]] = {
     _structure_node_thema_boi_tables(RoleLabel)
+  }
+
+  def powertypes = {
+    structure_node_children(thema, PowertypeLabel)
+  }
+
+  def powertypeTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(PowertypeLabel)
   }
 
   def rules = {

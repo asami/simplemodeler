@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar.  6, 2012
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
- * @version Oct. 16, 2012
+ * @version Oct. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -256,6 +256,7 @@ class TableSimpleModelMakerBuilder(
       case CompositionLabel => add_composition(entity, entry)
       case AggregationLabel => add_aggregation(entity, entry)
       case AssociationLabel => add_association(entity, entry)
+      case PowertypeLabel => add_powertype(entity, entry)
       case _ => add_attribute(entity, entry)
     }
   }
@@ -350,5 +351,20 @@ class TableSimpleModelMakerBuilder(
         case _ => {}
       }
     }
+  }
+
+  /**
+   * OutlineBuilderBase uses the method.
+   */
+  def buildPowertype(entity: SMMEntityEntity, table: GTable[String]) {
+    val rows = for (row <- table.rows) yield {
+      _columns(table.headAsStringList).zip(row)
+    }
+    rows.map(entry => add_powertype(entity, entry))
+  }
+
+  protected final def add_powertype(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
+    val entitytype = SMMEntityTypeSet(entity.packageName, entry)
+    val assoc = entity.powertype(_slot_name(entry), entitytype)
   }
 }

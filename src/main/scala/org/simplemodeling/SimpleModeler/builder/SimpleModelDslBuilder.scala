@@ -317,11 +317,12 @@ class SimpleModelDslBuilder(
   }
 
   def get_powertype_by_term(aTerm: String): (String, SMMPowertypeType, GRMultiplicity) = {
-    val name = get_name_by_term(aTerm)
+    val term = get_name_by_term(aTerm)
+    val name = _naming_strategy.makeName(term, PowertypeKind)
     val labels = get_labels_by_term(aTerm)
     val mutiplicity = get_multiplicity_by_term(aTerm)
-    val powertype = new SMMPowertypeType("DP" + name, packageName)
-    powertype.term = name
+    val powertype = new SMMPowertypeType(name, packageName)
+    powertype.term = term
     powertype.instances ++= labels
     (name, powertype, mutiplicity)
   }

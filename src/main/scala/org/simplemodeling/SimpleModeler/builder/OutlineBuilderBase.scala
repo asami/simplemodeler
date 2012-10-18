@@ -43,10 +43,17 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
       _mmx.actors.foreach(_create_object(ActorKind, _, _build_object))
       _mmx.actorTables.foreach(create_object_table(ActorKind, _))
       _mmx.resources.foreach(_create_object(ResourceKind, _, _build_object))
+      _mmx.resourceTables.foreach(create_object_table(ResourceKind, _))
       _mmx.events.foreach(_create_object(EventKind, _, _build_object))
+      _mmx.eventTables.foreach(create_object_table(EventKind, _))
       _mmx.roles.foreach(_create_object(RoleKind, _, _build_object))
+      _mmx.roleTables.foreach(create_object_table(RoleKind, _))
+      _mmx.powertypes.foreach(_create_powertype)
+      _mmx.powertypeTables.foreach(create_object_table(PowertypeKind, _))
       _mmx.rules.foreach(_create_object(RuleKind, _, _build_rule))
+      _mmx.ruleTables.foreach(create_object_table(RuleKind, _))
       _mmx.usecases.foreach(_create_object(UsecaseKind, _, _build_usecase))
+      _mmx.usecaseTables.foreach(create_object_table(UsecaseKind, _))
     } finally {
       outline.close();
     }
@@ -62,6 +69,12 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val target = model_Builder.createObject(kind, name)
     builder(source, target)
     target
+  }
+
+  private def _create_powertype(source: TopicNode) {
+    val name = get_name_by_term(source.title)
+    val target = model_Builder.createObject(PowertypeKind, name)
+    _build_object(source, target)
   }
 
   protected def create_object_table(kind: ElementKind, table: GTable[String]) = {
@@ -83,6 +96,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     }
   }
 */
+
   private def _build_rule(source: TopicNode, target: SMMEntityEntity) {
     _build_object_common(source, target)
   }
@@ -169,6 +183,10 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 
   private def _build_association_table(table: GTable[String], target: SMMEntityEntity) {
     _table_builder.buildAssociation(target, table)
+  }
+
+  private def _build_powertype_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildPowertype(target, table)
   }
 
   private def _build_attribute(source: TopicNode, target: SMMEntityEntity) {
