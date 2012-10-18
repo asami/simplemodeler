@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Feb. 27, 2012
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
- * @version Oct. 16, 2012
+ * @version Oct. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -65,15 +65,16 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   protected def create_object_table(kind: ElementKind, table: GTable[String]) = {
-    val objs = _table_builder.createObjects(kind, table)
-    objs.foreach(_adjust_object)
+    _table_builder.createObjects(kind, table)
+//    val objs = _table_builder.createObjects(kind, table)
+//    objs.foreach(_adjust_object)
   }
 
   private def _build_object(source: TopicNode, target: SMMEntityEntity) {
     _build_object_common(source, target)
-    _adjust_object(target)
+//    _adjust_object(target)
   }
-
+/*
   private def _adjust_object(target: SMMEntityEntity) {
     if (target.isDerived) {
       model_Builder.makeAttributesForDerivedObject(target)
@@ -81,7 +82,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
       model_Builder.makeAttributesForBaseObject(target)
     }
   }
-
+*/
   private def _build_rule(source: TopicNode, target: SMMEntityEntity) {
     _build_object_common(source, target)
   }

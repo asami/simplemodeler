@@ -66,7 +66,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Mar. 25, 2012
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
- * @version Oct. 16, 2012
+ * @version Oct. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -75,10 +75,21 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
 class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) with SMMElement {
   type DataSource_TYPE = GDataSource
 
+  var isResolved: Boolean = false
+
   var packageName: String = ""
   var kind: ElementKind = NoneKind
   var tableName: String = ""
-  var base: SMMEntityEntity = NullEntityEntity
+  // to aviod cyclic recursive initialization for base in the NullEntityEntity signleton.
+  private var _base: SMMEntityEntity = null
+  def base: SMMEntityEntity = {
+    require (isResolved, "SMMEntityEntity#base requires that entity has been resolved: " + name)
+    if (_base == null) NullEntityEntity else _base
+  }
+  def base_=(b: SMMEntityEntity): Unit = {
+    require (b != null)
+    _base = b
+  }
   val traits = new ArrayBuffer[SMMEntityEntity]
   val powertypes = new ArrayBuffer[SMMPowertype]
   val roles = new ArrayBuffer[SMMAssociation]
@@ -173,6 +184,15 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
+  def effectiveAttributes(): Seq[SMMAttribute] = {
+    require (isResolved, "SMMEntityEntity#effectiveAttributes requires that entity has been resolved: " + name)
+    println("effectiveAttributes = " + traits + "/" + traits.flatMap(_.effectiveAttributes))
+    base.effectiveAttributes ++ traits.flatMap(_.effectiveAttributes) ++ attributes
+  }
+
+  /*
+   * Mutate methods
+   */ 
   final def addPrivateObject(anObject: SMMEntityEntity) {
     private_objects += anObject
   }
@@ -1116,4 +1136,6 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 }
 
-object NullEntityEntity extends SMMEntityEntity(NullEntityContext)
+object NullEntityEntity extends SMMEntityEntity(NullEntityContext) {
+  override def effectiveAttributes() = Nil
+}

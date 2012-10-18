@@ -17,7 +17,7 @@ import org.goldenport.recorder.Recordable
  *  version Dec. 11, 2011
  *  version Feb.  8, 2012
  *  version Sep. 29, 2012
- * @version Oct. 16, 2012
+ * @version Oct. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -40,6 +40,7 @@ class SimpleModelDslBuilder(
   def dslObjects: List[SObject] = {
     import org.simplemodeling.dsl.domain._
     _resolve_entities()
+    _adjust_entities()
 //    println("dslObjects = " + entities)
     val entitylist = entities.values.toList 
     val objs = entitylist.flatMap(_.createSObjects)
@@ -153,15 +154,17 @@ class SimpleModelDslBuilder(
     }
   }
 
-  //
+  /*
+   * Resolve
+   */
   private def _resolve_entities() {
     entities.values.foreach(_resolve_entity)
   }
 
   private def _resolve_entity(entity: SMMEntityEntity) {
     if (entity.narrativeBase != "") {
-//      println("narrativeBase = " + entity.name + " / " + entity.narrativeBase)
       entity.base = get_entity_by_term(entity.narrativeBase)
+//      println("narrativeBase = " + entity.name + " / " + entity.narrativeBase + "/" + entity.base)
     }
     for (term <- entity.narrativeTraits) {
       entity.mixinTrait(get_trait_by_term(term))
@@ -234,8 +237,27 @@ class SimpleModelDslBuilder(
       val mul = get_multiplicity_by_term(term)
       entity.composition(name, part) multiplicity_is mul
     }
+    entity.isResolved = true
   }
 
+  /*
+   * Adjust after resolving
+   */
+  private def _adjust_entities() {
+    entities.values.foreach(_adjust_entity)
+  }
+
+  private def _adjust_entity(target: SMMEntityEntity) {
+    if (target.isDerived) {
+      makeAttributesForDerivedObject(target)
+    } else {
+      makeAttributesForBaseObject(target)
+    }
+  }
+
+  /*
+   * Utilities
+   */
   def get_entity_by_term(aTerm: String): SMMEntityEntity = {
     get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
 //      record_warning("Term is not found: %s, creates a resource entity implicitly.", aTerm)
