@@ -186,7 +186,6 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   def effectiveAttributes(): Seq[SMMAttribute] = {
     require (isResolved, "SMMEntityEntity#effectiveAttributes requires that entity has been resolved: " + name)
-    println("effectiveAttributes = " + traits + "/" + traits.flatMap(_.effectiveAttributes))
     base.effectiveAttributes ++ traits.flatMap(_.effectiveAttributes) ++ attributes
   }
 
