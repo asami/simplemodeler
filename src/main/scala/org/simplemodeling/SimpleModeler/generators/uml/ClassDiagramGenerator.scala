@@ -15,7 +15,7 @@ import org.goldenport.Strings
  * @since   Jan. 15, 2009
  *  version Nov. 20, 2011
  *  version Sep. 18, 2012
- * @version Oct. 16, 2012
+ * @version Oct. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -93,7 +93,7 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
       }
 
       def add_object(anObject: SMObject) {
-//        println("add_object: " + anObject.name)
+//        println("add_object: " + anObject.name + "/" + anObject.getClass + "/" + anObject.traits)
         val id = "class" + counter
         counter += 1
         ids.put(anObject, id)

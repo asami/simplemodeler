@@ -17,7 +17,7 @@ import org.goldenport.recorder.Recordable
  *  version Dec. 11, 2011
  *  version Feb.  8, 2012
  *  version Sep. 29, 2012
- * @version Oct. 18, 2012
+ * @version Oct. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -237,6 +237,7 @@ class SimpleModelDslBuilder(
       val mul = get_multiplicity_by_term(term)
       entity.composition(name, part) multiplicity_is mul
     }
+    entity.privateObjects.foreach(_resolve_entity)
     entity.isResolved = true
   }
 
