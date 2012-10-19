@@ -7,7 +7,7 @@ import scala.collection.mutable.ArrayBuffer
  * @since   Jan. 30, 2009
  *  version Jul. 12, 2009
  *  version Mar. 24, 2012
- * @version Oct. 16, 2012
+ * @version Oct. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SMMObjectType(val name: String, val packageName: String) {
@@ -265,6 +265,9 @@ object SMMObjectType {
     SMMUnsignedLongType,
     SMMIntegerType,
     SMMDecimalType,
+    SMMDateType,
+    SMMDateTimeType,
+    SMMTimeType,
     SMMMoneyType,
     SMMPercentType,
     SMMUnitType)
