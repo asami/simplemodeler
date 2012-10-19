@@ -6,9 +6,9 @@ organization := "org.simplemodeling"
 
 version := "0.4.0-RC3"
 
-scalaVersion := "2.9.2"
+// scalaVersion := "2.9.2"
 
-// crossScalaVersions := Seq("2.9.2", "2.9.1")
+crossScalaVersions := Seq("2.9.2", "2.9.1")
 
 scalacOptions += "-deprecation"
 
