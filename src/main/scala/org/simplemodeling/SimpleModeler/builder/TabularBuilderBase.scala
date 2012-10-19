@@ -20,7 +20,7 @@ import org.goldenport.service.GServiceCall
  * @since   Dec. 11, 2011
  *  since   Jan. 24, 2012
  *  version Mar. 17, 2012
- * @version Sep. 27, 2012
+ * @version Oct. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class TabularBuilderBase(val policy: Policy, val packageName: String) {
@@ -82,11 +82,13 @@ abstract class TabularBuilderBase(val policy: Policy, val packageName: String) {
           }
         }
       }
+/*
       if (is_derived) {
         model_Builder.makeAttributesForDerivedObject(obj)
       } else {
         model_Builder.makeAttributesForBaseObject(obj)
       }
+*/
 //      model_Builder.makeNarrativeAttributes(obj)
     }
   }
