@@ -1,17 +1,10 @@
 package org.simplemodeling.SimpleModeler.builder
 
-import org.simplemodeling.SimpleModeler.entities.simplemodel.ActorKind
-import org.simplemodeling.SimpleModeler.entities.simplemodel.RoleKind
-import org.simplemodeling.SimpleModeler.entities.simplemodel.SMMEntityEntity
-import org.simplemodeling.SimpleModeler.entities.simplemodel.ResourceKind
+import org.simplemodeling.SimpleModeler.entities.simplemodel._
 import org.goldenport.service.GServiceCall
-import org.simplemodeling.SimpleModeler.entities.simplemodel.RuleKind
 import org.simplemodeling.dsl.SObject
-import org.simplemodeling.SimpleModeler.entities.simplemodel.UsecaseKind
+import org.goldenport.entities.outline._
 import org.goldenport.entities.xmind.XMindEntity
-import org.goldenport.entities.xmind.TopicNode
-import org.simplemodeling.SimpleModeler.entities.simplemodel.ElementKind
-import org.simplemodeling.SimpleModeler.entities.simplemodel.EventKind
 import org.goldenport.recorder.Recordable
 import org.simplemodeling.SimpleModeler.importer.UXMind
 import org.simplemodeling.SimpleModeler.importer.MindmapModelingXMind
@@ -21,7 +14,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingXMind
  * 
  * @since   Dec. 11, 2011
  *  version Feb. 27, 2012
- * @version Oct.  2, 2012
+ * @version Oct. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 @deprecated("use OutlineBuilderBase")

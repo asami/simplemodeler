@@ -7,7 +7,8 @@ import org.goldenport.entity._
 import org.goldenport.value.GTreeNode
 import org.goldenport.entity.datasource.{NullDataSource, ResourceDataSource}
 import org.goldenport.entity.content._
-import org.goldenport.entities.xmind.{XMindEntity, XMindNode}
+import org.goldenport.entities.outline._
+import org.goldenport.entities.xmind.XMindEntity
 import org.goldenport.entities.orgmode._
 import com.asamioffice.goldenport.text.{UString, CsvUtility}
 import org.simplemodeling.SimpleModeler.entities.project.ProjectRealmEntity
@@ -17,7 +18,8 @@ import org.simplemodeling.SimpleModeler.builder._
 
 /*
  * @since   Feb. 23, 2012
- * @version Feb. 27, 2012
+ *  version Feb. 27, 2012
+ * @version Oct. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class OrgXMindConverter(val policy: Policy, val packageName: String, val org: OrgmodeEntity, val projectName: String) {
@@ -40,7 +42,7 @@ class OrgXMindConverter(val policy: Policy, val packageName: String, val org: Or
     thema.title = projectName
     val simplemodelbuilder = new OrgSimpleModelMakerBuilder(_simplemodel, policy, packageName, org)
     simplemodelbuilder.build()
-    val outlinebuilder = new SimpleModelOutlineBuilder[XMindNode](_simplemodel, policy, packageName, thema)
+    val outlinebuilder = new SimpleModelOutlineBuilder[OutlineNode](_simplemodel, policy, packageName, thema)
     outlinebuilder.build()
   }
 }

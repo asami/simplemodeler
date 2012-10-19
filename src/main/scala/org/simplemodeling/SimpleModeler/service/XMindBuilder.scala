@@ -5,6 +5,7 @@ import org.goldenport.Goldenport
 import org.goldenport.service._
 import org.goldenport.entity._
 import org.goldenport.entities.xmind._
+import org.goldenport.entities.outline._
 import org.simplemodeling.SimpleModeler.entities.project.ProjectRealmEntity
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
 import org.simplemodeling.SimpleModeler.builder.SimpleModelMakerBuilder
@@ -16,7 +17,8 @@ import org.simplemodeling.SimpleModeler.builder.XMindBuilderBase
 /*
  * @since   Feb.  1, 2009
  *  version Jun. 21, 2009
- * @version Dec. 11, 2011
+ *  version Dec. 11, 2011
+ * @version Oct. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class XMindBuilder(val project: ProjectRealmEntity, packageName: String, xmind: XMindEntity,
@@ -113,7 +115,7 @@ class XMindBuilder0(val project: ProjectRealmEntity, val packageName: String, va
   }
 
   private def get_structure_node_children(aParent: TopicNode, aName: String): Seq[TopicNode] = {
-    def is_match(aNode: XMindNode, theNames: Seq[String]): Boolean = {
+    def is_match(aNode: OutlineNode, theNames: Seq[String]): Boolean = {
       for (name <- theNames) {
         if (aNode.title == name) return true
       }
@@ -127,7 +129,7 @@ class XMindBuilder0(val project: ProjectRealmEntity, val packageName: String, va
     }
   }
 
-  private def make_nameLabelsMark(aNode: XMindNode): String = {
+  private def make_nameLabelsMark(aNode: OutlineNode): String = {
     val (term, mayMultiplicity) = CsvUtility.makeNameMark(aNode.title)
     if (aNode.isEmpty) {
       term + (if (mayMultiplicity.isDefined) mayMultiplicity.get)

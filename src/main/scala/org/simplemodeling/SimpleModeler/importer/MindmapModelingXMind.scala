@@ -1,11 +1,13 @@
 package org.simplemodeling.SimpleModeler.importer
 
+import org.goldenport.entities.outline._
 import org.goldenport.entities.xmind._
 
 /*
  * @since   Nov.  6, 2011
  *  version Nov.  6, 2011
- * @version Jan. 25, 2012
+ *  version Jan. 25, 2012
+ * @version Oct. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 case class MindmapModelingXMind(val xmind:  XMindEntity) {

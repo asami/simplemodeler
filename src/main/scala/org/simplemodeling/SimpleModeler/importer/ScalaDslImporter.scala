@@ -20,7 +20,8 @@ import com.asamioffice.goldenport.text.UString
  * @since   Oct. 31, 2008
  *  version Dec. 11, 2011
  *  version Jun. 17, 2012
- * @version Sep. 16, 2012
+ *  version Sep. 16, 2012
+ * @version Oct. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
@@ -69,7 +70,7 @@ class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
       val entities = List(request.entity) // request.entities.toList
       entities.flatMap {
         case csv: CsvEntity => _csv_dsl_objects(csv)
-        case xmind: XMindEntity => _xmind_dsl_objects(xmind)
+//        case xmind: XMindEntity => _xmind_dsl_objects(xmind)
 //        case orgmode: OrgmodeEntity => _orgmode_dsl_objects(orgmode)
         case outline: OutlineEntityBase => _outline_dsl_objects(outline)
         case _ => error("jump usage error = " + request.entity) // XXX

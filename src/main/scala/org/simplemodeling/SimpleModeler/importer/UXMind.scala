@@ -1,17 +1,19 @@
 package org.simplemodeling.SimpleModeler.importer
 
+import org.goldenport.entities.outline._
 import org.goldenport.entities.xmind._
 import com.asamioffice.goldenport.text.{UString, UJavaString, CsvUtility}
 
 /*
  * @since   Nov.  6, 2011
  *  version Nov.  6, 2011
- * @version Jan. 25, 2012
+ *  version Jan. 25, 2012
+ * @version Oct. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 trait UXMind {
   def structure_node_children(aParent: TopicNode, aName: String): List[TopicNode] = {
-    def is_match(aNode: XMindNode, theNames: Seq[String]): Boolean = {
+    def is_match(aNode: OutlineNode, theNames: Seq[String]): Boolean = {
       for (name <- theNames) {
         if (aNode.title == name) return true
       }
@@ -29,7 +31,7 @@ trait UXMind {
     names.flatMap(structure_node_children(aParent, _))
   }
 
-  def name_labels_mark(aNode: XMindNode): String = {
+  def name_labels_mark(aNode: OutlineNode): String = {
     val (term, mayMultiplicity) = CsvUtility.makeNameMark(aNode.title)
     if (aNode.isEmpty) {
       term + (if (mayMultiplicity.isDefined) mayMultiplicity.get)

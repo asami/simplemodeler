@@ -8,7 +8,8 @@ import org.goldenport.value.GTreeNode
 import org.goldenport.entity.datasource.{NullDataSource, ResourceDataSource}
 import org.goldenport.entity.content._
 import org.goldenport.entities.csv.CsvEntity
-import org.goldenport.entities.xmind.{XMindEntity, XMindNode}
+import org.goldenport.entities.outline._
+import org.goldenport.entities.xmind.XMindEntity
 import com.asamioffice.goldenport.text.{UString, CsvUtility}
 import org.simplemodeling.SimpleModeler.entities.project.ProjectRealmEntity
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
@@ -19,7 +20,8 @@ import org.simplemodeling.SimpleModeler.builder._
  * @since   Feb.  3, 2009
  *  version Nov. 13, 2010
  *  version Feb. 24, 2012
- * @version Apr.  8, 2012
+ *  version Apr.  8, 2012
+ * @version Oct. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class CsvXMindConverter(val policy: Policy, val packageName: String, val csv: CsvEntity, val projectName: String) {
@@ -42,7 +44,7 @@ class CsvXMindConverter(val policy: Policy, val packageName: String, val csv: Cs
     thema.title = projectName
     val simplemodelbuilder = new CsvSimpleModelMakerBuilder(_simplemodel, policy, packageName, csv)
     simplemodelbuilder.build()
-    val outlinebuilder = new SimpleModelOutlineBuilder[XMindNode](_simplemodel, policy, packageName, thema)
+    val outlinebuilder = new SimpleModelOutlineBuilder[OutlineNode](_simplemodel, policy, packageName, thema)
     outlinebuilder.build()
   }
 }
@@ -56,7 +58,7 @@ class CsvXMindConverter1(policy: Policy, packageName: String, csv: CsvEntity, va
   val model_Builder = new SimpleModelMakerBuilder(simplemodel, packageName, policy)
   xmind.open()
   val thema = xmind.firstThema
-  private val _outline_builder = new OutlineBuilder[XMindNode](thema)
+  private val _outline_builder = new OutlineBuilder[OutlineNode](thema)
 
   def toXMind: XMindEntity = {
     csv using {
@@ -153,7 +155,7 @@ class CsvXMindConverter1(policy: Policy, packageName: String, csv: CsvEntity, va
         _build_object_body(entity, _))
   }
 
-  private def _build_object_body(src: SMMEntityEntity, node: GTreeNode[XMindNode]) {
+  private def _build_object_body(src: SMMEntityEntity, node: GTreeNode[OutlineNode]) {
 //    _outline_builder.addName(node, src.name)
     if (UString.notNull(src.name_en)) {
       _outline_builder.addNameEn(node, src.name_en)
@@ -202,7 +204,7 @@ class CsvXMindConverter1(policy: Policy, packageName: String, csv: CsvEntity, va
   }
 
 /*
-  def get_entity_structure_node(anEntity: XMindNode, aTitle: String): XMindNode = {
+  def get_entity_structure_node(anEntity: OutlineNode, aTitle: String): OutlineNode = {
     val nodeName = "[" + aTitle + "]"
     anEntity.children.find(_.title == nodeName) match {
       case Some(node) => node
@@ -214,12 +216,12 @@ class CsvXMindConverter1(policy: Policy, packageName: String, csv: CsvEntity, va
     }
   }
 
-  def find_entity_structure_node(anEntity: XMindNode, aTitle: String): Option[XMindNode] = {
+  def find_entity_structure_node(anEntity: OutlineNode, aTitle: String): Option[OutlineNode] = {
     val nodeName = "[" + aTitle + "]"
     anEntity.children.find(_.title == nodeName)
   }
 
-  def find_child_in_tree(aParent: XMindNode, aTitle: String): Option[XMindNode] = {
+  def find_child_in_tree(aParent: OutlineNode, aTitle: String): Option[OutlineNode] = {
     aParent.children.find(_.title == aTitle) match {
       case Some(node) => Some(node)
       case None => {
@@ -239,8 +241,8 @@ class CsvXMindConverter1(policy: Policy, packageName: String, csv: CsvEntity, va
     }
   }
 
-  def get_entity_node(aTitle: String): XMindNode = {
-    def find_child(aParent: XMindNode): Option[XMindNode] = {
+  def get_entity_node(aTitle: String): OutlineNode = {
+    def find_child(aParent: OutlineNode): Option[OutlineNode] = {
       find_child_in_tree(aParent, aTitle)
     }
 
@@ -325,7 +327,7 @@ class CsvXMindConverter0(val csv: CsvEntity, val projectName: String) {
       get_boi_structure_node("メモ")
     }
 
-    def get_boi_structure_node(aTitle: String): XMindNode = {
+    def get_boi_structure_node(aTitle: String): OutlineNode = {
       val nodeName = "[" + aTitle + "]"
       thema.children.find(_.title == nodeName) match {
 	case Some(node) => node
@@ -337,7 +339,7 @@ class CsvXMindConverter0(val csv: CsvEntity, val projectName: String) {
       }
     }
 
-    def get_entity_structure_node(anEntity: XMindNode, aTitle: String): XMindNode = {
+    def get_entity_structure_node(anEntity: OutlineNode, aTitle: String): OutlineNode = {
       val nodeName = "[" + aTitle + "]"
       anEntity.children.find(_.title == nodeName) match {
 	case Some(node) => node
@@ -349,12 +351,12 @@ class CsvXMindConverter0(val csv: CsvEntity, val projectName: String) {
       }
     }
 
-    def find_entity_structure_node(anEntity: XMindNode, aTitle: String): Option[XMindNode] = {
+    def find_entity_structure_node(anEntity: OutlineNode, aTitle: String): Option[OutlineNode] = {
       val nodeName = "[" + aTitle + "]"
       anEntity.children.find(_.title == nodeName)
     }
 
-    def find_child_in_tree(aParent: XMindNode, aTitle: String): Option[XMindNode] = {
+    def find_child_in_tree(aParent: OutlineNode, aTitle: String): Option[OutlineNode] = {
       aParent.children.find(_.title == aTitle) match {
 	case Some(node) => Some(node)
 	case None => {
@@ -374,8 +376,8 @@ class CsvXMindConverter0(val csv: CsvEntity, val projectName: String) {
       }
     }
 
-    def get_entity_node(aTitle: String): XMindNode = {
-      def find_child(aParent: XMindNode): Option[XMindNode] = {
+    def get_entity_node(aTitle: String): OutlineNode = {
+      def find_child(aParent: OutlineNode): Option[OutlineNode] = {
 	find_child_in_tree(aParent, aTitle)
       }
 
@@ -490,12 +492,12 @@ class CsvXMindConverter0(val csv: CsvEntity, val projectName: String) {
       build_body(obj, y)
     }
 
-    def build_body(obj: XMindNode, y: Int) {
+    def build_body(obj: OutlineNode, y: Int) {
       for (x <- 1 until tabular.width) {
 	val annotation = tabular.annotations.get(x, y)
 	val value = tabular.get(x, y)
 
-	def get_structure_node(aTitle: String): XMindNode = {
+	def get_structure_node(aTitle: String): OutlineNode = {
 	  get_entity_structure_node(obj, aTitle)
 	}
 
@@ -592,7 +594,7 @@ class CsvXMindConverter0(val csv: CsvEntity, val projectName: String) {
 	  // do nothing
 	}
 
-	def add_nameLabelsMark(aValue: String, aParent: XMindNode) {
+	def add_nameLabelsMark(aValue: String, aParent: OutlineNode) {
 	  val (name, labels, mark) = CsvUtility.makeNameLabelsMark(aValue)
 //	  println("csv utility = " + aValue + " -> " + name + "," + labels + "," + mark)
 	  val node = aParent.addChild()
