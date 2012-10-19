@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * Nov. 6, 2011 (derived from MindmapModelingXMind)
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
- * @version Oct. 18, 2012
+ * @version Oct. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -101,6 +101,10 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
    */
   def propertyTables(term: TopicNode): List[GTable[String]] = {
     _structure_node_tables(term, PropertyLabel)
+  }
+
+  def traits(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, TraitLabel)
   }
 
   def parts(term: TopicNode): List[TopicNode] = {
@@ -407,7 +411,9 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
     }
   }
 
-  // XXX usage?
+  /**
+   * OutlineBuilderBase#_build_part uses the method.
+   */
   def isDefinition(term: TopicNode): Boolean = {
     aggregations(term).nonEmpty ||
     attributes(term).nonEmpty ||
@@ -423,9 +429,12 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
     scenario(term).nonEmpty
   }
 
+  /**
+   * OutlineBuilderBase uses the method.
+   */
   def isDefined(name: String): Boolean = {
-    val a: List[TopicNode] = actors ::: resources ::: events ::: roles ::: rules ::: usecases
-    val b = entityTables ::: actorTables ::: resourceTables ::: eventTables ::: roleTables ::: ruleTables ::: usecaseTables
+    val a: List[TopicNode] = traits ::: actors ::: resources ::: events ::: roles ::: rules ::: usecases
+    val b = entityTables ::: traitTables ::: actorTables ::: resourceTables ::: eventTables ::: roleTables ::: ruleTables ::: usecaseTables
     _is_defined_in_boi(name, a) || _is_defined_in_table(name, b)
   }
 

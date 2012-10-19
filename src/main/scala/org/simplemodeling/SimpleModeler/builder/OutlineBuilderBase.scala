@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Feb. 27, 2012
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
- * @version Oct. 18, 2012
+ * @version Oct. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -65,6 +65,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   private def _create_object(kind: ElementKind, source: TopicNode, builder: (TopicNode, SMMEntityEntity) => Unit) = {
+//    println("_create_object: %s %s".format(kind, source.title))
     val name = get_name_by_term(source.title)
     val target = model_Builder.createObject(kind, name)
     builder(source, target)
@@ -108,6 +109,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 
   private def _build_object_common(aNode: TopicNode, target: SMMEntityEntity) {
     _mmx.propertyTables(aNode).foreach(_build_property_table(_, target))
+    _mmx.traits(aNode).foreach(_build_trait(_, target))
     _mmx.parts(aNode).foreach(_build_part(_, target))
     _mmx.compositions(aNode).foreach(_build_composition(_, target))
     _mmx.aggregations(aNode).foreach(_build_aggregation(_, target))
@@ -133,10 +135,23 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     _table_builder.buildProperty(target, table)
   }
 
+  private def _build_trait(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    val name = get_name_by_term(term)
+    if (!_mmx.isDefined(name)) {
+      record_report("トレイト「%s」を生成しました。".format(term))
+      val part = _create_object(TraitKind, source, _build_object)
+      target.narrativeOwnCompositions += Pair(term, part) // XXX
+    } else {
+      target.addNarrativeTrait(term)
+    }
+  }
+
   private def _build_part(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
-    if (_mmx.isDefinition(source)) { // XXX
-      record_report("implicit composition: " + term)
+    val name = get_name_by_term(term)
+    if (_mmx.isDefinition(source)) {
+      record_report("合成対象のクラス「%s」を生成しました。".format(name))
       val part = _create_object(ResourceKind, source, _build_object)
       target.narrativeOwnCompositions += Pair(term, part)
     } else {

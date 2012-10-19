@@ -39,7 +39,7 @@ class SimpleModelDslBuilder(
 
   def dslObjects: List[SObject] = {
     import org.simplemodeling.dsl.domain._
-    println("dslObjects = " + entities)
+//    println("dslObjects = " + entities)
     _resolve_entities()
     _adjust_entities()
     val entitylist = entities.values.toList 
@@ -158,7 +158,7 @@ class SimpleModelDslBuilder(
    * Resolve
    */
   private def _resolve_entities() {
-    println("_resolve_entities: " + entities.values.map(_.name))
+//    println("_resolve_entities: " + entities.values.map(_.name))
     entities.values.foreach(_resolve_entity)
   }
 
