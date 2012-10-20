@@ -23,7 +23,7 @@ import org.goldenport.exporter.FirstLeafOrZipResultExporterClass
  *  version May. 19, 2012
  *  version Jun. 17, 2012
  *  version Sep. 25, 2012
- * @version Oct. 19, 2012
+ * @version Oct. 21, 2012
  * @auther  ASAMI, Tomoharu
  */
 class SimpleModeler(args: Array[String]) {
@@ -81,8 +81,8 @@ object Main {
 // TODO: append custom service feature
 class SimpleModelerDescriptor extends GApplicationDescriptor {
   name = "SimpleModeler"
-  version = "0.4.0-RC3"
-  version_build = "20121019"
+  version = "0.4.0-RC4-SNAPSHOT"
+  version_build = "20121021"
   copyright_years = "2008-2012"
   copyright_owner = "ASAMI, Tomoharu"
   command_name = "sm"

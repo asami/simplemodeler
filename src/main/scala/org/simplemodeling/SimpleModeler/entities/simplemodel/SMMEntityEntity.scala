@@ -66,7 +66,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Mar. 25, 2012
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
- * @version Oct. 19, 2012
+ * @version Oct. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
