@@ -15,7 +15,7 @@ import org.goldenport.Strings
  * @since   Jan. 15, 2009
  *  version Nov. 20, 2011
  *  version Sep. 18, 2012
- * @version Oct. 19, 2012
+ * @version Oct. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -189,6 +189,7 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
         def add_usecase_association_relationships(aSource: SMObject) {
           for (assoc <- aSource.associations) {
             val target = assoc.associationType.typeObject
+            println("ClassDiagramGenerator#add_usecase_association_relationships: " + target)
             val sourceId = get_id(aSource)
             val targetId = get_id(target)
             aThema match {

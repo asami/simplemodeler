@@ -118,6 +118,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val narrativeAssociations = new ArrayBuffer[String]
   val narrativeStateMachines = new ArrayBuffer[String]
   val narrativeAnnotations = new ArrayBuffer[String]
+  val narrativeUsecases = new ArrayBuffer[String]
   val narrativePrimaryActors = new ArrayBuffer[String]
   val narrativeSecondaryActors = new ArrayBuffer[String]
   val narrativeSupportingActors = new ArrayBuffer[String]
@@ -128,6 +129,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * SimpleModelDslBuilder uses to collect composition classes in narrative.
    */
   val narrativeOwnCompositions = new ArrayBuffer[(String, SMMEntityEntity)]
+  val narrativeOwnUsecases = new ArrayBuffer[(String, SMMEntityEntity)]
   //
   val privateObjects = new ArrayBuffer[SMMEntityEntity]
 
@@ -322,6 +324,12 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     assoc
   }
 
+  final def compositionOwn(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
+    println("SMMEntityEntity#compositionOwn: %s %s %s".format(aName, anObject.name, name))
+    privateObjects += anObject
+    composition(aName, anObject)
+  }
+
   final def composition(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
     val entityType = new SMMEntityType(anObject.name, anObject.packageName)
     entityType.term = anObject.term
@@ -370,6 +378,20 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
+/*
+  def auxAssociation(name: String, entity: SMMEntityEntity): SMMAssociation = {
+    _add_special_association(associations, name, entity)
+  }
+
+  def auxAggregation(name: String, entity: SMMEntityEntity): SMMAssociation = {
+    _add_special_association(aggregations, name, entity)
+  }
+
+  def auxComposition(name: String, entity: SMMEntityEntity): SMMAssociation = {
+    _add_special_association(compositions, name, entity)
+  }
+*/
+
   def primaryActor(name: String, entity: SMMEntityEntity): SMMAssociation = {
     _add_special_association(primaryActors, _association(name, entity)) 
   }
@@ -386,7 +408,11 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     _add_special_association(scenarioSteps, _association(name, entity)) 
   }
 
-  private def _add_special_association(assocs: ArrayBuffer[SMMAssociation], assoc: SMMAssociation) = {
+  private def _add_special_association(assocs: ArrayBuffer[SMMAssociation], name: String, entity: SMMEntityEntity): SMMAssociation = {
+    _add_special_association(assocs, _association(name, entity))
+  }
+
+  private def _add_special_association(assocs: ArrayBuffer[SMMAssociation], assoc: SMMAssociation): SMMAssociation = {
     assocs += assoc
     assoc
   }
@@ -428,6 +454,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   final def addNarrativeAnnotation(aName: String) {
     narrativeAnnotations += aName
+  }
+
+  final def addNarrativeUsecase(aName: String) {
+    narrativeUsecases += aName
   }
 
   def addNarrativePrimaryActor(name: String) {

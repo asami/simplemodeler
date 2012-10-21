@@ -17,7 +17,7 @@ import org.goldenport.recorder.Recordable
  *  version Dec. 11, 2011
  *  version Feb.  8, 2012
  *  version Sep. 29, 2012
- * @version Oct. 19, 2012
+ * @version Oct. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -39,10 +39,11 @@ class SimpleModelDslBuilder(
 
   def dslObjects: List[SObject] = {
     import org.simplemodeling.dsl.domain._
-//    println("dslObjects = " + entities)
+    println("dslObjects = " + entities)
     _resolve_entities()
     _adjust_entities()
     val entitylist = entities.values.toList 
+    println("dslObjects = " + entities)
     val objs = entitylist.flatMap(_.createSObjects)
     val names = objs.map(_.name)
     val sentities: List[SObject] = objs collect {
@@ -210,6 +211,10 @@ class SimpleModelDslBuilder(
       val (name, value) = get_annotation_by_term(term)
       entity.annotation(name, value)
     }
+    for (term <- entity.narrativeUsecases) {
+      val (name, target) = get_usecase_by_term(term)
+      entity.aggregation(name, target)
+    }
     for (term <- entity.narrativePrimaryActors) {
       val (name, target, multiplicity) = get_association_by_term(term)
       entity.primaryActor(name, target) multiplicity_is multiplicity
@@ -236,8 +241,15 @@ class SimpleModelDslBuilder(
     for ((term, part) <- entity.narrativeOwnCompositions) {
       val name = get_name_by_term(term)
       val mul = get_multiplicity_by_term(term)
-      entity.composition(name, part) multiplicity_is mul
+      entity.compositionOwn(name, part) multiplicity_is mul
     }
+    println("SimpleModelDslBuilder#narrativeOwnUsecases: " + entity.narrativeOwnUsecases)
+    for ((term, part) <- entity.narrativeOwnUsecases) {
+      println("SimpleModelDslBuilder#narrativeOwnUsecases: " + term)
+      val name = get_name_by_term(term)
+      entity.compositionOwn(name, part)
+    }
+    println("SimpleModelDslBuilder#privateObjects: " + entity.privateObjects.map(_.name))
     entity.privateObjects.foreach(_resolve_entity)
     entity.isResolved = true
   }
@@ -263,9 +275,11 @@ class SimpleModelDslBuilder(
   def get_entity_by_term(aTerm: String): SMMEntityEntity = {
     get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
 //      record_warning("Term is not found: %s, creates a resource entity implicitly.", aTerm)
-      record_warning("用語「%s」の定義が見つからなかったので自動で作成します。", aTerm)
+      record_warning("用語「%s」の定義が見つからなかったのでリソースエンティティを自動で作成します。", aTerm)
 //      println("get_entity_by_term(%s): %s".format(aTerm, entities.values.map(x => x.name + "/" + x.term )))
-      createObject(ResourceKind, aTerm)
+      val entity = createObject(ResourceKind, aTerm)
+      _resolve_entity(entity)
+      entity
     }
   }
 
@@ -375,6 +389,16 @@ class SimpleModelDslBuilder(
     } else {
       (aTerm.substring(0, index).trim, aTerm.substring(index + 1).trim)
     }
+  }
+
+  def get_usecase_by_term(aTerm: String): (String, SMMEntityEntity) = {
+    get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
+      record_warning("用語「%s」の定義が見つからなかったのでビジネス・ユースケースを自動で作成します。", aTerm)
+      val entity = createObject(UsecaseKind, aTerm)
+      _resolve_entity(entity)
+      entity
+    }
+    (get_name_by_term(aTerm), get_entity_by_term(aTerm))
   }
 }
 

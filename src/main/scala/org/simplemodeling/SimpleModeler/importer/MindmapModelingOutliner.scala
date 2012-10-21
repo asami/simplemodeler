@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * Nov. 6, 2011 (derived from MindmapModelingXMind)
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
- * @version Oct. 19, 2012
+ * @version Oct. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -187,6 +187,14 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
     _structure_node_tables(term, AnnotationLabel)
   }
 
+  def usecases(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, UsecaseLabel)
+  }
+
+  def usecaseTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, UsecaseLabel)
+  }
+
   def primaryActors(term: TopicNode): List[TopicNode] = {
     structure_node_children(term, PrimaryActorLabel)
   }
@@ -209,6 +217,10 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def supportingActorTables(term: TopicNode): List[GTable[String]] = {
     _structure_node_tables(term, SupportingActorLabel)
+  }
+
+  def actorTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, ActorLabel)
   }
 
   def goals(term: TopicNode): List[TopicNode] = {

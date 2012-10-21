@@ -121,14 +121,23 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     _mmx.attributes(aNode).foreach(_build_attribute(_, target))
     _mmx.attributeTables(aNode).foreach(_build_attribute_table(_, target))
     _mmx.derivations(aNode).foreach(_build_derivation(_, target))
+//    _mmx.derivationTables(aNode).foreach(_build_derivation_table(_, target))
     _mmx.powertypes(aNode).foreach(_build_powertype(_, target))
+    _mmx.powertypeTables(aNode).foreach(_build_powertype_table(_, target))
     _mmx.roles(aNode).foreach(_build_role(_, target))
+//    _mmx.roleTables(aNode).foreach(_build_role_table(_, target))
     _mmx.states(aNode).foreach(_build_state(_, target))
+//    _mmx.stateTables(aNode).foreach(_build_state_table(_, target))
     _mmx.annotations(aNode).foreach(_build_annotation(_, target))
+//    _mmx.annotationTables(aNode).foreach(_build_annotation_table(_, target))
+    _mmx.usecases(aNode).foreach(_build_usecase_aggregations(_, target))
+//    _mmx.usecaseTables(aNode).foreach(_build_usecase_table(_, target))
     _mmx.primaryActors(aNode).foreach(_build_primary_actor(_, target))
     _mmx.secondaryActors(aNode).foreach(_build_secondary_actor(_, target))
     _mmx.supportingActors(aNode).foreach(_build_supporting_actor(_, target))
+//    _mmx.actorTables(aNode).foreach(_build_actor_table(_, target))
     _mmx.goals(aNode).foreach(_build_goal(_, target))
+//    _mmx.goalTables(aNode).foreach(_build_goal_table(_, target))
   }
 
   private def _build_property_table(table: GTable[String], target: SMMEntityEntity) {
@@ -140,7 +149,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val name = get_name_by_term(term)
     if (!_mmx.isDefined(name)) {
       record_report("「%s」にトレイト「%s」を生成しました。".format(target.name, term))
-      val part = _create_object(TraitKind, source, _build_object)
+      val part = _create_object(TraitKind, source, _build_usecase)
       target.narrativeOwnCompositions += Pair(term, part) // XXX
     } else {
       target.addNarrativeTrait(term)
@@ -150,11 +159,13 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _build_part(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     val name = get_name_by_term(term)
-    if (_mmx.isDefinition(source)) {
+    // when a topic has a concrete definition, a relationship with the topic is assumed as composition.
+    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
       record_report("「%s」に合成対象のクラス「%s」を生成しました。".format(target.name, name))
       val part = _create_object(ResourceKind, source, _build_object)
       target.narrativeOwnCompositions += Pair(term, part)
     } else {
+      // virtually addressed as aggregation.
       target.addNarrativePart(term)
     }
   }
@@ -239,6 +250,20 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _build_annotation(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     target.addNarrativeAnnotation(term)
+  }
+
+  private def _build_usecase_aggregations(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    val name = get_name_by_term(term)
+    println("_build_usecase_aggregations: " + term)
+    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+      record_report("「%s」に合成対象のユースケース「%s」を生成しました。".format(target.name, name))
+      val part = _create_object(UsecaseKind, source, _build_object)
+      target.narrativeOwnUsecases += Pair(term, part)
+    } else {
+      target.addNarrativeUsecase(term)
+    }
+    
   }
 
   private def _build_primary_actor(source: TopicNode, target: SMMEntityEntity) {
