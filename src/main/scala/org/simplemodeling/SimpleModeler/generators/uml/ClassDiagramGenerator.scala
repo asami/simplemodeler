@@ -15,7 +15,7 @@ import org.goldenport.Strings
  * @since   Jan. 15, 2009
  *  version Nov. 20, 2011
  *  version Sep. 18, 2012
- * @version Oct. 21, 2012
+ * @version Oct. 23, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -187,16 +187,31 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
         }
 
         def add_usecase_association_relationships(aSource: SMObject) {
+          def rolerelationship(sid: String, tid: String, name: String) {
+            aThema match {
+              case "perspective" => graph.addUsecaseRoleRelationship(sid, tid, name)
+              case "hilight"     => graph.addUsecaseRoleRelationship(sid, tid, name)
+              case "detail"      => graph.addUsecaseRoleRelationship(sid, tid, name)
+              case _             => graph.addUsecaseRoleRelationship(sid, tid, name)
+            }
+          }
+          def associationrelationship(sid: String, tid: String, assoc: SMAssociation) {
+            aThema match {
+              case "perspective" => graph.addSimpleAssociation(sid, tid, assoc)
+              case "hilight"     => graph.addPlainAssociation(sid, tid, assoc)
+              case "detail"      => graph.addAssociation(sid, tid, assoc)
+              case _             => graph.addSimpleAssociation(sid, tid, assoc)
+            }
+          }
+
           for (assoc <- aSource.associations) {
             val target = assoc.associationType.typeObject
             println("ClassDiagramGenerator#add_usecase_association_relationships: " + target)
             val sourceId = get_id(aSource)
             val targetId = get_id(target)
-            aThema match {
-              case "perspective" => graph.addUsecaseRoleRelationship(sourceId, targetId, assoc.name)
-              case "hilight"     => graph.addUsecaseRoleRelationship(sourceId, targetId, assoc.name)
-              case "detail"      => graph.addUsecaseRoleRelationship(sourceId, targetId, assoc.name)
-              case _             => graph.addUsecaseRoleRelationship(sourceId, targetId, assoc.name)
+            target match {
+              case _: SMEntity => rolerelationship(sourceId, targetId, assoc.name)
+              case _: SMUsecase => associationrelationship(sourceId, targetId, assoc)
             }
           }
         }

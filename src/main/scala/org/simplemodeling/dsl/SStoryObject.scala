@@ -8,10 +8,15 @@ import org.goldenport.value.{GTree, GTreeNode, PlainTree, GTreeCursor, GTreeVisi
 
 /*
  * @since   Dec.  7, 2008
- * @version Apr. 17, 2011
+ *  version Apr. 17, 2011
+ * @version Oct. 21, 2012
  * @author  ASAMI, Tomoharu
  */
-abstract class SStoryObject(aName: String, aPkgName: String) extends SObject(aName, aPkgName) {
+/**
+ * SStoryObject is SEntity. 
+ * It's workaround to handle BusinessUsecase in association.
+ */
+abstract class SStoryObject(aName: String, aPkgName: String) extends SEntity(aName, aPkgName) {
   val primary_actor = association.candidate("primaryActor")
   val secondary_actor = association.candidate("secondaryActor")
   val supporting_actor = association.candidate("supportingActor")

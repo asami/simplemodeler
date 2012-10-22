@@ -12,7 +12,7 @@ import org.simplemodeling.dsl.datatype.ext._
  *
  * @since   Sep. 10, 2008
  *  version Sep. 18, 2011
- * @version Oct. 16, 2012
+ * @version Oct. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) {
@@ -339,11 +339,18 @@ abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) 
   def composition_comment(aName: String, anEntity: => SEntity, aMultiplicity: SMultiplicity): SAssociation = {
     association.create(aName, anEntity, aMultiplicity) composition_is true atomLinkRel_is "comment"
   }
+
+  override def toString() = {
+    class_Name + "(" + (name +: class_Params).mkString(",") + ")"
+  }
+
+  def class_Name: String = getClass.getSimpleName
+  def class_Params: Seq[String] = Nil
 }
 
 class NullObject extends SObject {
   override def isNull = true
+  override def class_Name = "NullObject"
 }
 
-object NullObject extends NullObject {
-}
+object NullObject extends NullObject

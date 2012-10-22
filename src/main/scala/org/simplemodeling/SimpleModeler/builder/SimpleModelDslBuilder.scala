@@ -8,7 +8,7 @@ import org.simplemodeling.dsl.SObject
 import com.asamioffice.goldenport.text.UJavaString
 import com.asamioffice.goldenport.text.UString
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
-import org.simplemodeling.dsl.{SEntity, STrait}
+import org.simplemodeling.dsl.{SEntity, STrait, SPowertype, SUsecase}
 import org.goldenport.recorder.ForwardingRecorder
 import org.goldenport.recorder.Recordable
 
@@ -44,11 +44,12 @@ class SimpleModelDslBuilder(
     _adjust_entities()
     val entitylist = entities.values.toList 
     println("dslObjects = " + entities)
-    val objs = entitylist.flatMap(_.createSObjects)
+    val objs: List[SObject] = entitylist.flatMap(_.createSObjects)
+    println("SimpleModelDslBuilder# names: %s".format(objs.map(x => x.name + "/" + x)))
     val names = objs.map(_.name)
     val sentities: List[SObject] = objs collect {
       case e: SEntity => e // include STrait
-      case p: DomainPowertype => p
+      case p: SPowertype => p
     }
     val tuples: List[(String, SObject)] = sentities.map(_.name) zip sentities
     val entitymap: Map[String, SObject] = tuples.toMap

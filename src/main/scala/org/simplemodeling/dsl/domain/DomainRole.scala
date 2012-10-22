@@ -8,9 +8,11 @@ import org.simplemodeling.dsl._
  * Nov. 12, 2010
  * 
  * @since   Sep. 11, 2008
- * @version Sep. 18, 2011 
+ *  version Sep. 18, 2011 
+ * @version Oct. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class DomainRole(name: String, pkgname: String) extends DomainAgent(name, pkgname) with SRole {
   def this() = this(null, null)
+  override def class_Name = "DomainRole"
 }

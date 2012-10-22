@@ -1060,35 +1060,44 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _build_associations(entity: SObject, entities: Map[String, SObject]) {
-      for (assoc <- associations) {
-        record_warning(_entity_ref(assoc.associationType.name, entities)) {
-          entity.association(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
-        }
+    for (assoc <- associations) {
+      record_warning(_entity_ref(assoc.associationType.name, entities)) {
+        entity.association(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
       }
+    }
   }
 
   private def _build_aggregations(entity: SObject, entities: Map[String, SObject]) {
-      for (assoc <- aggregations) {
-        record_warning(_entity_ref(assoc.associationType.name, entities)) {
-          entity.aggregation(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
-        }
+    for (assoc <- aggregations) {
+      record_warning(_entity_ref(assoc.associationType.name, entities)) {
+        entity.aggregation(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
       }
+    }
   }
 
   private def _build_compositions(entity: SObject, entities: Map[String, SObject]) {
-      for (assoc <- compositions) {
-        record_warning(_entity_ref(assoc.associationType.name, entities)) {
-          entity.composition(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
-        }
+    for (assoc <- compositions) {
+      record_warning(_entity_ref(assoc.associationType.name, entities)) {
+        entity.composition(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
       }
+    }
   }
 
   private def _entity_ref(name: String, entities: Map[String, SObject]): Either[String, SEntity] = {
     entities.get(name) match {
       case Some(entity: SEntity) => entity.right
+      case Some(x) => sys.error("not sobject: " + x)
+      case None => sys.error("unknown: " + name + " / " + entities)
+    }
+  }
+
+
+  private def _entity_ref0(name: String, entities: Map[String, SObject]): Either[String, SEntity] = {
+    entities.get(name) match {
+      case Some(entity: SEntity) => entity.right
       case Some(obj: SObject) => "エンティティに対してのみ関連・集約・合成を持つことができます。(参照元: %s, 参照先: %s)".format(name, obj.name).left
       case Some(x) => sys.error("not sobject: " + x)
-      case None => sys.error("unknown: " + name)
+      case None => sys.error("unknown: " + name + " / " + entities)
     }
   }
 
@@ -1162,6 +1171,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 //    _build_powertypes(value)
 //    _build_roles(value)
     _build_attributes(uc)
+    _build_associations(uc, entities)
+    _build_aggregations(uc, entities)
+    _build_compositions(uc, entities)
     primaryActors.foreach(_describe_association(entities, uc.primary_actor.apply, _))
     secondaryActors.foreach(_describe_association(entities, uc.secondary_actor.apply, _))
     supportingActors.foreach(_describe_association(entities, uc.supporting_actor.apply, _))

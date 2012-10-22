@@ -8,6 +8,7 @@ import org.simplemodeling.dsl._
  * Dec. 20, 2008
  * 
  * @since  Sep. 11, 2008
+ *  verion Sep. 18, 2011 
  * @verion Sep. 18, 2011 
  * @author ASAMI, Tomoharu
  */
@@ -17,4 +18,5 @@ abstract class DomainEvent(name: String, pkgname: String) extends DomainEntity(n
   val primary_actor = association.candidate("primaryActor")
   val secondary_actor = association.candidate("secondaryActor")
   val resource = association.candidate("resource")
+  override def class_Name = "DomainEvent"
 }

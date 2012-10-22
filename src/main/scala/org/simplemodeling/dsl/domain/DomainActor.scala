@@ -7,9 +7,11 @@ import org.simplemodeling.dsl
  * Mar. 17, 2009
  * 
  * @since   Sep. 11, 2008
- * @version Sep. 18, 2011
+ *  version Sep. 18, 2011
+ * @version Oct. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class DomainActor(name: String, pkgname: String) extends DomainAgent(name, pkgname) {
   def this() = this(null, null)
+  override def class_Name = "DomainActor"
 }

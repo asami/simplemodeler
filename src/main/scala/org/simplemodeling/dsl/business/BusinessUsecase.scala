@@ -11,7 +11,8 @@ import org.goldenport.value._
  *
  * @since   Nov.  6, 2008
  *  version Nov.  6, 2011
- * @version Sep. 18, 2012
+ *  version Sep. 18, 2012
+ * @version Oct. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 class BusinessUsecase(name:String, packageName: String) extends SUsecase(name, packageName) with BusinessStory {
@@ -183,6 +184,8 @@ class BusinessUsecase(name:String, packageName: String) extends SUsecase(name, p
     })
     isRange
   }
+
+  override def class_Name = "BusinessUsecase"
 }
 
 object NullBusinessUsecase extends BusinessUsecase

@@ -8,7 +8,8 @@ import org.simplemodeling.dsl._
  * Oct. 18, 2008
  *
  * @since   Sep. 11, 2008
- * @version Sep. 18, 2011
+ *  version Sep. 18, 2011
+ * @version Oct. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class DomainResource(name: String, pkgname: String) extends DomainEntity(name, pkgname) {
@@ -21,4 +22,5 @@ abstract class DomainResource(name: String, pkgname: String) extends DomainEntit
   val Stock = stock
   val individual = DResourceUnitType.individual
   val Individual = individual
+  override def class_Name = "DomainResource"
 }
