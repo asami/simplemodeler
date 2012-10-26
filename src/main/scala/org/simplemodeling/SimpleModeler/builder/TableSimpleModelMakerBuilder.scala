@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar.  6, 2012
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
- * @version Oct. 18, 2012
+ * @version Oct. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -138,7 +138,7 @@ class TableSimpleModelMakerBuilder(
   }
 
   protected final def add_id(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
-//    println("TableSimpleModelMakerBuilder#add_id:" + entry)
+    println("TableSimpleModelMakerBuilder#add_id:" + entry)
     val atype = SMMAttributeTypeSet(entry)
     val attr = obj.attribute(_slot_name(entry), atype, true)
     _build_attribute(attr, entry)

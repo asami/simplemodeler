@@ -23,7 +23,8 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /*
  * @since   Mar. 31, 2012
- * @version Mar. 31, 2012
+ *  version Mar. 31, 2012
+ * @version Oct. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2PlayRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -32,6 +33,8 @@ class SimpleModel2PlayRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCont
 
   override val target_context = new PlayEntityContext(sm.entityContext, sctx)
   override val target_realm = new PlayRealmEntity(target_context)  
+  target_context.setModel(sm)
+  target_context.setPlatform(target_realm)
 
   def toPlayRealm() = transform
 

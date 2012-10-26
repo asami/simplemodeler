@@ -5,7 +5,7 @@ import org.simplemodeling.SimpleModeler.builder._
 
 /*
  * @since   Oct.  8, 2012
- * @version Oct. 15, 2012
+ * @version Oct. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMTypeSet {
@@ -40,6 +40,12 @@ class SMMAttributeTypeSet(
     attributeType orElse
     dataType orElse
     sqlDataType.map(_.dataType) getOrElse SMMStringType
+  }
+
+  def idType: Option[SMMValueIdType] = {
+    attributeType collect {
+      case x: SMMValueIdType => x
+    }
   }
 }
 

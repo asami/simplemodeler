@@ -17,13 +17,14 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Feb. 27, 2012
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
- * @version Oct. 21, 2012
+ * @version Oct. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
  * OutlineImporter is OutlineBuilderBase.
  *
- * OutlineImporter uses SimpleModeMakerBuilder as model_Builder.
+ * OutlineImporter uses SimpleModeMakerBuilder(SimpleModelDslBuilder)
+ * as model_Builder.
  */
 abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, val outline: OutlineEntityBase) extends Recordable with UseTerm {
   import UXMind._
@@ -61,7 +62,13 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 
   def importDslObjects: List[SObject] = {
     build_model
-    model_Builder.dslObjects
+    val objs = model_Builder.dslObjects
+    println("OutlineEntityBase:importDslObjects: %s".format(objs.map(x => {
+      "%s[%s]".format(x.name, x.getAttributes.map(a => {
+        "%s;%s".format(a.name, a.kind)
+      }))
+    })))
+    objs
   }
 
   private def _create_object(kind: ElementKind, source: TopicNode, builder: (TopicNode, SMMEntityEntity) => Unit) = {

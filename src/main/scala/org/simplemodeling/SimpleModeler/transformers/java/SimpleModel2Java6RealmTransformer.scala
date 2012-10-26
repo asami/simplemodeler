@@ -24,7 +24,8 @@ import org.goldenport.entity.content.ResourceContent
 
 /*
  * @since   Dec. 12, 2011
- * @version Dec. 14, 2011
+ *  version Dec. 14, 2011
+ * @version Oct. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -33,6 +34,8 @@ class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
 
   override val target_context = new Java6EntityContext(sm.entityContext, sctx)
   override val target_realm = new Java6RealmEntity(target_context)  
+  target_context.setModel(sm)
+  target_context.setPlatform(target_realm)
 
   def toJavaRealm() = transform
 

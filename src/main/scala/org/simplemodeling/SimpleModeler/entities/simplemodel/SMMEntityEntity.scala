@@ -25,6 +25,7 @@ import org.simplemodeling.dsl.datatype.XDateTime
 import org.simplemodeling.dsl.datatype.business.XMoney
 import org.simplemodeling.dsl.datatype.business.XPercent
 import org.simplemodeling.dsl.datatype.business.XUnit
+import org.simplemodeling.dsl.IdAttributeKind
 import org.simplemodeling.dsl.domain.DomainActor
 import org.simplemodeling.dsl.domain.DomainEntity
 import org.simplemodeling.dsl.domain.DomainEntityPart
@@ -66,7 +67,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Mar. 25, 2012
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
- * @version Oct. 21, 2012
+ * @version Oct. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -950,8 +951,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_attributes(entity: SObject) {
     for (attr <- attributes) {
-      attr.attributeType match {
-        case t: SMMValueIdType => {
+      attr.attributeType.idType match {
+        case Some(t) => {
 //          entity.attribute_id.attributeType = _dsl_type(t)
           _build_attribute(entity.attribute_id, attr)
         }
@@ -976,6 +977,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 */
   private def _build_attribute(attr: SAttribute, src: SMMAttribute) {
+    if (src.id) {
+      attr kind_is IdAttributeKind
+    }
     for (a <- _dsl_text(src.name_ja)) {
       attr.name_ja = a
     }

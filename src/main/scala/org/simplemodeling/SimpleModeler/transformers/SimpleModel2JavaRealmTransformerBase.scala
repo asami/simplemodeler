@@ -24,7 +24,8 @@ import org.goldenport.recorder.Recordable
  * @since   Apr. 18, 2011
  *  version Dec. 14, 2011
  *  version Apr.  7, 2012
- * @version Jun. 16, 2012
+ *  version Jun. 16, 2012
+ * @version Oct. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2JavaRealmTransformerBase0(
@@ -428,6 +429,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
       build_object(obj, anObject);
       obj.documentName = make_entity_document_name(anObject)
       make_entity_document(obj.documentName, anObject)
+      println("SimpleModel2JavaRealmTransformerBase#build_properties[%s] %s / %s".format(anObject.name, anObject.attributes.map(_.name), obj.attributes.map(_.name)))
     }
 
     private def make_entity_document(docName: String, modelObject: SMObject) {

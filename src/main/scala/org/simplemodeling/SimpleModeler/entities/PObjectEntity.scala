@@ -15,7 +15,8 @@ import org.simplemodeling.dsl._
  *  version Aug. 20, 2011
  *  version Dec. 15, 2011
  *  version May.  5, 2012
- * @version Jun. 17, 2012
+ *  version Jun. 17, 2012
+ * @version Oct. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -129,7 +130,12 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   lazy val isId = wholeAttributes.find(_.isId).isDefined
   lazy val idAttr = wholeAttributes.find(_.isId) match {
       case Some(attr) => attr
-      case None => throw new UnsupportedOperationException("no id:" + name)
+      case None => {
+        throw new UnsupportedOperationException("no id [%s]: %s".format(
+          name,
+          wholeAttributes.map(_.name)
+        ))
+      }
   }
   def idName = idAttr.name
   def idPolicy = idAttr.idPolicy
