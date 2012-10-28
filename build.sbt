@@ -26,6 +26,12 @@ libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.1"
 
 libraryDependencies += "org.scalaz" %% "scalaz-core" % "6.0.4"
 
+libraryDependencies += "de.odysseus.juel" % "juel-api" % "2.2.5"
+
+libraryDependencies += "de.odysseus.juel" % "juel-spi" % "2.2.5"
+
+libraryDependencies += "de.odysseus.juel" % "juel-impl" % "2.2.5"
+
 libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.2"
 
 libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.2.0"

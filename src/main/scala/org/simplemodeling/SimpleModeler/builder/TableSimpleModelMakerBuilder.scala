@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar.  6, 2012
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
- * @version Oct. 18, 2012
+ * @version Oct. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -163,6 +163,7 @@ class TableSimpleModelMakerBuilder(
         case BriefLabel => attr.brief = value
         case SummaryLabel => attr.brief = value
         case DescriptionLabel => attr.description = value
+        case DeriveLabel => attr.deriveExpression = value
         case ColumnNameLabel => attr.columnName = value
         case SqlDatatypeLabel => attr.sqlDatatype = SMMObjectType.getSqlDataType(value)
         case _ => {}

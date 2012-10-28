@@ -8,8 +8,15 @@ import org.goldenport.sdoc.SDoc
  *  version Nov. 13, 2010
  *  version Dec. 15, 2011
  *  version Feb.  9, 2012
- * @version Mar. 25, 2012
+ *  version Mar. 25, 2012
+ * @version Oct. 28, 2012
  * @author  ASAMI, Tomoharu
+ */
+/**
+ * The SAttribute converts to a SMAttribute
+ * in the SMObject#add_attribute called from SMObject's constructor.
+ * The SMObject is created by a SimpleModelEntity.
+ * The SimpleModelEntity is created by SimpleModel2ProgramRealmTransformerBase.
  */
 class SAttribute(aName: String, aMultiplicity: SMultiplicity) extends SElement(aName) {
   type Descriptable_TYPE = SAttribute
@@ -21,6 +28,8 @@ class SAttribute(aName: String, aMultiplicity: SMultiplicity) extends SElement(a
   var isPersistent: Boolean = true
   var defaultValue: Any = _
   var constraints = new ArrayBuffer[SConstraint]
+  var defaultValueExpression: SExpression = NullExpression
+  var deriveExpression: SExpression = NullExpression
   var columnName: String = ""
 
   final def isId = {

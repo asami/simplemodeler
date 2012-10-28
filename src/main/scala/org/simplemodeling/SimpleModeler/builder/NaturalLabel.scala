@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
 /*
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
- * @version Oct. 18, 2012
+ * @version Oct. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -210,6 +210,10 @@ case object BaseLabel extends NaturalLabel {
 
 case object MultiplicityLabel extends NaturalLabel {
   val candidates = List("multiplicity", "mul", "多重度")
+}
+
+case object DeriveLabel extends NaturalLabel {
+  val candidates = List("derive", "derived", "派生")
 }
 
 case object PrimaryActorLabel extends NaturalLabel {

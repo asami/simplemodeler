@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entity
 
+import scalaz._, Scalaz._
 import org.simplemodeling.dsl._
 import org.goldenport.sdoc._
 import org.goldenport.sdoc.inline.SIAnchor
@@ -11,13 +12,19 @@ import org.simplemodeling.SimpleModeler.entity.domain.SMDomainValueName
  * @since   Sep. 17, 2008
  *  version Oct. 20, 2009
  *  version Dec. 15, 2011
- * @version Apr. 11, 2012
+ *  version Apr. 11, 2012
+ * @version Oct. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMAttribute(val dslAttribute: SAttribute) extends SMElement(dslAttribute) {
   val attributeType = new SMAttributeType(dslAttribute.attributeType)
   val multiplicity = new SMMultiplicity(dslAttribute.multiplicity)
   val constraints = dslAttribute.constraints.map(SMConstraint.apply)
+  val deriveExpression: Option[SMExpression] = {
+    (dslAttribute.deriveExpression == NullExpression) option {
+      SMExpression(dslAttribute.deriveExpression)
+    }
+  }
   val idPolicy: SMIdPolicy = dslAttribute.idPolicy match {
     case p: AutoIdPolicy => SMAutoIdPolicy
     case p: ApplicationIdPolicy => SMApplicationIdPolicy

@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entities.simplemodel
 
+import org.apache.commons.lang3.StringUtils
 import scalaz._, Scalaz._
 import java.io.BufferedWriter
 import scala.collection.mutable.Set
@@ -49,6 +50,7 @@ import org.simplemodeling.dsl.STrait
 import org.simplemodeling.dsl.SMultiplicity
 import org.simplemodeling.dsl.SObject
 import org.simplemodeling.dsl.SValue
+import org.simplemodeling.dsl.SExpression
 import org.simplemodeling.dsl.ZeroMore
 import org.simplemodeling.dsl.ZeroOne
 import com.asamioffice.goldenport.text.AppendableTextBuilder
@@ -66,7 +68,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Mar. 25, 2012
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
- * @version Oct. 21, 2012
+ * @version Oct. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1005,6 +1007,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     for (a <- _dsl_text(src.brief)) {
       attr.brief = a
     }
+    for (a <- _dsl_expression(src.deriveExpression)) {
+      attr.deriveExpression
+    }
     for (a <- _dsl_text(src.summary)) {
       attr.summary = a
     }
@@ -1057,6 +1062,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case _: GROneMore => OneMore
       case _: GRZeroMore => ZeroMore
     }
+  }
+
+  private def _dsl_expression(s: String): Option[SExpression] = {
+    StringUtils.isNotBlank(s) option SExpression(s)
   }
 
   private def _build_associations(entity: SObject, entities: Map[String, SObject]) {
