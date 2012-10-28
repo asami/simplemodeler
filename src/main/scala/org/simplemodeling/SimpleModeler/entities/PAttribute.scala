@@ -6,19 +6,22 @@ import scala.collection.mutable.{Buffer, ArrayBuffer}
 import org.simplemodeling.dsl._
 import org.simplemodeling.SimpleModeler.entity._
 
-// derived from GaejAttribute Apr. 10, 2009
+/*
+ * derived from GaejAttribute Apr. 10, 2009
+ * 
+ * @since   Apr. 22, 2011
+ *  version Jul. 22, 2011
+ *  version Feb. 19, 2012
+ *  version Apr. 19, 2012
+ * @version Oct. 28, 2012
+ * @author  ASAMI, Tomoharu
+ */
 /**
  * PAttribute represents SMAttribute, SMAssociation,
  * and SMPowertypeRelationship so that these relationships are
  * implemented as a instance variable.
  * 
- * @since   Apr. 22, 2011
- *  version Jul. 22, 2011
- *  version Feb. 19, 2012
- * @version Apr. 19, 2012
- * @author  ASAMI, Tomoharu
  */
-// XXX Should be immutable
 class PAttribute(val name: String, val attributeType: PObjectType, val readonly:Boolean = false, val inject: Boolean = false) {
   var isId = false
   var multiplicity: PMultiplicity = POne
@@ -147,6 +150,12 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   }
 
   final def constraints: Map[String, PConstraint] = attributeType.constraints.toMap
+  def deriveExpression: Option[PExpression] = {
+    for {
+      a <- Option(modelAttribute)
+      b <- a.deriveExpression
+    } yield PExpression(b)
+  }
 
   //
   final def multiplicity_is(aMultiplicity: PMultiplicity): PAttribute = {
@@ -229,7 +238,7 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
       case m: PZeroOne => false
       case m: PZeroMore => true
       case m: POneMore => true
-      case _ => error("???")
+      case _ => sys.error("???")
     }
   }
 
@@ -243,7 +252,7 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
       case m: PZeroOne => true
       case m: PZeroMore => false
       case m: POneMore => false
-      case _ => error("???")
+      case _ => sys.error("???")
     }
   }
 
