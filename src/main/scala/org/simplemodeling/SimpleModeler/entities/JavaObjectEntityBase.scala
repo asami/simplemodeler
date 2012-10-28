@@ -16,7 +16,8 @@ import com.asamioffice.goldenport.text.UString.notNull
  * @since   Apr. 22, 2011
  *  version Aug. 20, 2011
  *  version Dec. 15, 2011
- * @version May.  5, 2012
+ *  version May.  5, 2012
+ * @version Oct. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class JavaObjectEntityBase(val javaContext: JavaEntityContextBase)
@@ -31,7 +32,13 @@ abstract class JavaObjectEntityBase(val javaContext: JavaEntityContextBase)
 //  val documentName = ""
   var documentName: String = ""
 
+  /**
+   * Java6 entities (e.g. Java6EntityEntity) does not use this method.
+   * These entities override the method and use a JavaclassDefinition object
+   * to produces Java source codes.
+   */
   override protected def write_Content(out: BufferedWriter) {
+    println("JavaObjectEntityBase")
     _maker = new JavaMaker
     _aspects.foreach(_.open(_maker))
     make_package
@@ -239,9 +246,14 @@ abstract class JavaObjectEntityBase(val javaContext: JavaEntityContextBase)
 
   def id_attribute {
     val varName = var_name(idAttr)
-    if (_aspects.find(_.weaveIdAttributeSlot(idAttr, varName) == true).isDefined) {}
-    else if (id_Attribute_Slot(idAttr, varName)) {}
-    else jm_private_instance_variable(idAttr, idAttr.typeName, varName)
+    if (_aspects.find(_.weaveIdAttributeSlot(idAttr, varName) == true).isDefined) {
+      println("JavaObjectEntityBase#id_attribute[%s] aspect".format(varName))
+    } else if (id_Attribute_Slot(idAttr, varName)) {
+      println("JavaObjectEntityBase#id_attribute[%s] subclass".format(varName))
+    } else {
+      jm_private_instance_variable(idAttr, idAttr.typeName, varName)
+      println("JavaObjectEntityBase#id_attribute[%s] default".format(varName))
+    }
   }
 
   def make_attribute_variable(attr: PAttribute) {
@@ -417,11 +429,13 @@ abstract class JavaObjectEntityBase(val javaContext: JavaEntityContextBase)
     val varName = var_name(idAttr)
     val paramName = attr_name(idAttr)
     val javaType = java_type(idAttr)
-    Booleans.orElse(
-      () => _aspects.find(_.weaveIdMethods(idAttr, attrName, varName, paramName, javaType) == true).isDefined,
-      () => make_Id_Methods(idAttr, attrName, varName, paramName, javaType)
-    ) {
+    if (_aspects.find(_.weaveIdMethods(idAttr, attrName, varName, paramName, javaType) == true).isDefined) {
+      println("JavaObjectEntityBase#id_attribute[%s] aspect".format(varName))
+    } else if (make_Id_Methods(idAttr, attrName, varName, paramName, javaType)) {
+      println("JavaObjectEntityBase#id_attribute[%s] subclass".format(varName))
+    } else {
       jm_private_instance_variable(idAttr, java_type(idAttr), varName)
+      println("JavaObjectEntityBase#id_attribute[%s] default".format(varName))
     }
   }
 

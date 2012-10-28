@@ -1090,7 +1090,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _entity_ref(name: String, entities: Map[String, SObject]): Either[String, SEntity] = {
     entities.get(name) match {
       case Some(entity: SEntity) => entity.right
-      case Some(x) => sys.error("not sobject: " + x)
+      case Some(x) => sys.error("not sobject: " + x.name)
       case None => sys.error("unknown: " + name + " / " + entities)
     }
   }
