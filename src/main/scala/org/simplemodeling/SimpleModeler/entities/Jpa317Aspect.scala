@@ -4,14 +4,14 @@ import scalaz._
 import Scalaz._
 import org.simplemodeling.SimpleModeler.entity._
 import com.asamioffice.goldenport.text.UString.notNull
-import com.sun.org.apache.xalan.internal.xsltc.compiler.IdPattern
 
 /*
  * @since   Dec. 15, 2011
- * @version Feb. 20, 2012
+ *  version Feb. 20, 2012
+ * @version Oct. 29, 2012
  * @author  ASAMI, Tomoharu
  */
-class Jpa317Aspect extends JavaAspect {
+class Jpa317Aspect extends JavaAspect with JavaHelper {
   var modelEntity: SMEntity = null
   var is_logical_operation = false
 
@@ -44,35 +44,15 @@ class Jpa317Aspect extends JavaAspect {
       if (idAttr.idPolicy == SMAutoIdPolicy) {
         jm_pln("@GeneratedValue(strategy=GenerationType.AUTO)")
       }
-      if (_is_primitive(idAttr)) {
-        jm_pln("private %s %s;".format(_typename(idAttr), varName))
+      if (is_primitive(idAttr)) {
+        jm_pln("private %s %s;".format(java_typename(idAttr), varName))
       } else {
-        val datatypename = _typename(idAttr.idDatatypeName)
+        val datatypename = idAttr.idDatatypeName
         jm_pln("private %s %s;".format(datatypename, varName))
         jm_pln("private %s %s;".format(idAttr.typeName, id_holder_name(varName)))
       }
     }
     true
-  }
-
-  private def _is_primitive(attr: PAttribute) = {
-    attr.typeName match {
-      case "XString" => true
-      case "XLong" => true // XXX Other datatypes
-      case _ => false
-    }
-  }
-
-  private def _typename(attr: PAttribute): String = {
-    _typename(attr.typeName)
-  }
-
-  private def _typename(xtype: String): String = {
-    xtype match {
-      case "XString" => "String"
-      case "XLong" => "Long" // XXX Other datatypes
-      case _ => sys.error("not implemented yet")
-    }
   }
 
   override def weavePowertypeAttributeSlot(attr: PAttribute, varName: String): Boolean = {
@@ -111,7 +91,7 @@ class Jpa317Aspect extends JavaAspect {
 
   override def weaveCopyConstructorAttributeBlock(attr: PAttribute, varName: String, paramName: String): Boolean = {
     if (!attr.isId) false
-    else if (_is_primitive(attr)) false
+    else if (is_primitive(attr)) false
     else {
       attr.idPolicy match {
         case SMAutoIdPolicy => {
@@ -129,8 +109,9 @@ class Jpa317Aspect extends JavaAspect {
 
   override def weavePlainConstructorAttributeBlock(attr: PAttribute, varName: String, paramName: String): Boolean = {
     if (!attr.isId) false
-    else if (_is_primitive(attr)) false
+    else if (is_primitive(attr)) false
     else {
+      println("weavePlainConstructorAttributeBlock in Jap317")
       attr.idPolicy match {
         case SMAutoIdPolicy => {
           jm_pln("this.%s = %s.value;".format(varName, paramName))
@@ -150,7 +131,7 @@ class Jpa317Aspect extends JavaAspect {
       sys.error("not supported yet")
     } else {
       jm_public_method("%s get%s()".format(javaType, attrName.capitalize)) {
-        if (_is_primitive(idAttr)) {
+        if (is_primitive(idAttr)) {
           jm_return(varName)
         } else {
           jm_return(id_holder_name(varName))
@@ -159,7 +140,7 @@ class Jpa317Aspect extends JavaAspect {
       idAttr.idPolicy match {
         case SMAutoIdPolicy => {}
         case SMApplicationIdPolicy => {
-          if (_is_primitive(idAttr)) {
+          if (is_primitive(idAttr)) {
             jm_public_method("void set%s(%s %s)".format(attrName.capitalize, javaType, paramName)) {
               jm_pln("this.%s = %s;".format(varName, paramName))
             }
@@ -177,7 +158,7 @@ class Jpa317Aspect extends JavaAspect {
 
   override def objectVarName(attr: PAttribute, varName: String): Option[String] = {
     if (!attr.isId) None
-    else if (_is_primitive(attr)) None
+    else if (is_primitive(attr)) None
     else Some(id_holder_name(varName))
   }
 }
