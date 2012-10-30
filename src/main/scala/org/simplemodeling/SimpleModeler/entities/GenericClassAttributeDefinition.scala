@@ -378,9 +378,7 @@ abstract class GenericClassAttributeDefinition(
 
   def variable_plain {
     //      println("Attr %s, kind = %s".format(attr.name, attr.kind)) // 2009-10-28
-
     if (isDerive) return
-
     val varName = var_name
     aspects.foreach(_.weaveAttributeSlot(attr, varName))
     attr.kind match {

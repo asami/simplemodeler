@@ -25,7 +25,7 @@ import org.goldenport.recorder.Recordable
  *  version Dec. 14, 2011
  *  version Apr.  7, 2012
  *  version Jun. 16, 2012
- * @version Oct. 26, 2012
+ * @version Oct. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2JavaRealmTransformerBase0(
@@ -498,6 +498,10 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
       attr.multiplicity = get_multiplicity(anAttr.multiplicity)
       attr.isId = anAttr.isId
       attr.modelAttribute = anAttr
+      /*
+       * SMMEntityEntity converts SMMAttributeTypeSet to SAttributeType.
+       */
+      println("SimpleModel2JavaRealmTransformerBase#build_attribute(%s, %s)".format(attr.name, attr.attributeType))
     }
 
     private def build_association(aObj: PObjectEntity, anAssoc: SMAssociation) {
@@ -543,6 +547,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
         case "org.simplemodeling.dsl.datatype.XDate" => PDateType
         case "org.simplemodeling.dsl.datatype.XTime" => PTimeType
         case "org.simplemodeling.dsl.datatype.XAnyURI" => PLinkType
+        // AppEngine
         case "org.simplemodeling.dsl.datatype.ext.XText" => PTextType
         case "org.simplemodeling.dsl.datatype.ext.XCategory" => PCategoryType
         case "org.simplemodeling.dsl.datatype.ext.XUser" => PUserType
@@ -551,11 +556,18 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
         case "org.simplemodeling.dsl.datatype.ext.XIM" => PIMType
         case "org.simplemodeling.dsl.datatype.ext.XPhoneNumber" => PPhoneNumberType
         case "org.simplemodeling.dsl.datatype.ext.XPostalAddress" => PPostalAddressType
-        case "org.simplemodeling.dsl.datatype.ext.Rating" => PRatingType
+        case "org.simplemodeling.dsl.datatype.ext.XRating" => PRatingType
+        // 
+        case "org.simplemodeling.dsl.datatype.business.XMoney" => PMoneyType
+        case "org.simplemodeling.dsl.datatype.business.XPercent" => PPercentType
+        case "org.simplemodeling.dsl.datatype.business.XUnit" => PUnitType
         case _ => anAttr.attributeType.dslAttributeType match { 
           case v: SValue => new PValueType(v.name, v.packageName);
           case d: SDocument => new PDocumentType(d.name, d.packageName)
-          case _ => new PGenericType(attributeType)
+          case x => {
+            record_warning("%sは未定義のデータ型です。", x.name)
+            new PGenericType(attributeType)
+          }
         }
       }
       objectType

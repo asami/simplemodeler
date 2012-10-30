@@ -3,7 +3,8 @@ package org.simplemodeling.SimpleModeler.entities
 /*
  * @since   May. 15, 2011
  *  version Sep.  1, 2011
- * @version Feb. 10, 2012
+ *  version Feb. 10, 2012
+ * @version Oct. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaMakerHolder {
@@ -81,6 +82,7 @@ trait JavaMakerHolder {
   protected final def jm_private_instance_variable(attr: PAttribute, typename: String = null, varname: String = null) {
     val tname = if (typename == null) attr.typeName else typename;
     val vname = if (varname == null) attr.name else varname;
+    println("JavaMakerHolder#jm_private_instance_variable(%s, %s)".format(vname, tname))
     if (attr.isHasMany) {
       jm_private_instance_variable_list(tname, vname);
     } else {

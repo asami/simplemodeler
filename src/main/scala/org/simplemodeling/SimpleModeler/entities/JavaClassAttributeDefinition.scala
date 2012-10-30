@@ -14,15 +14,15 @@ import java.util.TimeZone
  *  version Aug.  7, 2011
  *  version Dec. 14, 2011
  *  version Feb. 20, 2012
- * @version May.  6, 2012
+ * @version Oct. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassAttributeDefinition(
   pContext: PEntityContext,
   aspects: Seq[JavaAspect],
-  attr: PAttribute,
+  anattr: PAttribute,
   owner: JavaClassDefinition,
-  jmaker: JavaMaker) extends GenericClassAttributeDefinition(pContext, aspects, attr, owner) with JavaMakerHolder {
+  jmaker: JavaMaker) extends GenericClassAttributeDefinition(pContext, aspects, anattr, owner) with JavaMakerHolder with JavaClassAttributeDefinitionHelper {
   type ATTR_DEF = JavaClassAttributeDefinition
 
   jm_open(jmaker, aspects)
@@ -63,9 +63,9 @@ class JavaClassAttributeDefinition(
   }
 
   protected final def single_value_attribute_method() {
-    jm_public_get_method(javaType, attrName, varName)
+    jm_public_get_method(javaType, attrName, code_expression)
     if (attr.attributeType == PBooleanType) {
-      jm_public_is_method(attrName, varName)
+      jm_public_is_method(attrName, code_expression)
     }
     if (is_settable()) {
       jm_public_set_method(attrName, javaType, paramName, varName)
@@ -78,7 +78,7 @@ class JavaClassAttributeDefinition(
 
   override protected def method_bean_single_integer() {
     mapping_multi_value_attribute_method("new BigInteger(%s)", "%s.toString()")
-  }    
+  }
 
   override protected def method_bean_single_decimal() {
     mapping_multi_value_attribute_method("new BigDecimal(%s)", "%s.toString()")

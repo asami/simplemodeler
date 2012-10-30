@@ -961,6 +961,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
         case _ => {
           val a = entity.attribute(attr.name, _dsl_type(attr.attributeType), _dsl_multiplicity(attr.multiplicity))
           _build_attribute(a, attr)
+          /*
+           * SimpleModel2JavaRealmTransformerBase converts SMAttributeType to PObjectType.
+           */
+          println("SMMEntityEntity#_build_attributes(%s, %s)".format(a.name, a.attributeType.name))
         }
       }
     }

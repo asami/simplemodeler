@@ -13,7 +13,7 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
  * @since   Apr. 22, 2011
  *  version Jul. 25, 2011
  *  version Apr. 11, 2012
- * @version Oct. 29, 2012
+ * @version Oct. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -353,7 +353,9 @@ class PLanguageType(aModelAttrType: SMAttributeType) extends PObjectType(aModelA
 }
 object PLanguageType extends PLanguageType
 
-//
+/*
+ * AppEngine
+ */
 class PUserType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) {
   override def objectTypeName = "User" // com.google.appengine.api.users.User
 
@@ -440,14 +442,31 @@ class PUrlType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrTy
 }
 object PUrlType extends PUrlType
 
-//
+/*
+ * Business
+ */
 class PMoneyType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) {
-  override def objectTypeName = "Long"
-  override def getDatatypeName = Some("long")
+  override def objectTypeName = "BigDecimal"
+  override def xmlDatatypeName = "decimal"
 
   def this() = this(null)
 }
 object PMoneyType extends PMoneyType
+
+class PPercentType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) {
+  override def objectTypeName = "Float"
+  override def getDatatypeName = Some("flaot")
+
+  def this() = this(null)
+}
+object PPercentType extends PPercentType
+
+class PUnitType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) {
+  override def objectTypeName = "String"
+
+  def this() = this(null)
+}
+object PUnitType extends PUnitType
 
 // ReferenceProperty
 class PObjectReferenceType(val name: String, val packageName: String) extends PObjectType(null) {

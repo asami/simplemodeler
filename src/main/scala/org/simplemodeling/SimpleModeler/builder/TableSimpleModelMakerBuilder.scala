@@ -138,7 +138,7 @@ class TableSimpleModelMakerBuilder(
   }
 
   protected final def add_id(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
-    println("TableSimpleModelMakerBuilder#add_id:" + entry)
+//    println("TableSimpleModelMakerBuilder#add_id:" + entry)
     val atype = SMMAttributeTypeSet(entry)
     val attr = obj.attribute(_slot_name(entry), atype, true)
     _build_attribute(attr, entry)
@@ -146,7 +146,7 @@ class TableSimpleModelMakerBuilder(
 
   private def _build_attribute(attr: SMMAttribute, entry: Seq[(String, String)]) {
     for ((key, value) <- entry) {
-      println("TableSimpleModelMakerBuilder: %s => %s".format(key, NaturalLabel(key)))
+//      println("TableSimpleModelMakerBuilder: %s => %s".format(key, NaturalLabel(key)))
       NaturalLabel(key) match {
         case NameLabel => {}
         case TypeLabel => {}

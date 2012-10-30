@@ -26,6 +26,7 @@ object SMExpression {
   private val _context = new SimpleContext(); // more on this here...
 
   def juelExpression(expr: String) = {
+//    _factory.createValueExpression(_context, "${" + expr + "}", classOf[Object])
     _factory.createValueExpression(_context, expr, classOf[Object])
   }
 }
