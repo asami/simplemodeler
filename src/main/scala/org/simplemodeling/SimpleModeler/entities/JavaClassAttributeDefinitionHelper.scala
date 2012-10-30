@@ -11,8 +11,12 @@ trait JavaClassAttributeDefinitionHelper {
   self: JavaClassAttributeDefinition =>
 
   def code_expression: String = {
-    attr.deriveExpression.map(x => {
-      x.juelExpression.getExpressionString
-    }) | varName
+    if (isDerive) {
+      attr.deriveExpression.map(x => {
+        x.juelExpression.getExpressionString
+      }) | varName
+    } else {
+      varName
+    }
   }
 }
