@@ -9,10 +9,11 @@ import org.goldenport.sdoc.SDoc
  *  version Dec. 15, 2011
  *  version Feb.  9, 2012
  *  version Mar. 25, 2012
- * @version Oct. 28, 2012
+ * @version Oct. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
+ * SMMEntityEntity sets up SAttribute.
  * The SAttribute converts to a SMAttribute
  * in the SMObject#add_attribute called from SMObject's constructor.
  * The SMObject is created by a SimpleModelEntity.

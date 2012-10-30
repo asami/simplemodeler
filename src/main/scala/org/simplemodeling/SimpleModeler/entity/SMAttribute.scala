@@ -13,7 +13,7 @@ import org.simplemodeling.SimpleModeler.entity.domain.SMDomainValueName
  *  version Oct. 20, 2009
  *  version Dec. 15, 2011
  *  version Apr. 11, 2012
- * @version Oct. 28, 2012
+ * @version Oct. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMAttribute(val dslAttribute: SAttribute) extends SMElement(dslAttribute) {
@@ -21,7 +21,8 @@ class SMAttribute(val dslAttribute: SAttribute) extends SMElement(dslAttribute) 
   val multiplicity = new SMMultiplicity(dslAttribute.multiplicity)
   val constraints = dslAttribute.constraints.map(SMConstraint.apply)
   val deriveExpression: Option[SMExpression] = {
-    (dslAttribute.deriveExpression == NullExpression) option {
+    println("SMAttribute#deriveExpression: " + dslAttribute.deriveExpression)
+    (dslAttribute.deriveExpression != NullExpression) option {
       SMExpression(dslAttribute.deriveExpression)
     }
   }
@@ -29,7 +30,10 @@ class SMAttribute(val dslAttribute: SAttribute) extends SMElement(dslAttribute) 
     case p: AutoIdPolicy => SMAutoIdPolicy
     case p: ApplicationIdPolicy => SMApplicationIdPolicy
   }
-  final def kind: SAttributeKind = dslAttribute.kind
+  /**
+   * Current usage is intended as atom kind.
+   */
+  val kind: SAttributeKind = dslAttribute.kind
 
   add_feature(FeatureName, SText(name)) label_is "属性名"
   add_feature(FeatureType, type_literal) label_is "属性型"

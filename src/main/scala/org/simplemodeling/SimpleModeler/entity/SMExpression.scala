@@ -1,15 +1,18 @@
 package org.simplemodeling.SimpleModeler.entity
 
+import org.apache.commons.lang3.StringUtils
 import org.simplemodeling.dsl._
 import de.odysseus.el._
 import de.odysseus.el.util._
 
 /*
  * @since   Oct. 28, 2012
- * @version Oct. 28, 2012
+ * @version Oct. 30, 2012
  * @author  ASAMI, Tomoharu
  */
-case class SMExpression(val dslExpression: SExpression) {
+case class SMExpression(dslExpression: SExpression) {
+  require (dslExpression != null, "dslExpression must null")
+  require (StringUtils.isNotBlank(dslExpression.expr), "dslExpression must not empty")
   final def name = sys.error("not implemented yet")
   final def value = sys.error("not implemented yet")
 

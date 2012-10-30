@@ -39,7 +39,8 @@ import org.goldenport.recorder.Recordable
  *  version Sep. 25, 2011
  *  version Feb. 20, 2012
  *  version May. 15, 2012
- * @version Jun. 10, 2012
+ *  version Jun. 10, 2012
+ * @version Oct. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -117,9 +118,31 @@ abstract class GenericClassDefinition(
     }
   }
 
+  protected def not_derived_attribute_definitions = {
+    if (useDerivedAttribute) 
+      attributeDefinitions.filterNot(_.isDerive)
+    else
+      attributeDefinitions
+  }
+
+  protected def not_derived_whole_attribute_definitions = {
+    if (useDerivedAttribute)
+      wholeAttributeDefinitions.filterNot(_.isDerive)
+    else
+      wholeAttributeDefinitions
+  }
+
+  protected def not_derived_parent_attribute_definitions = {
+    if (useDerivedAttribute)
+      parentAttributeDefinitions.filterNot(_.isDerive)
+    else
+      parentAttributeDefinitions
+  }
+
   //
   var useDocument: Boolean = false
   var usePersistent: Boolean = false
+  var useDerivedAttribute: Boolean = false
   var isImmutable: Boolean = false
   def useBuilder: Boolean = isImmutable
   var isStatic: Boolean = false

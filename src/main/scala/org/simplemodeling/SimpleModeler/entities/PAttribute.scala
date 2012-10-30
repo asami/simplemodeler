@@ -13,7 +13,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Jul. 22, 2011
  *  version Feb. 19, 2012
  *  version Apr. 19, 2012
- * @version Oct. 28, 2012
+ * @version Oct. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -22,7 +22,7 @@ import org.simplemodeling.SimpleModeler.entity._
  * implemented as a instance variable.
  * 
  */
-class PAttribute(val name: String, val attributeType: PObjectType, val readonly:Boolean = false, val inject: Boolean = false) {
+class PAttribute(val name: String, val attributeType: PObjectType, val readonly: Boolean = false, val inject: Boolean = false) {
   var isId = false
   var multiplicity: PMultiplicity = POne
   var modelAttribute: SMAttribute = null
@@ -150,11 +150,16 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   }
 
   final def constraints: Map[String, PConstraint] = attributeType.constraints.toMap
+
   def deriveExpression: Option[PExpression] = {
     for {
       a <- Option(modelAttribute)
       b <- a.deriveExpression
     } yield PExpression(b)
+  }
+
+  def isDerive: Boolean = {
+    Option(modelAttribute).flatMap(_.deriveExpression) ? true | false
   }
 
   //

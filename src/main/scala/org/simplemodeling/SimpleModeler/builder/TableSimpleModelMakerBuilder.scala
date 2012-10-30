@@ -14,7 +14,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar.  6, 2012
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
- * @version Oct. 28, 2012
+ * @version Oct. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -146,6 +146,7 @@ class TableSimpleModelMakerBuilder(
 
   private def _build_attribute(attr: SMMAttribute, entry: Seq[(String, String)]) {
     for ((key, value) <- entry) {
+      println("TableSimpleModelMakerBuilder: %s => %s".format(key, NaturalLabel(key)))
       NaturalLabel(key) match {
         case NameLabel => {}
         case TypeLabel => {}
@@ -163,10 +164,13 @@ class TableSimpleModelMakerBuilder(
         case BriefLabel => attr.brief = value
         case SummaryLabel => attr.brief = value
         case DescriptionLabel => attr.description = value
-        case DeriveLabel => attr.deriveExpression = value
+        case DeriveLabel => {
+          attr.deriveExpression = value
+          println("TableSimpleModelMakerBuilder: derive = " + attr.deriveExpression)
+        }
         case ColumnNameLabel => attr.columnName = value
         case SqlDatatypeLabel => attr.sqlDatatype = SMMObjectType.getSqlDataType(value)
-        case _ => {}
+        case x => {println("TableSimpleModelMakerBuilder: " + x)}
       }
     }
   }

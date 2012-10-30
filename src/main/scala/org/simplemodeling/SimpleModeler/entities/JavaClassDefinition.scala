@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
 /*
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
- * @version Feb. 20, 2012
+ * @version Oct. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -140,7 +140,7 @@ class JavaClassDefinition(
       if (hasBaseObject) {
         jm_pln("super(o);")
       }
-      for (a <- attributeDefinitions) {
+      for (a <- not_derived_attribute_definitions) {
         if (aspects.find(_.weaveCopyConstructorAttributeBlock(a.attr, a.varName, "o")).isDefined) {}
         else jm_assign_this(a.varName, "o." + a.varName)
       }
@@ -148,15 +148,15 @@ class JavaClassDefinition(
   }
 
   override protected def constructors_plain_constructor {
-    val params = wholeAttributeDefinitions.filter(!_.isInject).
+    val params = not_derived_whole_attribute_definitions.filter(!_.isInject).
       map(a => a.javaType + " " + a.paramName).mkString(", ")
     jm_public_constructor("%s(%s)", name, params) {
       if (hasBaseObject) {
-        val vs = parentAttributeDefinitions.filter(!_.isInject).
+        val vs = not_derived_parent_attribute_definitions.filter(!_.isInject).
           map(a => a.paramName).mkString(", ")
         jm_pln("super(%s);", vs)
       }
-      for (a <- attributeDefinitions) {
+      for (a <- not_derived_attribute_definitions) {
         if (aspects.find(_.weavePlainConstructorAttributeBlock(a.attr, a.varName, a.paramName)).isDefined) {}
         else jm_assign_this(a.varName, a.paramName)
       }
@@ -185,7 +185,6 @@ class JavaClassDefinition(
       }
     }
   }
-
 /*
   override protected def constructors_plain_constructor {
     val params = attributeDefinitions.filter(!_.isInject).
@@ -247,22 +246,14 @@ class JavaClassDefinition(
       }
       for (a <- attributeDefinitions) {
         if (a.isSystemType) {
-          jm_pln("""USimpleModeler.toXml(buf, "%s", %s);""", a.xmlElementName, a.varName)
+          jm_pln("""USimpleModeler.toXml(buf, "%s", %s);""", a.xmlElementName, code_get_value(a))
         } else {
-          jm_if_not_null(a.varName) {
-            jm_pln("%s.toXmlElement(buf);", _var_name(a))
+          jm_if_not_null(code_get_value(a)) {
+            jm_pln("%s.toXmlElement(buf);", code_var_name(a))
           }
         }
       }      
     }
-  }
-
-  private def _var_name(attr: GenericClassAttributeDefinition): String = {
-    _var_name(attr.attr, attr.varName)
-  }
-
-  private def _var_name(attr: PAttribute, varName: String): String = {
-    aspects.flatMap(_.objectVarName(attr, varName)).headOption getOrElse varName
   }
 
   override protected def to_methods_json {
@@ -285,9 +276,9 @@ class JavaClassDefinition(
         if (cont) jm_append_String(", ")
         else cont = true
         if (a.isSystemType) {
-          jm_pln("""USimpleModeler.toJson(buf, %s, %s);""", a.propertyConstantName, a.varName)
+          jm_pln("""USimpleModeler.toJson(buf, %s, %s);""", a.propertyConstantName, code_get_value(a))
         } else {
-          jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
+          jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, code_var_name(a))
         }
       }
     }
@@ -312,9 +303,9 @@ class JavaClassDefinition(
         if (cont) jm_append_String(", ")
         else cont = true
         if (a.isSystemType) {
-          jm_pln("""USimpleModeler.toJson(buf, %s, %s);""", a.propertyConstantName, a.varName)
+          jm_pln("""USimpleModeler.toJson(buf, %s, %s);""", a.propertyConstantName, code_get_value(a))
         } else {
-          jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
+          jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, code_var_name(a))
         }
       }
     }
@@ -340,9 +331,9 @@ class JavaClassDefinition(
         if (cont) jm_append_String(", ")
         else cont = true
         if (a.isSystemType) {
-          jm_pln("""USimpleModeler.toJson(buf, %s, %s);""", a.propertyConstantName, a.varName)
+          jm_pln("""USimpleModeler.toJson(buf, %s, %s);""", a.propertyConstantName, code_get_value(a))
         } else {
-          jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
+          jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, code_var_name(a))
         }
       }
     }
@@ -359,7 +350,7 @@ class JavaClassDefinition(
         jm_pln("super.toMapContent(r);")
       }
       for (a <- attributeDefinitions) {
-        jm_pln("""USimpleModeler.toMap(r, %s, %s);""", a.propertyConstantName, a.varName) 
+        jm_pln("""USimpleModeler.toMap(r, %s, %s);""", a.propertyConstantName, code_get_value(a)) 
       }
     }
     jm_public_method("Map<String, String> toStringMap()") {
@@ -373,9 +364,9 @@ class JavaClassDefinition(
       }
       for (a <- attributeDefinitions) {
         if (a.isSystemType) {
-          jm_pln("""USimpleModeler.toStringMap(r, %s, %s);""", a.propertyConstantName, a.varName)
+          jm_pln("""USimpleModeler.toStringMap(r, %s, %s);""", a.propertyConstantName, code_get_value(a))
         } else {
-          jm_pln("""USimpleModeler.toStringMap(r, %s, %s.toJson());""", a.propertyConstantName, _var_name(a))
+          jm_pln("""USimpleModeler.toStringMap(r, %s, %s.toJson());""", a.propertyConstantName, code_var_name(a))
         }
       }
     }
@@ -428,12 +419,12 @@ class JavaClassDefinition(
       var cont = false
       attributeDefinitions match {
         case Nil => jm_pln("0;")
-        case List(a) => jm_pln("USimpleModeler.toHashCode(%s);", a.varName)
+        case List(a) => jm_pln("USimpleModeler.toHashCode(%s);", code_get_value(a))
         case a :: tail => {
-          jm_p("USimpleModeler.toHashCode(%s)", a.varName)
+          jm_p("USimpleModeler.toHashCode(%s)", code_get_value(a))
           for (aa <- tail) {
             jm_pln
-            jm_p("+ USimpleModeler.toHashCode(%s)", aa.varName)
+            jm_p("+ USimpleModeler.toHashCode(%s)", code_get_value(aa))
           }
           jm_pln(";")
         }
@@ -443,7 +434,7 @@ class JavaClassDefinition(
 
   override protected def object_methods_equals {
     def isequals(a: GenericClassAttributeDefinition) {
-      jm_p("USimpleModeler.isEquals(oo.%s, this.%s)", a.varName, a.varName)      
+      jm_p("USimpleModeler.isEquals(oo.%s, this.%s)", code_get_value(a), code_get_value(a))      
 //      if (a.isSystemType) {
 //          jm_p("is_equals(oo.%s, this.%s)", a.varName, a.varName)
 //        } else {
@@ -834,13 +825,31 @@ protected final void to_string_map(Map<String, String> map, String name, Object 
   override protected def builder_auxiliary {
   }
 
-  //
-
-  // XXX Java
   /*
    * Utility methods
    */
-  final protected def util_entity_xmlString {
+  protected final def code_var_name(attr: GenericClassAttributeDefinition): String = {
+    code_var_name(attr.attr, attr.varName)
+  }
+
+  protected final def code_var_name(attr: PAttribute, varName: String): String = {
+    aspects.flatMap(_.objectVarName(attr, varName)).headOption getOrElse varName
+  }
+
+  protected final def code_get_method_name(attr: GenericClassAttributeDefinition): String = {
+    "get" + code_var_name(attr).capitalize
+  }
+
+  // get value internally
+  protected final def code_get_value(attr: GenericClassAttributeDefinition): String = {
+    if (attr.isDerive) {
+      code_get_method_name(attr) + "()"
+    } else {
+      attr.varName
+    }
+  }
+
+  final protected def code_entity_xmlString {
     jm_public_method("String entity_xmlString()") {
       jm_var_new_StringBuilder
       jm_pln("entity_asXmlString(buf);")
@@ -848,69 +857,69 @@ protected final void to_string_map(Map<String, String> map, String name, Object 
     }
   }
 
-  final protected def util_entity_asXmlString {
+  final protected def code_entity_asXmlString {
     jm_public_method("void entity_asXmlString(StringBuilder buf)") {
       jm_append_String("<" + xmlElementName + " xmlns=\"" + xmlNamespace + "\">")
       for (attr <- attributes) {
-        jm_pln(util_get_string_element(attr) + ";")
+        jm_pln(code_get_string_element(attr) + ";")
       }
       jm_append_String("</" + xmlElementName + ">")
     }
   }
 
-  final protected def util_get_string_element(attr: PAttribute): String = {
+  final protected def code_get_string_element(attr: PAttribute): String = {
     if (attr.isHasMany) {
-      "build_xml_element(\"" + attr.name + "\", " + util_get_string_list_property(attr) + ", buf)"
+      "build_xml_element(\"" + attr.name + "\", " + code_get_string_list_property(attr) + ", buf)"
     } else {
-      "build_xml_element(\"" + attr.name + "\", " + util_get_string_property(attr) + ", buf)"
+      "build_xml_element(\"" + attr.name + "\", " + code_get_string_property(attr) + ", buf)"
     }
   }
 
-  final protected def util_get_string_property(name: String) = {
+  final protected def code_get_string_property(name: String) = {
     "get" + name.capitalize + "_asString()"
   }
 
-  final protected def util_get_xml_string_property(name: String) = {
-    "Util.escapeXmlText(" + util_get_string_property(name) + ")"
+  final protected def code_get_xml_string_property(name: String) = {
+    "Util.escapeXmlText(" + code_get_string_property(name) + ")"
   }
 
-  final protected def util_get_string_property(attr: PAttribute): String = {
+  final protected def code_get_string_property(attr: PAttribute): String = {
     attr.attributeType match {
       case e: PEntityType => {
-        util_get_string_property(pContext.variableName4RefId(attr))
+        code_get_string_property(pContext.variableName4RefId(attr))
       }
-      case _ => util_get_string_property(attr.name)
+      case _ => code_get_string_property(attr.name)
     }
   }
 
-  final protected def util_get_string_list_property(name: String) = {
+  final protected def code_get_string_list_property(name: String) = {
     "get" + name.capitalize + "_asStringList()"
   }
 
-  final protected def util_get_string_list_property(attr: PAttribute): String = {
+  final protected def code_get_string_list_property(attr: PAttribute): String = {
     attr.attributeType match {
       case e: PEntityType => {
-        util_get_string_list_property(pContext.variableName4RefId(attr))
+        code_get_string_list_property(pContext.variableName4RefId(attr))
       }
-      case _ => util_get_string_list_property(attr.name)
+      case _ => code_get_string_list_property(attr.name)
     }
   }
 
-  final protected def util_single_datatype_get_asString(attrName: String, expr: String) {
-    util_single_datatype_get_asString(attrName, attrName, expr)
+  final protected def code_single_datatype_get_asString(attrName: String, expr: String) {
+    code_single_datatype_get_asString(attrName, attrName, expr)
   }
 
-  final protected def util_single_datatype_get_asString(attrName: String, varName: String, expr: String) {
+  final protected def code_single_datatype_get_asString(attrName: String, varName: String, expr: String) {
     jm_method("public String get" + attrName.capitalize + "_asString()") {
       jm_return(expr)
     }
   }
 
-  final protected def util_single_object_get_asString(attrName: String, expr: String) {
-    util_single_object_get_asString(attrName, attrName, expr)
+  final protected def code_single_object_get_asString(attrName: String, expr: String) {
+    code_single_object_get_asString(attrName, attrName, expr)
   }
 
-  final protected def util_single_object_get_asString(attrName: String, varName: String, expr: String) {
+  final protected def code_single_object_get_asString(attrName: String, varName: String, expr: String) {
     jm_public_method("String get" + attrName.capitalize + "_asString()") {
       jm_if_else_null(varName) {
         jm_return("\"\"")
@@ -921,7 +930,7 @@ protected final void to_string_map(Map<String, String> map, String name, Object 
     }
   }
 
-  final protected def util_multi_get_asString(attrName: String, varName: String, typeName: String, expr: String) {
+  final protected def code_multi_get_asString(attrName: String, varName: String, typeName: String, expr: String) {
     jm_public_method("String get" + attrName.capitalize + "_asString()") {
       jm_if(varName + ".isEmpty()") {
         jm_return("\"\"")
@@ -938,7 +947,7 @@ protected final void to_string_map(Map<String, String> map, String name, Object 
     }
   }
 
-  final protected def util_multi_get_asStringIndex(attrName: String, varName: String, typeName: String, expr: String) {
+  final protected def code_multi_get_asStringIndex(attrName: String, varName: String, typeName: String, expr: String) {
     jm_public_method("String get" + attrName.capitalize + "_asString(int index)") {
       jm_if_else(varName + ".size() <= index") {
         jm_return("\"\"")
@@ -954,7 +963,7 @@ protected final void to_string_map(Map<String, String> map, String name, Object 
     }
   }
 
-  final protected def util_multi_get_asStringList(attrName: String, varName: String, typeName: String, expr: String) {
+  final protected def code_multi_get_asStringList(attrName: String, varName: String, typeName: String, expr: String) {
     jm_public_method("List<String> get" + attrName.capitalize + "_asStringList()") {
       jm_var_List_new_ArrayList("String", "list")
       jm_for(typeName + " elem: " + varName) {
@@ -970,17 +979,17 @@ protected final void to_string_map(Map<String, String> map, String name, Object 
     }
   }
 
-  final protected def util_multi_get_asString_methods(attrName: String, typeName: String, expr: String) {
-    util_multi_get_asString_methods(attrName, attrName, typeName, expr)
+  final protected def code_multi_get_asString_methods(attrName: String, typeName: String, expr: String) {
+    code_multi_get_asString_methods(attrName, attrName, typeName, expr)
   }
 
-  final protected def util_multi_get_asString_methods(attrName: String, varName: String, typeName: String, expr: String) {
-    util_multi_get_asString(attrName, varName, typeName, expr)
-    util_multi_get_asStringIndex(attrName, varName, typeName, expr)
-    util_multi_get_asStringList(attrName, varName, typeName, expr)
+  final protected def code_multi_get_asString_methods(attrName: String, varName: String, typeName: String, expr: String) {
+    code_multi_get_asString(attrName, varName, typeName, expr)
+    code_multi_get_asStringIndex(attrName, varName, typeName, expr)
+    code_multi_get_asStringList(attrName, varName, typeName, expr)
   }
 
-  final protected def util_build_xml_element() {
+  final protected def code_build_xml_element() {
     jm_private_method("void build_xml_element(String name, String value, StringBuilder buf)") {
       jm_append_String("<")
       jm_append_expr("name")

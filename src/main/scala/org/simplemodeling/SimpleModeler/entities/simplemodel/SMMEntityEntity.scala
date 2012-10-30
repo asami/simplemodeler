@@ -69,7 +69,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Mar. 25, 2012
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
- * @version Oct. 28, 2012
+ * @version Oct. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1012,7 +1012,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       attr.brief = a
     }
     for (a <- _dsl_expression(src.deriveExpression)) {
-      attr.deriveExpression
+      attr.deriveExpression = a
     }
     for (a <- _dsl_text(src.summary)) {
       attr.summary = a

@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
 /*
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
- * @version Oct. 28, 2012
+ * @version Oct. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -297,6 +297,7 @@ object NaturalLabel {
     BaseLabel,
     IsaLabel,
     MultiplicityLabel,
+    DeriveLabel,
     PrimaryActorLabel,
     SecondaryActorLabel,
     SupportingActorLabel,

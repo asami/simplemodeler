@@ -7,6 +7,14 @@ import org.simplemodeling.dsl._
 import java.text.SimpleDateFormat
 import java.util.TimeZone
 
+/* 
+ * @since   Jun. 20, 2011
+ *  version Aug. 19, 2011
+ *  version Feb. 19, 2012
+ *  version May.  6, 2012
+ * @version Oct. 30, 2012
+ * @author  ASAMI, Tomoharu
+ */
 /**
  * Generic Class Attribute Definition
  * 
@@ -52,13 +60,6 @@ import java.util.TimeZone
  *   <dt>update time</dt>
  *   <dd>(XXX: cache timestamp)</dd>
  * </dl>
- * 
- * 
- * @since   Jun. 20, 2011
- *  version Aug. 19, 2011
- *  version Feb. 19, 2012
- * @version May.  6, 2012
- * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassAttributeDefinition(
     val pContext: PEntityContext,
@@ -69,6 +70,13 @@ abstract class GenericClassAttributeDefinition(
 
   var isImmutable: Boolean = false // XXX attr.readonly
   def isInject = attr.inject
+  def isDerive: Boolean = {
+    attr.isDerive && owner.useDerivedAttribute
+  }
+
+  /**
+   * This kind is just used in case of PEntityType.
+   */
   var entityPersistentKind: EntityAttributeKind = {
     if (is_no_persistent) {
       SimpleEntityAttributeKind
@@ -208,6 +216,9 @@ abstract class GenericClassAttributeDefinition(
       return false
     }
     if (attr.readonly) {
+      return false
+    }
+    if (isDerive) {
       return false
     }
     // if (!attr.isId || attr.isId) {
@@ -367,6 +378,9 @@ abstract class GenericClassAttributeDefinition(
 
   def variable_plain {
     //      println("Attr %s, kind = %s".format(attr.name, attr.kind)) // 2009-10-28
+
+    if (isDerive) return
+
     val varName = var_name
     aspects.foreach(_.weaveAttributeSlot(attr, varName))
     attr.kind match {

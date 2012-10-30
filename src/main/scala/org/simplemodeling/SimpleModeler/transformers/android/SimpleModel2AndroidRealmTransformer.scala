@@ -23,7 +23,8 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /*
  * @since   Apr. 18, 2011
- * @version Oct. 26, 2011
+ *  version Oct. 26, 2011
+ * @version Oct. 29, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2AndroidRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -32,6 +33,8 @@ class SimpleModel2AndroidRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
 
   override val target_context = new AndroidEntityContext(sm.entityContext, sctx)
   override val target_realm = new AndroidRealmEntity(target_context)  
+  target_context.setModel(sm)
+  target_context.setPlatform(target_realm)
 
   def toAndroidRealm() = transform
 

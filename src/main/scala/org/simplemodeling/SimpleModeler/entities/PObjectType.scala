@@ -12,7 +12,8 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
 /*
  * @since   Apr. 22, 2011
  *  version Jul. 25, 2011
- * @version Apr. 11, 2012
+ *  version Apr. 11, 2012
+ * @version Oct. 29, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -536,10 +537,14 @@ class PEntityType(val name: String, val packageName: String) extends PObjectType
 
   private var _entity: PEntityEntity = _
   def entity: PEntityEntity = {
-    require(_entity != null, "PEntityType entity is unset")
+    require (_entity != null, "PEntityType entity is unset: " + name)
     _entity
   }
-  def entity_=(anEntity: PEntityEntity) = _entity = anEntity
+  def entity_=(anEntity: PEntityEntity) = {
+    require (anEntity != null, "EntityType entity must be not null: " + name)
+    require (_entity == null, "EntityType entity already has been setted up: " + name)
+    _entity = anEntity
+  }
 
 /*
   var modelAssociation: SMAssociation = _
