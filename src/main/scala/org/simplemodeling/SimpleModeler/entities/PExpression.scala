@@ -1,8 +1,7 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import scalaz._, Scalaz._
 import org.simplemodeling.SimpleModeler.entity._
-import de.odysseus.el._
-import de.odysseus.el.util._
 
 /*
  * @since   Oct. 28, 2012
@@ -11,4 +10,9 @@ import de.odysseus.el.util._
  */
 case class PExpression(model: SMExpression) {
   def tree = model.tree
+
+  def drawTree: String = {
+    implicit def SMExpressionShow: Show[SMExpressionNode] = showA
+    tree.drawTree
+  }
 }

@@ -13,7 +13,7 @@ trait JavaClassAttributeDefinitionHelper {
   def code_expression: String = {
     if (isDerive) {
       attr.deriveExpression.map(x => {
-        "see JavaClassAttributeDefinitionHelper"
+        x.drawTree
       }) | varName
     } else {
       varName

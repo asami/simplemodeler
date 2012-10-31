@@ -9,7 +9,7 @@ import de.odysseus.el.util._
 
 /*
  * @since   Oct. 31, 2012
- * @version Oct. 31, 2012
+ * @version Nov.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 object SMExpressionJuel {
@@ -85,11 +85,7 @@ object SMExpressionJuel {
   }
 
   protected def build_boolean(x: AstBoolean): Tree[SMExpressionNode] = {
-    val b = x.getValue(_bindings, _context, classOf[java.lang.Boolean])
-    b match {
-      case x: java.lang.Boolean => leaf(SMEBoolean(x))
-      case x => sys.error(x.toString) // XXX
-    }
+    _build_leaf_boolean(SMEBoolean, x)
   }
 
   protected def build_bracket(x: AstBracket): Tree[SMExpressionNode] = {
@@ -105,15 +101,37 @@ object SMExpressionJuel {
   }
 
   protected def build_dot(x: AstDot): Tree[SMExpressionNode] = {
-    _build_node(SMEDot, x)
+    println("SMExpressionJuel#build_dot: " + x.toString)
+    build_dot_node(x)
+  }
+
+  protected def build_dot_node(x: AstDot): Tree[SMEDot] = {
+    val name = x.toString.dropWhile(x => x == '.' || x == ' ')
+    val id = leaf(SMEIdentifier(name))
+    x.getChild(0) match {
+      case c: AstDot => {
+        val a = build_dot_node(c)
+        val b = a.rootLabel
+        val cs = Seq(b.lhs, _build_dot_node(Seq(b.rhs, id)))
+        _build_dot_node(cs)
+      }
+      case i: AstIdentifier => {
+        _build_dot_node(Seq(build_identifier(i), id))
+      }
+    }
+  }
+
+  private def _build_dot_node(cs: Seq[Tree[SMExpressionNode]]): Tree[SMEDot] = {
+    node(SMEDot(cs), cs.toStream).asInstanceOf[Tree[SMEDot]]
   }
 
   protected def build_eval(x: AstEval): Tree[SMExpressionNode] = {
+    println("SMExpressionJuel#build_eval: " + x.getCardinality)
     _build_node(SMEEval, x)
   }
 
   protected def build_identifier(x: AstIdentifier): Tree[SMExpressionNode] = {
-    leaf(SMEIdentifier())
+    leaf(SMEIdentifier(x.getName))
   }
 
   protected def build_method(x: AstMethod): Tree[SMExpressionNode] = {
@@ -129,7 +147,7 @@ object SMExpressionJuel {
   }
 
   protected def build_number(x: AstNumber): Tree[SMExpressionNode] = {
-    leaf(SMENumber())
+    _build_leaf_number(SMENumber, x)
   }
 
   protected def build_property(x: AstProperty): Tree[SMExpressionNode] = {
@@ -137,22 +155,62 @@ object SMExpressionJuel {
   }  
 
   protected def build_string(x: AstString): Tree[SMExpressionNode] = {
-    leaf(SMEString())
+    _build_leaf_string(SMEString, x)
   }  
 
   protected def build_text(x: AstText): Tree[SMExpressionNode] = {
-    leaf(SMEText())
+    _build_leaf_string(SMEText, x)
   }  
 
   protected def build_unary(x: AstUnary): Tree[SMExpressionNode] = {
     _build_node(SMEUnary, x)
   }  
 
+  private def _build_leaf_boolean(
+    f: Boolean => SMExpressionNode,
+    x: AstNode
+  ): Tree[SMExpressionNode] = {
+    val b = x.getValue(_bindings, _context, classOf[Boolean])
+    b match {
+      case x: java.lang.Boolean => leaf(f(x))
+      case x => sys.error(x.toString) // XXX
+    }
+  }
+
+  private def _build_leaf_number(
+    f: Number => SMExpressionNode,
+    x: AstNode
+  ): Tree[SMExpressionNode] = {
+    val b = x.getValue(_bindings, _context, classOf[Number])
+    b match {
+      case x: java.lang.Number => leaf(f(x))
+      case x => sys.error(x.toString) // XXX
+    }
+  }
+
+  private def _build_leaf_string(
+    f: String => SMExpressionNode,
+    x: AstNode
+  ): Tree[SMExpressionNode] = {
+    val b = x.getValue(_bindings, _context, classOf[String])
+    b match {
+      case x: java.lang.String => leaf(f(x))
+      case x => sys.error(x.toString) // XXX
+    }
+  }
+
   private def _build_node(
     f: Seq[Tree[SMExpressionNode]] => SMExpressionNode,
     x: AstNode
   ): Tree[SMExpressionNode] = {
     val cs = _children(x)
+    _build_node(f, cs)
+  }
+
+  private def _build_node(
+    f: Seq[Tree[SMExpressionNode]] => SMExpressionNode,
+    cs: Seq[Tree[SMExpressionNode]]
+  ): Tree[SMExpressionNode] = {
     node(f(cs), cs.toStream)
   }
 }
