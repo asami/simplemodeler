@@ -6,9 +6,9 @@ import de.odysseus.el.util._
 
 /*
  * @since   Oct. 28, 2012
- * @version Oct. 28, 2012
+ * @version Oct. 31, 2012
  * @author  ASAMI, Tomoharu
  */
 case class PExpression(model: SMExpression) {
-  def juelExpression = model.juelExpression
+  def tree = model.tree
 }

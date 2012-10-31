@@ -1,13 +1,12 @@
 package org.simplemodeling.SimpleModeler.entity
 
+import scalaz._, Scalaz._
 import org.apache.commons.lang3.StringUtils
 import org.simplemodeling.dsl._
-import de.odysseus.el._
-import de.odysseus.el.util._
 
 /*
  * @since   Oct. 28, 2012
- * @version Oct. 30, 2012
+ * @version Oct. 31, 2012
  * @author  ASAMI, Tomoharu
  */
 case class SMExpression(dslExpression: SExpression) {
@@ -16,17 +15,122 @@ case class SMExpression(dslExpression: SExpression) {
   final def name = sys.error("not implemented yet")
   final def value = sys.error("not implemented yet")
 
-  lazy val juelExpression: TreeValueExpression = {
-    SMExpression.juelExpression(dslExpression.expr)
+  lazy val tree: Tree[SMExpressionNode] = {
+    SMExpressionJuel.tree(dslExpression.expr)
   }
 }
 
-object SMExpression {
-  private val _factory = new ExpressionFactoryImpl()
-  private val _context = new SimpleContext(); // more on this here...
+trait SMExpressionNode {
+  def children: Seq[Tree[SMExpressionNode]]
+}
 
-  def juelExpression(expr: String) = {
-//    _factory.createValueExpression(_context, "${" + expr + "}", classOf[Object])
-    _factory.createValueExpression(_context, expr, classOf[Object])
-  }
+trait SMLeafExpressionNode extends SMExpressionNode {
+  val children = Nil
+}
+
+case class SMEBoolean(value: Boolean) extends SMLeafExpressionNode {
+}
+
+case class SMEBracket(
+  children: Seq[Tree[SMExpressionNode]]) extends SMExpressionNode {
+}
+
+case class SMEChoice(
+  children: Seq[Tree[SMExpressionNode]]) extends SMExpressionNode {
+}
+
+case class SMEComposite(
+  children: Seq[Tree[SMExpressionNode]]) extends SMExpressionNode {
+}
+
+case class SMEDot(
+  children: Seq[Tree[SMExpressionNode]]) extends SMExpressionNode {
+}
+
+case class SMEEval(
+  children: Seq[Tree[SMExpressionNode]]) extends SMExpressionNode {
+}
+
+case class SMEIdentifier() extends SMLeafExpressionNode {
+}
+
+case class SMEMethod() extends SMLeafExpressionNode {
+}
+
+case class SMENested(
+  children: Seq[Tree[SMExpressionNode]]) extends SMExpressionNode {
+}
+
+case class SMENull() extends SMLeafExpressionNode {
+}
+
+case class SMENumber() extends SMLeafExpressionNode {
+}
+
+case class SMEProperty() extends SMLeafExpressionNode {
+}
+
+case class SMEString() extends SMLeafExpressionNode {
+}
+
+case class SMEText() extends SMLeafExpressionNode {
+}
+
+case class SMEUnary(
+  children: Seq[Tree[SMExpressionNode]]) extends SMExpressionNode {
+}
+
+trait SMEBinaryOperator extends SMExpressionNode {
+}
+
+case class SMEBOAdd(
+  children: Seq[Tree[SMExpressionNode]]) extends SMEBinaryOperator {
+}
+
+case class SMEBOAnd(
+  children: Seq[Tree[SMExpressionNode]]) extends SMEBinaryOperator {
+}
+
+case class SMEBODiv(
+  children: Seq[Tree[SMExpressionNode]]) extends SMEBinaryOperator {
+}
+
+case class SMEBOEq(
+  children: Seq[Tree[SMExpressionNode]]) extends SMEBinaryOperator {
+}
+
+case class SMEBOGe(
+  children: Seq[Tree[SMExpressionNode]]) extends SMEBinaryOperator {
+}
+
+case class SMEBOGt(
+  children: Seq[Tree[SMExpressionNode]]) extends SMEBinaryOperator {
+}
+
+case class SMEBOLe(
+  children: Seq[Tree[SMExpressionNode]]) extends SMEBinaryOperator {
+}
+
+case class SMEBOLt(
+  children: Seq[Tree[SMExpressionNode]]) extends SMEBinaryOperator {
+}
+
+case class SMEBOMod(
+  children: Seq[Tree[SMExpressionNode]]) extends SMEBinaryOperator {
+}
+
+case class SMEBOMul(
+  children: Seq[Tree[SMExpressionNode]]) extends SMEBinaryOperator {
+}
+
+case class SMEBONe(
+  children: Seq[Tree[SMExpressionNode]]) extends SMEBinaryOperator {
+}
+
+case class SMEBOOr(
+  children: Seq[Tree[SMExpressionNode]]) extends SMEBinaryOperator {
+}
+
+case class SMEBOSub(
+  children: Seq[Tree[SMExpressionNode]]) extends SMEBinaryOperator {
 }
