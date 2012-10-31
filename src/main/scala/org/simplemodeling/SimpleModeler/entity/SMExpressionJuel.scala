@@ -101,7 +101,6 @@ object SMExpressionJuel {
   }
 
   protected def build_dot(x: AstDot): Tree[SMExpressionNode] = {
-    println("SMExpressionJuel#build_dot: " + x.toString)
     build_dot_node(x)
   }
 
@@ -126,7 +125,6 @@ object SMExpressionJuel {
   }
 
   protected def build_eval(x: AstEval): Tree[SMExpressionNode] = {
-    println("SMExpressionJuel#build_eval: " + x.getCardinality)
     _build_node(SMEEval, x)
   }
 
