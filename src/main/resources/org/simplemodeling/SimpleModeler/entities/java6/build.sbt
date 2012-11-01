@@ -16,4 +16,4 @@ libraryDependencies += "org.hibernate.java-persistence" % "jpa-api" % "2.0-cr-1"
 
 libraryDependencies += "org.hibernate" % "hibernate-entitymanager" % "4.0.1.Final"
 
-libraryDependencies += "org.simplemodeling" % "simplemodeler-runtime" % "0.1-SNAPSHOT"
+libraryDependencies += "org.simplemodeling" % "simplemodeler-runtime" % "0.1"

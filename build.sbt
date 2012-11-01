@@ -18,6 +18,8 @@ resolvers += "Scala Tools Snapshots" at "http://scala-tools.org/repo-snapshots/"
 
 resolvers += Classpaths.typesafeResolver
 
+resolvers += "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository"
+
 resolvers += "Asami Maven Repository" at "http://www.asamioffice.com/maven"
 
 libraryDependencies <+= scalaVersion { "org.scala-lang" % "scala-compiler" % _ }
@@ -37,6 +39,8 @@ libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.2"
 libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.2.0"
 
 libraryDependencies += "org.goldenport" %% "goldenport-record" % "0.2.0"
+
+libraryDependencies += "org.goldenport" % "goldenport-java-lib" % "0.1.1"
 
 libraryDependencies += "org.smartdox" %% "smartdox" % "0.3.1"
 
