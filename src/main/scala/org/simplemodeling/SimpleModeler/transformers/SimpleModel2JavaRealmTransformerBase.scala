@@ -33,6 +33,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(
   simpleModel: SimpleModelEntity, serviceContext: GServiceContext
 ) extends SimpleModel2ProgramRealmTransformerBase(simpleModel, serviceContext) {
   srcMainDir = "/src"
+  usePackageObject = false
   val defaultFileSuffix = "java"
 }
 

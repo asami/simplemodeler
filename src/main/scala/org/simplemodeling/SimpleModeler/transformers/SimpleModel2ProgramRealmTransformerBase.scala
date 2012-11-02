@@ -46,7 +46,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
   var useValue = true
   var usePowertype = true
   var isMakeProject = true
-  var useKindPackage = false
+  var useKindPackage = false 
+  var usePackageObject = true // TODO turn off
 
   var entityKindName = DEFAULT_MODEL_KIND
   var viewKindName = DEFAULT_VIEW_KIND
@@ -61,13 +62,13 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     target_context.srcMainDir = srcMainDir
     simpleModel.open()
     target_realm.open()
-    record_trace("SimpleModel2ProgramRealTransform.transform: SimpleModel start")
+    println("SimpleModel2ProgramRealTransform.transform: SimpleModel start")
     simpleModel.dump()
-    record_trace("SimpleModel2ProgramRealTransform.transform: SimpleModel end")
+    println("SimpleModel2ProgramRealTransform.transform: SimpleModel end")
     simpleModel.traverse(make_Builder)
-    record_trace("SimpleModel2ProgramRealTransform.transform: start")
+    println("SimpleModel2ProgramRealTransform.transform: start")
     target_realm.dump()
-    record_trace("SimpleModel2ProgramRealTransform.transform: end")
+    println("SimpleModel2ProgramRealTransform.transform: end")
     for (phase <- make_Phases) {
       target_realm.traverse(phase)
     }
@@ -360,7 +361,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         val model = create_Model()
         val errormodel = create_ErrorModel()
         val agent = create_Agent()
-        build_package(ppkg, pkg)
+        if (usePackageObject) {
+          build_package(ppkg, pkg)
+        }
         // build_package(p, pkg, ppkg, "Package"); // XXX 
         for (c <- create_Context) { 
           build_object_for_package(c, pkg, ppkg, target_context.contextName(pkg))
@@ -709,7 +712,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         case "org.simplemodeling.dsl.datatype.ext.XIM" => PIMType
         case "org.simplemodeling.dsl.datatype.ext.XPhoneNumber" => PPhoneNumberType
         case "org.simplemodeling.dsl.datatype.ext.XPostalAddress" => PPostalAddressType
-        case "org.simplemodeling.dsl.datatype.ext.Rating" => PRatingType
+        case "org.simplemodeling.dsl.datatype.ext.XRating" => PRatingType
+        case "org.simplemodeling.dsl.datatype.business.XMoney" => PMoneyType
+        case "org.simplemodeling.dsl.datatype.business.XPercent" => PPercentType
+        case "org.simplemodeling.dsl.datatype.business.XUnit" => PUnitType
         case _ => anAttr.attributeType.dslAttributeType match { 
           case v: SValue => new PValueType(v.name, v.packageName);
           case d: SDocument => new PDocumentType(d.name, d.packageName)

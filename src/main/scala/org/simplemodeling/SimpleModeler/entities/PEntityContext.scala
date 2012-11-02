@@ -513,6 +513,8 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   def makePathname(qname: String): String = {
+    println("qname = " + qname)
+    require (qname != "app")
     srcMainDir + UJavaString.className2pathname(qname) + "." + defaultFileSuffix
   }
 
@@ -532,6 +534,14 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     sqlRealm.getDocumentEntity(doc) getOrElse {
       sys.error("not implemented yet")
     }
+  }
+
+  def sqlMaker(entity: PEntityEntity): SqlMaker = {
+    new EntitySqlMaker(entity)
+  }
+
+  def sqlMaker(doc: PDocumentEntity): SqlMaker = {
+    new DocumentSqlMaker(doc)
   }
 
   /*
