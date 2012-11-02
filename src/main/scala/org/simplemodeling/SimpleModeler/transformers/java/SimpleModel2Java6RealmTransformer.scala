@@ -159,6 +159,10 @@ class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
       Some(new Java6RepositoryEntity(target_context))
     }
 
+    override protected def create_Service(): Option[PServiceEntity] = {
+      Some(new Java6RepositoryServiceEntity(target_context))
+    }
+
     override protected def create_View(): Option[PViewEntity] = {
       None
     }

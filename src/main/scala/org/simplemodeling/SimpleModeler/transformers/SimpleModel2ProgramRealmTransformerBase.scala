@@ -42,7 +42,6 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
   var srcMainDir: String = ""
   var scriptSrcDir= ""
   var useEntityDocument = true
-  var useEntityService = true
   var useValue = true
   var usePowertype = true
   var isMakeProject = true
@@ -350,6 +349,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       val viewname = target_context.viewName(pkg)
       val modelname = target_context.modelName(pkg)
       val errormodelname = target_context.errorModelName(pkg)
+      val servicename = target_context.entityServiceName(pkg)
       val agentname = target_context.agentName(pkg)
 
       if (pkg.children.exists(_.isInstanceOf[SMEntity])) {
@@ -360,6 +360,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         val view = create_View()
         val model = create_Model()
         val errormodel = create_ErrorModel()
+        val service = create_Service()
         val agent = create_Agent()
         if (usePackageObject) {
           build_package(ppkg, pkg)
@@ -392,6 +393,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         for (e <- errormodel) {
           build_object_for_package(e, pkg, ppkg, errormodelname)
         }
+        for (s <- service) {
+          build_object_for_package(s, pkg, ppkg, servicename)
+        }
         for (a <- agent) {
           build_object_for_package(a, pkg, ppkg, agentname)
         }
@@ -407,6 +411,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           }
           if (errormodel.isDefined) {
             module.entries += PModuleEntry(errormodelname, None, true)
+          }
+          if (service.isDefined) {
+            module.entries += PModuleEntry(servicename, None, true)
           }
           if (agent.isDefined) {
             module.entries += PModuleEntry(agentname, None, true)
@@ -530,13 +537,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       if (useKindPackage) {
         obj.kindName = entityKindName
       }
-      if (useEntityDocument || useEntityService) {
+      if (useEntityDocument) {
         obj.documentName = make_entity_document_name(anObject)
         make_entity_document(obj.documentName, anObject)
-      }
-      if (useEntityService) {
-        obj.serviceName = make_entity_service_name(anObject)
-        make_entity_service(obj.serviceName, anObject)
       }
     }
 
@@ -563,25 +566,19 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       }
     }
 
-    private def make_entity_service(docName: String, modelObject: SMObject) = {
-      for (obj <- create_Document(null)) {
-        obj.name = docName
-        obj.term = modelObject.term // XXX
-        obj.term_en = modelObject.term_en // XXX
-        obj.term_ja = modelObject.term_ja // XXX
-        obj.asciiName = target_context.asciiName(modelObject)
-        obj.uriName = target_context.uriName(modelObject)
-        obj.classNameBase = target_context.classNameBase(modelObject)
-        obj.setKindedPackageName(make_PackageName(modelObject))
-        obj.xmlNamespace = modelObject.xmlNamespace
-        obj.modelObject = modelObject
-        modelObject.getBaseObject match { // XXX doc name
-          case Some(base) => {
-            obj.setBaseObjectType(make_class_name(base), base.packageName)
-          }
-          case None => {}
-        }
-        build_properties(obj, modelObject)
+    private def make_entity_service(serviceName: String, modelPkg: SMPackage) = {
+      for (obj <- create_Service(null)) {
+        obj.name = serviceName
+        obj.term = modelPkg.term // XXX
+        obj.term_en = modelPkg.term_en // XXX
+        obj.term_ja = modelPkg.term_ja // XXX
+        obj.asciiName = target_context.asciiName(modelPkg)
+        obj.uriName = target_context.uriName(modelPkg)
+        obj.classNameBase = target_context.classNameBase(modelPkg)
+        obj.setKindedPackageName(modelPkg.qualifiedName)
+        obj.xmlNamespace = modelPkg.xmlNamespace
+        obj.modelPackage = Some(modelPkg)
+        // XXX
         store_object(obj)
       }
     }
@@ -1044,8 +1041,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     target_context.entityDocumentName(anObject)
   }
 
-  protected final def make_entity_service_name(anObject: SMObject): String = {
-    target_context.entityServiceName(anObject)
+  protected final def make_entity_service_name(pkg: SMPackage): String = {
+    target_context.entityServiceName(pkg)
   }
 
   protected final def make_multiplicity(aMultiplicity: SMMultiplicity): PMultiplicity = {

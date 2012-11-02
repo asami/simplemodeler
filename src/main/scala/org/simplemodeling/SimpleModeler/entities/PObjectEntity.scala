@@ -17,7 +17,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov.  1, 2012
+ * @version Nov.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -41,7 +41,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
    */
   var documentName = ""
   /**
-   * Used when this object is entity.
+   * Used when this object is package.
    */
   var serviceName = ""
   val attributes = new ArrayBuffer[PAttribute]
