@@ -24,20 +24,21 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /**
  * @since   May.  6, 2012
- * @version May. 18, 2012
+ *  version May. 18, 2012
+ * @version Nov.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2SqlRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
   type EntityContextTYPE = SqlEntityContext
   type TargetRealmTYPE = SqlRealmEntity
 
-  override val srcMainDir = "/public" // XXX Play
+  srcMainDir = "/public" // XXX Play
   override val defaultFileSuffix = "sql"
   override val target_context = new SqlEntityContext(sm.entityContext, sctx)
   override val target_realm = new SqlRealmEntity(target_context)
   target_context.setModel(sm)
   target_context.setPlatform(target_realm)
-  useEntityDocument = false
+  useEntityDocument = true
   useValue = false
 //  usePowertype = false
   useKindPackage = true

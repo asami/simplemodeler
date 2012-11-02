@@ -24,7 +24,8 @@ import com.asamioffice.goldenport.util.MultiValueMap
 /*
  * @since   Mar. 31, 2012
  *  version Mar. 31, 2012
- * @version Oct. 26, 2012
+ *  version Oct. 26, 2012
+ * @version Nov.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2PlayRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -113,22 +114,22 @@ class SimpleModel2PlayRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCont
       new PlayEntityPartEntity(target_context)
     }
 
-    override protected def create_Powertype(entity: SMDomainPowertype): DomainPowertypeTYPE = {
+    override protected def create_Powertype(entity: SMDomainPowertype): Option[DomainPowertypeTYPE] = {
       val r = new PlayPowertypeEntity(target_context)
       r.modelPowertype = entity
-      r
+      Some(r)
     }
 
-    override protected def create_Value(entity: SMDomainValue): DomainValueTYPE = {
-      new PlayValueEntity(target_context)
+    override protected def create_Value(entity: SMDomainValue): Option[DomainValueTYPE] = {
+      Some(new PlayValueEntity(target_context))
     }
 
-    override protected def create_Document(entity: SMDomainDocument): DomainDocumentTYPE = {
-      new PlayDocumentEntity(target_context)
+    override protected def create_Document(entity: SMDomainDocument): Option[DomainDocumentTYPE] = {
+      Some(new PlayDocumentEntity(target_context))
     }
 
-    override protected def create_Service(entity: SMDomainService): DomainServiceTYPE = {
-      new PlayServiceEntity(target_context)
+    override protected def create_Service(entity: SMDomainService): Option[DomainServiceTYPE] = {
+      Some(new PlayServiceEntity(target_context))
     }
 /*
     // platform specific models

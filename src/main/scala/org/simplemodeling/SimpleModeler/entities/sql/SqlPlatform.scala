@@ -8,7 +8,8 @@ import org.simplemodeling.SimpleModeler.transformers.sql.SimpleModel2SqlRealmTra
 
 /**
  * @since   May.  5, 2012
- * @version May.  6, 2012
+ *  version May.  6, 2012
+ * @version Nov.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 object SqlPlatform {
@@ -22,7 +23,7 @@ object SqlPlatform {
 
   def create(sm: SimpleModelEntity, entityContext: GEntityContext, serviceContext: GServiceContext): SqlRealmEntity = {
     println("SqlPlatform.create: start")
-    sm.print
+    sm.dump()
     println("SqlPlatform.create: end")
     val sm2sql = new SimpleModel2SqlRealmTransformer(sm, serviceContext)
     sm2sql.transform

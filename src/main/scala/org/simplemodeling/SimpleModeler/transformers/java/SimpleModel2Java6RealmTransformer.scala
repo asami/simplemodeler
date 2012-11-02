@@ -25,7 +25,8 @@ import org.goldenport.entity.content.ResourceContent
 /*
  * @since   Dec. 12, 2011
  *  version Dec. 14, 2011
- * @version Oct. 26, 2012
+ *  version Oct. 26, 2012
+ * @version Nov.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -64,7 +65,7 @@ class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
       val appname = target_context.className(pkg, "Application")
       val app = new Java6ApplicationEntity(target_context)
-      build_package(app, pkg, ppkg, appname)
+      build_object_for_package(app, pkg, ppkg, appname)
     }
 
     override protected def create_Actor(entity: SMDomainActor): DomainActorTYPE = {
@@ -95,22 +96,22 @@ class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
       new Java6EntityPartEntity(target_context)
     }
 
-    override protected def create_Powertype(entity: SMDomainPowertype): DomainPowertypeTYPE = {
+    override protected def create_Powertype(entity: SMDomainPowertype): Option[DomainPowertypeTYPE] = {
       val r = new Java6PowertypeEntity(target_context)
       r.modelPowertype = entity
-      r
+      Some(r)
     }
 
-    override protected def create_Value(entity: SMDomainValue): DomainValueTYPE = {
-      new Java6ValueEntity(target_context)
+    override protected def create_Value(entity: SMDomainValue): Option[DomainValueTYPE] = {
+      Some(new Java6ValueEntity(target_context))
     }
 
-    override protected def create_Document(entity: SMDomainDocument): DomainDocumentTYPE = {
-      new Java6DocumentEntity(target_context)
+    override protected def create_Document(entity: SMDomainDocument): Option[DomainDocumentTYPE] = {
+      Some(new Java6DocumentEntity(target_context))
     }
 
-    override protected def create_Service(entity: SMDomainService): DomainServiceTYPE = {
-      new Java6ServiceEntity(target_context)
+    override protected def create_Service(entity: SMDomainService): Option[DomainServiceTYPE] = {
+      Some(new Java6ServiceEntity(target_context))
     }
 
     // platform specific models

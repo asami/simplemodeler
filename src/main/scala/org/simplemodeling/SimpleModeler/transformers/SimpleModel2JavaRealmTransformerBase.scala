@@ -25,15 +25,18 @@ import org.goldenport.recorder.Recordable
  *  version Dec. 14, 2011
  *  version Apr.  7, 2012
  *  version Jun. 16, 2012
- * @version Oct. 30, 2012
+ *  version Oct. 30, 2012
+ * @version Nov.  2, 2012
  * @author  ASAMI, Tomoharu
  */
-abstract class SimpleModel2JavaRealmTransformerBase0(
+abstract class SimpleModel2JavaRealmTransformerBase(
   simpleModel: SimpleModelEntity, serviceContext: GServiceContext
 ) extends SimpleModel2ProgramRealmTransformerBase(simpleModel, serviceContext) {
+  srcMainDir = "/src"
+  val defaultFileSuffix = "java"
 }
 
-abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
+abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
     ) extends Recordable {
   type EntityContextTYPE <: PEntityContext
   type TargetRealmTYPE <: PRealmEntity
@@ -51,7 +54,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(val simpleModel: SimpleModel
     simpleModel.open()
     target_realm.open()
     simpleModel.traverse(make_Builder)
-    target_realm.print
+    target_realm.dump()
     for (phase <- make_Phases) {
       target_realm.traverse(phase)
     }

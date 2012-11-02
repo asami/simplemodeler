@@ -9,11 +9,13 @@ import org.goldenport.service.GServiceContext
 import com.asamioffice.goldenport.text.{UString, UJavaString}
 import org.simplemodeling.SimpleModeler.entities.sql._
 
-// derived from GaejEntityContext since Apr. 11, 2009
-/**
+/*
+ * derived from GaejEntityContext since Apr. 11, 2009
+ * 
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
- * @version Jun. 16, 2012
+ *  version Jun. 16, 2012
+ * @version Nov.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) {
@@ -36,8 +38,8 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     require (m != null, "model should not be null.")
     assert (_model.isEmpty, "model should not be setted.")
     println("PEntityContext: start")
-    m.open
-    m.print
+    m.open()
+    m.dump()
     println("PEntityContext: end")
     _model = Some(m)
   }
@@ -260,7 +262,9 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     pascal_case_name(enTerm(pkg))
   }
 
-  @deprecated("candidate old feature", "before 0.3.3")
+  /**
+   * SimpleModel2ProgramRealmTransformerBase uses this method.
+   */
   final def entityDocumentName(anObject: SMObject): String = {
     "DD" + classNameBase(anObject)
   }
@@ -268,6 +272,13 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   @deprecated("candidate old feature", "before 0.3.3")
   final def entityDocumentName(anObject: PObjectEntity): String = {
     entityDocumentName(anObject.modelObject)
+  }
+
+  /**
+   * SimpleModel2ProgramRealmTransformerBase uses this method.
+   */
+  final def entityServiceName(anObject: SMObject): String = {
+    "DS" + classNameBase(anObject)
   }
 
   @deprecated("candidate old feature", "before 0.3.3")
@@ -508,10 +519,19 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   /*
    * SQL
    */
+  /**
+   * SqlPlatform automatically generates SQL entities.
+   */
   lazy val sqlRealm = SqlPlatform.create(this)
 
   final def getSqlEntity(entity: PEntityEntity): SqlEntityEntity = {
     sqlRealm.getEntityEntity(entity)
+  }
+
+  final def getSqlEntity(doc: PDocumentEntity): SqlDocumentEntity = {
+    sqlRealm.getDocumentEntity(doc) getOrElse {
+      sys.error("not implemented yet")
+    }
   }
 
   /*

@@ -24,7 +24,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 /*
  * @since   Apr. 18, 2011
  *  version Oct. 26, 2011
- * @version Oct. 29, 2012
+ * @version Nov.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2AndroidRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -61,11 +61,13 @@ class SimpleModel2AndroidRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
       val appname = target_context.className(pkg, "Application")
       val app = new AndroidApplicationEntity(target_context)
-      build_package(app, pkg, ppkg, appname)
+//      build_package(app, pkg, ppkg, appname)
+      build_object_for_package(app, pkg, ppkg, appname)
       //
       val providername = target_context.className(pkg, "Provider")
       val provider = new AndroidContentProviderEntity(target_context)
-      build_package(provider, pkg, ppkg, providername)
+//      build_package(provider, pkg, ppkg, providername)
+      build_object_for_package(app, pkg, ppkg, providername)
       for (m <- module) {
         m.entries += PModuleEntry(providername, None, true)
       }
@@ -75,7 +77,8 @@ class SimpleModel2AndroidRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
       //
       val contractname = target_context.className(pkg, "Contract")
       val contract = new AndroidContentContractEntity(target_context)
-      build_package(contract, pkg, ppkg, contractname)
+//      build_package(contract, pkg, ppkg, contractname)
+      build_object_for_package(contract, pkg, ppkg, contractname)
       for (m <- module) {
         m.entries += PModuleEntry(contractname, None, true)
       }
@@ -112,22 +115,22 @@ class SimpleModel2AndroidRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
       new AndroidEntityPartEntity(target_context)
     }
 
-    override protected def create_Powertype(entity: SMDomainPowertype): DomainPowertypeTYPE = {
+    override protected def create_Powertype(entity: SMDomainPowertype): Option[DomainPowertypeTYPE] = {
       val r = new AndroidPowertypeEntity(target_context)
       r.modelPowertype = entity
-      r
+      Some(r)
     }
 
-    override protected def create_Value(entity: SMDomainValue): DomainValueTYPE = {
-      new AndroidValueEntity(target_context)
+    override protected def create_Value(entity: SMDomainValue): Option[DomainValueTYPE] = {
+      Some(new AndroidValueEntity(target_context))
     }
 
-    override protected def create_Document(entity: SMDomainDocument): DomainDocumentTYPE = {
-      new AndroidDocumentEntity(target_context)
+    override protected def create_Document(entity: SMDomainDocument): Option[DomainDocumentTYPE] = {
+      Some(new AndroidDocumentEntity(target_context))
     }
 
-    override protected def create_Service(entity: SMDomainService): DomainServiceTYPE = {
-      new AndroidServiceEntity(target_context)
+    override protected def create_Service(entity: SMDomainService): Option[DomainServiceTYPE] = {
+      Some(new AndroidServiceEntity(target_context))
     }
 
     // platform specific models
@@ -197,11 +200,15 @@ class SimpleModel2AndroidRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
       restfeedrepository.entityDocumentName = Some(entity.documentName)
       restfeedrepository.driverIfName = Some(driverIfName)
       restfeedrepository.defaultDriverName = Some(g3DriverName)
-      build_entity(restfeedrepository, entity, target_context.className(entity.classNameBase + "RestFeedRepository"))
+//      build_entity(restfeedrepository, entity, target_context.className(entity.classNameBase + "RestFeedRepository"))
+      build_entity_android(restfeedrepository, entity, target_context.className(entity.classNameBase + "RestFeedRepository"))
       val restfeedadapter = new AndroidRestFeedAdapterEntity(target_context)
-      build_entity(restfeedadapter, entity, target_context.className(entity.classNameBase + "RestFeedAdapter"))
+//      build_entity(restfeedadapter, entity, target_context.className(entity.classNameBase + "RestFeedAdapter"))
+      build_entity_android(restfeedadapter, entity, target_context.className(entity.classNameBase + "RestFeedAdapter"))
       val restview = new AndroidRestViewActivityEntity(target_context)
-      build_entity(restview, entity, target_context.className(
+//      build_entity(restview, entity, target_context.className(
+//          entity.classNameBase + "RestViewActivity"))
+      build_entity_android(restview, entity, target_context.className(
           entity.classNameBase + "RestViewActivity"))
     }
 
@@ -210,10 +217,10 @@ class SimpleModel2AndroidRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
       val driverIfName = _driver_if_name(pkgname)
       val g3DriverName = _g3_driver_name(pkgname)
       val driverIf = new AndroidIRestDriverEntity(target_context)
-      build_package(driverIf, pkg, driverIfName)
+      build_package_android(driverIf, pkg, driverIfName)
       val g3driver = new AndroidG3RestDriverEntity(target_context)
       g3driver.interfaceName = Some(driverIfName)
-      build_package(g3driver, pkg, g3DriverName)
+      build_package_android(g3driver, pkg, g3DriverName)
     }
   }
 

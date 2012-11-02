@@ -24,7 +24,8 @@ import org.simplemodeling.SimpleModeler.transformers.java.SimpleModel2Java6Realm
 /**
  * @since   Jan. 29, 2012
  *  version Feb. 28, 2012
- * @version Jun. 17, 2012
+ *  version Jun. 17, 2012
+ * @version Nov.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -113,7 +114,7 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
 
   private def _sm2_java6(path: ZPath, call: GServiceCall, sm: SimpleModelEntity): Stream[(ZPath, GContent)] = {
     val sm2java = new SimpleModel2Java6RealmTransformer(sm, call.serviceContext)
-    sm2java.javaSrcDir = "/main/java"
+    sm2java.srcMainDir = "/main/java"
     sm2java.isMakeProject = false
     val javaRealm = sm2java.transform
     val tree = entree(javaRealm.root)

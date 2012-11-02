@@ -23,7 +23,8 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /*
  * @since   Jul. 11, 2011
- * @version Aug. 25, 2011
+ *  version Aug. 25, 2011
+ * @version Nov.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2G3RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -59,11 +60,11 @@ class SimpleModel2G3RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContex
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
       val appname = target_context.className(pkg, "Application")
       val app = new G3ApplicationEntity(target_context)
-      build_package(app, pkg, ppkg, appname)
+      build_object_for_package(app, pkg, ppkg, appname)
 
       val scriptname = ppkg.term_en
       val script = new G3ScriptEntity(target_context)
-      build_package_script(script, pkg, ppkg, scriptname)
+      build_object_for_package_in_script(script, pkg, ppkg, scriptname)
 /*
       //
       val providername = target_context.className(pkg, "Provider")
@@ -116,20 +117,20 @@ class SimpleModel2G3RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContex
       new G3EntityPartEntity(target_java_context)
     }
 
-    override protected def create_Powertype(entity: SMDomainPowertype): DomainPowertypeTYPE = {
-      new G3PowertypeEntity(target_java_context)
+    override protected def create_Powertype(entity: SMDomainPowertype): Option[DomainPowertypeTYPE] = {
+      Some(new G3PowertypeEntity(target_java_context))
     }
 
-    override protected def create_Value(entity: SMDomainValue): DomainValueTYPE = {
-      new G3ValueEntity(target_java_context)
+    override protected def create_Value(entity: SMDomainValue): Option[DomainValueTYPE] = {
+      Some(new G3ValueEntity(target_java_context))
     }
 
-    override protected def create_Document(entity: SMDomainDocument): DomainDocumentTYPE = {
-      new G3DocumentEntity(target_java_context)
+    override protected def create_Document(entity: SMDomainDocument): Option[DomainDocumentTYPE] = {
+      Some(new G3DocumentEntity(target_java_context))
     }
 
-    override protected def create_Service(entity: SMDomainService): DomainServiceTYPE = {
-      new G3ServiceEntity(target_java_context)
+    override protected def create_Service(entity: SMDomainService): Option[DomainServiceTYPE] = {
+      Some(new G3ServiceEntity(target_java_context))
     }
 
     // platform specific models

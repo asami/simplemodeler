@@ -13,12 +13,11 @@ import org.simplemodeling.SimpleModeler.entities.gaej.GaejUtil._
 // derived from GaejEntityObjectEntity since Jul.  3, 2009.
 /*
  * @since   Apr. 23, 2011
- * @version Aug. 20, 2011
+ *  version Aug. 20, 2011
+ * @version Nov.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 trait PEntityObjectEntity extends PObjectEntity {
-  var documentName: String
-  
   lazy val entities = {
     val e = for (attr <- attributes if attr.attributeType.isEntity) yield {
       attr.attributeType.asInstanceOf[PEntityType].entity

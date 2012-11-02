@@ -2,15 +2,15 @@ package org.simplemodeling.SimpleModeler.entities
 
 /*
  * @since   Jul.  6, 2011
- * @version Aug.  7, 2011
- * @version Dec. 13, 2011
+ *  version Dec. 13, 2011
+ * @version Nov.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 class DocumentJavaClassDefinition(
   pContext: PEntityContext,     
   aspects: Seq[JavaAspect],
   pobject: PObjectEntity
-) extends JavaClassDefinition(pContext, aspects, pobject) {
+) extends JavaClassDefinition(pContext, aspects, pobject) with SqlHelper {
   useDocument = false
   isImmutable = true
   isData = true
@@ -32,5 +32,11 @@ class DocumentJavaClassDefinition(
   }
 
   override protected def to_methods_entry {
+  }
+
+  override protected def object_auxiliary {
+    jm_public_method("String fetchSql()") {
+      jm_return(sql_select(pobject))
+    }
   }
 }

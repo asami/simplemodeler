@@ -12,11 +12,19 @@ import org.simplemodeling.SimpleModeler.entities.PUtil._
 // derived from GaejConstraint since Apr. 10, 2009
 /*
  * @since   Apr. 23, 2011
- * @version Aug. 20, 2011
+ * @version Nov.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 trait PDocumentEntity extends PObjectEntity {
+  /**
+   * Currently no one uses the variable.
+   */
   var modelDocumentOption: Option[SMDocument] = None
+  /**
+   * Referenced by GenericClassAttributeDefinition#is_composition_property,
+   * 
+   * Setted by GenericClassDefinition constructor.
+   */
   var modelEntityOption: Option[SMEntity] = None
 
   protected final def id_var_name(attr: PAttribute) = {

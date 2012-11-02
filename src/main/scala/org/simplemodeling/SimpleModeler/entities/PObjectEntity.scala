@@ -16,7 +16,8 @@ import org.simplemodeling.dsl._
  *  version Dec. 15, 2011
  *  version May.  5, 2012
  *  version Jun. 17, 2012
- * @version Oct. 26, 2012
+ *  version Oct. 26, 2012
+ * @version Nov.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -35,6 +36,14 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   var kindName = ""
   var xmlNamespace = ""
   def qualifiedName = if (packageName != "") packageName + "." + name else name
+  /**
+   * Used when this object is entity.
+   */
+  var documentName = ""
+  /**
+   * Used when this object is entity.
+   */
+  var serviceName = ""
   val attributes = new ArrayBuffer[PAttribute]
   val operations = new ArrayBuffer[POperation]
   /**

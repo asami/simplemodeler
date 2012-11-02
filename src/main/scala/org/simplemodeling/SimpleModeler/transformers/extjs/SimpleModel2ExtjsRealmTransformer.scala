@@ -25,14 +25,15 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /**
  * @since   Mar. 31, 2011
- * @version Jun. 16, 2012
+ *  version Jun. 16, 2012
+ * @version Nov.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
   type EntityContextTYPE = ExtjsEntityContext
   type TargetRealmTYPE = ExtjsRealmEntity
 
-  override val srcMainDir = "/public" // XXX Play
+  srcMainDir = "/public" // XXX Play
   override val defaultFileSuffix = "js"
   override val target_context = new ExtjsEntityContext(sm.entityContext, sctx)
   override val target_realm = new ExtjsRealmEntity(target_context)

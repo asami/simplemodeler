@@ -26,21 +26,23 @@ import org.goldenport.recorder.Recordable
  * 
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
- * @version Jun. 17, 2012
+ *  version Jun. 17, 2012
+ * @version Nov.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
-    ) extends Recordable with SimpleModelerConstants {
+    ) extends SimpleModel2ProgramRealmTransformerBaseHelper with Recordable with SimpleModelerConstants {
   type EntityContextTYPE <: PEntityContext
   type TargetRealmTYPE <: PRealmEntity
 
   val target_context: EntityContextTYPE
   val target_realm: TargetRealmTYPE
   val defaultFileSuffix: String
-  val srcMainDir: String
 
+  var srcMainDir: String = ""
   var scriptSrcDir= ""
   var useEntityDocument = true
+  var useEntityService = true
   var useValue = true
   var usePowertype = true
   var isMakeProject = true
@@ -60,11 +62,11 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     simpleModel.open()
     target_realm.open()
     record_trace("SimpleModel2ProgramRealTransform.transform: SimpleModel start")
-    simpleModel.print
+    simpleModel.dump()
     record_trace("SimpleModel2ProgramRealTransform.transform: SimpleModel end")
     simpleModel.traverse(make_Builder)
     record_trace("SimpleModel2ProgramRealTransform.transform: start")
-    target_realm.print
+    target_realm.dump()
     record_trace("SimpleModel2ProgramRealTransform.transform: end")
     for (phase <- make_Phases) {
       target_realm.traverse(phase)
@@ -525,13 +527,40 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       if (useKindPackage) {
         obj.kindName = entityKindName
       }
-      if (useEntityDocument) {
+      if (useEntityDocument || useEntityService) {
         obj.documentName = make_entity_document_name(anObject)
         make_entity_document(obj.documentName, anObject)
+      }
+      if (useEntityService) {
+        obj.serviceName = make_entity_service_name(anObject)
+        make_entity_service(obj.serviceName, anObject)
       }
     }
 
     private def make_entity_document(docName: String, modelObject: SMObject) = {
+      for (obj <- create_Document(null)) {
+        obj.name = docName
+        obj.term = modelObject.term // XXX
+        obj.term_en = modelObject.term_en // XXX
+        obj.term_ja = modelObject.term_ja // XXX
+        obj.asciiName = target_context.asciiName(modelObject)
+        obj.uriName = target_context.uriName(modelObject)
+        obj.classNameBase = target_context.classNameBase(modelObject)
+        obj.setKindedPackageName(make_PackageName(modelObject))
+        obj.xmlNamespace = modelObject.xmlNamespace
+        obj.modelObject = modelObject
+        modelObject.getBaseObject match { // XXX doc name
+          case Some(base) => {
+            obj.setBaseObjectType(make_class_name(base), base.packageName)
+          }
+          case None => {}
+        }
+        build_properties(obj, modelObject)
+        store_object(obj)
+      }
+    }
+
+    private def make_entity_service(docName: String, modelObject: SMObject) = {
       for (obj <- create_Document(null)) {
         obj.name = docName
         obj.term = modelObject.term // XXX
@@ -715,81 +744,6 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         case m: SMMultiplicityRange => new PRange // XXX
         case _ => sys.error("Unkown multiplicity = " + aMultiplicity.kind)
       }
-    }
-
-    protected final def build_object_for_package(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) = {
-      obj.name = if (name != null) name else make_object_name(modelPackage.name)
-      obj.term = modelPackage.term
-      obj.term_en = modelPackage.term_en
-      obj.term_ja = modelPackage.term_ja
-      obj.asciiName = target_context.asciiName(modelPackage)
-      obj.uriName = target_context.uriName(modelPackage)
-      obj.classNameBase = target_context.classNameBase(modelPackage)
-      obj.modelPackage = Some(modelPackage)
-      obj.platformPackage = Some(ppkg)
-      obj.setKindedPackageName(modelPackage.qualifiedName)
-      obj.xmlNamespace = modelPackage.xmlNamespace
-//      obj.modelObject = modelPackage
-//      build_properties(obj, modelPackage)
-      val pathname = make_pathname(obj)
-      target_realm.setEntity(pathname, obj)
-      obj
-    }
-
-    protected final def build_object_for_package_in_script(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) = {
-      obj.name = if (name != null) name else make_object_name(modelPackage.name)
-      obj.term = modelPackage.term
-      obj.term_en = modelPackage.term_en
-      obj.term_ja = modelPackage.term_ja
-      obj.asciiName = target_context.asciiName(modelPackage)
-      obj.uriName = target_context.uriName(modelPackage)
-      obj.classNameBase = target_context.classNameBase(modelPackage)
-      obj.modelPackage = Some(modelPackage)
-      obj.platformPackage = Some(ppkg)
-      obj.packageName = modelPackage.qualifiedName
-      obj.xmlNamespace = modelPackage.xmlNamespace
-//      obj.modelObject = modelPackage
-//      build_properties(obj, modelPackage)
-      val pathname = scriptSrcDir + "/" + obj.name + "." + obj.fileSuffix
-      target_realm.setEntity(pathname, obj)
-      obj
-    }
-
-    protected final def build_object_for_package_at_pathname(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, pathname: String) = {
-      obj.name = UPathString.getLastComponent(pathname)
-      obj.term = modelPackage.term
-      obj.term_en = modelPackage.term_en
-      obj.term_ja = modelPackage.term_ja
-      obj.asciiName = target_context.asciiName(modelPackage)
-      obj.uriName = target_context.uriName(modelPackage)
-      obj.classNameBase = target_context.classNameBase(modelPackage)
-      obj.modelPackage = Some(modelPackage)
-      obj.platformPackage = Some(ppkg)
-      obj.packageName = modelPackage.qualifiedName
-      obj.xmlNamespace = modelPackage.xmlNamespace
-//      obj.modelObject = modelPackage
-//      build_properties(obj, modelPackage)
-      target_realm.setEntity(pathname, obj)
-      obj
-    }
-
-    protected final def build_package(ppkg: PPackageEntity, modelPackage: SMPackage) = {
-      ppkg.term = modelPackage.term
-      ppkg.term_en = modelPackage.term_en
-      ppkg.term_ja = modelPackage.term_ja
-      ppkg.asciiName = target_context.asciiName(modelPackage)
-      ppkg.uriName = target_context.uriName(modelPackage)
-      ppkg.classNameBase = target_context.classNameBase(modelPackage)
-//      ppkg.modelPackage = Some(modelPackage)
-//      ppkg.platformPackage = Some(ppkg)
-      ppkg.packageName = modelPackage.qualifiedName
-      ppkg.xmlNamespace = modelPackage.xmlNamespace
-//      ppkg.modelObject = modelPackage
-//      build_properties(ppkg, modelPackage)
-      val pathname = make_pathname(modelPackage.qualifiedName)
-      val node = target_realm.setEntity(pathname, ppkg)
-//      ppkg.containerNode = Some(node)
-      ppkg      
     }
   }
 
@@ -1082,6 +1036,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
   protected final def make_entity_document_name(anObject: SMObject): String = {
     target_context.entityDocumentName(anObject)
+  }
+
+  protected final def make_entity_service_name(anObject: SMObject): String = {
+    target_context.entityServiceName(anObject)
   }
 
   protected final def make_multiplicity(aMultiplicity: SMMultiplicity): PMultiplicity = {

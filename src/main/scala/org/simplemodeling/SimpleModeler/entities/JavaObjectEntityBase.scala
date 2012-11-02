@@ -17,7 +17,8 @@ import com.asamioffice.goldenport.text.UString.notNull
  *  version Aug. 20, 2011
  *  version Dec. 15, 2011
  *  version May.  5, 2012
- * @version Oct. 26, 2012
+ *  version Oct. 26, 2012
+ * @version Nov.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class JavaObjectEntityBase(val javaContext: JavaEntityContextBase)
@@ -30,7 +31,7 @@ abstract class JavaObjectEntityBase(val javaContext: JavaEntityContextBase)
 
 //  def modelEntity = modelObject.asInstanceOf[SMEntity]
 //  val documentName = ""
-  var documentName: String = ""
+//  var documentName: String = ""
 
   /**
    * Java6 entities (e.g. Java6EntityEntity) does not use this method.

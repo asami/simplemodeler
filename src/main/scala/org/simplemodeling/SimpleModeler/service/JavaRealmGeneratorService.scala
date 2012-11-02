@@ -7,14 +7,15 @@ import org.simplemodeling.SimpleModeler.transformers.java.SimpleModel2Java6Realm
 
 /*
  * @since   Dec. 12, 2011
- * @version Feb. 28, 2012
+ *  version Feb. 28, 2012
+ * @version Nov.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaRealmGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
   def execute_Service(aRequest: GServiceRequest, aResponse: GServiceResponse) = {
     val simpleModel: SimpleModelEntity = aRequest.entityAs
     val sm2java = new SimpleModel2Java6RealmTransformer(simpleModel, aCall.serviceContext)
-    sm2java.javaSrcDir = "/src/main/java"
+    sm2java.srcMainDir = "/src/main/java"
     val androidRealm = sm2java.transform
     aResponse.addRealm(androidRealm)
   }
