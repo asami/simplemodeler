@@ -4,7 +4,8 @@ package org.simplemodeling.SimpleModeler.entities
  * @since   May. 15, 2011
  *  version Sep.  1, 2011
  *  version Feb. 10, 2012
- * @version Oct. 30, 2012
+ *  version Oct. 30, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaMakerHolder {
@@ -479,6 +480,11 @@ trait JavaMakerHolder {
     _maker.makeElseIfElseNotNullReturnExpr(condition, cparams: _*)(expr, eparams: _*)
   }
 
+  protected final def jm_get_return_expr_or_null(typename: String, value: String, vparams: AnyRef*)(expr: String) {
+    jm_var(typename, "elem", value, vparams: _*)
+    jm_return_expr_or_null("elem", expr)
+  }
+
   // for
   protected final def jm_for(typeName: String, varName: String, generator: String)(body: => Unit) {
     _maker.makeFor(typeName, varName, generator)(body)
@@ -551,6 +557,18 @@ trait JavaMakerHolder {
 
   protected final def jm_return_this() {
     _maker.makeReturnThis()
+  }
+
+  protected final def jm_return_var_or_null(
+    varname: String
+  ) {
+    _maker.makeReturnVarOrNull(varname)
+  }
+
+  protected final def jm_return_expr_or_null(
+    varname: String, expr: String
+  ) {
+    _maker.makeReturnExprOrNull(varname, expr)
   }
 
   // assign

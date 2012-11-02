@@ -7,7 +7,8 @@ import org.simplemodeling.SimpleModeler.entity.business._
 /*
  * @since   Jul. 13, 2011
  *  version Aug.  7, 2011
- * @version Dec. 13, 2011
+ *  version Dec. 13, 2011
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class RepositoryJavaClassDefinition(
@@ -54,14 +55,21 @@ protected %context% context;
 
   override protected def package_methods_platform_Entity(entity: PEntityEntity) {
     val classname = entity.name;
+    val docname = entity.documentName
     val cursor = "Cursor<%s>".format(classname)
     val query = "Query"
     val idtype = "long"
     jm_public_method("void create%s(%s data) throws IOException", classname, classname) {
       jm_UnsupportedOperationException
     }
+    jm_public_method("void create%s(%s data) throws IOException", classname, docname) {
+      jm_pln("create%s(new %s(data));".format(classname, classname))
+    }
     jm_public_method("%s get%s(%s id) throws IOException", classname, classname, idtype) {
       jm_UnsupportedOperationException
+    }
+    jm_public_method("%s get%sDocument(%s id) throws IOException", docname, classname, idtype) {
+      jm_get_return_expr_or_null(classname, "get%s(id)".format(classname))("%s.make_document()")
     }
 /*
     jm_public_method("%s query%s(%s query) throws IOException", cursor, classname, query) {
@@ -73,6 +81,9 @@ protected %context% context;
 */
     jm_public_method("void update%s(%s data) throws IOException", classname, classname) {
       jm_UnsupportedOperationException
+    }
+    jm_public_method("void update%s(%s data) throws IOException", classname, docname) {
+      jm_pln("update%s(new %s(data));".format(classname, classname))
     }
     jm_public_method("void update%s(String data) throws IOException", classname) {
       jm_UnsupportedOperationException

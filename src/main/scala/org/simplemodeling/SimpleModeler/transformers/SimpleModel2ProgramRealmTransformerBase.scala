@@ -27,7 +27,7 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov.  2, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -433,6 +433,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           }
           if (errormodel.isDefined) {
             factory.entries += PModuleEntry(errormodelname, None, true)
+          }
+          if (service.isDefined) {
+            factory.entries += PModuleEntry(servicename, None, true)
           }
           if (agent.isDefined) {
             factory.entries += PModuleEntry(agentname, None, true)

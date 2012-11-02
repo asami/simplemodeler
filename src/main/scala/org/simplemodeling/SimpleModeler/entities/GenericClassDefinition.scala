@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import org.apache.commons.lang3.StringUtils
 import scalaz._
 import Scalaz._
 import scala.collection.mutable.ArrayBuffer
@@ -40,7 +41,8 @@ import org.goldenport.recorder.Recordable
  *  version Feb. 20, 2012
  *  version May. 15, 2012
  *  version Jun. 10, 2012
- * @version Oct. 30, 2012
+ *  version Oct. 30, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -83,6 +85,7 @@ abstract class GenericClassDefinition(
     case e: PEntityObjectEntity => e.documentName
     case _ => ""
   }
+  def isDocumentOwner = StringUtils.isNotBlank(documentName)
   val modelObject: SMObject = pobject.modelObject
   val baseObject: Option[PObjectReferenceType] = pobject.getBaseObjectType
   def hasBaseObject = baseObject.isDefined
@@ -492,6 +495,9 @@ abstract class GenericClassDefinition(
     constructors_null_constructor
     constructors_copy_constructor
     constructors_plain_constructor
+    if (isDocumentOwner) {
+      constructors_doc_constructor
+    }
     constructors_auxiliary_constructors
   }
 
@@ -500,6 +506,8 @@ abstract class GenericClassDefinition(
   protected def constructors_copy_constructor {}
 
   protected def constructors_plain_constructor {}
+
+  protected def constructors_doc_constructor {}
 
   protected def constructors_auxiliary_constructors {}
 

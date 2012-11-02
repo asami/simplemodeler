@@ -9,7 +9,8 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
 /*
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
- * @version Oct. 30, 2012
+ *  version Oct. 30, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -159,6 +160,38 @@ class JavaClassDefinition(
       for (a <- not_derived_attribute_definitions) {
         if (aspects.find(_.weavePlainConstructorAttributeBlock(a.attr, a.varName, a.paramName)).isDefined) {}
         else jm_assign_this(a.varName, a.paramName)
+      }
+    }
+  }
+
+  override protected def constructors_doc_constructor {
+    jm_public_constructor("%s(%s o)", name, documentName) {
+      if (hasBaseObject) {
+        jm_pln("super(o);")
+      }
+      for (a <- not_derived_attribute_definitions) {
+        if (aspects.find(_.weaveDocConstructorAttributeBlock(a.attr, a.varName, "o")).isDefined) {}
+        else {
+          val in = "o." + a.varName
+          if (a.attr.isMulti) {
+            val rhs = a.attr.attributeType match {
+              case t: PEntityType => {
+                "%s != null ? new %s(%s) : null".format(in, t.name, in)
+              }
+              case _ => in
+            }
+            jm_assign_this(a.varName, rhs)
+          } else {
+            a.attr.attributeType match {
+              case t: PEntityType => {
+                jm_for(documentName, "elem", in) {
+                  jm_pln("%s.add(new %s(elem));", a.varName, t.name)
+                }
+              }
+              case _ => jm_assign_this(a.varName, in)
+            }
+          }
+        }
       }
     }
   }

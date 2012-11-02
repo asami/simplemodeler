@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
- * @version Nov.  2, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -266,7 +266,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
    * SimpleModel2ProgramRealmTransformerBase uses this method.
    */
   final def entityDocumentName(anObject: SMObject): String = {
-    "DD" + classNameBase(anObject)
+    "Doc" + classNameBase(anObject)
   }
 
   @deprecated("candidate old feature", "before 0.3.3")
@@ -278,7 +278,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
    * SimpleModel2ProgramRealmTransformerBase uses this method.
    */
   final def entityServiceName(pkg: SMPackage): String = {
-    "DS" + classNameBase(pkg) + "RepositoryService"
+    classNameBase(pkg) + "RepositoryService"
   }
 
   @deprecated("candidate old feature", "before 0.3.3")

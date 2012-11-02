@@ -13,7 +13,8 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Jul. 22, 2011
  *  version Feb. 19, 2012
  *  version Apr. 19, 2012
- * @version Oct. 30, 2012
+ *  version Oct. 30, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -52,6 +53,8 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     require (isId)
     modelAttribute.idPolicy
   }
+
+  def isMulti = !(multiplicity == POne && multiplicity == PZeroOne)
 
   def isComposition = modelAssociation != null && modelAssociation.isComposition
   def isAggregation = modelAssociation != null && modelAssociation.isAggregation
