@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov.  2, 2012
- * @version Nov.  2, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class RepositoryServiceJavaClassDefinition(
@@ -28,7 +28,9 @@ class RepositoryServiceJavaClassDefinition(
     jm_code("""
 @Inject
 protected %context% context;
-""", Map("%context%" -> contextName))
+@Inject
+protected %repository% repository;
+""", Map("%context%" -> contextName, "%repository%" -> repositoryName))
   }
 
   override protected def package_methods_Actor(actor: SMDomainActor) {
@@ -53,14 +55,15 @@ protected %context% context;
 
   override protected def package_methods_platform_Entity(entity: PEntityEntity) {
     val classname = entity.name;
+    val docname = entity.documentName
     val cursor = "Cursor<%s>".format(classname)
     val query = "Query"
     val idtype = "long"
-    jm_public_method("void create%s(%s data) throws IOException", classname, classname) {
-      jm_UnsupportedOperationException
+    jm_public_method("void create%s(%s data) throws IOException", classname, docname) {
+      jm_pln("repository.create%s(data);", classname)
     }
-    jm_public_method("%s get%s(%s id) throws IOException", classname, classname, idtype) {
-      jm_UnsupportedOperationException
+    jm_public_method("%s get%s(%s id) throws IOException", docname, classname, idtype) {
+      jm_return("repository.get%sDocument(id)", classname)
     }
 /*
     jm_public_method("%s query%s(%s query) throws IOException", cursor, classname, query) {
@@ -70,20 +73,20 @@ protected %context% context;
       jm_UnsupportedOperationException
     }
 */
-    jm_public_method("void update%s(%s data) throws IOException", classname, classname) {
-      jm_UnsupportedOperationException
+    jm_public_method("void update%s(%s data) throws IOException", classname, docname) {
+      jm_pln("repository.update%s(data);", classname)
     }
     jm_public_method("void update%s(String data) throws IOException", classname) {
-      jm_UnsupportedOperationException
+      jm_pln("repository.update%s(data);", classname)
     }
     jm_public_method("void update%s(String[] data) throws IOException", classname) {
-      jm_UnsupportedOperationException
+      jm_pln("repository.update%s(data);", classname)
     }
     jm_public_method("void update%s(Map<String, Object> data) throws IOException", classname) {
-      jm_UnsupportedOperationException
+      jm_pln("repository.update%s(data);", classname)
     }
     jm_public_method("void delete%s(%s id) throws IOException", classname, idtype) {
-      jm_UnsupportedOperationException
+      jm_pln("repository.delete%s(id);", classname)
     }
   }
 
