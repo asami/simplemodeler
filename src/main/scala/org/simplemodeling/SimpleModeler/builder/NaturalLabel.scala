@@ -115,9 +115,20 @@ case object ServiceLabel extends NaturalLabel {
   val candidates = List("service", "サービス")
 }
 
-// XXX Business use case and Requirement use case
 case object BusinessUsecaseLabel extends NaturalLabel {
   val candidates = List("business use case", "ビジネス ユースケース", "業務 ユースケース", "物語")
+}
+
+case object BusinessTaskLabel extends NaturalLabel {
+  val candidates = List("business task", "ビジネス タスク", "業務 タスク")
+}
+
+case object UsecaseLabel extends NaturalLabel {
+  val candidates = List("use case", "ユースケース", "エピソード", "挿話")
+}
+
+case object TaskLabel extends NaturalLabel {
+  val candidates = List("task", "タスク")
 }
 
 case object NameLabel extends NaturalLabel {
@@ -362,7 +373,7 @@ object NaturalLabel {
       case EventLabel => EventKind.some
       case RoleLabel => RoleKind.some
       case RuleLabel => RuleKind.some
-      case BusinessUsecaseLabel => BusinessusecaseKind.some
+      case BusinessUsecaseLabel => BusinessUsecaseKind.some
       case _ => none
     })
   }

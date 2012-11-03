@@ -48,7 +48,7 @@ class SimpleModelOutlineBuilder[T](
       case SummaryKind => _build_summary(entity)
       case EntityKind => _build_plain_entity(entity)
       case RuleKind => _build_rule(entity)
-      case BusinessusecaseKind => _build_rule(entity)
+      case BusinessUsecaseKind => _build_rule(entity)
       case StateMachineKind => {}
       case StateMachineStateKind => {} 
       case _ => {}

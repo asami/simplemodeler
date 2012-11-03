@@ -213,7 +213,7 @@ class SimpleModelDslBuilder(
       val (name, value) = get_annotation_by_term(term)
       entity.annotation(name, value)
     }
-    for (term <- entity.narrativeBusinessusecases) {
+    for (term <- entity.narrativeBusinessUsecases) {
       val (name, target) = get_businessusecase_by_term(term)
       entity.aggregation(name, target)
     }
@@ -245,9 +245,27 @@ class SimpleModelDslBuilder(
       val mul = get_multiplicity_by_term(term)
       entity.compositionOwn(name, part) multiplicity_is mul
     }
-    println("SimpleModelDslBuilder#narrativeOwnBusinessusecases: " + entity.narrativeOwnBusinessusecases)
-    for ((term, part) <- entity.narrativeOwnBusinessusecases) {
+    println("SimpleModelDslBuilder#narrativeOwnBusinessusecases: " + entity.narrativeOwnBusinessUsecases)
+    for ((term, part) <- entity.narrativeOwnBusinessUsecases) {
       println("SimpleModelDslBuilder#narrativeOwnBusinessusecases: " + term)
+      val name = get_name_by_term(term)
+      entity.compositionOwn(name, part)
+    }
+    println("SimpleModelDslBuilder#narrativeOwnBusinesstasks: " + entity.narrativeOwnBusinessTasks)
+    for ((term, part) <- entity.narrativeOwnBusinessTasks) {
+      println("SimpleModelDslBuilder#narrativeOwnBusinesstasks: " + term)
+      val name = get_name_by_term(term)
+      entity.compositionOwn(name, part)
+    }
+    println("SimpleModelDslBuilder#narrativeOwnUsecases: " + entity.narrativeOwnUsecases)
+    for ((term, part) <- entity.narrativeOwnUsecases) {
+      println("SimpleModelDslBuilder#narrativeOwnUsecases: " + term)
+      val name = get_name_by_term(term)
+      entity.compositionOwn(name, part)
+    }
+    println("SimpleModelDslBuilder#narrativeOwnTasks: " + entity.narrativeOwnTasks)
+    for ((term, part) <- entity.narrativeOwnTasks) {
+      println("SimpleModelDslBuilder#narrativeOwnTasks: " + term)
       val name = get_name_by_term(term)
       entity.compositionOwn(name, part)
     }
@@ -396,7 +414,37 @@ class SimpleModelDslBuilder(
   def get_businessusecase_by_term(aTerm: String): (String, SMMEntityEntity) = {
     get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
       record_warning("用語「%s」の定義が見つからなかったのでビジネス・ユースケースを自動で作成します。", aTerm)
-      val entity = createObject(BusinessusecaseKind, aTerm)
+      val entity = createObject(BusinessUsecaseKind, aTerm)
+      _resolve_entity(entity)
+      entity
+    }
+    (get_name_by_term(aTerm), get_entity_by_term(aTerm))
+  }
+
+  def get_businesstask_by_term(aTerm: String): (String, SMMEntityEntity) = {
+    get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
+      record_warning("用語「%s」の定義が見つからなかったのでビジネス・タスクを自動で作成します。", aTerm)
+      val entity = createObject(BusinessTaskKind, aTerm)
+      _resolve_entity(entity)
+      entity
+    }
+    (get_name_by_term(aTerm), get_entity_by_term(aTerm))
+  }
+
+  def get_usecase_by_term(aTerm: String): (String, SMMEntityEntity) = {
+    get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
+      record_warning("用語「%s」の定義が見つからなかったのでビジネス・ユースケースを自動で作成します。", aTerm)
+      val entity = createObject(UsecaseKind, aTerm)
+      _resolve_entity(entity)
+      entity
+    }
+    (get_name_by_term(aTerm), get_entity_by_term(aTerm))
+  }
+
+  def get_task_by_term(aTerm: String): (String, SMMEntityEntity) = {
+    get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
+      record_warning("用語「%s」の定義が見つからなかったのでタスクを自動で作成します。", aTerm)
+      val entity = createObject(TaskKind, aTerm)
       _resolve_entity(entity)
       entity
     }

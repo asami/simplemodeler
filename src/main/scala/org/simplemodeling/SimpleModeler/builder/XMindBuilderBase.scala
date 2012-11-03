@@ -36,7 +36,7 @@ abstract class XMindBuilderBase(val policy: Policy, val packageName: String, val
       _mmx.events.foreach(_create_object(EventKind, _, _build_object))
       _mmx.roles.foreach(_create_object(RoleKind, _, _build_object))
       _mmx.rules.foreach(_create_object(RuleKind, _, _build_rule))
-      _mmx.businessusecases.foreach(_create_object(BusinessusecaseKind, _, _build_businessusecase))
+      _mmx.businessusecases.foreach(_create_object(BusinessUsecaseKind, _, _build_businessusecase))
     } finally {
       xmind.close();
     }

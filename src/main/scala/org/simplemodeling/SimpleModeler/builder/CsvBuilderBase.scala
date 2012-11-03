@@ -48,7 +48,7 @@ abstract class CsvBuilderBase(policy: Policy, packageName: String, val csv: CsvE
         case "event"    => model_Builder.createObject(EventKind, name)
         case "role"     => model_Builder.createObject(RoleKind, name)
         case "rule"     => model_Builder.createObject(RuleKind, name)
-        case "businessusecase"  => model_Builder.createObject(BusinessusecaseKind, name)
+        case "businessusecase"  => model_Builder.createObject(BusinessUsecaseKind, name)
         case kind       => model_Builder.createObject(kind, name)
       }
       var is_derived = false

@@ -97,6 +97,30 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
     _structure_node_thema_boi_tables(BusinessUsecaseLabel)
   }
 
+  def businesstasks = {
+    structure_node_children(thema, BusinessTaskLabel)
+  }
+
+  def businesstaskTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(BusinessTaskLabel)
+  }
+
+  def usecases = {
+    structure_node_children(thema, UsecaseLabel)
+  }
+
+  def usecaseTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(UsecaseLabel)
+  }
+
+  def tasks = {
+    structure_node_children(thema, TaskLabel)
+  }
+
+  def taskTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(TaskLabel)
+  }
+
   /*
    * structure nodes
    */
@@ -194,6 +218,30 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def businessusecaseTables(term: TopicNode): List[GTable[String]] = {
     _structure_node_tables(term, BusinessUsecaseLabel)
+  }
+
+  def businesstasks(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, BusinessTaskLabel)
+  }
+
+  def businesstaskTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, BusinessTaskLabel)
+  }
+
+  def usecases(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, UsecaseLabel)
+  }
+
+  def usecaseTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, UsecaseLabel)
+  }
+
+  def tasks(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, TaskLabel)
+  }
+
+  def taskTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, TaskLabel)
   }
 
   def primaryActors(term: TopicNode): List[TopicNode] = {
@@ -446,8 +494,8 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
    * OutlineBuilderBase uses the method.
    */
   def isDefined(name: String): Boolean = {
-    val a: List[TopicNode] = traits ::: actors ::: resources ::: events ::: roles ::: rules ::: businessusecases
-    val b = entityTables ::: traitTables ::: actorTables ::: resourceTables ::: eventTables ::: roleTables ::: ruleTables ::: businessusecaseTables
+    val a: List[TopicNode] = traits ::: actors ::: resources ::: events ::: roles ::: rules ::: businessusecases ::: businesstasks ::: usecases ::: tasks
+    val b = entityTables ::: traitTables ::: actorTables ::: resourceTables ::: eventTables ::: roleTables ::: ruleTables ::: businessusecaseTables ::: businesstaskTables ::: usecaseTables ::: taskTables
     _is_defined_in_boi(name, a) || _is_defined_in_table(name, b)
   }
 

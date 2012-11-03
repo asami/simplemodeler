@@ -54,8 +54,14 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
       _mmx.powertypeTables.foreach(create_object_table(PowertypeKind, _))
       _mmx.rules.foreach(_create_object(RuleKind, _, _build_rule))
       _mmx.ruleTables.foreach(create_object_table(RuleKind, _))
-      _mmx.businessusecases.foreach(_create_object(BusinessusecaseKind, _, _build_businessusecase))
-      _mmx.businessusecaseTables.foreach(create_object_table(BusinessusecaseKind, _))
+      _mmx.businessusecases.foreach(_create_object(BusinessUsecaseKind, _, _build_businessusecase))
+      _mmx.businessusecaseTables.foreach(create_object_table(BusinessUsecaseKind, _))
+      _mmx.businesstasks.foreach(_create_object(BusinessTaskKind, _, _build_businesstask))
+      _mmx.businesstaskTables.foreach(create_object_table(BusinessTaskKind, _))
+      _mmx.usecases.foreach(_create_object(UsecaseKind, _, _build_usecase))
+      _mmx.usecaseTables.foreach(create_object_table(UsecaseKind, _))
+      _mmx.tasks.foreach(_create_object(TaskKind, _, _build_task))
+      _mmx.taskTables.foreach(create_object_table(TaskKind, _))
     } finally {
       outline.close();
     }
@@ -115,6 +121,21 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     _mmx.scenario(source).foreach(_build_scenario(_, target))
   }
 
+  private def _build_businesstask(source: TopicNode, target: SMMEntityEntity) {
+    _build_object_common(source, target)
+    _mmx.scenario(source).foreach(_build_scenario(_, target))
+  }
+
+  private def _build_usecase(source: TopicNode, target: SMMEntityEntity) {
+    _build_object_common(source, target)
+    _mmx.scenario(source).foreach(_build_scenario(_, target))
+  }
+
+  private def _build_task(source: TopicNode, target: SMMEntityEntity) {
+    _build_object_common(source, target)
+    _mmx.scenario(source).foreach(_build_scenario(_, target))
+  }
+
   private def _build_object_common(aNode: TopicNode, target: SMMEntityEntity) {
     _mmx.propertyTables(aNode).foreach(_build_property_table(_, target))
     _mmx.traits(aNode).foreach(_build_trait(_, target))
@@ -140,6 +161,12 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 //    _mmx.annotationTables(aNode).foreach(_build_annotation_table(_, target))
     _mmx.businessusecases(aNode).foreach(_build_businessusecase_aggregations(_, target))
 //    _mmx.businessusecaseTables(aNode).foreach(_build_businessusecase_table(_, target))
+    _mmx.businesstasks(aNode).foreach(_build_businesstask_aggregations(_, target))
+//    _mmx.businesstaskTables(aNode).foreach(_build_businesstask_table(_, target))
+    _mmx.usecases(aNode).foreach(_build_usecase_aggregations(_, target))
+//    _mmx.usecaseTables(aNode).foreach(_build_usecase_table(_, target))
+    _mmx.tasks(aNode).foreach(_build_task_aggregations(_, target))
+//    _mmx.taskTables(aNode).foreach(_build_task_table(_, target))
     _mmx.primaryActors(aNode).foreach(_build_primary_actor(_, target))
     _mmx.secondaryActors(aNode).foreach(_build_secondary_actor(_, target))
     _mmx.supportingActors(aNode).foreach(_build_supporting_actor(_, target))
@@ -265,13 +292,51 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val name = get_name_by_term(term)
     println("_build_businessusecase_aggregations: " + term)
     if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
-      record_report("「%s」に合成対象のユースケース「%s」を生成しました。".format(target.name, name))
-      val part = _create_object(BusinessusecaseKind, source, _build_object)
-      target.narrativeOwnBusinessusecases += Pair(term, part)
+      record_report("「%s」に合成対象のビジネス・ユースケース「%s」を生成しました。".format(target.name, name))
+      val part = _create_object(BusinessUsecaseKind, source, _build_object)
+      target.narrativeOwnBusinessUsecases += Pair(term, part)
     } else {
-      target.addNarrativeBusinessusecase(term)
+      target.addNarrativeBusinessUsecase(term)
     }
-    
+  }
+
+  private def _build_businesstask_aggregations(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    val name = get_name_by_term(term)
+    println("_build_businesstask_aggregations: " + term)
+    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+      record_report("「%s」に合成対象のビジネス・タスク「%s」を生成しました。".format(target.name, name))
+      val part = _create_object(BusinessTaskKind, source, _build_object)
+      target.narrativeOwnBusinessTasks += Pair(term, part)
+    } else {
+      target.addNarrativeBusinessTask(term)
+    }
+  }
+
+  private def _build_usecase_aggregations(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    val name = get_name_by_term(term)
+    println("_build_usecase_aggregations: " + term)
+    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+      record_report("「%s」に合成対象のユースケース「%s」を生成しました。".format(target.name, name))
+      val part = _create_object(UsecaseKind, source, _build_object)
+      target.narrativeOwnUsecases += Pair(term, part)
+    } else {
+      target.addNarrativeUsecase(term)
+    }
+  }
+
+  private def _build_task_aggregations(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    val name = get_name_by_term(term)
+    println("_build_task_aggregations: " + term)
+    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+      record_report("「%s」に合成対象のタスク「%s」を生成しました。".format(target.name, name))
+      val part = _create_object(TaskKind, source, _build_object)
+      target.narrativeOwnTasks += Pair(term, part)
+    } else {
+      target.addNarrativeTask(term)
+    }
   }
 
   private def _build_primary_actor(source: TopicNode, target: SMMEntityEntity) {

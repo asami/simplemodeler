@@ -32,6 +32,7 @@ class OutlineImporter(policy: Policy, val call: GServiceCall, packageName: Strin
   val model_Builder = new SimpleModelMakerBuilder(makerentity, packageName, policy, None)
 }
 
+/*
 class OutlineImporter0(val policy: Policy, val call: GServiceCall, val packageName: String, val outline: OutlineEntityBase) {
   import UXMind._
 
@@ -46,7 +47,7 @@ class OutlineImporter0(val policy: Policy, val call: GServiceCall, val packageNa
       _outliner.events.foreach(_create_object(EventKind, _, _build_object))
       _outliner.roles.foreach(_create_object(RoleKind, _, _build_object))
       _outliner.rules.foreach(_create_object(RuleKind, _, _build_rule))
-      _outliner.businessusecases.foreach(_create_object(BusinessusecaseKind, _, _build_businessusecase))
+      _outliner.businessusecases.foreach(_create_object(BusinessUsecaseKind, _, _build_businessusecase))
       _model_builder.dslObjects
     } finally {
       outline.close();
@@ -157,3 +158,4 @@ class OutlineImporter0(val policy: Policy, val call: GServiceCall, val packageNa
     target.addNarrativeScenarioStep(term)
   }
 }
+*/

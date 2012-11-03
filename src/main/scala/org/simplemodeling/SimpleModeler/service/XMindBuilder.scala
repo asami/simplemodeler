@@ -105,7 +105,7 @@ class XMindBuilder0(val project: ProjectRealmEntity, val packageName: String, va
     }
     for (businessusecase <- get_businessusecases) {
       val term = businessusecase.title
-      val obj = builder.createObject(BusinessusecaseKind, term)
+      val obj = builder.createObject(BusinessUsecaseKind, term)
       _build_businessusecase(obj, businessusecase)
     }
 

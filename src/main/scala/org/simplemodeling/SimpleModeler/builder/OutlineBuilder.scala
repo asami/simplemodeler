@@ -10,6 +10,7 @@ import org.goldenport.value.GTreeNode
  * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
+@deprecated("Use OutlineBuilderBase", "0.5")
 class OutlineBuilder[T](val root: GTreeNode[T]) {
   case class EntityEntry(node: GTreeNode[T], name: String, base: String, builder: (GTreeNode[T]) => Unit)
   private val _child_entities = new ArrayBuffer[EntityEntry]()
@@ -41,6 +42,20 @@ class OutlineBuilder[T](val root: GTreeNode[T]) {
   def registerBusinessusecase(name: String, base: Option[String], builder: GTreeNode[T] => Unit) = {
     registerEntity(businessusecases, name, base, builder)
   }
+
+/*
+  def registerBusinesstask(name: String, base: Option[String], builder: GTreeNode[T] => Unit) = {
+    registerEntity(businesstasks, name, base, builder)
+  }
+
+  def registerUsecase(name: String, base: Option[String], builder: GTreeNode[T] => Unit) = {
+    registerEntity(usecases, name, base, builder)
+  }
+
+  def registerTask(name: String, base: Option[String], builder: GTreeNode[T] => Unit) = {
+    registerEntity(tasks, name, base, builder)
+  }
+*/
 
   def registerEntity(parent: GTreeNode[T], name: String, base: Option[String], builder: GTreeNode[T] => Unit) {
     base match {

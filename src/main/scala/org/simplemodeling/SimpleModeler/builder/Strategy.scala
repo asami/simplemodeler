@@ -34,7 +34,7 @@ object SimpleModelingNamingStrategy extends NamingStrategy {
       case SummaryKind           => "DES"
       case EntityKind            => "DE"
       case RuleKind              => "DR"
-      case BusinessusecaseKind   => "BU"
+      case BusinessUsecaseKind   => "BU"
       case StateMachineKind      => "DM"
       case StateMachineStateKind => "DMS"
       case _                     => error("not implemented yet = " + kind)

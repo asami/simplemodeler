@@ -39,6 +39,9 @@ object RuleKind extends ElementKind
 object IdKind extends ElementKind
 object NameKind extends ElementKind
 object PowertypeKind extends ElementKind
-object BusinessusecaseKind extends ElementKind
+object BusinessUsecaseKind extends ElementKind
+object BusinessTaskKind extends ElementKind
+object UsecaseKind extends ElementKind
+object TaskKind extends ElementKind
 object StateMachineKind extends ElementKind
 object StateMachineStateKind extends ElementKind

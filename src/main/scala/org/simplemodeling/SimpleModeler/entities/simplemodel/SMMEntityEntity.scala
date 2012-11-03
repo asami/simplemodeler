@@ -1,6 +1,7 @@
 package org.simplemodeling.SimpleModeler.entities.simplemodel
 
 import org.apache.commons.lang3.StringUtils
+import org.simplemodeling.dsl.SStoryObject
 import scalaz._, Scalaz._
 import java.io.BufferedWriter
 import scala.collection.mutable.Set
@@ -59,6 +60,9 @@ import com.asamioffice.goldenport.text.TextBuilder
 import com.asamioffice.goldenport.text.UJavaString
 import com.asamioffice.goldenport.text.UString
 import org.simplemodeling.dsl.business.BusinessUsecase
+import org.simplemodeling.dsl.business.BusinessTask
+import org.simplemodeling.dsl.requirement.RequirementUsecase
+import org.simplemodeling.dsl.requirement.RequirementTask
 import org.simplemodeling.dsl.SAssociation
 import org.simplemodeling.dsl.domain.GenericDomainEntity
 
@@ -122,7 +126,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val narrativeAssociations = new ArrayBuffer[String]
   val narrativeStateMachines = new ArrayBuffer[String]
   val narrativeAnnotations = new ArrayBuffer[String]
-  val narrativeBusinessusecases = new ArrayBuffer[String]
+  val narrativeBusinessUsecases = new ArrayBuffer[String]
+  val narrativeBusinessTasks = new ArrayBuffer[String]
+  val narrativeUsecases = new ArrayBuffer[String]
+  val narrativeTasks = new ArrayBuffer[String]
   val narrativePrimaryActors = new ArrayBuffer[String]
   val narrativeSecondaryActors = new ArrayBuffer[String]
   val narrativeSupportingActors = new ArrayBuffer[String]
@@ -133,7 +140,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * SimpleModelDslBuilder uses to collect composition classes in narrative.
    */
   val narrativeOwnCompositions = new ArrayBuffer[(String, SMMEntityEntity)]
-  val narrativeOwnBusinessusecases = new ArrayBuffer[(String, SMMEntityEntity)]
+  val narrativeOwnBusinessUsecases = new ArrayBuffer[(String, SMMEntityEntity)]
+  val narrativeOwnBusinessTasks = new ArrayBuffer[(String, SMMEntityEntity)]
+  val narrativeOwnUsecases = new ArrayBuffer[(String, SMMEntityEntity)]
+  val narrativeOwnTasks = new ArrayBuffer[(String, SMMEntityEntity)]
   //
   val privateObjects = new ArrayBuffer[SMMEntityEntity]
 
@@ -170,9 +180,12 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case NameKind         => "org.simplemodeling.dsl.domain.DomainValueName"
       case PowertypeKind    => "org.simplemodeling.dsl.domain.DomainPowertype"
       case StateMachineKind => "org.simplemodeling.dsl.domain.DomainStateMachine"
-      case StateMachineStateKind        => "org.simplemodeling.dsl.domain.DomainState"
-      case BusinessusecaseKind      => "org.simplemodeling.dsl.business.BusinessUsecase"
-      case _              => sys.error("not implemented yet = " + kind)
+      case StateMachineStateKind => "org.simplemodeling.dsl.domain.DomainState"
+      case BusinessUsecaseKind => "org.simplemodeling.dsl.business.BusinessUsecase"
+      case BusinessTaskKind => "org.simplemodeling.dsl.business.BusinessTask"
+      case UsecaseKind      => "org.simplemodeling.dsl.business.Usecase"
+      case TaskKind         => "org.simplemodeling.dsl.business.Task"
+      case _                => sys.error("not implemented yet = " + kind)
     }
   }
 
@@ -188,8 +201,11 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case NameKind         => "DomainValueName"
       case PowertypeKind    => "DomainPowertype"
       case StateMachineKind => "DomainStateMachine"
-      case StateMachineStateKind        => "DomainState"
-      case BusinessusecaseKind      => "BusinessUsecase"
+      case StateMachineStateKind => "DomainState"
+      case BusinessUsecaseKind   => "BusinessUsecase"
+      case BusinessTaskKind => "BusinessUsecase"
+      case UsecaseKind      => "BusinessUsecase"
+      case TaskKind         => "Task"
       case _              => sys.error("not implemented yet = " + kind)
     }
   }
@@ -460,8 +476,20 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     narrativeAnnotations += aName
   }
 
-  final def addNarrativeBusinessusecase(aName: String) {
-    narrativeBusinessusecases += aName
+  final def addNarrativeBusinessUsecase(aName: String) {
+    narrativeBusinessUsecases += aName
+  }
+
+  final def addNarrativeBusinessTask(aName: String) {
+    narrativeBusinessTasks += aName
+  }
+
+  final def addNarrativeUsecase(aName: String) {
+    narrativeUsecases += aName
+  }
+
+  final def addNarrativeTask(aName: String) {
+    narrativeTasks += aName
   }
 
   def addNarrativePrimaryActor(name: String) {
@@ -858,7 +886,16 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
         override def isObjectScope = true        
       }
 */
-      case BusinessusecaseKind      => new BusinessUsecase(name, packageName) {
+      case BusinessUsecaseKind      => new BusinessUsecase(name, packageName) {
+//        override def isObjectScope = true
+      }
+      case BusinessTaskKind      => new BusinessTask(name, packageName) {
+//        override def isObjectScope = true
+      }
+      case UsecaseKind      => new RequirementUsecase(name, packageName) {
+//        override def isObjectScope = true
+      }
+      case TaskKind      => new RequirementTask(name, packageName) {
 //        override def isObjectScope = true
       }
       case NoneKind => new GenericDomainEntity(name, packageName, Nil) {
@@ -880,6 +917,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case Some(value: DomainValue) => _build_value(value)
       case Some(power: DomainPowertype) => _build_powertype(power, entities)
       case Some(uc: BusinessUsecase) => _build_businessusecase(entities, uc)
+      case Some(t: BusinessTask) => _build_businesstask(entities, t)
+      case Some(uc: RequirementUsecase) => _build_usecase(entities, uc)
+      case Some(t: RequirementTask) => _build_task(entities, t)
       case Some(dr: DomainRule) => _build_rule(entities, dr)
       case Some(x) => sys.error("buildSObject:" + x)
       case None => sys.error("buildSObject")
@@ -1181,8 +1221,23 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
+  private def _build_businessusecase(entities: Map[String, SObject], uc: BusinessUsecase) {
+    _build_story_common(entities, uc)
+  }
 
-  private def _build_businessusecase(entities: Map[String, SObject], uc: BusinessUsecase): BusinessUsecase = {
+  private def _build_businesstask(entities: Map[String, SObject], uc: BusinessTask) {
+    _build_story_common(entities, uc)
+  }
+
+  private def _build_usecase(entities: Map[String, SObject], uc: RequirementUsecase) {
+    _build_story_common(entities, uc)
+  }
+
+  private def _build_task(entities: Map[String, SObject], uc: RequirementTask) {
+    _build_story_common(entities, uc)
+  }
+
+  private def _build_story_common(entities: Map[String, SObject], uc: SStoryObject) {
     uc.term = name
 //    _build_specifications(value)
 //    _build_base(value)
@@ -1218,7 +1273,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
-  private def _describe_event_issue(entities: Map[String, SObject], uc: BusinessUsecase, step: SMMAssociation) {
+  private def _describe_event_issue(entities: Map[String, SObject], uc: SStoryObject, step: SMMAssociation) {
     _entity_ref(step.associationType.name, entities) match {
       case event: DomainEvent => uc.event_issue(event)()
       case _ => {}

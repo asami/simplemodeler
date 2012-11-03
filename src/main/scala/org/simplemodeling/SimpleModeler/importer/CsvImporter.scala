@@ -47,7 +47,7 @@ class CsvImporter0(val policy: Policy, val call: GServiceCall, val packageName: 
         case "event"    => builder.createObject(EventKind, name)
         case "role"     => builder.createObject(RoleKind, name)
         case "rule"     => builder.createObject(RuleKind, name)
-        case "businessusecase"  => builder.createObject(BusinessusecaseKind, name)
+        case "businessusecase"  => builder.createObject(BusinessUsecaseKind, name)
         case _          => error("???")
       }
       var is_derived = false
