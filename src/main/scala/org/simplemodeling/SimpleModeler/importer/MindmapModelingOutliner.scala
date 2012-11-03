@@ -15,7 +15,8 @@ import org.simplemodeling.SimpleModeler.builder._
  * Nov. 6, 2011 (derived from MindmapModelingXMind)
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
- * @version Oct. 21, 2012
+ *  version Oct. 21, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -88,12 +89,12 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
     _structure_node_thema_boi_tables(RuleLabel)
   }
 
-  def usecases = {
-    structure_node_children(thema, UsecaseLabel)
+  def businessusecases = {
+    structure_node_children(thema, BusinessUsecaseLabel)
   }
 
-  def usecaseTables: List[GTable[String]] = {
-    _structure_node_thema_boi_tables(UsecaseLabel)
+  def businessusecaseTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(BusinessUsecaseLabel)
   }
 
   /*
@@ -187,12 +188,12 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
     _structure_node_tables(term, AnnotationLabel)
   }
 
-  def usecases(term: TopicNode): List[TopicNode] = {
-    structure_node_children(term, UsecaseLabel)
+  def businessusecases(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, BusinessUsecaseLabel)
   }
 
-  def usecaseTables(term: TopicNode): List[GTable[String]] = {
-    _structure_node_tables(term, UsecaseLabel)
+  def businessusecaseTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, BusinessUsecaseLabel)
   }
 
   def primaryActors(term: TopicNode): List[TopicNode] = {
@@ -445,8 +446,8 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
    * OutlineBuilderBase uses the method.
    */
   def isDefined(name: String): Boolean = {
-    val a: List[TopicNode] = traits ::: actors ::: resources ::: events ::: roles ::: rules ::: usecases
-    val b = entityTables ::: traitTables ::: actorTables ::: resourceTables ::: eventTables ::: roleTables ::: ruleTables ::: usecaseTables
+    val a: List[TopicNode] = traits ::: actors ::: resources ::: events ::: roles ::: rules ::: businessusecases
+    val b = entityTables ::: traitTables ::: actorTables ::: resourceTables ::: eventTables ::: roleTables ::: ruleTables ::: businessusecaseTables
     _is_defined_in_boi(name, a) || _is_defined_in_table(name, b)
   }
 

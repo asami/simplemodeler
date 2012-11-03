@@ -17,7 +17,8 @@ import org.goldenport.recorder.Recordable
  *  version Dec. 11, 2011
  *  version Feb.  8, 2012
  *  version Sep. 29, 2012
- * @version Oct. 21, 2012
+ *  version Oct. 21, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -212,8 +213,8 @@ class SimpleModelDslBuilder(
       val (name, value) = get_annotation_by_term(term)
       entity.annotation(name, value)
     }
-    for (term <- entity.narrativeUsecases) {
-      val (name, target) = get_usecase_by_term(term)
+    for (term <- entity.narrativeBusinessusecases) {
+      val (name, target) = get_businessusecase_by_term(term)
       entity.aggregation(name, target)
     }
     for (term <- entity.narrativePrimaryActors) {
@@ -244,9 +245,9 @@ class SimpleModelDslBuilder(
       val mul = get_multiplicity_by_term(term)
       entity.compositionOwn(name, part) multiplicity_is mul
     }
-    println("SimpleModelDslBuilder#narrativeOwnUsecases: " + entity.narrativeOwnUsecases)
-    for ((term, part) <- entity.narrativeOwnUsecases) {
-      println("SimpleModelDslBuilder#narrativeOwnUsecases: " + term)
+    println("SimpleModelDslBuilder#narrativeOwnBusinessusecases: " + entity.narrativeOwnBusinessusecases)
+    for ((term, part) <- entity.narrativeOwnBusinessusecases) {
+      println("SimpleModelDslBuilder#narrativeOwnBusinessusecases: " + term)
       val name = get_name_by_term(term)
       entity.compositionOwn(name, part)
     }
@@ -313,7 +314,7 @@ class SimpleModelDslBuilder(
         return None
       }
     }
-    createObject(UsecaseKind, name).some
+    createObject(BusinessusecaseKind, name).some
   }
 
   def maybe_entity_by_term(aTerm: String): Option[SMMEntityEntity] = {
@@ -392,10 +393,10 @@ class SimpleModelDslBuilder(
     }
   }
 
-  def get_usecase_by_term(aTerm: String): (String, SMMEntityEntity) = {
+  def get_businessusecase_by_term(aTerm: String): (String, SMMEntityEntity) = {
     get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
       record_warning("用語「%s」の定義が見つからなかったのでビジネス・ユースケースを自動で作成します。", aTerm)
-      val entity = createObject(UsecaseKind, aTerm)
+      val entity = createObject(BusinessusecaseKind, aTerm)
       _resolve_entity(entity)
       entity
     }

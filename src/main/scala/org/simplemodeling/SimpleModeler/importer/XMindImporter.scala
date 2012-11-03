@@ -23,14 +23,15 @@ import org.simplemodeling.SimpleModeler.builder.XMindBuilderBase
  * 
  * @since   Nov.  5, 2011
  *  version Dec. 11, 2011
- * @version Oct. 19, 2012
+ *  version Oct. 19, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class XMindImporter(policy: Policy, val call: GServiceCall, packageName: String, xmind: XMindEntity)
     extends XMindBuilderBase(policy, packageName, xmind) {
   val model_Builder = new SimpleModelDslBuilder(xmind.entityContext, packageName, policy, None)
 }
-
+/*
 class XMindImporter0(val policy: Policy, val call: GServiceCall, val packageName: String, val xmind: XMindEntity) {
   import UXMind._
 
@@ -45,7 +46,7 @@ class XMindImporter0(val policy: Policy, val call: GServiceCall, val packageName
       _mmx.events.foreach(_create_object(EventKind, _, _build_object))
       _mmx.roles.foreach(_create_object(RoleKind, _, _build_object))
       _mmx.rules.foreach(_create_object(RuleKind, _, _build_rule))
-      _mmx.usecases.foreach(_create_object(UsecaseKind, _, _build_usecase))
+      _mmx.businessusecases.foreach(_create_object(BusinessusecaseKind, _, _build_businessusecase))
       _model_builder.dslObjects
     } finally {
       xmind.close();
@@ -71,7 +72,7 @@ class XMindImporter0(val policy: Policy, val call: GServiceCall, val packageName
     _build_object_common(source, target)
   }
 
-  private def _build_usecase(source: TopicNode, target: SMMEntityEntity) {
+  private def _build_businessusecase(source: TopicNode, target: SMMEntityEntity) {
     _build_object_common(source, target)
     _mmx.scenario(source).foreach(_build_scenario(_, target))
   }
@@ -156,3 +157,4 @@ class XMindImporter0(val policy: Policy, val call: GServiceCall, val packageName
     target.addNarrativeScenarioStep(term)
   }
 }
+*/

@@ -14,7 +14,8 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingXMind
  * 
  * @since   Dec. 11, 2011
  *  version Feb. 27, 2012
- * @version Oct. 19, 2012
+ *  version Oct. 19, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 @deprecated("use OutlineBuilderBase")
@@ -35,7 +36,7 @@ abstract class XMindBuilderBase(val policy: Policy, val packageName: String, val
       _mmx.events.foreach(_create_object(EventKind, _, _build_object))
       _mmx.roles.foreach(_create_object(RoleKind, _, _build_object))
       _mmx.rules.foreach(_create_object(RuleKind, _, _build_rule))
-      _mmx.usecases.foreach(_create_object(UsecaseKind, _, _build_usecase))
+      _mmx.businessusecases.foreach(_create_object(BusinessusecaseKind, _, _build_businessusecase))
     } finally {
       xmind.close();
     }
@@ -66,7 +67,7 @@ abstract class XMindBuilderBase(val policy: Policy, val packageName: String, val
     _build_object_common(source, target)
   }
 
-  private def _build_usecase(source: TopicNode, target: SMMEntityEntity) {
+  private def _build_businessusecase(source: TopicNode, target: SMMEntityEntity) {
     _build_object_common(source, target)
     _mmx.scenario(source).foreach(_build_scenario(_, target))
   }

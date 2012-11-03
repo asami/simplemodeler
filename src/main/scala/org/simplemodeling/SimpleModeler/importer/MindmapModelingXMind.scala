@@ -7,7 +7,8 @@ import org.goldenport.entities.xmind._
  * @since   Nov.  6, 2011
  *  version Nov.  6, 2011
  *  version Jan. 25, 2012
- * @version Oct. 19, 2012
+ *  version Oct. 19, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 case class MindmapModelingXMind(val xmind:  XMindEntity) {
@@ -35,7 +36,7 @@ case class MindmapModelingXMind(val xmind:  XMindEntity) {
     structure_node_children(thema, "規則")
   }
 
-  def usecases = {
+  def businessusecases = {
     structure_node_children(thema, "物語")
   }
 

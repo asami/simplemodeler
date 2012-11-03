@@ -17,7 +17,8 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Feb. 27, 2012
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
- * @version Oct. 26, 2012
+ *  version Oct. 26, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -53,8 +54,8 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
       _mmx.powertypeTables.foreach(create_object_table(PowertypeKind, _))
       _mmx.rules.foreach(_create_object(RuleKind, _, _build_rule))
       _mmx.ruleTables.foreach(create_object_table(RuleKind, _))
-      _mmx.usecases.foreach(_create_object(UsecaseKind, _, _build_usecase))
-      _mmx.usecaseTables.foreach(create_object_table(UsecaseKind, _))
+      _mmx.businessusecases.foreach(_create_object(BusinessusecaseKind, _, _build_businessusecase))
+      _mmx.businessusecaseTables.foreach(create_object_table(BusinessusecaseKind, _))
     } finally {
       outline.close();
     }
@@ -109,7 +110,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     _build_object_common(source, target)
   }
 
-  private def _build_usecase(source: TopicNode, target: SMMEntityEntity) {
+  private def _build_businessusecase(source: TopicNode, target: SMMEntityEntity) {
     _build_object_common(source, target)
     _mmx.scenario(source).foreach(_build_scenario(_, target))
   }
@@ -137,8 +138,8 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 //    _mmx.stateTables(aNode).foreach(_build_state_table(_, target))
     _mmx.annotations(aNode).foreach(_build_annotation(_, target))
 //    _mmx.annotationTables(aNode).foreach(_build_annotation_table(_, target))
-    _mmx.usecases(aNode).foreach(_build_usecase_aggregations(_, target))
-//    _mmx.usecaseTables(aNode).foreach(_build_usecase_table(_, target))
+    _mmx.businessusecases(aNode).foreach(_build_businessusecase_aggregations(_, target))
+//    _mmx.businessusecaseTables(aNode).foreach(_build_businessusecase_table(_, target))
     _mmx.primaryActors(aNode).foreach(_build_primary_actor(_, target))
     _mmx.secondaryActors(aNode).foreach(_build_secondary_actor(_, target))
     _mmx.supportingActors(aNode).foreach(_build_supporting_actor(_, target))
@@ -156,7 +157,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val name = get_name_by_term(term)
     if (!_mmx.isDefined(name)) {
       record_report("「%s」にトレイト「%s」を生成しました。".format(target.name, term))
-      val part = _create_object(TraitKind, source, _build_usecase)
+      val part = _create_object(TraitKind, source, _build_businessusecase)
       target.narrativeOwnCompositions += Pair(term, part) // XXX
     } else {
       target.addNarrativeTrait(term)
@@ -259,16 +260,16 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     target.addNarrativeAnnotation(term)
   }
 
-  private def _build_usecase_aggregations(source: TopicNode, target: SMMEntityEntity) {
+  private def _build_businessusecase_aggregations(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     val name = get_name_by_term(term)
-    println("_build_usecase_aggregations: " + term)
+    println("_build_businessusecase_aggregations: " + term)
     if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
       record_report("「%s」に合成対象のユースケース「%s」を生成しました。".format(target.name, name))
-      val part = _create_object(UsecaseKind, source, _build_object)
-      target.narrativeOwnUsecases += Pair(term, part)
+      val part = _create_object(BusinessusecaseKind, source, _build_object)
+      target.narrativeOwnBusinessusecases += Pair(term, part)
     } else {
-      target.addNarrativeUsecase(term)
+      target.addNarrativeBusinessusecase(term)
     }
     
   }

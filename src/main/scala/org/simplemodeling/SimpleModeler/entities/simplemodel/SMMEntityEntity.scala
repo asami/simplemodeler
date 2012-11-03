@@ -69,7 +69,8 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Mar. 25, 2012
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
- * @version Oct. 30, 2012
+ *  version Oct. 30, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -121,7 +122,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val narrativeAssociations = new ArrayBuffer[String]
   val narrativeStateMachines = new ArrayBuffer[String]
   val narrativeAnnotations = new ArrayBuffer[String]
-  val narrativeUsecases = new ArrayBuffer[String]
+  val narrativeBusinessusecases = new ArrayBuffer[String]
   val narrativePrimaryActors = new ArrayBuffer[String]
   val narrativeSecondaryActors = new ArrayBuffer[String]
   val narrativeSupportingActors = new ArrayBuffer[String]
@@ -132,7 +133,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * SimpleModelDslBuilder uses to collect composition classes in narrative.
    */
   val narrativeOwnCompositions = new ArrayBuffer[(String, SMMEntityEntity)]
-  val narrativeOwnUsecases = new ArrayBuffer[(String, SMMEntityEntity)]
+  val narrativeOwnBusinessusecases = new ArrayBuffer[(String, SMMEntityEntity)]
   //
   val privateObjects = new ArrayBuffer[SMMEntityEntity]
 
@@ -170,7 +171,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case PowertypeKind    => "org.simplemodeling.dsl.domain.DomainPowertype"
       case StateMachineKind => "org.simplemodeling.dsl.domain.DomainStateMachine"
       case StateMachineStateKind        => "org.simplemodeling.dsl.domain.DomainState"
-      case UsecaseKind      => "org.simplemodeling.dsl.business.BusinessUsecase"
+      case BusinessusecaseKind      => "org.simplemodeling.dsl.business.BusinessUsecase"
       case _              => sys.error("not implemented yet = " + kind)
     }
   }
@@ -188,7 +189,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case PowertypeKind    => "DomainPowertype"
       case StateMachineKind => "DomainStateMachine"
       case StateMachineStateKind        => "DomainState"
-      case UsecaseKind      => "BusinessUsecase"
+      case BusinessusecaseKind      => "BusinessUsecase"
       case _              => sys.error("not implemented yet = " + kind)
     }
   }
@@ -459,8 +460,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     narrativeAnnotations += aName
   }
 
-  final def addNarrativeUsecase(aName: String) {
-    narrativeUsecases += aName
+  final def addNarrativeBusinessusecase(aName: String) {
+    narrativeBusinessusecases += aName
   }
 
   def addNarrativePrimaryActor(name: String) {
@@ -857,7 +858,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
         override def isObjectScope = true        
       }
 */
-      case UsecaseKind      => new BusinessUsecase(name, packageName) {
+      case BusinessusecaseKind      => new BusinessUsecase(name, packageName) {
 //        override def isObjectScope = true
       }
       case NoneKind => new GenericDomainEntity(name, packageName, Nil) {
@@ -878,7 +879,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case Some(entity: DomainEntity) => _build_entity(entity, entities)
       case Some(value: DomainValue) => _build_value(value)
       case Some(power: DomainPowertype) => _build_powertype(power, entities)
-      case Some(uc: BusinessUsecase) => _build_usecase(entities, uc)
+      case Some(uc: BusinessUsecase) => _build_businessusecase(entities, uc)
       case Some(dr: DomainRule) => _build_rule(entities, dr)
       case Some(x) => sys.error("buildSObject:" + x)
       case None => sys.error("buildSObject")
@@ -1181,7 +1182,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
 
-  private def _build_usecase(entities: Map[String, SObject], uc: BusinessUsecase): BusinessUsecase = {
+  private def _build_businessusecase(entities: Map[String, SObject], uc: BusinessUsecase): BusinessUsecase = {
     uc.term = name
 //    _build_specifications(value)
 //    _build_base(value)

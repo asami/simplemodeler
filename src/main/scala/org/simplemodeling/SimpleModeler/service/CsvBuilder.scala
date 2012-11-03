@@ -16,7 +16,8 @@ import com.asamioffice.goldenport.text.UJavaString
 /*
  * @since   Feb.  1, 2009
  *  version Feb. 28, 2009
- * @version Dec. 11, 2011
+ *  version Dec. 11, 2011
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class CsvBuilder(val project: ProjectRealmEntity, packageName: String, csv: CsvEntity,
@@ -57,7 +58,7 @@ class CsvBuilder0(val project: ProjectRealmEntity, val packageName: String, val 
         case "event" => builder.createObject(EventKind, name)
         case "role" => builder.createObject(RoleKind, name)
         case "rule" => builder.createObject(RuleKind, name)
-        case "usecase" => builder.createObject(UsecaseKind, name)
+        case "businessusecase" => builder.createObject(BusinessusecaseKind, name)
 	case _ => error("???")
       }
       var is_derived = false

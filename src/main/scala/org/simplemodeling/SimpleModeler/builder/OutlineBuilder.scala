@@ -6,7 +6,8 @@ import org.goldenport.value.GTreeNode
 
 /*
  * @since   Feb. 22, 2012
- * @version Feb. 23, 2012
+ *  version Feb. 23, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class OutlineBuilder[T](val root: GTreeNode[T]) {
@@ -37,8 +38,8 @@ class OutlineBuilder[T](val root: GTreeNode[T]) {
     registerEntity(rules, name, base, builder)
   }
 
-  def registerUsecase(name: String, base: Option[String], builder: GTreeNode[T] => Unit) = {
-    registerEntity(usecases, name, base, builder)
+  def registerBusinessusecase(name: String, base: Option[String], builder: GTreeNode[T] => Unit) = {
+    registerEntity(businessusecases, name, base, builder)
   }
 
   def registerEntity(parent: GTreeNode[T], name: String, base: Option[String], builder: GTreeNode[T] => Unit) {
@@ -252,7 +253,7 @@ class OutlineBuilder[T](val root: GTreeNode[T]) {
     _get_boi_structure_node("規則")
   }
 
-  def usecases = {
+  def businessusecases = {
     _get_boi_structure_node("物語")
   }
 

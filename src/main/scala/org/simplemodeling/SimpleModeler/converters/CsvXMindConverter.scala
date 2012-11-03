@@ -21,7 +21,8 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Nov. 13, 2010
  *  version Feb. 24, 2012
  *  version Apr.  8, 2012
- * @version Oct. 19, 2012
+ *  version Oct. 19, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class CsvXMindConverter(val policy: Policy, val packageName: String, val csv: CsvEntity, val projectName: String) {
@@ -109,7 +110,7 @@ class CsvXMindConverter1(policy: Policy, packageName: String, csv: CsvEntity, va
       case SummaryKind => _build_summary(entity)
       case EntityKind => _build_plain_entity(entity)
       case RuleKind => _build_rule(entity)
-      case UsecaseKind => _build_rule(entity)
+      case BusinessusecaseKind => _build_rule(entity)
       case StateMachineKind => {}
       case StateMachineStateKind => {} 
       case _ => {}
@@ -150,8 +151,8 @@ class CsvXMindConverter1(policy: Policy, packageName: String, csv: CsvEntity, va
         _build_object_body(entity, _))
   }
 
-  private def _build_usecase(entity: SMMEntityEntity) {
-    _outline_builder.registerUsecase(entity.name, entity.getBase.map(_.name),
+  private def _build_businessusecase(entity: SMMEntityEntity) {
+    _outline_builder.registerBusinessusecase(entity.name, entity.getBase.map(_.name),
         _build_object_body(entity, _))
   }
 
@@ -319,7 +320,7 @@ class CsvXMindConverter0(val csv: CsvEntity, val projectName: String) {
       get_boi_structure_node("規則")
     }
 
-    def get_usecases_node = {
+    def get_businessusecases_node = {
       get_boi_structure_node("物語")
     }
 
@@ -405,7 +406,7 @@ class CsvXMindConverter0(val csv: CsvEntity, val projectName: String) {
     val events = get_events_node
     val roles = get_roles_node
     val rules = get_rules_node
-    val usecases = get_usecases_node
+    val businessusecases = get_businessusecases_node
     val memo = get_memo_node
 
     def add_generalization(aBase: String, aDerived: String, y: Int) {
@@ -467,8 +468,8 @@ class CsvXMindConverter0(val csv: CsvEntity, val projectName: String) {
 	node
       }
 
-      def add_usecase = {
-	val node = usecases.addChild()
+      def add_businessusecase = {
+	val node = businessusecases.addChild()
 	node.title = name
 	node
       }
@@ -485,7 +486,7 @@ class CsvXMindConverter0(val csv: CsvEntity, val projectName: String) {
 	case "event" => add_event
 	case "role" => add_role
 	case "rule" => add_rule
-	case "usecase" => add_usecase
+	case "businessusecase" => add_businessusecase
 	case "memo" => add_memo
 	case _ => add_memo
       }

@@ -18,7 +18,8 @@ import org.simplemodeling.SimpleModeler.builder.XMindBuilderBase
  * @since   Feb.  1, 2009
  *  version Jun. 21, 2009
  *  version Dec. 11, 2011
- * @version Oct. 19, 2012
+ *  version Oct. 19, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class XMindBuilder(val project: ProjectRealmEntity, packageName: String, xmind: XMindEntity,
@@ -73,7 +74,7 @@ class XMindBuilder0(val project: ProjectRealmEntity, val packageName: String, va
       get_structure_node_children(thema, "規則")
     }
 
-    def get_usecases = {
+    def get_businessusecases = {
       get_structure_node_children(thema, "物語")
     }
 
@@ -102,10 +103,10 @@ class XMindBuilder0(val project: ProjectRealmEntity, val packageName: String, va
       val obj = builder.createObject(RuleKind, term)
       build_object(obj, rule)
     }
-    for (usecase <- get_usecases) {
-      val term = usecase.title
-      val obj = builder.createObject(UsecaseKind, term)
-      _build_usecase(obj, usecase)
+    for (businessusecase <- get_businessusecases) {
+      val term = businessusecase.title
+      val obj = builder.createObject(BusinessusecaseKind, term)
+      _build_businessusecase(obj, businessusecase)
     }
 
     xmind.close()
@@ -222,7 +223,7 @@ class XMindBuilder0(val project: ProjectRealmEntity, val packageName: String, va
     }
   }
 
-  private def _build_usecase(anObject: SMMEntityEntity, aNode: TopicNode) {
+  private def _build_businessusecase(anObject: SMMEntityEntity, aNode: TopicNode) {
     _build_object_common(anObject, aNode)
     val scenario = get_structure_node_children(aNode, "脚本")
     for (step <- scenario) {

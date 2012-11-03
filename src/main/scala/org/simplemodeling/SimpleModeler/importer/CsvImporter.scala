@@ -20,7 +20,8 @@ import org.simplemodeling.SimpleModeler.builder.CsvBuilderBase
  * 
  * @since   Sep. 12, 2011
  *  version Sep. 16, 2011
- * @version Dec. 11, 2011
+ *  version Dec. 11, 2011
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class CsvImporter(policy: Policy, val call: GServiceCall, packageName: String, csv: CsvEntity) 
@@ -46,7 +47,7 @@ class CsvImporter0(val policy: Policy, val call: GServiceCall, val packageName: 
         case "event"    => builder.createObject(EventKind, name)
         case "role"     => builder.createObject(RoleKind, name)
         case "rule"     => builder.createObject(RuleKind, name)
-        case "usecase"  => builder.createObject(UsecaseKind, name)
+        case "businessusecase"  => builder.createObject(BusinessusecaseKind, name)
         case _          => error("???")
       }
       var is_derived = false

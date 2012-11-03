@@ -20,7 +20,8 @@ import org.simplemodeling.SimpleModeler.builder.Policy
  * 
  * @since   Nov. 30, 2011
  *  version Dec. 10, 2011
- * @version Mar. 17, 2012
+ *  version Mar. 17, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class OutlineImporter(policy: Policy, val call: GServiceCall, packageName: String, outline: OutlineEntityBase)
@@ -45,7 +46,7 @@ class OutlineImporter0(val policy: Policy, val call: GServiceCall, val packageNa
       _outliner.events.foreach(_create_object(EventKind, _, _build_object))
       _outliner.roles.foreach(_create_object(RoleKind, _, _build_object))
       _outliner.rules.foreach(_create_object(RuleKind, _, _build_rule))
-      _outliner.usecases.foreach(_create_object(UsecaseKind, _, _build_usecase))
+      _outliner.businessusecases.foreach(_create_object(BusinessusecaseKind, _, _build_businessusecase))
       _model_builder.dslObjects
     } finally {
       outline.close();
@@ -71,7 +72,7 @@ class OutlineImporter0(val policy: Policy, val call: GServiceCall, val packageNa
     _build_object_common(source, target)
   }
 
-  private def _build_usecase(source: TopicNode, target: SMMEntityEntity) {
+  private def _build_businessusecase(source: TopicNode, target: SMMEntityEntity) {
     _build_object_common(source, target)
     _outliner.scenario(source).foreach(_build_scenario(_, target))
   }

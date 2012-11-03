@@ -6,7 +6,8 @@ import org.goldenport.entity.GEntityContext
 /*
  * @since   Dec.  8, 2011
  *  version Dec. 12, 2011
- * @version Oct. 18, 2012
+ *  version Oct. 18, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 case class Strategy(naming: NamingStrategy, slot: SlotStrategy)
@@ -33,7 +34,7 @@ object SimpleModelingNamingStrategy extends NamingStrategy {
       case SummaryKind           => "DES"
       case EntityKind            => "DE"
       case RuleKind              => "DR"
-      case UsecaseKind           => "BU"
+      case BusinessusecaseKind   => "BU"
       case StateMachineKind      => "DM"
       case StateMachineStateKind => "DMS"
       case _                     => error("not implemented yet = " + kind)

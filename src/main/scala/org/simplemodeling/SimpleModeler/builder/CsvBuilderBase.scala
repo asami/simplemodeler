@@ -16,7 +16,8 @@ import org.goldenport.service.GServiceCall
  * 
  * @since   Dec. 11, 2011
  *  version Dec. 11, 2011
- * @version Mar. 17, 2012
+ *  version Mar. 17, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class CsvBuilderBase(policy: Policy, packageName: String, val csv: CsvEntity
@@ -47,7 +48,7 @@ abstract class CsvBuilderBase(policy: Policy, packageName: String, val csv: CsvE
         case "event"    => model_Builder.createObject(EventKind, name)
         case "role"     => model_Builder.createObject(RoleKind, name)
         case "rule"     => model_Builder.createObject(RuleKind, name)
-        case "usecase"  => model_Builder.createObject(UsecaseKind, name)
+        case "businessusecase"  => model_Builder.createObject(BusinessusecaseKind, name)
         case kind       => model_Builder.createObject(kind, name)
       }
       var is_derived = false

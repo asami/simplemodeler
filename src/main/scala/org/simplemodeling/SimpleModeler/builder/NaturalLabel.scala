@@ -8,7 +8,8 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
 /*
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
- * @version Oct. 30, 2012
+ *  version Oct. 30, 2012
+ * @version Nov.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -19,7 +20,7 @@ sealed abstract trait NaturalLabel {
   lazy val allCandidates: Seq[String] = {
     def augumentsSpace(s: String): Seq[String] = {
       if (s.contains(" ")) {
-        List(s, s.replace(" ", ""), s.replace(" ", "-"))
+        List(s.replace(" ", ""), s.replace(" ", "-"))
       } else Seq(s)
     }
 
@@ -36,7 +37,7 @@ sealed abstract trait NaturalLabel {
   }
 
   def isMatch(name: String) = {
-    val n = name.trim.toLowerCase
+    val n = name.trim.toLowerCase.replace(" ", "")
     allCandidates.contains(n)
   }
 //  } ensuring( x => {
@@ -115,8 +116,8 @@ case object ServiceLabel extends NaturalLabel {
 }
 
 // XXX Business use case and Requirement use case
-case object UsecaseLabel extends NaturalLabel {
-  val candidates = List("use case", "ユースケース", "物語")
+case object BusinessUsecaseLabel extends NaturalLabel {
+  val candidates = List("business use case", "ビジネス ユースケース", "業務 ユースケース", "物語")
 }
 
 case object NameLabel extends NaturalLabel {
@@ -274,7 +275,7 @@ object NaturalLabel {
     StatemachineLabel,
     RuleLabel,
     ServiceLabel,
-    UsecaseLabel,
+    BusinessUsecaseLabel,
     NameLabel,
     NameJaLabel,
     NameEnLabel,
@@ -361,7 +362,7 @@ object NaturalLabel {
       case EventLabel => EventKind.some
       case RoleLabel => RoleKind.some
       case RuleLabel => RuleKind.some
-      case UsecaseLabel => UsecaseKind.some
+      case BusinessUsecaseLabel => BusinessusecaseKind.some
       case _ => none
     })
   }
