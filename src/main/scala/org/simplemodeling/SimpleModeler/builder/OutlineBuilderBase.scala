@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
  *  version Oct. 26, 2012
- * @version Nov.  3, 2012
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -42,6 +42,12 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     try {
       _mmx.traits.foreach(_create_object(TraitKind, _, _build_object))
       _mmx.traitTables.foreach(create_object_table(TraitKind, _))
+      _mmx.businessActors.foreach(_create_object(BusinessActorKind, _, _build_object))
+      _mmx.businessActorTables.foreach(create_object_table(BusinessActorKind, _))
+      _mmx.businessResources.foreach(_create_object(BusinessResourceKind, _, _build_object))
+      _mmx.businessResourceTables.foreach(create_object_table(BusinessResourceKind, _))
+      _mmx.businessEvents.foreach(_create_object(BusinessEventKind, _, _build_object))
+      _mmx.businessEventTables.foreach(create_object_table(BusinessEventKind, _))
       _mmx.actors.foreach(_create_object(ActorKind, _, _build_object))
       _mmx.actorTables.foreach(create_object_table(ActorKind, _))
       _mmx.resources.foreach(_create_object(ResourceKind, _, _build_object))

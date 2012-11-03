@@ -14,11 +14,13 @@ import org.simplemodeling.SimpleModeler.entity.requirement._
 import org.simplemodeling.SimpleModeler.entity.util.StepFlowBuilder
 
 /*
- * Dec.  7, 2008
- * Dec. 18, 2010
+ * @since   Dec.  7, 2008
+ *  version Dec. 18, 2010
+ * @version Nov.  4, 2012
+ * @author  ASAMI, Tomoharu
  */
 class SMBusinessTask(val dslBusinessTask: BusinessTask) extends SMTask(dslBusinessTask) {
-  override def typeName: String = "businessTask"
+  override def typeName: String = "business task"
 
   val userBusinessUsecases = new ArrayBuffer[SMBusinessUsecase]
   val realizationRequirementUsecases = new ArrayBuffer[SMRequirementUsecase]

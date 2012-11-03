@@ -28,6 +28,10 @@ import org.simplemodeling.dsl.datatype.business.XMoney
 import org.simplemodeling.dsl.datatype.business.XPercent
 import org.simplemodeling.dsl.datatype.business.XUnit
 import org.simplemodeling.dsl.IdAttributeKind
+import org.simplemodeling.dsl.business.BusinessEntity
+import org.simplemodeling.dsl.business.BusinessActor
+import org.simplemodeling.dsl.business.BusinessResource
+import org.simplemodeling.dsl.business.BusinessEvent
 import org.simplemodeling.dsl.domain.DomainActor
 import org.simplemodeling.dsl.domain.DomainEntity
 import org.simplemodeling.dsl.domain.DomainEntityPart
@@ -74,7 +78,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov.  3, 2012
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -832,6 +836,14 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _create_object(): SObject = {
     kind match {
+      case BusinessActorKind    => new BusinessActor(name, packageName) {
+//        override def isObjectScope = true
+        isMasterSingleton = true
+      }
+      case BusinessResourceKind    => new BusinessResource(name, packageName) {
+//        override def isObjectScope = true
+        isMasterSingleton = true
+      }
       case TraitKind => new DomainTrait(name, packageName) {
         isMasterSingleton = true
       }
@@ -912,6 +924,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   def buildSObjects(entities: Map[String, SObject]) {
     _sobject match {
       case Some(tr: DomainTrait) => _build_trait(tr, entities)
+      case Some(entity: BusinessEntity) => _build_entity(entity, entities)
       case Some(event: DomainEvent) => _build_event(event, entities)
       case Some(entity: DomainEntity) => _build_entity(entity, entities)
       case Some(value: DomainValue) => _build_value(value)

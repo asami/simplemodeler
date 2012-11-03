@@ -16,7 +16,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
  *  version Oct. 21, 2012
- * @version Nov.  3, 2012
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -29,6 +29,31 @@ import org.simplemodeling.SimpleModeler.builder._
 class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
   val thema = outline.firstThema // TODO variation point
 
+  def businessActors: List[TopicNode] = {
+    structure_node_children(thema, BusinessActorLabel)
+  }
+
+  def businessActorTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(BusinessActorLabel)
+  }
+
+  def businessResources = {
+    structure_node_children(thema, BusinessResourceLabel)
+  }
+
+  def businessResourceTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(BusinessResourceLabel)
+  }
+
+  def businessEvents = {
+    structure_node_children(thema, BusinessEventLabel)
+  }
+
+  def businessEventTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(BusinessEventLabel)
+  }
+
+  //
   def entityTables: List[GTable[String]] = {
     _structure_node_thema_boi_tables(EntityLabel)
   }

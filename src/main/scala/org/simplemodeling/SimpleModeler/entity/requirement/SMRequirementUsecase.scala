@@ -14,11 +14,12 @@ import org.simplemodeling.SimpleModeler.entity.util.StepFlowBuilder
 
 /*
  * @since   Dec. 10, 2008
- * @version Nov.  4, 2011
+ *  version Nov.  4, 2011
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMRequirementUsecase(val dslRequirementUsecase: RequirementUsecase) extends SMUsecase(dslRequirementUsecase) {
-  override def typeName: String = "RequirementUsecase"
+  override def typeName: String = ""
 
   val includeRequirementUsecases = new ArrayBuffer[SMRequirementUsecase]
   val includeRequirementTasks = new ArrayBuffer[SMRequirementTask]

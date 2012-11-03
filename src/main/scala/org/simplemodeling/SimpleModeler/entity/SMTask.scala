@@ -8,11 +8,13 @@ import org.goldenport.sdoc.inline.SHelpRef
 import org.goldenport.values.{LayeredSequenceNumber, NullLayeredSequenceNumber}
 
 /*
- * Dec.  2, 2008
- * Dec. 10, 2008
+ * @since   Dec.  2, 2008
+ *  version Dec. 10, 2008
+ * @version Nov.  4, 2012
+ * @author  ASAMI, Tomoharu
  */
 abstract class SMTask(val dslTask: STask) extends SMStoryObject(dslTask) {
-  override def kindName: String = dslTask.taskKind.label
+//  override def kindName: String = dslTask.taskKind.label
 
 /* 2008-12-09
   def build(aStep: SMTaskStep)

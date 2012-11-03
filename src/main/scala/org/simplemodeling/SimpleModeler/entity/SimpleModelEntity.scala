@@ -28,7 +28,8 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Sep. 19, 2011
  *  version Jan. 30, 2012
  *  version Jun. 17, 2012
- * @version Oct. 16, 2012
+ *  version Oct. 16, 2012
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) {
@@ -173,6 +174,9 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
       case powertype: DomainPowertype => build_domain_powertype(powertype)
       case service: DomainService => build_domain_service(service)
       case rule: DomainRule => build_domain_rule(rule)
+      case entity: BusinessActor => build_business_actor(entity)
+      case entity: BusinessResource => build_business_resource(entity)
+      case entity: BusinessEvent => build_business_event(entity)
       case value: SValue => build_value(value)
       case document: SDocument => build_document(document)
       case datatype: SDatatype => build_datatype(datatype)
@@ -186,6 +190,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
       case ds: DataSet => _build_dataset(ds)
       case ds: DataSource => _build_datasource(ds)
       case flow: Flow => _build_flow(flow)
+//      case entity: SEntity => build_entity(entity)
       case any => sys.error("unimplemnted object = " + any)
     }
   }
@@ -214,6 +219,33 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
 
   private def is_exists(aClass: Class[SObject]) = {
     _done_classes.contains(aClass)
+  }
+
+  private def build_business_actor(anActor: BusinessActor) {
+    val pkg = build_package(anActor)
+    val actor = new SMBusinessActor(anActor)
+//    println("SMEntity actor = " + actor.name) 2008-10-19
+    build_object(actor, anActor)
+    pkg.addChild(actor)
+    build_relation_objects(anActor)
+  }
+
+  private def build_business_event(anEvent: BusinessEvent) {
+    val pkg = build_package(anEvent)
+    val event = new SMBusinessEvent(anEvent)
+//    println("SMEntity event = " + event.name) 2008-10-19
+    build_object(event, anEvent)
+    pkg.addChild(event)
+    build_relation_objects(anEvent)
+  }
+
+  private def build_business_resource(aResource: BusinessResource) {
+    val pkg = build_package(aResource)
+    val resource = new SMBusinessResource(aResource)
+//    println("SMEntity resource = " + resource.name) 2008-10-19
+    build_object(resource, aResource)
+    pkg.addChild(resource)
+    build_relation_objects(aResource)
   }
 
   private def build_domain_actor(anActor: DomainActor) {
@@ -352,6 +384,10 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
     build_object(rule, aRule)
     pkg.addChild(rule)
     build_relation_objects(aRule)
+  }
+
+  private def build_entity(aEntity: SEntity) {
+    // do nothing
   }
 
   private def build_value(aValue: SValue) {

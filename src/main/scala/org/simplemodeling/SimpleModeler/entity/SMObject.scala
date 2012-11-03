@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entity
 
+import org.apache.commons.lang3.StringUtils
 import scala.collection.mutable.Buffer
 import scala.collection.mutable.ArrayBuffer
 import org.simplemodeling.dsl._
@@ -12,7 +13,8 @@ import com.asamioffice.goldenport.text.UPathString
  *  version Jul. 13, 2011
  *  version Feb.  7, 2012
  *  version Apr.  8, 2012
- * @version Oct. 16, 2012
+ *  version Oct. 16, 2012
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
@@ -99,9 +101,42 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
     } else dslObject.baseObject.qualifiedName
   }
 
+  /**
+   * stereotype candidate - first
+   * 
+   * Used by DigraphBase.
+   */
   def typeName: String = null
+  /**
+   * stereotype candidate - second
+   * 
+   * Used by DigraphBase.
+   */
   def kindName: String = null
+  /**
+   * additiona stereotype
+   */
   def powertypeName: String = null
+
+  def stereotypes: List[String] = {
+    import StringUtils.{ isBlank, isNotBlank }
+    val istypename = isNotBlank(typeName)
+    val iskindname = isNotBlank(kindName)
+    val a = if (!istypename && !iskindname) Nil
+    else if (istypename && iskindname)
+      typeName match {
+        case "generic" => List(kindName)
+        case "business entity" => List(kindName)
+        case "entity" => List(kindName)
+        case _ => List(typeName, kindName)
+      }
+    else if (istypename) List(typeName)
+    else if (iskindname) List(kindName)
+    else Nil
+    val b = if (isBlank(powertypeName)) Nil
+    else List(powertypeName)
+    a ::: b
+  }
 
   add_feature(FeaturePackage, package_literal) label_is "パッケージ"
   add_feature(FeatureName, SText(name)) label_is "名前"

@@ -5,7 +5,7 @@ package org.simplemodeling.SimpleModeler.entities.simplemodel
  *  version Dec.  8, 2011
  *  version Jan. 24, 2012
  *  version Oct. 15, 2012
- * @version Nov.  3, 2012
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 sealed abstract class ElementKind {
@@ -15,6 +15,9 @@ sealed abstract class ElementKind {
 case class GenericKind(name: String) extends ElementKind
 
 object NoneKind extends ElementKind 
+object BusinessActorKind extends ElementKind
+object BusinessResourceKind extends ElementKind
+object BusinessEventKind extends ElementKind
 object ActorKind extends ElementKind {
   override def isIdNeeded = true
 }

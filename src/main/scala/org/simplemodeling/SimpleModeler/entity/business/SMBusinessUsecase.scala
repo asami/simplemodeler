@@ -15,11 +15,12 @@ import org.simplemodeling.SimpleModeler.entity.util.StepFlowBuilder
 
 /*
  * @since   Nov.  8, 2008
- * @version Nov.  4, 2011
+ *  version Nov.  4, 2011
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMBusinessUsecase(val dslBusinessUsecase: BusinessUsecase) extends SMUsecase(dslBusinessUsecase) {
-  override def typeName: String = "BusinessUsecase"
+  override def typeName: String = "business usecase"
 
   val includeBusinessTasks = new ArrayBuffer[SMBusinessTask] // XXX duplicate
   val includeBusinessUsecases = new ArrayBuffer[SMBusinessUsecase]

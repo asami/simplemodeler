@@ -6,7 +6,9 @@ import org.goldenport.entity.GEntityContext
 import org.goldenport.entities.graphviz._
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.flow._
-import org.simplemodeling.SimpleModeler.entity.domain.SMGenericDomainEntity
+import org.simplemodeling.SimpleModeler.entity.business._
+import org.simplemodeling.SimpleModeler.entity.domain._
+import org.simplemodeling.SimpleModeler.entity.requirement._
 import com.asamioffice.goldenport.text.UString
 
 /*
@@ -15,7 +17,7 @@ import com.asamioffice.goldenport.text.UString
  * @since   Jan. 15, 2009
  *  version Mar. 27, 2011
  *  version Nov. 20, 2011
- * @version Oct. 16, 2012
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
@@ -81,49 +83,73 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     node.root = "true"
   }
 
+  def node_color(anObject: SMElement, node: GVNode) {
+    anObject match {
+      case _: SMStoryObject => {
+        node.style = "filled"
+        node.fillcolor = get_stereotype_color(anObject)
+      }
+      case _ => {
+        node.bgcolor = get_stereotype_color(anObject)
+      }
+    }
+    for (c <- get_stereotype_fontcolor(anObject)) {
+      node.fontcolor = c
+    }
+  }
+
+  def name_compartment(anObject: SMElement, node: GVNode) {
+    val comp = new GVCompartment
+    get_stereotypes(anObject).foreach(comp.addLine)
+    comp.addLine(anObject.name)
+    node.compartments += comp
+  }
+
+  def attribute_compartment(anObject: SMObject, node: GVNode) {
+    val comp = new GVCompartment
+    if (showDerivedAttribute) {
+      parent_attribute_lines(comp, anObject)
+    }
+    for (attr <- anObject.attributes) {
+      comp.addLine(attribute_line(attr)) align_is "left"
+    }
+    node.compartments += comp
+  }
+
+  def operation_compartment(anObject: SMObject, node: GVNode) {
+  }
+
   final def addClassFull(anObject: SMObject, aId: String): GVNode = {
     val node = new GVNode(aId)
 
-    def node_color {
-      node.bgcolor = get_stereotype_color(anObject)
-    }
-
-    def name_compartment {
-      val comp = new GVCompartment
-      get_stereotypes(anObject).foreach(comp.addLine)
-      comp.addLine(anObject.name)
-      node.compartments += comp
-    }
-
-    def attribute_compartment {
-      val comp = new GVCompartment
-      if (showDerivedAttribute) {
-        parent_attribute_lines(comp, anObject)
-      }
-      for (attr <- anObject.attributes) {
-        comp.addLine(attribute_line(attr)) align_is "left"
-      }
-      node.compartments += comp
-    }
-
-    def operation_compartment {
-    }
-
     anObject match {
+//      case task: SMTask => {
+//        node_color(anObject, node)
+//        name_compartment(anObject, node)
+//        node.shape = "hexagon"
+//      }
       case story: SMStoryObject => {
-        node_color
-        name_compartment
+        node_color(anObject, node)
+        name_compartment(anObject, node)
         node.shape = "ellipse"
       }
       case _ => {
-        node_color
-        name_compartment
-        attribute_compartment
-        operation_compartment
+        node_color(anObject, node)
+        name_compartment(anObject, node)
+        attribute_compartment(anObject, node)
+        operation_compartment(anObject, node)
       }
     }
     graph.elements += node
     node
+  }
+
+  def kind_compartment(aPowertype: SMPowertype, node: GVNode) {
+    val comp = new GVCompartment
+    for (kind <- aPowertype.kinds) {
+      comp.addLine(kind.name) align_is "left"
+    }
+    node.compartments += comp
   }
 
   final def addClassSimple(anObject: SMObject): String = {
@@ -135,86 +161,37 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
   final def addClassSimple(anObject: SMObject, aId: String) {
     val node = new GVNode(aId)
 
-    def node_color { // XXX: duplicate
-      node.bgcolor = get_stereotype_color(anObject)
-    }
-
-    def name_compartment { // XXX: duplicate
-      val comp = new GVCompartment
-      get_stereotypes(anObject).foreach(comp.addLine)
-      comp.addLine(anObject.name)
-      node.compartments += comp
-    }
-
     anObject match {
+//      case task: SMTask => {
+//        node.shape = "hexagon"
+//      }
       case story: SMStoryObject => node.shape = "ellipse"
       case _ => {}
     }
-    node_color
-    name_compartment
+    node_color(anObject, node)
+    name_compartment(anObject, node)
     graph.elements += node
   }
 
   final def addPowertypeFull(aPowertype: SMPowertype, aId: String) {
     val node = new GVNode(aId)
 
-    def node_color { // XXX: duplicate
-      node.bgcolor = get_stereotype_color(aPowertype)
-    }
-
-    def name_compartment { // XXX: duplicate
-      val comp = new GVCompartment
-      get_stereotypes(aPowertype).foreach(comp.addLine)
-      comp.addLine(aPowertype.name)
-      node.compartments += comp
-    }
-
-    def kind_compartment {
-      val comp = new GVCompartment
-      for (kind <- aPowertype.kinds) {
-        comp.addLine(kind.name) align_is "left"
-      }
-      node.compartments += comp
-    }
-
-    node_color
-    name_compartment
-    kind_compartment
+    node_color(aPowertype, node)
+    name_compartment(aPowertype, node)
+    kind_compartment(aPowertype, node)
     graph.elements += node
   }
 
   final def addPowertypeSimple(aPowertype: SMPowertype, aId: String) {
     val node = new GVNode(aId)
 
-    def node_color { // XXX: duplicate
-      node.bgcolor = get_stereotype_color(aPowertype)
-    }
-
-    def name_compartment { // XXX: duplicate
-      val comp = new GVCompartment
-      get_stereotypes(aPowertype).foreach(comp.addLine)
-      comp.addLine(aPowertype.name)
-      node.compartments += comp
-    }
-
-    node_color
-    name_compartment
+    node_color(aPowertype, node)
+    name_compartment(aPowertype, node)
     graph.elements += node
   }
 
   final def addStateMachineFull(aStateMachine: SMStateMachine, aId: String) {
     val node = new GVNode(aId)
-
-    def node_color { // XXX: duplicate
-      node.bgcolor = get_stereotype_color(aStateMachine)
-    }
-
-    def name_compartment { // XXX: duplicate
-      val comp = new GVCompartment
-      get_stereotypes(aStateMachine).foreach(comp.addLine)
-      comp.addLine(aStateMachine.name)
-      node.compartments += comp
-    }
 
     def state_compartment {
       val comp = new GVCompartment
@@ -224,8 +201,8 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
       node.compartments += comp
     }
 
-    node_color
-    name_compartment
+    node_color(aStateMachine, node)
+    name_compartment(aStateMachine, node)
     state_compartment
     graph.elements += node
   }
@@ -233,19 +210,8 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
   final def addStateMachineSimple(aStateMachine: SMStateMachine, aId: String) {
     val node = new GVNode(aId)
 
-    def node_color { // XXX: duplicate
-      node.bgcolor = get_stereotype_color(aStateMachine)
-    }
-
-    def name_compartment { // XXX: duplicate
-      val comp = new GVCompartment
-      get_stereotypes(aStateMachine).foreach(comp.addLine)
-      comp.addLine(aStateMachine.name)
-      node.compartments += comp
-    }
-
-    node_color
-    name_compartment
+    node_color(aStateMachine, node)
+    name_compartment(aStateMachine, node)
     graph.elements += node
   }
 
@@ -538,7 +504,19 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     else "  \\n" + multiplicity.text
   }
 
+  private def get_stereotypes(elem: SMElement): Seq[String] = {
+    elem match {
+      case sm: SMStateMachine => get_stereotypes(sm)
+      case o: SMObject => get_stereotypes(o)
+    }
+  }
+
   private def get_stereotypes(anObject: SMObject): Seq[String] = {
+    anObject.stereotypes.map(x => "&#171;" + x + "&#187;")
+  }
+
+/*
+  private def get_stereotypes0(anObject: SMObject): Seq[String] = {
     val stereotypes = new ArrayBuffer[String]
 
     def add_stereotype(name: String) {
@@ -546,6 +524,17 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     }
 
     anObject match {
+      case bu: SMBusinessUsecase => {
+        add_stereotype("business")
+      }
+      case bt: SMBusinessTask => {
+        add_stereotype("business task")
+      }
+      case u: SMUsecase => ;
+      case t: SMTask => add_stereotype("task");
+      case b: SMBusinessActor => add_stereotype("business actor")
+      case b: SMBusinessActor => add_stereotype("business actor")
+      case b: SMBusinessActor => add_stereotype("business actor")
       case g: SMGenericDomainEntity => {
         if (UString.notNull(g.kindName)) {
           add_stereotype(g.kindName)
@@ -567,9 +556,46 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     }
     stereotypes
   }
+*/
 
   private def get_stereotypes(aStateMachine: SMStateMachine): Seq[String] = {
     Array("&#171;stateMachine&#187;")
+  }
+
+  private def get_stereotype_color(elem: SMElement): String = {
+    // "extension") "#ffffff"
+    // "") "#f8fbf8" /// 白磁 はくじ
+    elem match {
+      // Business
+      case _: SMBusinessActor => "#954e2a" // 柿茶かきちゃ
+      case _: SMBusinessResource => "#007bbb" // 紺碧こんぺき
+      case _: SMBusinessEvent => "#c9171e" // 深緋こきひ
+      case _: SMBusinessUsecase => "#4f455c" // 濃鼠 こいねず
+      case _: SMBusinessTask => "#4f455c" // 濃鼠 こいねず
+      // Requirement
+      case _: SMRequirementUsecase => "#705b67" // 葡萄鼠 ぶどうねずみ
+      case _: SMRequirementTask => "#705b67" // 葡萄鼠 ぶどうねずみ
+      // Domain
+      case _: SMDomainActor => "#f39800" // 金茶 きんちゃ
+      case _: SMDomainRole => "#e49e61" // 小麦色 こむぎいろ
+      case _: SMDomainResource => "#38a1db" // 露草色 つゆくさいろ
+      case _: SMDomainEvent => "#e2041b" // 猩々緋 しょうじょうひ
+      case _: SMDomainSummary => "#674196" // 菖蒲色 しょうぶいろ
+      case _: SMDomainEntity => "#c1e4e9" // 白藍 しらあい
+      case _: SMDomainTrait => "#b3ada0" // 利休白茶
+      // Domain(implicit)
+      case _: SMStateMachine => "#f5b1aa" // 珊瑚色 さんごいろ
+      case _: SMRule => "#a6a5c4" // 藤鼠 ふじねず "#93ca76" // 山吹色 やまぶきいろ
+      case _: SMDatatype => "#b3ada0" // 利休白茶 りきゅうしろちゃ
+      case _: SMPowertype => "#7ebea5" // 青磁色 せいじいろ
+      case _: SMDocument => "#93ca76" // 淡萌黄 うすもえぎ
+      case _: SMValue => "#a8bf93" // 山葵色 わさびいろ
+      // System(implicit)
+      case _: SMDataSource => "#d4dcda" // 薄雲鼠うすくもねず
+      case _: SMDataSet => "#b3ada0" // 利休白茶りきゅうしろちゃ
+      case _: SMFlow => "#d8e698" // 若菜色わかないろ
+      case _ => ""
+    }
   }
 
   private def get_stereotype_color(anObject: SMObject): String = {
@@ -589,10 +615,9 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     else if (anObject.typeName == "service") "#ffffff"
     else if (anObject.typeName == "usecase") "#ffffff"
     else if (anObject.typeName == "value") "#a8bf93" // 山葵色 わさびいろ
-    else if (anObject.typeName == "businessTask") "#ffffff"
-    else if (anObject.typeName == "businessUsecase") "#ffffff"
-    else if (anObject.typeName == "requirementTask") "#ffffff"
-    else if (anObject.typeName == "requirementUsecase") "#ffffff"
+    else if (anObject.typeName == "businessTask") "#4f455c" // 濃鼠 こいねず
+    else if (anObject.typeName == "businessUsecase") "#4f455c" // 濃鼠 こいねず
+    else if (anObject.typeName == "requirementUsecase") "#705b67" // 葡萄鼠 ぶどうねずみ
     else if (anObject.typeName == "datasource") "#d4dcda" // 薄雲鼠うすくもねず
     else if (anObject.typeName == "dataset") "#b3ada0" // 利休白茶りきゅうしろちゃ
     else if (anObject.typeName == "flow") "#d8e698" // 若菜色わかないろ
@@ -610,6 +635,14 @@ http://www.colordic.org/w/
 "#ee7800" // 橙色 だいだいいろ
 "#9790a4" // 薄鼠 うすねず
 */
+
+  private def get_stereotype_fontcolor(elem: SMElement): Option[String] = {
+    elem match {
+      case _: SMStoryObject => Some("white")
+      case _: SMBusinessEntity => Some("white")
+      case _ => None
+    }
+  }
 
   private def parent_attribute_lines(aCompartment: GVCompartment, anObject: SMObject) {
     anObject.getBaseObject match {

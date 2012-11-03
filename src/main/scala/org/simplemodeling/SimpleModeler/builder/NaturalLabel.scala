@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
- * @version Nov.  3, 2012
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -20,7 +20,7 @@ sealed abstract trait NaturalLabel {
   lazy val allCandidates: Seq[String] = {
     def augumentsSpace(s: String): Seq[String] = {
       if (s.contains(" ")) {
-        List(s.replace(" ", ""), s.replace(" ", "-"))
+        List(s.replace(" ", ""), s.replace(" ", "-"), s.replace(" ", "・"))
       } else Seq(s)
     }
 
@@ -57,6 +57,17 @@ case object KindLabel extends NaturalLabel {
 
 case object TraitLabel extends NaturalLabel {
   val candidates = List("trait", "トレイト", "特色")
+}
+
+case object BusinessActorLabel extends NaturalLabel {
+  val candidates = List("business actor", "ビジネス アクター", "ビジネス アクタ", "業務 アクター", "業務 アクタ")
+}
+
+case object BusinessResourceLabel extends NaturalLabel {
+  val candidates = List("business resource", "ビジネス リソース", "業務 リソース")
+}
+case object BusinessEventLabel extends NaturalLabel {
+  val candidates = List("business event", "ビジネス イベント", "業務 イベント")
 }
 
 case object EntityLabel extends NaturalLabel {
