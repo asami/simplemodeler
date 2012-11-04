@@ -5,11 +5,13 @@ import org.simplemodeling.SimpleModeler.builder._
 
 /*
  * @since   Oct.  8, 2012
- * @version Oct. 26, 2012
+ *  version Oct. 26, 2012
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMTypeSet {
-  def name: String
+  def getName(): Option[String]
+  def name: String = getName | "Unknown"
   def sqlDataType: Option[SMMSqlDataType]
 }
 
@@ -24,10 +26,10 @@ class SMMAttributeTypeSet(
   val dataType: Option[SMMDataType] = None,
   val sqlDataType: Option[SMMSqlDataType] = None
 ) extends SMMTypeSet {
-  def name = {
+  def getName = {
     attributeType.map(_.name) orElse
     dataType.map(_.name) orElse
-    sqlDataType.map(_.name) getOrElse "Unknown"
+    sqlDataType.map(_.name)
   }
 
   def packageName = {
@@ -71,9 +73,9 @@ class SMMEntityTypeSet(
   val entityType: Option[SMMEntityType],
   val sqlDataType: Option[SMMSqlDataType] = None
 ) extends SMMTypeSet {
-  def name = {
+  def getName = {
     entityType.map(_.name) orElse
-    sqlDataType.map(_.name) getOrElse "Unknown"
+    sqlDataType.map(_.name)
   }
 }
 

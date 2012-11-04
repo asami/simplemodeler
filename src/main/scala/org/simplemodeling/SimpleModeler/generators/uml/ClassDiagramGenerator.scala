@@ -7,6 +7,7 @@ import org.goldenport.entity.GEntityContext
 import org.goldenport.entities.graphviz._
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.flow._
+import org.simplemodeling.SimpleModeler.entity.business._
 import org.simplemodeling.dsl.SExecutionStep
 import org.simplemodeling.dsl.SStep
 import org.goldenport.Strings
@@ -16,7 +17,7 @@ import org.goldenport.Strings
  *  version Nov. 20, 2011
  *  version Sep. 18, 2012
  *  version Oct. 23, 2012
- * @version Nov.  3, 2012
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -107,6 +108,9 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
               case "detail"      => graph.addPowertypeFull(powertype, id)
               case _             => sys.error("illegal thema: " + aThema)
             }
+          }
+          case business: SMBusinessEntity => {
+            graph.addClassSimple(anObject, id)
           }
           case _ => {
             aThema match {

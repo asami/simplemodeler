@@ -584,6 +584,8 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
       case _: SMDomainEntity => "#c1e4e9" // 白藍 しらあい
       case _: SMDomainTrait => "#b3ada0" // 利休白茶
       // Domain(implicit)
+      case _: SMEntityPart => "#c1e4e9" // 白藍 しらあい
+      case _: SMEntity => "#c1e4e9" // 白藍 しらあい
       case _: SMStateMachine => "#f5b1aa" // 珊瑚色 さんごいろ
       case _: SMRule => "#a6a5c4" // 藤鼠 ふじねず "#93ca76" // 山吹色 やまぶきいろ
       case _: SMDatatype => "#b3ada0" // 利休白茶 りきゅうしろちゃ

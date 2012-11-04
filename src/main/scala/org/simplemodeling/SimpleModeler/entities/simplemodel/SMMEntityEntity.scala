@@ -974,13 +974,13 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_base(entities: Map[String, SObject], entity: SObject) {
     if (base != NullEntityEntity) {
-      record_warning(_entity_ref(base.name, entities))(entity.base)
+      do_w(_entity_ref(base.name, entities))(entity.base)
     }
   }
 
   private def _build_traits(entities: Map[String, SObject], entity: SObject) {
     for (tr <- traits) {
-      record_warning(_entity_ref(tr.name, entities))(_ match {
+      do_w(_entity_ref(tr.name, entities))(_ match {
         case dtrait: DomainTrait => entity.mixinTrait(dtrait)
         case entity => record_warning("%sはトレイト(特色)ではありません。", entity.name)
       })
@@ -989,19 +989,17 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_powertypes(entities: Map[String, SObject], entity: SObject) {
     for (power <- powertypes) {
-      _powertype_ref(power.powertypeType.name, entities) match {
-        case sp: DomainPowertype => entity.powertype(power.name, sp, _dsl_multiplicity(power.multiplicity))
-        case entity => record_warning("%sはパワータイプ(区分)ではありません。", entity.name)
-      }
+      do_w(_powertype_ref(power.powertypeType.name, entities))(p => {
+        entity.powertype(power.name, p, _dsl_multiplicity(power.multiplicity))
+      })
     }
   }
 
   private def _build_roles(entities: Map[String, SObject], entity: SObject) {
     for (role <- roles) {
-      _role_ref(role.associationType.name, entities) match {
-        case r: DomainRole => entity.role(role.name, r, _dsl_multiplicity(role.multiplicity))
-        case entity => record_warning("%s refers %s as role entity.".format(name, entity.name))
-      }
+      do_w(_role_ref(role.associationType.getName, entities))(r => {
+        entity.role(role.name, r, _dsl_multiplicity(role.multiplicity))
+      })
     }
   }
 
@@ -1132,7 +1130,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_associations(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- associations) {
-      record_warning(_entity_ref(assoc.associationType.name, entities)) {
+      do_w(_entity_ref(assoc.associationType.getName, entities)) {
         entity.association(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
       }
     }
@@ -1140,7 +1138,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_aggregations(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- aggregations) {
-      record_warning(_entity_ref(assoc.associationType.name, entities)) {
+      do_w(_entity_ref(assoc.associationType.getName, entities)) {
         entity.aggregation(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
       }
     }
@@ -1148,21 +1146,28 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_compositions(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- compositions) {
-      record_warning(_entity_ref(assoc.associationType.name, entities)) {
+      do_w(_entity_ref(assoc.associationType.getName, entities)) {
         entity.composition(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
       }
+    }
+  }
+
+  private def _entity_ref(name: Option[String], entities: Map[String, SObject]): Either[String, SEntity] = {
+    name match {
+      case Some(s) => _entity_ref(s, entities)
+      case None => "エンティティ名がありません。(参照元: %s)".format(this.name).left
     }
   }
 
   private def _entity_ref(name: String, entities: Map[String, SObject]): Either[String, SEntity] = {
     entities.get(name) match {
       case Some(entity: SEntity) => entity.right
-      case Some(x) => sys.error("not sobject: " + x.name)
-      case None => sys.error("unknown: " + name + " / " + entities)
+      case Some(x) => "エンティティに対してのみ関連・集約・合成を持つことができます。(参照元: %s, 参照先: %s)".format(this.name, x.name).left
+      case None => Left("エンティティ%sはみつかりません。(参照元: %s)".format(this.name))
     }
   }
 
-
+/*
   private def _entity_ref0(name: String, entities: Map[String, SObject]): Either[String, SEntity] = {
     entities.get(name) match {
       case Some(entity: SEntity) => entity.right
@@ -1171,7 +1176,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case None => sys.error("unknown: " + name + " / " + entities)
     }
   }
-
+*/
 /*
   private def _trait_ref(name: String, entities: Map[String, SObject]): STrait = {
     println("_trait_ref(%s) = %s".format(name, entities))
@@ -1182,19 +1187,33 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 */
 
-  private def _powertype_ref(name: String, entities: Map[String, SObject]) = {
-    entities.get(name) match {
-      case Some(p: DomainPowertype) => p
-      case Some(o: SObject) => sys.error("not powertype: " + o)
-      case None => sys.error("no powertype: " + name + "/" + entities)
+  private def _powertype_ref(name: Option[String], entities: Map[String, SObject]): Either[String, DomainPowertype] = {
+    name match {
+      case Some(s) => _powertype_ref(s, entities)
+      case None => "パワータイプ(区分)名がありません。(参照元: %s)".format(this.name).left
     }
   }
 
-  private def _role_ref(name: String, entities: Map[String, SObject]) = {
+  private def _powertype_ref(name: String, entities: Map[String, SObject]): Either[String, DomainPowertype] = {
     entities.get(name) match {
-      case Some(r: DomainRole) => r
-      case Some(o: SObject) => o
-      case None => sys.error("no role: " + name + "/" + entities)
+      case Some(p: DomainPowertype) => p.right
+      case Some(x) => "%sはパワータイプ(区分)ではありません。(参照元: %s)".format(x.name, this.name).left
+      case None => Left("パワータイプ(区分)%sはみつかりません。(参照元: %s)".format(name, this.name))
+    }
+  }
+
+  private def _role_ref(name: Option[String], entities: Map[String, SObject]): Either[String, DomainRole] = {
+    name match {
+      case Some(s) => _role_ref(s, entities)
+      case None => "ロール(役割)名がありません。(参照元: %s)".format(this.name).left
+    }
+  }
+
+  private def _role_ref(name: String, entities: Map[String, SObject]): Either[String, DomainRole] = {
+    entities.get(name) match {
+      case Some(r: DomainRole) => r.right
+      case Some(x) => "%sはロール(役割)ではありません。(参照元: %s)".format(x.name, this.name).left
+      case None => Left("ロール(役割)%sはみつかりません。(参照元: %s)".format(name, this.name))
     }
   }
 
@@ -1281,13 +1300,13 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _describe_association(entities: Map[String, SObject], set: (String, SEntity, SMultiplicity) => SAssociation, assoc: SMMAssociation) {
-    record_warning(_entity_ref(assoc.associationType.name, entities)) { 
+    do_w(_entity_ref(assoc.associationType.getName, entities)) { 
       set(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
     }
   }
 
   private def _describe_event_issue(entities: Map[String, SObject], uc: SStoryObject, step: SMMAssociation) {
-    _entity_ref(step.associationType.name, entities) match {
+    _entity_ref(step.associationType.getName, entities) match {
       case event: DomainEvent => uc.event_issue(event)()
       case _ => {}
     }

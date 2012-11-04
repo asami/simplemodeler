@@ -14,7 +14,8 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar.  6, 2012
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
- * @version Oct. 30, 2012
+ *  version Oct. 30, 2012
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -207,6 +208,11 @@ class TableSimpleModelMakerBuilder(
       case BaseLabel => add_base(entity, entry)
       case TraitLabel => add_traits(entity, entry)
       case TableNameLabel => add_table_name(entity, entry)
+      case PrimaryActorLabel => add_primary_actor(entity, entry)
+      case SecondaryActorLabel => add_secondary_actor(entity, entry)
+      case SupportingActorLabel => add_supporting_actor(entity, entry)
+      case ActorLabel => add_primary_actor(entity, entry)
+      case GoalLabel => add_goal(entity, entry)
     }
   }
 
@@ -229,6 +235,31 @@ class TableSimpleModelMakerBuilder(
   protected final def add_table_name(entity: SMMEntityEntity, entry: (String, String, Seq[String])) {
     _set_property_one(entry, x => {
       entity.tableName = x
+    })
+  }
+
+  protected final def add_goal(entity: SMMEntityEntity, entry: (String, String, Seq[String])) {
+    _set_property_seq(entry, x => {
+      entity.narrativeGoals ++= x
+    })
+  }
+
+  protected final def add_primary_actor(entity: SMMEntityEntity, entry: (String, String, Seq[String])) {
+    _set_property_seq(entry, x => {
+      entity.narrativePrimaryActors ++= x
+    })
+  }
+
+
+  protected final def add_secondary_actor(entity: SMMEntityEntity, entry: (String, String, Seq[String])) {
+    _set_property_seq(entry, x => {
+      entity.narrativeSecondaryActors ++= x
+    })
+  }
+
+  protected final def add_supporting_actor(entity: SMMEntityEntity, entry: (String, String, Seq[String])) {
+    _set_property_seq(entry, x => {
+      entity.narrativeSupportingActors ++= x
     })
   }
 
