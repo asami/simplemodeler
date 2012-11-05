@@ -13,13 +13,13 @@ import org.simplemodeling.SimpleModeler.entities.PUtil._
 // derived from GaejEntityPartEntity since Jun. 20, 2009.
 /*
  * @since   Apr. 23, 2011
- * @version Jun. 20, 2011
+ *  version Jun. 20, 2011
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
-trait PEntityPartEntity extends PEntityObjectEntity {
-  var modelEntityPart: SMEntityPart = null
-
-  override protected def write_Content(out: BufferedWriter) {
+trait PEntityPartEntity extends PEntityEntity {
+//  var modelEntityPart: SMEntityPart = null
+//  override protected def write_Content(out: BufferedWriter) {
     // XXX
-  }
+//  }
 }

@@ -1,6 +1,7 @@
 package org.simplemodeling.SimpleModeler.entity
 
 import org.simplemodeling.dsl._
+import org.simplemodeling.dsl.domain.DomainEntityPart
 import org.goldenport.sdoc._
 import org.goldenport.sdoc.inline.SIAnchor
 import org.goldenport.sdoc.inline.SElementRef
@@ -8,7 +9,8 @@ import org.goldenport.sdoc.inline.SHelpRef
 
 /*
  * @since   Sep. 17, 2008
- * @version Nov.  9, 2009
+ *  version Nov.  9, 2009
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMAssociation(val dslAssociation: SAssociation) extends SMElement(dslAssociation) {

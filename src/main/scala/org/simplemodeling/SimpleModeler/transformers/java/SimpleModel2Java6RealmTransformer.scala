@@ -26,7 +26,7 @@ import org.goldenport.entity.content.ResourceContent
  * @since   Dec. 12, 2011
  *  version Dec. 14, 2011
  *  version Oct. 26, 2012
- * @version Nov.  2, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -66,6 +66,10 @@ class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
       val appname = target_context.className(pkg, "Application")
       val app = new Java6ApplicationEntity(target_context)
       build_object_for_package(app, pkg, ppkg, appname)
+    }
+
+    override protected def create_Trait(entity: SMDomainTrait): DomainTraitTYPE = {
+      new Java6TraitEntity(target_context)
     }
 
     override protected def create_Actor(entity: SMDomainActor): DomainActorTYPE = {

@@ -26,7 +26,7 @@ import org.goldenport.recorder.Recordable
  *  version Apr.  7, 2012
  *  version Jun. 16, 2012
  *  version Oct. 30, 2012
- * @version Nov.  2, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2JavaRealmTransformerBase(
@@ -37,6 +37,7 @@ abstract class SimpleModel2JavaRealmTransformerBase(
   val defaultFileSuffix = "java"
 }
 
+/*
 abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
     ) extends Recordable {
   type EntityContextTYPE <: PEntityContext
@@ -119,7 +120,7 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
         case uc: SMBusinessUsecase => null
         case task: SMBusinessTask => null
         case pkg: SMPackage => transform_Package(pkg)
-        case unknown => error("Unspported simple model object = " + unknown)
+        case unknown => sys.error("Unspported simple model object = " + unknown)
       }
     }
 
@@ -420,7 +421,7 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
       None
     }
 
-/*
+/ *
     private def transform_Object(anObject: SMObject): DomainObjectTYPE = {
       val obj = create_Object(anObject)
       build_object(obj, anObject)
@@ -428,12 +429,13 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
     }
 
     protected def create_Object[T <: DomainObjectTYPE](obj: SMDomainObject): T
-*/
+* /
+/ * XXX removes to unify SimpleModel2ProgramRealmTransformerBase
     private def build_entity(obj: PEntityObjectEntity, anObject: SMObject) {
       build_object(obj, anObject);
       obj.documentName = make_entity_document_name(anObject)
       make_entity_document(obj.documentName, anObject)
-      println("SimpleModel2JavaRealmTransformerBase#build_properties[%s] %s / %s".format(anObject.name, anObject.attributes.map(_.name), obj.attributes.map(_.name)))
+      println("SimpleModel2JavaRealmTransformerBase#build_entity[%s] %s / %s".format(anObject.name, anObject.attributes.map(_.name), obj.attributes.map(_.name)))
     }
 
     private def make_entity_document(docName: String, modelObject: SMObject) {
@@ -502,10 +504,10 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
       attr.multiplicity = get_multiplicity(anAttr.multiplicity)
       attr.isId = anAttr.isId
       attr.modelAttribute = anAttr
-      /*
+      / *
        * SMMEntityEntity converts SMMAttributeTypeSet to SAttributeType.
-       */
-      println("SimpleModel2JavaRealmTransformerBase#build_attribute(%s, %s)".format(attr.name, attr.attributeType))
+       * /
+      println("SimpleModel2JavaRealmTransformerBase#build_attribute[%s](%s, %s)".format(aObj.name, attr.name, attr.attributeType))
     }
 
     private def build_association(aObj: PObjectEntity, anAssoc: SMAssociation) {
@@ -513,6 +515,7 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
       aObj.attributes += attr
       attr.multiplicity = get_multiplicity(anAssoc.multiplicity)
       attr.modelAssociation = anAssoc
+      println("SimpleModel2JavaRealmTransformerBase#build_association[%s](%s, %s)".format(aObj.name, attr.name, attr.attributeType))
     }
 
     private def build_powertype(aObj: PObjectEntity, aPowertype: SMPowertypeRelationship) {
@@ -580,8 +583,11 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
     private def object_type(anAssoc: SMAssociation): PObjectType = {
       val assocType = anAssoc.associationType
       val name = make_object_name(assocType.name)
-      val objectType = new PEntityType(name, assocType.packageName)
-      objectType
+      println("SimpleModel2JavaRealmTransformerBase#object_type: " + name)
+      if (anAssoc.isPart)
+        new PEntityPartType(name, assocType.packageName)
+      else
+        new PEntityType(name, assocType.packageName)
     }
 
     private def object_type(aPowertype: SMPowertypeRelationship): PObjectType = {
@@ -600,9 +606,10 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
         case m: SMMultiplicityOneMore => POneMore
         case m: SMMultiplicityZeroMore => PZeroMore
         case m: SMMultiplicityRange => new PRange // XXX
-        case _ => error("Unkown multiplicity = " + aMultiplicity.kind)
+        case _ => sys.error("Unkown multiplicity = " + aMultiplicity.kind)
       }
     }
+* /
 
     protected final def build_package(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) {
       obj.name = if (name != null) name else make_object_name(modelPackage.name)
@@ -623,6 +630,7 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
       obj
     }
 
+/ *
     protected final def build_package_script(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) {
       obj.name = if (name != null) name else make_object_name(modelPackage.name)
       obj.term = modelPackage.term
@@ -661,6 +669,7 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
         case None => //
       }
     }
+* /
 
     def transform_Entity(entity: PEntityEntity) {
     }
@@ -668,6 +677,7 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
     def transform_Package(pkg: PPackageEntity) {
     }
 
+/ *
     protected final def build_entity(obj: PObjectEntity, entity: PEntityEntity, name: String = null) {
       obj.name = if (name != null) name else make_object_name(entity.name)
       obj.term = entity.term
@@ -704,6 +714,7 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
       target_realm.setEntity(pathname, obj)
       obj
     }
+* /
   }
 
   // XXX unify ResolveTransformerPhase methods with TransformerPhase methods
@@ -719,7 +730,7 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
       try {
         findObject(aQName).get
       } catch {
-        case _ => error("No object = " + aQName)
+        case _ => sys.error("No object = " + aQName)
       }
     }
 
@@ -734,7 +745,7 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
       try {
         findEntity(aQName).get
       } catch {
-        case _ => error("No entity = " + aQName)
+        case _ => sys.error("No entity = " + aQName)
       }
     }
 
@@ -749,7 +760,7 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
       try {
         findPart(aQName).get
       } catch {
-        case _ => error("No part = " + aQName)
+        case _ => sys.error("No part = " + aQName)
       }
     }
 
@@ -764,7 +775,7 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
       try {
         findPowertype(aQName).get
       } catch {
-        case _ => error("No powertype = " + aQName)
+        case _ => sys.error("No powertype = " + aQName)
       }
     }
 
@@ -779,7 +790,7 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
       try {
         findDocument(aQName).get
       } catch {
-        case _ => error("No document = " + aQName)
+        case _ => sys.error("No document = " + aQName)
       }
     }
 
@@ -794,7 +805,7 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
       try {
         findValue(aQName).get
       } catch {
-        case _ => error("No value = " + aQName)
+        case _ => sys.error("No value = " + aQName)
       }
     }
 
@@ -954,3 +965,4 @@ abstract class SimpleModel2JavaRealmTransformerBase0(val simpleModel: SimpleMode
     throw new IllegalArgumentException("no name")
   }
 }
+*/

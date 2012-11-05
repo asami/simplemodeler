@@ -13,7 +13,8 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
  * @since   Apr. 22, 2011
  *  version Jul. 25, 2011
  *  version Apr. 11, 2012
- * @version Oct. 30, 2012
+ *  version Oct. 30, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -596,6 +597,7 @@ class PEntityType(val name: String, val packageName: String) extends PObjectType
   override def isEntity = true
 }
 
+@deprecated("use PEntityType instead.", "0.5")
 class PEntityPartType(val name: String, val packageName: String) extends PObjectType(null) {
   def this(aPart: PEntityPartEntity) = this(aPart.name, aPart.packageName)
   override def objectTypeName = name

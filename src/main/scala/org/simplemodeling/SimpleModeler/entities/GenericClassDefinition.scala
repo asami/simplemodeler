@@ -4,8 +4,8 @@ import org.apache.commons.lang3.StringUtils
 import scalaz._
 import Scalaz._
 import scala.collection.mutable.ArrayBuffer
-import org.simplemodeling.SimpleModeler.entity.business.SMBusinessTask
-import org.simplemodeling.SimpleModeler.entity.business.SMBusinessUsecase
+import org.simplemodeling.SimpleModeler.entity.business.SMBusinessEntity
+import org.simplemodeling.SimpleModeler.entity.domain.SMDomainTrait
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainActor
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainDocument
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainEntity
@@ -30,6 +30,7 @@ import org.simplemodeling.SimpleModeler.entity.SMEntity
 import org.simplemodeling.SimpleModeler.entity.SMObject
 import org.simplemodeling.SimpleModeler.entity.SMPackage
 import org.simplemodeling.SimpleModeler.entity.SMParticipation
+import org.simplemodeling.SimpleModeler.entity.SMStoryObject
 import org.simplemodeling.SimpleModeler.entity.SimpleModelVisitor
 import org.goldenport.recorder.Recordable
 
@@ -42,7 +43,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov.  3, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -363,6 +364,7 @@ abstract class GenericClassDefinition(
   protected def package_variables_simplemodel {
     for (pkg <- pobject.modelPackage; child <- pkg.children) {
       child match {
+        case tr: SMDomainTrait            => package_variables_Trait(tr)
         case actor: SMDomainActor         => package_variables_Actor(actor)
         case resource: SMDomainResource   => package_variables_Resource(resource)
         case event: SMDomainEvent         => package_variables_Event(event)
@@ -380,12 +382,15 @@ abstract class GenericClassDefinition(
         //        case port: SMDomainPort => package_variables_Port(port)
         //        case facade: SMDomainFacade => package_variables_Facade(facade)
         case datatype: SMDatatype         => {}
-        case uc: SMBusinessUsecase        => {}
-        case task: SMBusinessTask         => {}
+        case uc: SMStoryObject            => {}
+        case be: SMBusinessEntity         => {}
         case pkg: SMPackage               => {}
         case unknown                      => error("Unspported simple model object = " + unknown)
       }
     }
+  }
+
+  protected def package_variables_Trait(tr: SMDomainTrait) {
   }
 
   protected def package_variables_Actor(actor: SMDomainActor) {
@@ -772,6 +777,7 @@ abstract class GenericClassDefinition(
   protected def package_methods_simplemodel {
     for (pkg <- pobject.modelPackage; child <- pkg.children) {
       child match {
+        case tr: SMDomainTrait            => package_methods_Trait(tr)
         case actor: SMDomainActor         => package_methods_Actor(actor)
         case resource: SMDomainResource   => package_methods_Resource(resource)
         case event: SMDomainEvent         => package_methods_Event(event)
@@ -789,12 +795,15 @@ abstract class GenericClassDefinition(
         //        case port: SMDomainPort => package_methods_Port(port)
         //        case facade: SMDomainFacade => package_methods_Facade(facade)
         case datatype: SMDatatype         => {}
-        case uc: SMBusinessUsecase        => {}
-        case task: SMBusinessTask         => {}
+        case uc: SMStoryObject            => {}
+        case be: SMBusinessEntity         => {}
         case pkg: SMPackage               => {}
         case unknown                      => error("Unspported simple model object = " + unknown)
       }
     }
+  }
+
+  protected def package_methods_Trait(tr: SMDomainTrait) {
   }
 
   protected def package_methods_Actor(actor: SMDomainActor) {
