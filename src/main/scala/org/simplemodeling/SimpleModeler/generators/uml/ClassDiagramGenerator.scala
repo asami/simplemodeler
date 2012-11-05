@@ -17,7 +17,7 @@ import org.goldenport.Strings
  *  version Nov. 20, 2011
  *  version Sep. 18, 2012
  *  version Oct. 23, 2012
- * @version Nov.  4, 2012
+ * @version Nov.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -225,8 +225,9 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
         def add_usecase_relationships(aSource: SMObject) {
           aSource match {
             case usecase: SMStoryObject => {
-              for (step <- usecase.basicFlow;
-                   entity <- step.entities) {
+//              for (step <- usecase.basicFlow;
+//                   entity <- step.entities) {
+              for (entity <- usecase.usedEntities) {
                 val sourceid = get_id(aSource)
                 val targetid = get_id(entity)
                 aThema match {
@@ -244,6 +245,20 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
 	      alternateFlow
 	      exceptionFlow
 */
+              for (step <- usecase.basicFlow) {
+                println("ClassDiagramGenerator step (%s) = %s".format(usecase.name, step))
+                println("children = " + step.children)
+              }
+              for (story <- usecase.includedStories) {
+                val sourceid = get_id(aSource)
+                val targetid = get_id(story)
+                aThema match {
+                  case "perspective" => graph.addUsecaseIncludeRelationship(sourceid, targetid)
+                  case "hilight"     => graph.addUsecaseIncludeRelationship(sourceid, targetid)
+                  case "detail"      => graph.addUsecaseIncludeRelationship(sourceid, targetid)
+                  case _             => graph.addUsecaseIncludeRelationship(sourceid, targetid)
+                }
+              }
             }
             case _ => //
           }

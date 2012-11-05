@@ -16,7 +16,8 @@ import org.simplemodeling.SimpleModeler.entity.util.StepFlowBuilder
 
 /*
  * @since   Dec.  7, 2008
- * @version Nov.  4, 2011
+ *  version Nov.  4, 2011
+ * @version Nov.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SMStoryObject(val dslStoryObject: SStoryObject) extends SMObject(dslStoryObject) {
@@ -38,6 +39,21 @@ abstract class SMStoryObject(val dslStoryObject: SStoryObject) extends SMObject(
   build_extensionFlow
   build_alternateFlow
   build_exceptionFlow
+
+  private def _all_steps: Seq[SMStep] = {
+    // collectContent includes the target node itself.
+    _basic_flow.collectContent {
+      case s: SMStep => s
+    }
+  }
+
+  def usedEntities(): Seq[SMEntity] = {
+    _all_steps.flatMap(_.usedEntities)
+  }
+
+  def includedStories(): Seq[SMStoryObject] = {
+    _all_steps.flatMap(_.includedStories)
+  }
 
   private final def make_stepFlowBuilder(root: GTreeNode[SMStep], dslStoryObject: SStoryObject): StepFlowBuilder = {
     new_StepFlowBuilder(root, dslStoryObject, register_mark _, addUse _)

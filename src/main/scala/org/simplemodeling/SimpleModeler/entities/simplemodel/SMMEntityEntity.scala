@@ -28,6 +28,8 @@ import org.simplemodeling.dsl.datatype.business.XMoney
 import org.simplemodeling.dsl.datatype.business.XPercent
 import org.simplemodeling.dsl.datatype.business.XUnit
 import org.simplemodeling.dsl.IdAttributeKind
+import org.simplemodeling.dsl.SUsecase
+import org.simplemodeling.dsl.STask
 import org.simplemodeling.dsl.business.BusinessEntity
 import org.simplemodeling.dsl.business.BusinessActor
 import org.simplemodeling.dsl.business.BusinessResource
@@ -1306,9 +1308,15 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _describe_event_issue(entities: Map[String, SObject], uc: SStoryObject, step: SMMAssociation) {
-    _entity_ref(step.associationType.getName, entities) match {
+    do_w(_entity_ref(step.associationType.getName, entities)) {
       case event: DomainEvent => uc.event_issue(event)()
-      case _ => {}
+      case story: BusinessUsecase => uc.include_business_usecase(story)
+      case story: RequirementUsecase => uc.include_requirement_usecase(story)
+      case story: BusinessTask => uc.include_business_task(story)
+      case story: RequirementTask => uc.include_requirement_task(story)
+      case x => {
+        record_warning("SMMEntityEntity#_describe_event_issue: " + x)
+      }
     }
   }
 }

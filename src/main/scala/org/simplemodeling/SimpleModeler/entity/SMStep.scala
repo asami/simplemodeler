@@ -8,8 +8,10 @@ import org.goldenport.sdoc.inline.SHelpRef
 import org.goldenport.values.{LayeredSequenceNumber, NullLayeredSequenceNumber}
 
 /*
- * Nov.  9, 2008
- * Dec.  8, 2008
+ * @since   Nov.  9, 2008
+ *  version Dec.  8, 2008
+ * @version Nov.  5, 2012
+ * @author  ASAMI, Tomoharu
  */
 abstract class SMStep(val dslStep: SStep) extends SMElement(dslStep) {
   var sequenceNumber: Int = 0
@@ -38,6 +40,28 @@ abstract class SMStep(val dslStep: SStep) extends SMElement(dslStep) {
     new SIAnchor(dslStep.secondaryActor.term) unresolvedRef_is new SElementRef(actor.packageName, actor.name)
   }
 
+  def descendantSteps(): Seq[SMStep] = {
+    children.collect {
+      case s: SMStep => s.allSteps
+    } flatten
+  }
+
+  def allSteps(): Seq[SMStep] = {
+    this +: descendantSteps
+  }
+
+  def usedEntities(): Seq[SMEntity] = Nil
+
+  def allUsedEntities(): Seq[SMEntity] = {
+    allSteps.flatMap(_.usedEntities)
+  }
+
+  def includedStories(): Seq[SMStoryObject] = Nil
+
+  def allIncludedStories(): Seq[SMStoryObject] = {
+    allSteps.flatMap(_.includedStories)
+  }
 }
 
-object NullSMStep extends SMStep(NullStep)
+object NullSMStep extends SMStep(NullStep) {
+}

@@ -9,18 +9,21 @@ import org.simplemodeling.SimpleModeler.entity.util.StepFlowBuilder
 import org.goldenport.value._
 
 /*
- * Dec. 18, 2008
- * Dec. 18, 2010
+ * @since   Dec. 18, 2008
+ *  version Dec. 18, 2010
+ * @version Nov.  5, 2012
+ * @author  ASAMI, Tomoharu
  */
 class RequirementStepFlowBuilder(
   root: GTreeNode[SMStep],
   dslStoryObject: SStoryObject,
   registerMark: SMStep => Unit,
   addUse: SMUse => Unit) extends StepFlowBuilder(root, dslStoryObject, registerMark, addUse) {
-
+/*
   override protected def make_Null_TaskStep: (STask, SMTaskStep) = {
     val task = NullRequirementTask
     val step = new SMRequirementTaskStep(NullRequirementTaskStep, task)
     (task, step)
   }
+*/
 }

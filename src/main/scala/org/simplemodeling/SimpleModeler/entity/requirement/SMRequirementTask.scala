@@ -15,12 +15,13 @@ import org.simplemodeling.SimpleModeler.entity.util.StepFlowBuilder
 /*
  * @since   Dec. 10, 2008
  *  version Dec. 18, 2010
- * @version Nov.  4, 2012
+ * @version Nov.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMRequirementTask(val dslRequirementTask: RequirementTask) extends SMTask(dslRequirementTask) {
   override def typeName: String = "task"
 
+  @deprecated("unused?", "0.5")
   val userRequirementUsecases = new ArrayBuffer[SMRequirementUsecase]
 
   override final def new_StepFlowBuilder(

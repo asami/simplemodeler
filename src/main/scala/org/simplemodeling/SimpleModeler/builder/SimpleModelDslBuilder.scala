@@ -18,7 +18,7 @@ import org.goldenport.recorder.Recordable
  *  version Feb.  8, 2012
  *  version Sep. 29, 2012
  *  version Oct. 21, 2012
- * @version Nov.  3, 2012
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -161,7 +161,7 @@ class SimpleModelDslBuilder(
    * Resolve
    */
   private def _resolve_entities() {
-//    println("_resolve_entities: " + entities.values.map(_.name))
+    println("_resolve_entities: " + entities.values.map(_.name))
     entities.values.foreach(_resolve_entity)
   }
 
@@ -236,7 +236,7 @@ class SimpleModelDslBuilder(
         }
         case None => {
 //          record_warning("Scenario step %s is not an event entity.", term)
-          record_warning("脚本のステップ「%s」は出来事ではありません。", term)
+          record_warning("脚本のステップ「%s」はユースケース(物語、挿話)、タスク、イベント(出来事)ではありません。", term)
         }
       }
     }
@@ -295,7 +295,7 @@ class SimpleModelDslBuilder(
   def get_entity_by_term(aTerm: String): SMMEntityEntity = {
     get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
 //      record_warning("Term is not found: %s, creates a resource entity implicitly.", aTerm)
-      record_warning("用語「%s」の定義が見つからなかったのでリソースエンティティを自動で作成します。", aTerm)
+      record_warning("用語「%s」の定義が見つからなかったのでリソース(道具)を自動で作成します。", aTerm)
 //      println("get_entity_by_term(%s): %s".format(aTerm, entities.values.map(x => x.name + "/" + x.term )))
       val entity = createObject(ResourceKind, aTerm)
       _resolve_entity(entity)

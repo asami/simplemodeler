@@ -17,7 +17,7 @@ import com.asamioffice.goldenport.text.UString
  * @since   Jan. 15, 2009
  *  version Mar. 27, 2011
  *  version Nov. 20, 2011
- * @version Nov.  4, 2012
+ * @version Nov.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
@@ -487,6 +487,15 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     graph.edges += edge
   }
 
+  def addUsecaseIncludeRelationship(source: String, target: String) {
+    val edge = new GVEdge(source, "p", target, "p")
+    edge.arrowhead = "open"
+    edge.arrowtail = "none"
+    edge.style = "dashed"
+    graph.edges += edge
+  }
+
+  //
   private def make_multiplicity(anAssoc: SMAssociation): String = {
     make_multiplicity(anAssoc.multiplicity)
   }

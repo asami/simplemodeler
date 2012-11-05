@@ -16,14 +16,17 @@ import org.simplemodeling.SimpleModeler.entity.util.StepFlowBuilder
 /*
  * @since   Nov.  8, 2008
  *  version Nov.  4, 2011
- * @version Nov.  4, 2012
+ * @version Nov.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMBusinessUsecase(val dslBusinessUsecase: BusinessUsecase) extends SMUsecase(dslBusinessUsecase) {
   override def typeName: String = "business usecase"
 
+  @deprecated("unused?", "0.5")
   val includeBusinessTasks = new ArrayBuffer[SMBusinessTask] // XXX duplicate
+  @deprecated("unused?", "0.5")
   val includeBusinessUsecases = new ArrayBuffer[SMBusinessUsecase]
+  @deprecated("unused?", "0.5")
   val userBusinessUsecases = new ArrayBuffer[SMBusinessUsecase]
 
   override final def new_StepFlowBuilder(

@@ -4,12 +4,13 @@ import scala.collection.mutable.ArrayBuffer
 import org.simplemodeling.dsl.business._
 import org.simplemodeling.dsl.domain._
 import org.simplemodeling.dsl.domain.story._
+import org.simplemodeling.dsl.requirement._
 import org.goldenport.value.{GTree, GTreeNode, PlainTree, GTreeCursor, GTreeVisitor}
 
 /*
  * @since   Dec.  7, 2008
  *  version Apr. 17, 2011
- * @version Oct. 21, 2012
+ * @version Nov.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -81,20 +82,23 @@ abstract class SStoryObject(aName: String, aPkgName: String) extends SEntity(aNa
 
   protected def merge_Exception_Path(aRoot: GTreeNode[SPath], theSteps: GTreeNode[SStep]): Unit = null
 
-  protected final def execute_step(aStep: SStep) {
+  protected final def execute_step(aStep: SStep) = {
     _step_flow_cursor.enter(aStep)
     _step_flow_cursor.leave(aStep)
+    aStep
   }
 
-  protected final def execute_step(aStep: SStep, theSteps: => Unit) {
+  protected final def execute_step(aStep: SStep, theSteps: => Unit) = {
     _step_flow_cursor.enter(aStep)
     theSteps
     _step_flow_cursor.leave(aStep)
+    aStep
   }
 
-  protected final def execute_path(aPath: SPath) {
+  protected final def execute_path(aPath: SPath) = {
     _path_flow_cursor.enter(aPath)
     _path_flow_cursor.leave(aPath)
+    aPath
   }
 
   //
@@ -139,6 +143,34 @@ abstract class SStoryObject(aName: String, aPkgName: String) extends SEntity(aNa
 
   def step_generalization_jump: SStep = {
     error("not implemented yet.")
+  }
+
+  // XXX include_usecase
+  def include_business_usecase(uc: BusinessUsecase): SUsecaseStep = {
+    val step = new BusinessUsecaseStep(uc)
+    execute_step(step)
+    step
+  }
+
+  // XXX include_usecase
+  def include_requirement_usecase(uc: RequirementUsecase): SUsecaseStep = {
+    val step = new RequirementUsecaseStep(uc)
+    execute_step(step)
+    step
+  }
+
+  // XXX include_task
+  def include_business_task(t: BusinessTask): STaskStep = {
+    val step = new BusinessTaskStep(t)
+    execute_step(step)
+    step
+  }
+
+  // XXX include_task
+  def include_requirement_task(t: RequirementTask): STaskStep = {
+    val step = new RequirementTaskStep(t)
+    execute_step(step)
+    step
   }
 
   def event_issue(anEvent: DomainEvent)(theSteps: => Unit): SExecutionStep = {

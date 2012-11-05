@@ -535,6 +535,8 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
             }
           }
           case step: BusinessUsecaseStep => build_object(step.usecase)
+          case step: RequirementUsecaseStep => build_object(step.usecase)
+          case step: RequirementTaskStep => build_object(step.task)
           case step: SActionStep => //
           case step: SExecutionStep => {
             build_object(step.entity)
