@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
  *  version Oct. 26, 2012
- * @version Nov.  4, 2012
+ * @version Nov.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -165,13 +165,13 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 //    _mmx.stateTables(aNode).foreach(_build_state_table(_, target))
     _mmx.annotations(aNode).foreach(_build_annotation(_, target))
 //    _mmx.annotationTables(aNode).foreach(_build_annotation_table(_, target))
-    _mmx.businessusecases(aNode).foreach(_build_businessusecase_aggregations(_, target))
+    _mmx.businessusecases(aNode).foreach(_build_businessusecase_compositions(_, target))
 //    _mmx.businessusecaseTables(aNode).foreach(_build_businessusecase_table(_, target))
-    _mmx.businesstasks(aNode).foreach(_build_businesstask_aggregations(_, target))
+    _mmx.businesstasks(aNode).foreach(_build_businesstask_compositions(_, target))
 //    _mmx.businesstaskTables(aNode).foreach(_build_businesstask_table(_, target))
-    _mmx.usecases(aNode).foreach(_build_usecase_aggregations(_, target))
+    _mmx.usecases(aNode).foreach(_build_usecase_compositions(_, target))
 //    _mmx.usecaseTables(aNode).foreach(_build_usecase_table(_, target))
-    _mmx.tasks(aNode).foreach(_build_task_aggregations(_, target))
+    _mmx.tasks(aNode).foreach(_build_task_compositions(_, target))
 //    _mmx.taskTables(aNode).foreach(_build_task_table(_, target))
     _mmx.primaryActors(aNode).foreach(_build_primary_actor(_, target))
     _mmx.secondaryActors(aNode).foreach(_build_secondary_actor(_, target))
@@ -298,7 +298,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val name = get_name_by_term(term)
     println("_build_businessusecase_aggregations: " + term)
     if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
-      record_report("「%s」に合成対象のビジネス・ユースケース「%s」を生成しました。".format(target.name, name))
+      record_report("「%s」に集約対象のビジネス・ユースケース「%s」を生成しました。".format(target.name, name))
       val part = _create_object(BusinessUsecaseKind, source, _build_object)
       target.narrativeOwnBusinessUsecases += Pair(term, part)
     } else {
@@ -311,7 +311,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val name = get_name_by_term(term)
     println("_build_businesstask_aggregations: " + term)
     if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
-      record_report("「%s」に合成対象のビジネス・タスク「%s」を生成しました。".format(target.name, name))
+      record_report("「%s」に集約対象のビジネス・タスク「%s」を生成しました。".format(target.name, name))
       val part = _create_object(BusinessTaskKind, source, _build_object)
       target.narrativeOwnBusinessTasks += Pair(term, part)
     } else {
@@ -324,7 +324,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val name = get_name_by_term(term)
     println("_build_usecase_aggregations: " + term)
     if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
-      record_report("「%s」に合成対象のユースケース「%s」を生成しました。".format(target.name, name))
+      record_report("「%s」に集約対象のユースケース「%s」を生成しました。".format(target.name, name))
       val part = _create_object(UsecaseKind, source, _build_object)
       target.narrativeOwnUsecases += Pair(term, part)
     } else {
@@ -336,6 +336,58 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val term = source.title
     val name = get_name_by_term(term)
     println("_build_task_aggregations: " + term)
+    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+      record_report("「%s」に集約対象のタスク「%s」を生成しました。".format(target.name, name))
+      val part = _create_object(TaskKind, source, _build_object)
+      target.narrativeOwnTasks += Pair(term, part)
+    } else {
+      target.addNarrativeTask(term)
+    }
+  }
+
+  private def _build_businessusecase_compositions(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    val name = get_name_by_term(term)
+    println("_build_businessusecase_compositions: " + term)
+    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+      record_report("「%s」に合成対象のビジネス・ユースケース「%s」を生成しました。".format(target.name, name))
+      val part = _create_object(BusinessUsecaseKind, source, _build_object)
+      target.narrativeOwnBusinessUsecases += Pair(term, part)
+    } else {
+      target.addNarrativeBusinessUsecase(term)
+    }
+  }
+
+  private def _build_businesstask_compositions(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    val name = get_name_by_term(term)
+    println("_build_businesstask_compositions: " + term)
+    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+      record_report("「%s」に合成対象のビジネス・タスク「%s」を生成しました。".format(target.name, name))
+      val part = _create_object(BusinessTaskKind, source, _build_object)
+      target.narrativeOwnBusinessTasks += Pair(term, part)
+    } else {
+      target.addNarrativeBusinessTask(term)
+    }
+  }
+
+  private def _build_usecase_compositions(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    val name = get_name_by_term(term)
+    println("_build_usecase_compositions: " + term)
+    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+      record_report("「%s」に合成対象のユースケース「%s」を生成しました。".format(target.name, name))
+      val part = _create_object(UsecaseKind, source, _build_object)
+      target.narrativeOwnUsecases += Pair(term, part)
+    } else {
+      target.addNarrativeUsecase(term)
+    }
+  }
+
+  private def _build_task_compositions(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    val name = get_name_by_term(term)
+    println("_build_task_compositions: " + term)
     if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
       record_report("「%s」に合成対象のタスク「%s」を生成しました。".format(target.name, name))
       val part = _create_object(TaskKind, source, _build_object)
