@@ -18,7 +18,7 @@ import org.goldenport.recorder.Recordable
  *  version Feb.  8, 2012
  *  version Sep. 29, 2012
  *  version Oct. 21, 2012
- * @version Nov.  4, 2012
+ * @version Nov.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -114,6 +114,9 @@ class SimpleModelDslBuilder(
   }
 */
 
+  /**
+   * In debug, compare SMMEntityEntity#createSObjects.
+   */
   final def createObject(aKind: ElementKind, aName: String): SMMEntityEntity = {
     val name = _naming_strategy.makeName(aName, aKind)
 //    println("createObject(%s, %s, %s)".format(aKind, aName, name))

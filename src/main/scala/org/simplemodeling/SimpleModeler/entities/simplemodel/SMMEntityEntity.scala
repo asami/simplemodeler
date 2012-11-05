@@ -80,10 +80,11 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov.  4, 2012
+ * @version Nov.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
+ * OutlineBuilderBase updates this object.
  * SmpleModelDslBuilder setups a resolved model from the narrative model.
  */
 class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) with SMMElement {
@@ -225,6 +226,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * Mutate methods
    */ 
   final def addPrivateObject(anObject: SMMEntityEntity) {
+//    println("SMMEntityEntity#addPrivateObject: %s %s".format(anObject.name, name))
     privateObjects += anObject
   }
 
@@ -351,7 +353,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   final def compositionOwn(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
-    println("SMMEntityEntity#compositionOwn: %s %s %s".format(aName, anObject.name, name))
+//    println("SMMEntityEntity#compositionOwn: %s %s %s".format(aName, anObject.name, name))
+    println(anObject.attributes)
     privateObjects += anObject
     composition(aName, anObject)
   }
@@ -828,12 +831,18 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     buffer.flush
   }
 
+  var count = 1
+
+  /**
+   * In debug, compare SimpleModelDslBuilder#createObject.
+   */
   def createSObjects(): List[SObject] = {
+//    println("SMMEntityEntity#createSObjects: " + this.name)
     _sobject = _sobject match {
       case Some(s) => Some(s)
       case None => Some(_create_object())
     }
-    _sobject.get :: privateObjects.toList.flatMap(_.createSObjects()) 
+    _sobject.get :: privateObjects.toList.flatMap(_.createSObjects())
   }
 
   private def _create_object(): SObject = {

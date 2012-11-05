@@ -203,8 +203,10 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     // when a topic has a concrete definition, a relationship with the topic is assumed as composition.
     if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
       record_report("「%s」に合成対象のクラス「%s」を生成しました。".format(target.name, name))
+      // _create_object registered the created object in global space.
       val part = _create_object(ResourceKind, source, _build_object)
-      target.narrativeOwnCompositions += Pair(term, part)
+//      target.narrativeOwnCompositions += Pair(term, part)
+      target.addNarrativePart(term)
     } else {
       // virtually addressed as aggregation.
       target.addNarrativePart(term)
@@ -216,8 +218,10 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val name = get_name_by_term(term)
     if (!_mmx.isDefined(name)) {
       record_report("「%s」に合成対象のクラス「%s」を生成しました。".format(target.name, name))
+      // _create_object registered the created object in global space.
       val part = _create_object(EntityPartKind, source, _build_object)
-      target.narrativeOwnCompositions += Pair(term, part)
+      target.narrativeCompositions += name
+//      target.narrativeOwnCompositions += Pair(term, part)
     } else {
       target.narrativeCompositions += name
     }
