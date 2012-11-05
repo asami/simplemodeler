@@ -80,7 +80,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov.  5, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -108,6 +108,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     require (b != null)
     _base = b
   }
+  /*
+   * Internal use only except SimpleModelOutlineBuilder(deprecated) and
+   * CsvXMindConverter. Virtually obsolated.
+   */
   val traits = new ArrayBuffer[SMMEntityEntity]
   val powertypes = new ArrayBuffer[SMMPowertype]
   val roles = new ArrayBuffer[SMMAssociation]
@@ -122,6 +126,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val supportingActors = new ArrayBuffer[SMMAssociation]
   val statemachineStates = new ArrayBuffer[(String, String)]
   val scenarioSteps = new ArrayBuffer[SMMAssociation]
+
+  /*
+   * Used by 
+   */
   var narrativeBase: String = ""
   val narrativeTraits = new ArrayBuffer[String]
   val narrativePowertypes = new ArrayBuffer[String]
@@ -133,10 +141,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val narrativeAssociations = new ArrayBuffer[String]
   val narrativeStateMachines = new ArrayBuffer[String]
   val narrativeAnnotations = new ArrayBuffer[String]
-  val narrativeBusinessUsecases = new ArrayBuffer[String]
-  val narrativeBusinessTasks = new ArrayBuffer[String]
-  val narrativeUsecases = new ArrayBuffer[String]
-  val narrativeTasks = new ArrayBuffer[String]
+//  val narrativeBusinessUsecases = new ArrayBuffer[String]
+//  val narrativeBusinessTasks = new ArrayBuffer[String]
+//  val narrativeUsecases = new ArrayBuffer[String]
+//  val narrativeTasks = new ArrayBuffer[String]
   val narrativePrimaryActors = new ArrayBuffer[String]
   val narrativeSecondaryActors = new ArrayBuffer[String]
   val narrativeSupportingActors = new ArrayBuffer[String]
@@ -484,7 +492,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   final def addNarrativeAnnotation(aName: String) {
     narrativeAnnotations += aName
   }
-
+/*
   final def addNarrativeBusinessUsecase(aName: String) {
     narrativeBusinessUsecases += aName
   }
@@ -500,7 +508,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   final def addNarrativeTask(aName: String) {
     narrativeTasks += aName
   }
-
+*/
   def addNarrativePrimaryActor(name: String) {
     narrativePrimaryActors += name
   }
@@ -1142,6 +1150,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _build_associations(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- associations) {
       do_w(_entity_ref(assoc.associationType.getName, entities)) {
+        println("SMMEntityEntity#_build_associations: " + assoc.name)
         entity.association(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
       }
     }
@@ -1150,6 +1159,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _build_aggregations(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- aggregations) {
       do_w(_entity_ref(assoc.associationType.getName, entities)) {
+        println("SMMEntityEntity#_build_aggregations: " + assoc.name)
         entity.aggregation(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
       }
     }
@@ -1158,6 +1168,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _build_compositions(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- compositions) {
       do_w(_entity_ref(assoc.associationType.getName, entities)) {
+        println("SMMEntityEntity#_build_compositions: " + assoc.name)
         entity.composition(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
       }
     }

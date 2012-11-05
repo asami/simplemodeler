@@ -18,7 +18,7 @@ import org.goldenport.recorder.Recordable
  *  version Feb.  8, 2012
  *  version Sep. 29, 2012
  *  version Oct. 21, 2012
- * @version Nov.  5, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -190,18 +190,22 @@ class SimpleModelDslBuilder(
     }
     for (term <- entity.narrativeParts) { // TODO 
       val (name, target, multiplicity) = get_association_by_term(term)
+      println("SimpleModelDslBuilder#_resolve_entity parts(%s): %s".format(entity.name, name))
       entity.aggregation(name, target) multiplicity_is multiplicity
     }
     for (term <- entity.narrativeCompositions) {
       val (name, target, multiplicity) = get_association_by_term(term)
+      println("SimpleModelDslBuilder#_resolve_entity composition(%s): %s".format(entity.name, name))
       entity.composition(name, target) multiplicity_is multiplicity
     }
     for (term <- entity.narrativeAggregations) {
       val (name, target, multiplicity) = get_association_by_term(term)
+      println("SimpleModelDslBuilder#_resolve_entity aggregation(%s): %s".format(entity.name, name))
       entity.aggregation(name, target) multiplicity_is multiplicity
     }
     for (term <- entity.narrativeAssociations) {
       val (name, target, multiplicity) = get_association_by_term(term)
+      println("SimpleModelDslBuilder#_resolve_entity association(%s): %s".format(entity.name, name))
       entity.association(name, target) multiplicity_is multiplicity
     }
     for (term <- entity.narrativeStateTransitions) {
@@ -216,10 +220,13 @@ class SimpleModelDslBuilder(
       val (name, value) = get_annotation_by_term(term)
       entity.annotation(name, value)
     }
+/*
     for (term <- entity.narrativeBusinessUsecases) {
       val (name, target) = get_businessusecase_by_term(term)
+      println("SimpleModelDslBuilder#_resolve_entity business usecase(%s): %s".format(entity.name, name))
       entity.aggregation(name, target)
     }
+*/
     for (term <- entity.narrativePrimaryActors) {
       val (name, target, multiplicity) = get_association_by_term(term)
       entity.primaryActor(name, target) multiplicity_is multiplicity

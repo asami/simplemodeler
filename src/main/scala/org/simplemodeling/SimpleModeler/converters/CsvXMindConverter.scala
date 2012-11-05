@@ -22,8 +22,12 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Feb. 24, 2012
  *  version Apr.  8, 2012
  *  version Oct. 19, 2012
- * @version Nov.  3, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
+ */
+/**
+ * Due to new behaior of SMMEntity (e.g. compositions),
+ * currently this class would not work.
  */
 class CsvXMindConverter(val policy: Policy, val packageName: String, val csv: CsvEntity, val projectName: String) {
   private val _entity_context = csv.entityContext

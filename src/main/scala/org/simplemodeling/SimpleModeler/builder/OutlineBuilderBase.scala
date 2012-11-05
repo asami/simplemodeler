@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
  *  version Oct. 26, 2012
- * @version Nov.  5, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -201,15 +201,27 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val term = source.title
     val name = get_name_by_term(term)
     // when a topic has a concrete definition, a relationship with the topic is assumed as composition.
-    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
-      record_report("「%s」に合成対象のクラス「%s」を生成しました。".format(target.name, name))
+//    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+    if (!_mmx.isDefined(name)) {
+      _record_implicit_define("リソースエンティティ", target.name, name)
       // _create_object registered the created object in global space.
       val part = _create_object(ResourceKind, source, _build_object)
 //      target.narrativeOwnCompositions += Pair(term, part)
       target.addNarrativePart(term)
     } else {
+      _record_duplicate_define(source, target.name, name)
       // virtually addressed as aggregation.
       target.addNarrativePart(term)
+    }
+  }
+
+  private def _record_implicit_define(kind: String, target: String, source: String) {
+    record_report("「%s」に合成対象の%s「%s」を生成しました。".format(target, kind, source))
+  }
+
+  private def _record_duplicate_define(topic: TopicNode, target: String, source: String) {
+    if (_mmx.isDefinition(topic)) {
+      record_warning("エンティティ「%s」は存在しているので「%s」内での定義は無視されました。", target, source)
     }
   }
 
@@ -223,6 +235,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
       target.narrativeCompositions += name
 //      target.narrativeOwnCompositions += Pair(term, part)
     } else {
+      _record_duplicate_define(source, target.name, name)
       target.narrativeCompositions += name
     }
   }
@@ -301,12 +314,15 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val term = source.title
     val name = get_name_by_term(term)
     println("_build_businessusecase_aggregations: " + term)
-    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+//    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+    if (!_mmx.isDefined(name)) {
       record_report("「%s」に集約対象のビジネス・ユースケース「%s」を生成しました。".format(target.name, name))
       val part = _create_object(BusinessUsecaseKind, source, _build_object)
       target.narrativeOwnBusinessUsecases += Pair(term, part)
     } else {
-      target.addNarrativeBusinessUsecase(term)
+      _record_duplicate_define(source, target.name, name)
+//      target.addNarrativeBusinessUsecase(term)
+      target.narrativeAggregations += term
     }
   }
 
@@ -314,12 +330,15 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val term = source.title
     val name = get_name_by_term(term)
     println("_build_businesstask_aggregations: " + term)
-    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+//    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+    if (!_mmx.isDefined(name)) {
       record_report("「%s」に集約対象のビジネス・タスク「%s」を生成しました。".format(target.name, name))
       val part = _create_object(BusinessTaskKind, source, _build_object)
       target.narrativeOwnBusinessTasks += Pair(term, part)
     } else {
-      target.addNarrativeBusinessTask(term)
+      _record_duplicate_define(source, target.name, name)
+//      target.addNarrativeBusinessTask(term)
+      target.narrativeAggregations += term
     }
   }
 
@@ -327,12 +346,15 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val term = source.title
     val name = get_name_by_term(term)
     println("_build_usecase_aggregations: " + term)
-    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+//    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+    if (!_mmx.isDefined(name)) {
       record_report("「%s」に集約対象のユースケース「%s」を生成しました。".format(target.name, name))
       val part = _create_object(UsecaseKind, source, _build_object)
       target.narrativeOwnUsecases += Pair(term, part)
     } else {
-      target.addNarrativeUsecase(term)
+      _record_duplicate_define(source, target.name, name)
+//      target.addNarrativeUsecase(term)
+      target.narrativeAggregations += term
     }
   }
 
@@ -340,12 +362,15 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val term = source.title
     val name = get_name_by_term(term)
     println("_build_task_aggregations: " + term)
-    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+//    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+    if (!_mmx.isDefined(name)) {
       record_report("「%s」に集約対象のタスク「%s」を生成しました。".format(target.name, name))
       val part = _create_object(TaskKind, source, _build_object)
       target.narrativeOwnTasks += Pair(term, part)
     } else {
-      target.addNarrativeTask(term)
+      _record_duplicate_define(source, target.name, name)
+//      target.addNarrativeTask(term)
+      target.narrativeAggregations += term
     }
   }
 
@@ -353,12 +378,14 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val term = source.title
     val name = get_name_by_term(term)
     println("_build_businessusecase_compositions: " + term)
-    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+//    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+    if (!_mmx.isDefined(name)) {
       record_report("「%s」に合成対象のビジネス・ユースケース「%s」を生成しました。".format(target.name, name))
       val part = _create_object(BusinessUsecaseKind, source, _build_object)
       target.narrativeOwnBusinessUsecases += Pair(term, part)
     } else {
-      target.addNarrativeBusinessUsecase(term)
+//      target.addNarrativeBusinessUsecase(term)
+      target.narrativeCompositions += term
     }
   }
 
@@ -366,12 +393,15 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val term = source.title
     val name = get_name_by_term(term)
     println("_build_businesstask_compositions: " + term)
-    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+//    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+    if (!_mmx.isDefined(name)) {
       record_report("「%s」に合成対象のビジネス・タスク「%s」を生成しました。".format(target.name, name))
       val part = _create_object(BusinessTaskKind, source, _build_object)
       target.narrativeOwnBusinessTasks += Pair(term, part)
     } else {
-      target.addNarrativeBusinessTask(term)
+      _record_duplicate_define(source, target.name, name)
+//      target.addNarrativeBusinessTask(term)
+      target.narrativeCompositions += term
     }
   }
 
@@ -379,12 +409,15 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val term = source.title
     val name = get_name_by_term(term)
     println("_build_usecase_compositions: " + term)
-    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+//    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+    if (!_mmx.isDefined(name)) {
       record_report("「%s」に合成対象のユースケース「%s」を生成しました。".format(target.name, name))
       val part = _create_object(UsecaseKind, source, _build_object)
       target.narrativeOwnUsecases += Pair(term, part)
     } else {
-      target.addNarrativeUsecase(term)
+      _record_duplicate_define(source, target.name, name)
+//      target.addNarrativeUsecase(term)
+      target.narrativeCompositions += term
     }
   }
 
@@ -392,12 +425,15 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val term = source.title
     val name = get_name_by_term(term)
     println("_build_task_compositions: " + term)
-    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+//    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
+    if (!_mmx.isDefined(name)) {
       record_report("「%s」に合成対象のタスク「%s」を生成しました。".format(target.name, name))
       val part = _create_object(TaskKind, source, _build_object)
       target.narrativeOwnTasks += Pair(term, part)
     } else {
-      target.addNarrativeTask(term)
+      _record_duplicate_define(source, target.name, name)
+//      target.addNarrativeTask(term)
+      target.narrativeCompositions += term
     }
   }
 
