@@ -27,10 +27,7 @@ abstract class StepFlowBuilder(
   val registerMark: SMStep => Unit,
   val addUse: SMUse => Unit
 ) extends GTreeVisitor[SStep] {
-  var _current_step: SMStep = Option(root.content) getOrElse {
-    root.content = new SMRootStep()
-    root.content
-  }
+  var _current_step: SMStep = root.content
   println("StepFlowBuilder: " + _current_step)
   require (_current_step != null, "root content must not null.")
   

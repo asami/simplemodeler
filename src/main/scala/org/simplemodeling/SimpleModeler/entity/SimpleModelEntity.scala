@@ -29,7 +29,7 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Jan. 30, 2012
  *  version Jun. 17, 2012
  *  version Oct. 16, 2012
- * @version Nov.  4, 2012
+ * @version Nov.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) {
@@ -1015,13 +1015,20 @@ record_trace("build_powertype_object = " + aPowertype)
     traverse(new GTreeVisitor[SMElement] {
       override def enter(aNode: GTreeNode[SMElement]) {
         aNode.content match {
-          case uc: SMBusinessUsecase => resolve_usecase(uc)
-          case uc: SMRequirementUsecase => resolve_usecase(uc)
+//          case uc: SMBusinessUsecase => resolve_usecase(uc)
+//          case uc: SMRequirementUsecase => resolve_usecase(uc)
+          case s: SMStoryObject => {
+            s.resolve(getObject) match {
+              case true => ;
+              case false => sys.error("?")
+            }
+          }
           case _ => //
         }
       }
 
-      private def resolve_usecase(aUc: SMBusinessUsecase) {
+/*
+      private def resolve_usecase0(aUc: SMBusinessUsecase) {
         record_trace("resolve business usecase = " + aUc)
         val x = aUc.getBusinessTaskSteps;
         for (step <- aUc.getBusinessTaskSteps) {
@@ -1042,7 +1049,7 @@ record_trace("build_powertype_object = " + aPowertype)
         }
       }
 
-      private def resolve_usecase(aUc: SMRequirementUsecase) {
+      private def resolve_usecase0(aUc: SMRequirementUsecase) {
         record_trace("resolve requirement usecase = " + aUc)
         for (task <- aUc.dslRequirementUsecase.businessTasks) {
           aUc.userBusinessTasks += getObject(task.qualifiedName).asInstanceOf[SMBusinessTask]
@@ -1060,6 +1067,7 @@ record_trace("build_powertype_object = " + aPowertype)
           usecase.userRequirementUsecases += aUc
         }
       }
+*/
     })
   }
 

@@ -7,7 +7,8 @@ import org.simplemodeling.SimpleModeler.entity._
 
 /*
  * @since   Dec.  6, 2008
- * @version Apr. 17, 2011
+ *  version Apr. 17, 2011
+ * @version Nov.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 class BasicFlowCounter(val root: GTreeNode[SMStep]) {
@@ -94,7 +95,10 @@ class BasicFlowCounter(val root: GTreeNode[SMStep]) {
 	  (aNode.parent.indexOf(aNode) + 1, false)
 	}
       } else {
-	(aNode.parent.indexOf(aNode) + 1, true)
+        if (aNode != null && aNode.parent != null)
+	  (aNode.parent.indexOf(aNode) + 1, true)
+        else
+          (0, false)
       }
     }
 

@@ -11,9 +11,24 @@ import org.simplemodeling.SimpleModeler.sdoc._
 import org.simplemodeling.SimpleModeler.entity._
 
 /*
- * Dec.  7, 2008
- * Dec. 18, 2010
+ * @since   Dec.  7, 2008
+ *  version Dec. 18, 2010
+ * @version Nov.  5, 2012
+ * @author  ASAMI, Tomoharu
  */
 class SMBusinessTaskStep(val dslBusinessTaskStep: BusinessTaskStep, val dslBusinessTask: BusinessTask) extends SMTaskStep(dslBusinessTaskStep, dslBusinessTask) {
-  var businessTask: SMBusinessTask = NullSMBusinessTask
+  import scala.collection.mutable.ArrayBuffer
+
+  val businessTasks = new ArrayBuffer[SMBusinessTask]
+
+  override def usedEntities() = Nil
+
+  override def includedStories() = businessTasks
+
+  override def resolve(f: String => SMObject): Boolean = {
+    f(dslBusinessTaskStep.businessTask.qualifiedName) match {
+      case t: SMBusinessTask => businessTasks += t; true
+      case _ => false
+    }
+  }
 }

@@ -61,6 +61,8 @@ abstract class SMStep(val dslStep: SStep) extends SMElement(dslStep) {
   def allIncludedStories(): Seq[SMStoryObject] = {
     allSteps.flatMap(_.includedStories)
   }
+
+  def resolve(f: String => SMObject): Boolean = true
 }
 
 object NullSMStep extends SMStep(NullStep) {

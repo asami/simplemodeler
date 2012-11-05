@@ -5,6 +5,7 @@ import java.util.UUID
 import org.simplemodeling.dsl._
 import org.simplemodeling.dsl.business._
 import org.simplemodeling.SimpleModeler.entity.business._
+import org.simplemodeling.SimpleModeler.entity.requirement._
 import org.simplemodeling.SimpleModeler.entity.util._
 import org.goldenport.sdoc._
 import org.goldenport.sdoc.inline._
@@ -21,15 +22,15 @@ import org.simplemodeling.SimpleModeler.entity.util.StepFlowBuilder
  * @author  ASAMI, Tomoharu
  */
 abstract class SMStoryObject(val dslStoryObject: SStoryObject) extends SMObject(dslStoryObject) {
-  private val _basic_flow = new PlainTree[SMStep] // ArrayBuffer[SMTaskStep]
+  private val _basic_flow = new PlainTree[SMStep](new SMRootStep().asInstanceOf[GTreeNode[SMStep]]) // ArrayBuffer[SMTaskStep]
   private val _extension_flow = new ArrayBuffer[SMExtensionSegment]
   private val _alternate_flow = new PlainTree[SMAlternatePath]
   private val _exception_flow = new PlainTree[SMExceptionPath]
   private val _stepByMark = new HashMap[String, SMStep]
   val entityUsage = new SMEntityUsage
 
-  final def basicFlow: Seq[SMTaskStep] = { // XXX TaskStep?
-    _basic_flow.root.children.map(_.asInstanceOf[SMTaskStep])
+  final def basicFlow: Seq[SMStep] = {
+    _basic_flow.root.children.map(_.asInstanceOf[SMStep])
   }
   final def extensionFlow: Seq[SMExtensionSegment] = _extension_flow
   final def alternateFlow: GTree[SMAlternatePath] = _alternate_flow
@@ -39,6 +40,16 @@ abstract class SMStoryObject(val dslStoryObject: SStoryObject) extends SMObject(
   build_extensionFlow
   build_alternateFlow
   build_exceptionFlow
+
+  def resolve(f: String => SMObject): Boolean = {
+    _basic_flow.traverseContent {
+      case s: SMBusinessUsecaseStep => s.resolve(f)
+      case s: SMBusinessTaskStep => s.resolve(f)
+      case s: SMRequirementUsecaseStep => s.resolve(f)
+      case s: SMRequirementTaskStep => s.resolve(f)
+    }
+    true // XXX
+  }
 
   private def _all_steps: Seq[SMStep] = {
     // collectContent includes the target node itself.

@@ -11,9 +11,24 @@ import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.sdoc._
 
 /*
- * Dec. 10, 2008
- * Dec. 18, 2010
+ * @since   Dec. 10, 2008
+ *  version Dec. 18, 2010
+ * @version Nov.  5, 2012
+ * @author  ASAMI, Tomoharu
  */
 class SMBusinessUsecaseStep(val dslBusinessUsecaseStep: BusinessUsecaseStep, val dslBusinessUsecase: BusinessUsecase) extends SMUsecaseStep(dslBusinessUsecaseStep, dslBusinessUsecase) {
-  var businessUsecase: SMBusinessUsecase = NullSMBusinessUsecase
+  import scala.collection.mutable.ArrayBuffer
+
+  val businessUsecases = new ArrayBuffer[SMBusinessUsecase]
+
+  override def usedEntities() = Nil
+
+  override def includedStories() = businessUsecases
+
+  override def resolve(f: String => SMObject): Boolean = {
+    f(dslBusinessUsecaseStep.businessUsecase.qualifiedName) match {
+      case t: SMBusinessUsecase => businessUsecases += t; true
+      case _ => false
+    }
+  }
 }

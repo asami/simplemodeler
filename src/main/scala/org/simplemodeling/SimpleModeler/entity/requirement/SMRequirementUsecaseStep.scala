@@ -11,9 +11,24 @@ import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.sdoc._
 
 /*
- * Dec. 18, 2008
- * Dec. 18, 2010
+ * @since   Dec. 18, 2008
+ *  version Dec. 18, 2010
+ * @version Nov.  5, 2012
+ * @author  ASAMI, Tomoharu
  */
 class SMRequirementUsecaseStep(val dslRequirementUsecaseStep: RequirementUsecaseStep, val dslRequirementUsecase: RequirementUsecase) extends SMUsecaseStep(dslRequirementUsecaseStep, dslRequirementUsecase) {
-  var requirementUsecase: SMRequirementUsecase = NullSMRequirementUsecase
+  import scala.collection.mutable.ArrayBuffer
+
+  val requirementUsecases = new ArrayBuffer[SMRequirementUsecase]
+
+  override def usedEntities() = Nil
+
+  override def includedStories() = requirementUsecases
+
+  override def resolve(f: String => SMObject): Boolean = {
+    f(dslRequirementUsecaseStep.requirementUsecase.qualifiedName) match {
+      case t: SMRequirementUsecase => requirementUsecases += t; true
+      case _ => false
+    }
+  }
 }

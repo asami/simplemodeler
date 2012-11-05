@@ -11,9 +11,23 @@ import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.sdoc._
 
 /*
- * Dec. 18, 2008
- * Dec. 18, 2010
+ * @since   Dec. 18, 2008
+ *  version Dec. 18, 2010
+ * @version Nov.  5, 2012
  */
 class SMRequirementTaskStep(val dslRequirementTaskStep: RequirementTaskStep, val dslRequirementTask: RequirementTask) extends SMTaskStep(dslRequirementTaskStep, dslRequirementTask) {
-  var requirementTask: SMRequirementTask = NullSMRequirementTask
+  import scala.collection.mutable.ArrayBuffer
+
+  val requirementTasks = new ArrayBuffer[SMRequirementTask]
+
+  override def usedEntities() = Nil
+
+  override def includedStories() = requirementTasks
+
+  override def resolve(f: String => SMObject): Boolean = {
+    f(dslRequirementTaskStep.requirementTask.qualifiedName) match {
+      case t: SMRequirementTask => requirementTasks += t; true
+      case _ => false
+    }
+  }
 }
