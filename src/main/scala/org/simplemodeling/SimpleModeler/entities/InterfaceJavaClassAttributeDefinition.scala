@@ -11,8 +11,8 @@ class InterfaceJavaClassAttributeDefinition(
   attr: PAttribute,
   owner: JavaClassDefinition,
   jmaker: JavaMaker) extends JavaClassAttributeDefinition(pContext, aspects, attr, owner, jmaker) {
-  override def variable_id = {}
-  override def variable_plain = {}
+  override def variable_id {}
+  override def variable_plain {}
 
   override protected def method_bean_single_plain() {
     single_value_attribute_abstract_method
@@ -176,5 +176,10 @@ class InterfaceJavaClassAttributeDefinition(
       jm_public_add_list_element_abstract_method(attrName, javaElementType, paramName, varName) // erPowerVarName)
     }
   }
+
+  /*
+   * method_with
+   */
+  override def method_with {}
 }
 

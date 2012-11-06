@@ -90,6 +90,7 @@ abstract class GenericClassDefinition(
   val modelObject: SMObject = pobject.modelObject
   val baseObject: Option[PObjectReferenceType] = pobject.getBaseObjectType
   def hasBaseObject = baseObject.isDefined
+  val mixinTraits: List[PObjectReferenceType] = pobject.getTraitObjects
   def isRootObject = baseObject.isEmpty
   val modelEntityOption: Option[SMEntity] = modelObject match {
     case entity: SMEntity => Some(entity)
@@ -109,8 +110,13 @@ abstract class GenericClassDefinition(
   lazy val attributeDefinitions: List[ATTR_DEF] = attributes.map(attribute(_)).toList
   lazy val parentAttributeDefinitions: List[ATTR_DEF] = {
     baseObject map {
-      _.reference.wholeAttributes.map(attribute(_)).toList
+      _.reference.wholeAttributes.map(attribute).toList
     } orZero
+  }
+  lazy val traitsAttributeDefinitions: List[ATTR_DEF] = {
+    mixinTraits flatMap {
+      _.reference.wholeAttributes.map(attribute)
+    }
   }
   lazy val wholeAttributeDefinitions: List[ATTR_DEF] = parentAttributeDefinitions ::: attributeDefinitions 
 

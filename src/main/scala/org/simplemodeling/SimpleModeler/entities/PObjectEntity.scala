@@ -29,6 +29,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
 
   protected var _baseObject: PObjectReferenceType = null
 //  protected var _belongsTo: PEntityType = null
+  protected val _mixinTraits = new ArrayBuffer[PObjectReferenceType]
 
   val fileSuffix: String
 
@@ -96,6 +97,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     modelObject.asInstanceOf[SMEntity]    
   }
 
+  // base
   def getBaseObject: Option[PObjectEntity] = {
     if (_baseObject != null) Some(_baseObject.reference) else None
   }
@@ -112,6 +114,28 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     if (_baseObject != null) Some(_baseObject) else None
   }
 
+  // traits
+  def getTraitObjects: List[PObjectReferenceType] = {
+    _mixinTraits.toList
+  }
+
+  def addTraitObjectType(className: String, packageName: String) {
+    _mixinTraits += new PObjectReferenceType(className, packageName)
+  }
+
+  def addKindedTraitObjectType(className: String, packageName: String) {
+    _mixinTraits += new PObjectReferenceType(className, get_kinded_package_name(packageName))
+  }
+
+  def getTraitObjectTypes = {
+    _mixinTraits.toList
+  }
+
+  def getTraitNames: Seq[String] = {
+    _mixinTraits.map(_.name)
+  }
+
+  // 
   def setKindedPackageName(pkgname: String) {
     packageName = get_kinded_package_name(pkgname)
   }

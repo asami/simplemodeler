@@ -104,9 +104,10 @@ class JavaClassDefinition(
       jm_p(" extends ")
       jm_p(base)
     }
-    if (!customImplementNames.isEmpty) {
+    val is = _implements_interfaces
+    if (!is.isEmpty) {
       jm_p(" implements ")
-      jm_p(customImplementNames.mkString(", "))
+      jm_p(is.mkString(", "))
     }
 /*
     baseObject match {
@@ -119,6 +120,10 @@ class JavaClassDefinition(
 */
     jm_pln(" {")
     jm_indent_up
+  }
+
+  private def _implements_interfaces: Seq[String] = {
+    customImplementNames ++ pobject.getTraitNames
   }
 
   override protected def class_close_body {
