@@ -5,7 +5,7 @@ package org.simplemodeling.SimpleModeler.entities
  *  version Sep.  1, 2011
  *  version Feb. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov.  3, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaMakerHolder {
@@ -49,6 +49,8 @@ trait JavaMakerHolder {
   }
 
   protected final def jm_package(name: String) {
+    println("JavaMakerHolder[%s] = %s / %s".format(this, name, _maker))
+    require (_maker != null, "_maker should initialized")
     _maker.declarePackage(name)
   }
 
@@ -190,6 +192,10 @@ trait JavaMakerHolder {
     _maker.publicMethod(signature, params: _*)(body)
   }
 
+  protected final def jm_public_abstract_method(signature: String, params: AnyRef*) {
+    _maker.publicAbstractMethod(signature, params: _*)
+  }
+
   protected final def jm_override_public_method(signature: String, params: AnyRef*)(body: => Unit) {
     _maker.pln
     _maker.p("@Override") // XXX
@@ -200,16 +206,32 @@ trait JavaMakerHolder {
     _maker.publicVoidMethod(signature, params: _*)(body)
   }
 
+  protected final def jm_public_void_abstract_method(signature: String, params: AnyRef*) {
+    _maker.publicVoidAbstractMethod(signature, params: _*)
+  }
+
   protected final def jm_public_get_method(typeName: String, attrName: String, expr: AnyRef*) {
     _maker.publicGetMethod(typeName, attrName, expr: _*)
+  }
+
+  protected final def jm_public_get_abstract_method(typeName: String, attrName: String, expr: AnyRef*) {
+    _maker.publicGetAbstractMethod(typeName, attrName)
   }
 
   protected final def jm_public_get_or_null_method(typeName: String, attrName: String, varName: String, expr: String, params: AnyRef*) {
     _maker.publicGetOrNullMethod(typeName, attrName, varName, expr, params: _*)
   }
 
+  protected final def jm_public_get_or_null_abstract_method(typeName: String, attrName: String) {
+    _maker.publicGetOrNullAbstractMethod(typeName, attrName)
+  }
+
   protected final def jm_public_is_method(attrName: String, expr: AnyRef*) {
     _maker.publicIsMethod(attrName, expr: _*)
+  }
+
+  protected final def jm_public_is_abstract_method(attrName: String, expr: AnyRef*) {
+    _maker.publicIsAbstractMethod(attrName)
   }
 
   protected final def jm_public_set_method(attrName: String, typeName: String,
@@ -217,9 +239,19 @@ trait JavaMakerHolder {
     _maker.publicSetMethod(attrName, typeName, paramName, varName, expr)
   }
 
+  protected final def jm_public_set_abstract_method(attrName: String, typeName: String,
+      paramName: String = null, varName: String = null, expr: Seq[AnyRef] = Nil) {
+    _maker.publicSetAbstractMethod(attrName, typeName, paramName)
+  }
+
   protected final def jm_public_set_or_null_method(attrName: String, typeName: String,
       paramName: String = null, varName: String = null, expr: Seq[AnyRef] = Nil) {
     _maker.publicSetOrNullMethod(attrName, typeName, paramName, varName, expr)
+  }
+
+  protected final def jm_public_set_or_null_abstract_method(attrName: String, typeName: String,
+      paramName: String = null, varName: String = null, expr: Seq[AnyRef] = Nil) {
+    _maker.publicSetOrNullAbstractMethod(attrName, typeName, paramName)
   }
 
   protected final def jm_public_with_method(className: String, attrName: String, typeName: String,
@@ -230,6 +262,11 @@ trait JavaMakerHolder {
   protected final def jm_public_with_or_null_method(className: String, attrName: String, typeName: String,
       paramName: String = null, varName: String = null, expr: Seq[AnyRef] = Nil) {
     _maker.publicWithOrNullMethod(className, attrName, typeName, paramName, varName, expr)
+  }
+
+  protected final def jm_public_with_or_null_abstract_method(className: String, attrName: String, typeName: String,
+      paramName: String = null, varName: String = null, expr: Seq[AnyRef] = Nil) {
+    _maker.publicWithOrNullAbstractMethod(className, attrName, typeName, paramName)
   }
 
   protected final def jm_override_protected_method(signature: String, params: AnyRef*)(body: => Unit) {
@@ -258,7 +295,24 @@ trait JavaMakerHolder {
     }
   }
 
+  protected final def jm_public_set_list_abstract_method(attrName: String, elemTypeName: String, paramName: String, varName: String) {
+    val pname = if (paramName != null) paramName else attrName
+    val vname = if (varName != null) varName else attrName
+    jm_public_void_abstract_method("set%s(List<%s> %s)", attrName.capitalize, elemTypeName, pname)
+  }
+
   protected final def jm_public_add_list_element_method(attrName: String, elemTypeName: String, paramName: String, varName: String) {
+    val pname = if (paramName != null) paramName else attrName
+    val vname = if (varName != null) varName else attrName
+    jm_public_void_method("add%s(%s %s)", attrName, elemTypeName, pname) {
+      jm_if("this." + vname + " == null") {
+        jm_assign_this(vname, "new ArrayList<%s>()", elemTypeName) 
+      }
+      jm_pln("this.%s.add(%s);", vname, pname);
+    }
+  }
+
+  protected final def jm_public_add_list_element_abstract_method(attrName: String, elemTypeName: String, paramName: String, varName: String) {
     val pname = if (paramName != null) paramName else attrName
     val vname = if (varName != null) varName else attrName
     jm_public_void_method("add%s(%s %s)", attrName, elemTypeName, pname) {
@@ -281,6 +335,18 @@ trait JavaMakerHolder {
     }
   }
 
+  protected final def jm_public_get_list_abstract_method(elemTypeName: String, attrName: String, varName: String) {
+    val vname = if (varName != null) varName else attrName;  
+    jm_public_method("%s get%s()", elemTypeName, attrName.capitalize) {
+      jm_if_else(vname + " != null") {
+        jm_pln("return Collections.unmodifiableList(%s);", vname)
+      }
+      jm_else {
+        jm_pln("return Collections.emptyList();")
+      }
+    }
+  }
+
   protected final def jm_public_get_list_method_prologue(elemTypeName: String, attrName: String, varName: String)(body: => Unit) {
     val vname = if (varName != null) varName else attrName;  
     jm_public_method("%s get%s()", elemTypeName, attrName.capitalize) {
@@ -292,6 +358,11 @@ trait JavaMakerHolder {
         jm_pln("return Collections.emptyList();")
       }
     }
+  }
+
+  protected final def jm_public_get_list_abstract_method_prologue(elemTypeName: String, attrName: String, varName: String) {
+    val vname = if (varName != null) varName else attrName;  
+    jm_public_abstract_method("%s get%s()", elemTypeName, attrName.capitalize)
   }
 
   protected final def jm_interface_method(signature: String, params: AnyRef*) {

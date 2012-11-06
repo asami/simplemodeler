@@ -17,7 +17,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov.  2, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -136,7 +136,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     wholeAttributes.filter(!_.isId)
   }
 
-  lazy val isId = wholeAttributes.find(_.isId).isDefined
+  lazy val isId: Boolean = wholeAttributes.exists(_.isId)
   lazy val idAttr = wholeAttributes.find(_.isId) match {
       case Some(attr) => attr
       case None => {

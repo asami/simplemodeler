@@ -14,7 +14,7 @@ import com.asamioffice.goldenport.text.UPathString
  *  version Feb.  7, 2012
  *  version Apr.  8, 2012
  *  version Oct. 16, 2012
- * @version Nov.  4, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
@@ -306,6 +306,14 @@ object SMObject {
       }
       case dt: SMDatatype => Some(dt)
       case _ => None
+    }
+  }
+
+  def isCodeObject(o: SMObject): Boolean = {
+    o match {
+      case _: SMStoryObject => false
+      case _: business.SMBusinessEntity => false
+      case _ => true
     }
   }
 }

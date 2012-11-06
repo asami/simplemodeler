@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
  *  version Oct. 30, 2012
- * @version Nov.  3, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -511,7 +511,9 @@ class JavaClassDefinition(
     def document_common(methodName: String, makeAttr: GenericClassAttributeDefinition => Unit) {
       jm_public_method("%s %s()".format(documentName, methodName)) {
         jm_var(documentName + ".Builder", "doc", "%s.Builder()", documentName)
-        jm_pln("doc.%s = get%s();", idName, idName.capitalize)
+        if (isId) { // e.g. except Part
+          jm_pln("doc.%s = get%s();", idName, idName.capitalize)
+        }
         for (a <- attributeDefinitions if !a.attr.isId) {
           makeAttr(a)
         }
@@ -533,9 +535,11 @@ class JavaClassDefinition(
 
   override protected def document_methods_update {
     jm_public_void_method("update_document(%s doc)", documentName) {
-      jm_if_not_null(idName) {
-        jm_if_not_equals_expr("doc.%s", idName)("get%s()", idName.capitalize) {
-          jm_pln("throw new IllegalArgumentException(\"Invalid id\");")
+      if (isId) { // e.g. except Part
+        jm_if_not_null(idName) {
+          jm_if_not_equals_expr("doc.%s", idName)("get%s()", idName.capitalize) {
+            jm_pln("throw new IllegalArgumentException(\"Invalid id\");")
+          }
         }
       }
       for (a <- attributeDefinitions if !a.attr.isId) {

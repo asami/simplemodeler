@@ -6,7 +6,7 @@ import scala.collection.mutable.ArrayBuffer
 /*
  * @since   May. 14, 2011
  *  version Jul. 26, 2011
- * @version Feb. 10, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaMaker extends JavaTextMaker {
@@ -118,6 +118,10 @@ class JavaMaker extends JavaTextMaker {
     }
   }
 
+  def publicAbstractMethod(signature: String, params: AnyRef*) {
+    pln("public " + format_params(signature, params) + ";")
+  }
+
 /*
   private def _format(signature: String, params: Seq[AnyRef]) = {
     if (params.isEmpty) signature
@@ -134,10 +138,18 @@ class JavaMaker extends JavaTextMaker {
     }
   }
 
+  def publicVoidAbstractMethod(signature: String, params: AnyRef*) {
+    pln("public void " + format_params(signature, params) + ";")
+  }
+
   def publicGetMethod(typeName: String, attrName: String, expr: AnyRef*) {
     method("public %s get%s()", typeName, attrName.capitalize) {
       makeReturn(attr_expr(attrName, expr))
     }
+  }
+
+  def publicGetAbstractMethod(typeName: String, attrName: String) {
+    pln("public %s get%s();", typeName, attrName.capitalize)
   }
 /*
   def publicSetMethod(typeName: String, attrName: String, varName: String = null, paramName: String = null) {
@@ -171,6 +183,10 @@ class JavaMaker extends JavaTextMaker {
     }
   }
 
+  def publicGetOrNullAbstractMethod(typeName: String, attrName: String) {
+    pln("public %s get%s();", typeName, attrName.capitalize)
+  }
+
   private def _var_name(attrname: String, varname: String) = {
     if (varname != null) varname
     else attrname
@@ -191,6 +207,10 @@ class JavaMaker extends JavaTextMaker {
     }
   }
 
+  def publicIsAbstractMethod(attrName: String) {
+    pln("public boolean is%s();", attrName.capitalize)
+  }
+
   def publicSetMethod(attrName: String, typeName: String,
        paramName: String = null, varName: String = null, expr: Seq[AnyRef] = Nil) {
     val pname = if (paramName == null) attrName else paramName
@@ -202,6 +222,12 @@ class JavaMaker extends JavaTextMaker {
         assignThis(vname, pname)
       }
     } 
+  }
+
+  def publicSetAbstractMethod(attrName: String, typeName: String,
+       paramName: String = null) {
+    val pname = if (paramName == null) attrName else paramName
+    pln("public void set%s(%s %s);", attrName.capitalize, typeName, pname)
   }
 
   def publicSetOrNullMethod(attrName: String, typeName: String,
@@ -218,6 +244,12 @@ class JavaMaker extends JavaTextMaker {
         assignThis(vname, pname)
       }
     } 
+  }
+
+  def publicSetOrNullAbstractMethod(attrName: String, typeName: String,
+       paramName: String = null) {
+    val pname = if (paramName == null) attrName else paramName
+    pln("public void set%s(%s %s);", attrName.capitalize, typeName, pname)
   }
 
   def publicWithMethod(className: String, attrName: String, typeName: String,
@@ -249,6 +281,11 @@ class JavaMaker extends JavaTextMaker {
       }
       makeReturnThis
     } 
+  }
+
+  def publicWithOrNullAbstractMethod(className: String, attrName: String, typeName: String, paramName: String) {
+    val pname = if (paramName == null) attrName else paramName
+    pln("public %s with%s(%s %s);", className, attrName.capitalize, typeName, pname)
   }
 
   def protectedMethod(signature: String, params: AnyRef*)(body: => Unit) {

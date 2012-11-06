@@ -14,7 +14,7 @@ import java.util.TimeZone
  *  version Aug.  7, 2011
  *  version Dec. 14, 2011
  *  version Feb. 20, 2012
- * @version Oct. 30, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassAttributeDefinition(
@@ -62,6 +62,17 @@ class JavaClassAttributeDefinition(
     }
   }
 
+  protected final def mapping_single_value_attribute_abstract_method(getter: String, setter: String) {
+    jm_public_get_or_null_abstract_method(javaType, attrName)
+    if (attr.attributeType == PBooleanType) {
+      jm_public_is_abstract_method(attrName, varName);
+    }
+    if (is_settable()) {
+      jm_public_set_or_null_abstract_method(attrName, javaType, paramName, setter)
+      jm_public_with_or_null_abstract_method(owner.name, attrName, javaType, paramName, setter)
+    }
+  }
+
   protected final def single_value_attribute_method() {
     jm_public_get_method(javaType, attrName, code_expression)
     if (attr.attributeType == PBooleanType) {
@@ -69,6 +80,16 @@ class JavaClassAttributeDefinition(
     }
     if (is_settable()) {
       jm_public_set_method(attrName, javaType, paramName, varName)
+    }
+  }
+
+  protected final def single_value_attribute_abstract_method() {
+    jm_public_get_abstract_method(javaType, attrName, code_expression)
+    if (attr.attributeType == PBooleanType) {
+      jm_public_is_abstract_method(attrName, code_expression)
+    }
+    if (is_settable()) {
+      jm_public_set_abstract_method(attrName, javaType, paramName, varName)
     }
   }
 
@@ -256,6 +277,14 @@ class JavaClassAttributeDefinition(
     }
   }
 
+  def multi_value_attribute_abstract_method {
+    jm_public_get_list_abstract_method(javaType, attrName, erPersistentVarName)
+    if (is_settable()) {
+      jm_public_set_list_abstract_method(attrName, javaElementType, paramName, erPersistentVarName)
+      jm_public_add_list_element_abstract_method(attrName, javaElementType, paramName, erPersistentVarName)
+    }
+  }
+
   def mapping_multi_value_attribute_method(getter: String, setter: String) {
     jm_public_method("%s get%s()", javaType, attrName.capitalize) {
       jm_if_else_not_null(attrName) {
@@ -272,6 +301,14 @@ class JavaClassAttributeDefinition(
     if (is_settable()) {
       jm_public_set_list_method(attrName, javaElementType, paramName, erPartVarName)
       jm_public_add_list_element_method(attrName, javaElementType, paramName, erPartVarName)
+    }
+  }
+
+  def mapping_multi_value_attribute_abstract_method(getter: String, setter: String) {
+    jm_public_abstract_method("%s get%s()", javaType, attrName.capitalize)
+    if (is_settable()) {
+      jm_public_set_list_abstract_method(attrName, javaElementType, paramName, erPartVarName)
+      jm_public_add_list_element_abstract_method(attrName, javaElementType, paramName, erPartVarName)
     }
   }
 

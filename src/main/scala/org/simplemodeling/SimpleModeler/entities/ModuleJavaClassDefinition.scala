@@ -8,7 +8,8 @@ import scala.collection.mutable.ArrayBuffer
 
 /*
  * @since   Jul. 14, 2011
- * @version Aug.  7, 2011
+ *  version Aug.  7, 2011
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class ModuleJavaClassDefinition(
@@ -58,7 +59,9 @@ class ModuleJavaClassDefinition(
       }
       traverse(new JavaMakerModelElementVisitor(jm_maker) {
         override protected def visit_Object(obj: SMObject) {
-          jm_pln("bind(%s.class);", obj.name)
+          if (SMObject.isCodeObject(obj)) {
+            jm_pln("bind(%s.class);", obj.name)
+          }
 //          jm_pln("bind(Controller.class).to(Controller1.class).in(Singleton.class);") // XXX
         }
       })

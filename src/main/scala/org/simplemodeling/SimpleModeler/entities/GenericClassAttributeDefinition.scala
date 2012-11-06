@@ -12,7 +12,7 @@ import java.util.TimeZone
  *  version Aug. 19, 2011
  *  version Feb. 19, 2012
  *  version May.  6, 2012
- * @version Oct. 30, 2012
+ * @version Nov.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -317,9 +317,9 @@ abstract class GenericClassAttributeDefinition(
     }
   }
 
-  //
-  //
-  //
+  /*
+   * Coding body
+   */
   val attrName = attr_name
   val paramName = param_name
   val varName = var_name
