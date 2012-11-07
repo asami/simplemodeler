@@ -901,14 +901,14 @@ class JavaClassAttributeDefinition(
       jm_if(vname + " != null") {
         jm_assign_new_ArrayList(vname, javaElementType);
       }
-      jm_pln("this.%s.addAll(%s);", vname, paramName)
+      jm_pln("%s.addAll(%s);", vname, paramName)
       jm_return_this
     }
     jm_public_method("%s with%s(%s %s)", owner.name, attrName.capitalize, javaElementType, paramName) {
       jm_if(vname + " != null") {
         jm_assign_new_ArrayList(vname, javaElementType);
       }
-      jm_pln("this.%s.add(%s);", vname, paramName)
+      jm_pln("%s.add(%s);", vname, paramName)
       jm_return_this
     }
   }
@@ -1988,7 +1988,7 @@ class JavaClassAttributeDefinition(
         case v: PDecimalType => update("new BigDecimal(%s)")
         case _ => {
           jm_if_not_null("this." + varName) {
-            jm_pln("doc.%s..addAll(this.%s);", varName, varName)  
+            jm_pln("doc.%s.addAll(this.%s);", varName, varName)  
           }
         }
       }

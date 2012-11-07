@@ -10,7 +10,8 @@ import org.simplemodeling.dsl._
  * 
  * @since   Aug. 19, 2011
  *  version Feb. 20, 2012
- * @version May.  6, 2012
+ *  version May.  6, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassAttributeDefinition(
@@ -853,14 +854,14 @@ class ScalaClassAttributeDefinition(
       sm_if(varName + " != null") {
         sm_assign_new_ArrayList(varName, javaElementType);
       }
-      sm_pln("%s.addAll(%s);")
+      sm_pln("%s.addAll(%s);", varName, paramName)
       sm_return_this
     }
     sm_public_method("%s with%s(%s %s)", owner.name, attrName.capitalize, javaElementType, paramName) {
       sm_if(varName + " != null") {
         sm_assign_new_ArrayList(varName, javaElementType);
       }
-      sm_pln("%s.add(%s);")
+      sm_pln("%s.add(%s);", varName, paramName)
       sm_return_this
     }
   }

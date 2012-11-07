@@ -4,7 +4,7 @@ package org.simplemodeling.SimpleModeler.entities
  * Builder Scala Class Attribute Definition
  * 
  * @since   Aug. 19, 2011
- * @version Aug. 19, 2011
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 // XXX DocumentBuilderScalaClassAttributeDefinition
@@ -60,7 +60,7 @@ class BuilderScalaClassAttributeDefinition(
         sm_if(varName + " != null") {
           sm_assign_new_ArrayList(varName, elementtype);
         }
-        sm_pln("%s.addAll(%s);")
+        sm_pln("%s.addAll(%s);", varName, paramName)
       }
       sm_public_method("void add%s(%s %s)", attrName.capitalize, elementtype, paramName) {
         sm_if(varName + " != null") {
@@ -84,7 +84,7 @@ class BuilderScalaClassAttributeDefinition(
       sm_if(varName + " != null") {
         sm_assign_new_ArrayList(varName, java_element_type);
       }
-      sm_pln("%s.addAll(%s);")
+      sm_pln("%s.addAll(%s);", varName, paramName)
       sm_return_this
     }
     sm_public_method("%s with%s(%s %s)", owner.name, attrName.capitalize, java_element_type, paramName) {

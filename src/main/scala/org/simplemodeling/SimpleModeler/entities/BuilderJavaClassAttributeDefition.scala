@@ -4,7 +4,8 @@ package org.simplemodeling.SimpleModeler.entities
  * Builder Java Class Attribute Definition
  * 
  * @since   Jul.  8, 2011
- * @version Aug.  7, 2011
+ *  version Aug.  7, 2011
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 // XXX DocumentBuilderJavaClassAttributeDefinition
@@ -60,13 +61,13 @@ class BuilderJavaClassAttributeDefinition(
         jm_if(varName + " != null") {
           jm_assign_new_ArrayList(varName, elementtype);
         }
-        jm_pln("%s.addAll(%s);")
+        jm_pln("%s.addAll(%s);", varName, paramName)
       }
       jm_public_method("void add%s(%s %s)", attrName.capitalize, elementtype, paramName) {
         jm_if(varName + " != null") {
           jm_assign_new_ArrayList(varName, elementtype);
         }
-        jm_pln("%s.add(%s);")
+        jm_pln("%s.add(%s);", varName, paramName)
       }
     }
 
@@ -84,14 +85,14 @@ class BuilderJavaClassAttributeDefinition(
       jm_if(varName + " != null") {
         jm_assign_new_ArrayList(varName, java_element_type);
       }
-      jm_pln("%s.addAll(%s);")
+      jm_pln("%s.addAll(%s);", varName, paramName)
       jm_return_this
     }
     jm_public_method("%s with%s(%s %s)", owner.name, attrName.capitalize, java_element_type, paramName) {
       jm_if(varName + " != null") {
         jm_assign_new_ArrayList(varName, java_element_type);
       }
-      jm_pln("%s.add(%s);")
+      jm_pln("%s.add(%s);", varName, paramName)
       jm_return_this
     }
   }

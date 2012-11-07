@@ -18,7 +18,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov.  7, 2012
+ * @version Nov.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -46,8 +46,24 @@ abstract class PObjectEntity(val pContext: PEntityContext)
    * Used when this object is package.
    */
   var serviceName = ""
-  val attributes = new ArrayBuffer[PAttribute]
-  val operations = new ArrayBuffer[POperation]
+  private val _attributes = new ArrayBuffer[PAttribute]
+  private val _operations = new ArrayBuffer[POperation]
+
+  def attributes: Seq[PAttribute] = _attributes
+  def operations: Seq[POperation] = _operations
+
+  def addAttribute(attr: PAttribute) {
+    if (_attributes.exists(_.name == attr.name)) {
+        record_warning("「%s」で属性・関連「%s」の重複があります。", name, attr.name)
+    } else _attributes += attr
+  }
+
+  def addOperation(oper: POperation) {
+    if (_operations.exists(_.name == oper.name)) {
+        record_warning("「%s」で操作「%s」の重複があります。", name, oper.name)
+    } else _operations += oper
+  }
+
   /**
    * Name in program. Defined in the specification DSL.
    * 
@@ -152,11 +168,22 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   }
 
   lazy val wholeAttributes: List[PAttribute] = {
-    println("PObjectEntity#wholeAttributes(%s, %s): %s".format(name, _baseObject, _mixinTraits.map(_.reference.wholeAttributes.map(_.name))))
-    (Option(_baseObject).orEmpty[List] ::: _mixinTraits.toList).flatMap(
-      _.reference.wholeAttributes
-    ) ::: attributes.toList
-
+//    println("PObjectEntity#wholeAttributes(%s, %s): %s".format(name, _baseObject, _mixinTraits.map(_.reference.wholeAttributes.map(_.name))))
+    val a = whole_attributes(Set.empty)
+    println("PObjectEntity#wholeAttributes(%s): %s".format(name, a._1.map(_.name)))
+    val b = a._1.foldRight((nil[PAttribute], Set.empty[String]))((x, a) => {
+      if (a._2.contains(x.name)) {
+        record_warning("「%s」で属性・関連「%s」の重複があります。", name, x.name)
+        a
+      } else {
+        (x :: a._1, a._2 + x.name)
+      }
+    })
+    println("PObjectEntity#wholeAttributes2(%s, %s): %s".format(name, b._2, b._1.map(_.name)))
+    b._1
+//    (Option(_baseObject).orEmpty[List] ::: _mixinTraits.toList).flatMap(
+//      _.reference.wholeAttributes
+//    ) ::: attributes.toList
 /*    
     if (_baseObject != null) {
       _baseObject.referenceOption match {
@@ -167,6 +194,16 @@ abstract class PObjectEntity(val pContext: PEntityContext)
       attributes.toList
     }
 */
+  }
+
+  def whole_attributes(used: Set[String]): (List[PAttribute], Set[String]) = {
+    val a = Option(_baseObject).orEmpty[List] ::: _mixinTraits.toList
+    val b = a.foldRight((nil[PAttribute], Set.empty[String]))((x, a) => {
+      val c = x.reference.whole_attributes(a._2)
+      (c._1 ::: a._1, c._2 ++ a._2)
+    })
+    if (b._2.contains(qualifiedName)) b
+    else (b._1 ::: attributes.toList, b._2 + qualifiedName)
   }
 
   def wholeAttributesWithoutId: List[PAttribute] = {

@@ -27,7 +27,7 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov.  7, 2012
+ * @version Nov.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -678,7 +678,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     private def build_attribute(aObj: PObjectEntity, anAttr: SMAttribute) {
       val attr = make_attribute(anAttr.name, object_type(anAttr))
       build_attribute(attr, anAttr)
-      aObj.attributes += attr
+      aObj.addAttribute(attr)
       attr.multiplicity = get_multiplicity(anAttr.multiplicity)
       attr.isId = anAttr.isId
       attr.modelAttribute = anAttr
@@ -686,14 +686,14 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     private def build_association(aObj: PObjectEntity, anAssoc: SMAssociation) {
       val attr = make_attribute(anAssoc.name, object_type(anAssoc))
-      aObj.attributes += attr
+      aObj.addAttribute(attr)
       attr.multiplicity = get_multiplicity(anAssoc.multiplicity)
       attr.modelAssociation = anAssoc
     }
 
     private def build_powertype(aObj: PObjectEntity, aPowertype: SMPowertypeRelationship) {
       val attr = make_attribute(aPowertype.name, object_type(aPowertype))
-      aObj.attributes += attr
+      aObj.addAttribute(attr)
       attr.multiplicity = get_multiplicity(aPowertype.multiplicity)
       attr.modelPowertype = aPowertype
     }

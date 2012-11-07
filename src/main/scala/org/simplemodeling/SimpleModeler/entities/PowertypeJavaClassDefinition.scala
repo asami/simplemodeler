@@ -26,17 +26,10 @@ class PowertypeJavaClassDefinition(
 
   override protected def attribute_variables_Prologue {
     val mpower = pobject.modelObject.asInstanceOf[SMPowertype]
-    for (last <- mpower.kinds.lastOption;
-         k <- mpower.kinds) {
-      val key = k.name
-      val label = k.term
-      jm_p("""%s""".format(key))
-      if (k eq last) {
-        jm_pln(";")
-      } else {
-        jm_p(", ")
-      }
-    }
+    val labels =
+      if (mpower.isEmpty) List("Unkonwn")
+      else mpower.kinds.map(_.name)
+    jm_pln(labels.mkString("", ", ", ";"))
   }
 /*
   protected def attribute_variables_Prologue0 {
