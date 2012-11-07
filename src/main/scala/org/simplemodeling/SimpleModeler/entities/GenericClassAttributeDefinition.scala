@@ -12,7 +12,7 @@ import java.util.TimeZone
  *  version Aug. 19, 2011
  *  version Feb. 19, 2012
  *  version May.  6, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -212,7 +212,7 @@ abstract class GenericClassAttributeDefinition(
   def isSettable = is_settable
 
   protected final def is_settable(): Boolean = {
-    if (isImmutable) {
+    if (isImmutable || owner.isImmutable) {
       return false
     }
     if (attr.readonly) {

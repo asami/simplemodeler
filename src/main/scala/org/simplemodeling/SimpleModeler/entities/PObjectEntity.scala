@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import scalaz._, Scalaz._
 import scala.collection.mutable.ArrayBuffer
 import com.asamioffice.goldenport.text.{JavaTextMaker, UString}
 import org.simplemodeling.SimpleModeler.SimpleModelerConstants
@@ -17,7 +18,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -97,6 +98,11 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     modelObject.asInstanceOf[SMEntity]    
   }
 
+  var isImmutable: Boolean = false
+
+  /*
+   * Body
+   */
   // base
   def getBaseObject: Option[PObjectEntity] = {
     if (_baseObject != null) Some(_baseObject.reference) else None
@@ -146,6 +152,12 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   }
 
   lazy val wholeAttributes: List[PAttribute] = {
+    println("PObjectEntity#wholeAttributes(%s): %s".format(name, _mixinTraits.map(_.reference.wholeAttributes.map(_.name))))
+    (Option(_baseObject).orEmpty[List] ::: _mixinTraits.toList).flatMap(
+      _.reference.wholeAttributes
+    ) ::: attributes.toList
+
+/*    
     if (_baseObject != null) {
       _baseObject.referenceOption match {
         case Some(ref) => ref.wholeAttributes ::: attributes.toList
@@ -154,6 +166,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     } else {
       attributes.toList
     }
+*/
   }
 
   def wholeAttributesWithoutId: List[PAttribute] = {
@@ -468,7 +481,8 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     }
   }
 */
-  protected final def is_settable(attr: PAttribute) = {
+  protected final def is_settable(attr: PAttribute): Boolean = {
+    if (isImmutable) return false
     // if (!attr.isId || attr.isId) {
     attr.kind match {
       case NullAttributeKind => true

@@ -23,7 +23,7 @@ import org.goldenport.recorder.Recordable
 
 /**
  * @since   Nov.  2, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SimpleModel2ProgramRealmTransformerBaseHelper {
@@ -143,5 +143,133 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
     val pathname = srcMainDir + UJavaString.packageName2pathname(obj.packageName) + "/" + obj.name + "." + obj.fileSuffix
     target_realm.setEntity(pathname, obj)
     obj
+  }
+
+  /*
+   * find objects in the realm space.
+   */
+  protected final def make_pathname(obj: PObjectEntity): String = {
+    target_context.makePathname(obj)
+  }
+
+  protected final def make_pathname(qname: String): String = {
+    target_context.makePathname(qname)
+  }
+
+  protected final def make_pathname(name: String, pkgname: String): String = {
+    target_context.makePathname(name, pkgname)
+  }
+
+  protected final def find_object_by_pathname[T <: PObjectEntity](pathname: String): Option[T] = {
+    target_realm.getNode(pathname) match {
+      case Some(node) => node.entity.asInstanceOf[Some[T]]
+      case None => None
+    }
+  }
+
+  protected final def findObject(name: String, pkgname: String): Option[PObjectEntity] = {
+    find_object_by_pathname(make_pathname(name, pkgname))
+  }
+
+  protected final def getObject(name: String, pkgname: String): PObjectEntity = {
+    try {
+      findObject(name, pkgname).get
+    } catch {
+      case _ => sys.error("No object = " + name + "/" + pkgname)
+    }
+  }
+
+  protected final def findObject(aQName: String): Option[PObjectEntity] = {
+    find_object_by_pathname(make_pathname(aQName))
+  }
+
+  protected final def getObject(aQName: String): PObjectEntity = {
+    try {
+      findObject(aQName).get
+    } catch {
+      case _ => sys.error("No object = " + aQName)
+    }
+  }
+
+  protected final def findEntity(aQName: String): Option[PEntityEntity] = {
+    target_realm.getNode(make_pathname(aQName)) match {
+      case Some(node) => node.entity.asInstanceOf[Some[PEntityEntity]]
+      case None => {
+        println("SimpleModel2ProgramRealmTransformerBase#findEntity(%s, %s) = None".format(aQName, make_pathname(aQName)))
+        target_realm.dump
+        None
+      }
+    }
+  }
+
+  protected final def getEntity(aQName: String): PEntityEntity = {
+    try {
+      findEntity(aQName).get
+    } catch _no_entry("entity", aQName)
+  }
+
+  protected final def getModelEntity(aQName: String): PEntityEntity = {
+    try {
+      (findEntity(aQName) orElse findEntity(get_kinded_qname("model", aQName))).get
+    } catch _no_entry("entity", aQName)
+  }
+
+  private def _no_entry[T](typename: String, qname: String): PartialFunction[Throwable, T] = {
+    case e => {
+      record_error(e, "No " + typename + " = " + qname)
+      throw e
+    }
+  }
+
+  protected final def findPart(aQName: String): Option[PEntityPartEntity] = {
+    target_realm.getNode(make_pathname(aQName)) match {
+      case Some(node) => node.entity.asInstanceOf[Some[PEntityPartEntity]]
+      case None => None
+    }
+  }
+
+  protected final def getPart(aQName: String): PEntityPartEntity = {
+    try {
+      findPart(aQName).get
+    } catch _no_entry("part", aQName)
+  }
+
+  protected final def findPowertype(aQName: String): Option[PPowertypeEntity] = {
+    target_realm.getNode(make_pathname(aQName)) match {
+      case Some(node) => node.entity.asInstanceOf[Some[PPowertypeEntity]]
+      case None => None
+    }
+  }
+
+  protected final def getPowertype(aQName: String): PPowertypeEntity = {
+    try {
+      findPowertype(aQName).get
+    } catch _no_entry("powertype", aQName)
+  }
+
+  protected final def findDocument(aQName: String): Option[PDocumentEntity] = {
+    target_realm.getNode(make_pathname(aQName)) match {
+      case Some(node) => node.entity.asInstanceOf[Some[PDocumentEntity]]
+      case None => None
+    }
+  }
+
+  protected final def getDocument(aQName: String): PDocumentEntity = {
+    try {
+      findDocument(aQName).get
+    } catch _no_entry("document", aQName)
+  }
+
+  protected final def findValue(aQName: String): Option[PValueEntity] = {
+    target_realm.getNode(make_pathname(aQName)) match {
+      case Some(node) => node.entity.asInstanceOf[Some[PValueEntity]]
+      case None => None
+    }
+  }
+
+  protected final def getValue(aQName: String): PValueEntity = {
+    try {
+      findValue(aQName).get
+    } catch _no_entry("value", aQName)
   }
 }

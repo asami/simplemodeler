@@ -2,7 +2,7 @@ package org.simplemodeling.SimpleModeler.entities
 
 /*
  * @since   Nov.  6, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 class InterfaceJavaClassDefinition(
@@ -12,6 +12,7 @@ class InterfaceJavaClassDefinition(
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
   isData = false
   useDocument = false
+  override def useBuilder = false
 
   override protected def attribute(attr: PAttribute) = {
     new InterfaceJavaClassAttributeDefinition(pContext, aspects, attr, this, jm_maker)

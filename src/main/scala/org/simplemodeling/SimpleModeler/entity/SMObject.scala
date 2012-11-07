@@ -14,7 +14,7 @@ import com.asamioffice.goldenport.text.UPathString
  *  version Feb.  7, 2012
  *  version Apr.  8, 2012
  *  version Oct. 16, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
@@ -227,6 +227,25 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   def documents: Seq[SMDocumentRelationship] = _documents
   def uses: Seq[SMUse] = _uses
   def participations: Seq[SMParticipation] = _participations
+
+  /*
+   * Mutaters
+   */
+  def importOwnDefinition(s: SMObject) {
+    println("SMObject#importOwnDefinition: " + attributes)
+    _powertypes ++= s.powertypes
+    _attributes ++= s.attributes
+    _associations ++= s.associations
+    _operations ++= s.operations
+    _ports ++= s.ports
+    _stateMachines ++= s.stateMachines
+    _roles ++= s.roles
+    _services ++= s.services
+    _rules ++= s.rules
+    _documents ++= s.documents
+    _uses ++= s.uses
+    _participations ++= s.participations
+  }
 
   private def add_trait(aTrait: STraitRelationship) {
     _traits += new SMTraitRelationship(aTrait)

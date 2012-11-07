@@ -4,7 +4,8 @@ package org.simplemodeling.SimpleModeler.entities
  * @since   Jul.  7, 2011
  *  version Aug. 27, 2011
  *  version Dec. 14, 2011
- * @version Feb.  8, 2012
+ *  version Feb.  8, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 class BuilderJavaClassDefinition(
@@ -25,7 +26,7 @@ class BuilderJavaClassDefinition(
 
   override protected def constructors_copy_constructor {
     jm_public_constructor("%s(%s src)", name, pobject.name) {
-      for (a <- attributeDefinitions) {
+      for (a <- not_derived_implements_attribute_definitions) {
         jm_assign_this(a.varName, "src." + a.varName)
       }
     }
@@ -40,8 +41,9 @@ class BuilderJavaClassDefinition(
   }
 
   override protected def service_methods {
+    val attrs = not_derived_implements_attribute_definitions
     jm_public_method("%s with_json(JSONObject json) throws JSONException", name) {
-      for (attr <- attributeDefinitions) {
+      for (attr <- attrs) {
         _with_json_attribute(attr)
       }
       jm_return_this
@@ -49,10 +51,10 @@ class BuilderJavaClassDefinition(
     jm_public_method("%s build()", pobject.name) {
       jm_p("return new %s(", pobject.name)
       jm_indent_up
-      if (!attributeDefinitions.isEmpty) {
+      if (!attrs.isEmpty) {
         jm_pln
-        jm_p(attributeDefinitions.head.varName)
-        for (a <- attributeDefinitions.tail) {
+        jm_p(attrs.head.varName)
+        for (a <- attrs.tail) {
           jm_pln(",")
           jm_p(a.varName)
         }

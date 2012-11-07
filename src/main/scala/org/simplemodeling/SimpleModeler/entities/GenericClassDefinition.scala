@@ -43,7 +43,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -118,21 +118,34 @@ abstract class GenericClassDefinition(
       _.reference.wholeAttributes.map(attribute)
     }
   }
-  lazy val wholeAttributeDefinitions: List[ATTR_DEF] = parentAttributeDefinitions ::: attributeDefinitions 
+  lazy val implementsAttributeDefinitions: List[ATTR_DEF] = {
+    attributeDefinitions ::: traitsAttributeDefinitions
+  }
+  lazy val wholeAttributeDefinitions: List[ATTR_DEF] = parentAttributeDefinitions ::: implementsAttributeDefinitions
 
-  def effectiveAttributeDefinitions: List[ATTR_DEF] = {
+  lazy val effectiveAttributeDefinitions: List[ATTR_DEF] = {
     if (useWholeAttributes) {
       wholeAttributeDefinitions
     } else {
-      attributeDefinitions
+      implementsAttributeDefinitions
     }
   }
-
-  protected def not_derived_attribute_definitions = {
+  lazy val effectiveNoIdAttributeDefinitions: List[ATTR_DEF] = {
+    effectiveAttributeDefinitions.filterNot(_.attr.isId)
+  }
+  lazy val effectiveIdAttributeDefinition: Option[ATTR_DEF] = {
+    effectiveAttributeDefinitions.find(_.attr.isId)
+  }
+  
+  /**
+   * Used by JavaClassDefinition to collect constructor parameters.
+   */
+  protected def not_derived_implements_attribute_definitions = {
+    println("GenericClassAttributeDefinition#not_derived_implements_attribute_definitions(%s): %s".format(name, implementsAttributeDefinitions.map(_.attr.name)))
     if (useDerivedAttribute) 
-      attributeDefinitions.filterNot(_.isDerive)
+      implementsAttributeDefinitions.filterNot(_.isDerive)
     else
-      attributeDefinitions
+      implementsAttributeDefinitions
   }
 
   protected def not_derived_whole_attribute_definitions = {
@@ -152,8 +165,13 @@ abstract class GenericClassDefinition(
   //
   var useDocument: Boolean = false
   var usePersistent: Boolean = false
+  /**
+   * Sets true in EntityJavaClassDefinition.
+   * In case of Entity is true.
+   * In case of Value is false to convey real value.
+   */
   var useDerivedAttribute: Boolean = false
-  var isImmutable: Boolean = false
+  var isImmutable: Boolean = pobject.isImmutable
   def useBuilder: Boolean = isImmutable
   var isStatic: Boolean = false
   var classifierKind: ClassifierKind = ClassClassifierKind
@@ -296,20 +314,14 @@ abstract class GenericClassDefinition(
   protected def attribute_variables_Prologue {}
 
   protected def attribute_variables_constants {
-    for (attr <- effectiveAttributeDefinitions) {
+    for (attr <- attributeDefinitions) {
       attr.constant_property
     }
   }
 
   protected def attribute_variables_id {
-    for (attr <- effectiveAttributeDefinitions.find(_.attr.isId)) {
+    for (attr <- effectiveIdAttributeDefinition) {
       attr.variable_id
-    }
-  }
-
-  protected def attribute_variables_id0 {
-    if (isId && isRootObject) {
-      attribute(idAttr).variable_id
     }
   }
 
@@ -318,12 +330,6 @@ abstract class GenericClassDefinition(
   protected def attribute_variables_plain {
     for (attr <- effectiveAttributeDefinitions if !attr.attr.isId) {
       attr.variable_plain
-    }
-  }
-
-  protected def attribute_variables_plain0 {
-    for (attr <- attributes if !attr.isId) {
-      attribute(attr).variable_plain
     }
   }
 
@@ -560,31 +566,29 @@ abstract class GenericClassDefinition(
   }
 
   protected def attribute_bean_methods_plain {
-    for (attr <- attributes if !attr.isId) {
-      attribute(attr).method_bean
+    for (attr <- effectiveNoIdAttributeDefinitions) {
+      attr.method_bean
     }
   }
 
   protected def attribute_as_methods {
-    for (attr <- attributes if !attr.isId) {
-      attribute(attr).method_as
+    for (attr <- effectiveNoIdAttributeDefinitions) {
+      attr.method_as
     }
   }
 
   protected def attribute_by_methods {
-    for (attr <- attributes if !attr.isId) {
-      val a = attribute(attr)
-      if (a.isSettable) {
-        a.method_by
+    for (attr <- effectiveNoIdAttributeDefinitions) {
+      if (attr.isSettable) {
+        attr.method_by
       }
     }
   }
 
   protected def attribute_with_methods {
-    for (attr <- attributes if !attr.isId) {
-      val a = attribute(attr)
-      if (a.isSettable) {
-        a.method_with
+    for (attr <- effectiveNoIdAttributeDefinitions) {
+      if (attr.isSettable) {
+        attr.method_with
       }
     }
   }

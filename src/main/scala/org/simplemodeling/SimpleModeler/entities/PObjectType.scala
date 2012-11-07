@@ -14,7 +14,7 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
  *  version Jul. 25, 2011
  *  version Apr. 11, 2012
  *  version Oct. 30, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -479,7 +479,7 @@ class PObjectReferenceType(val name: String, val packageName: String) extends PO
    */
   private var _reference: PObjectEntity = _
   def reference: PObjectEntity = {
-    require(_reference != null)
+    require(_reference != null, "_reference must be initialized. (%s)".format(name))
     _reference
   }
   def reference_=(ref: PObjectEntity) = _reference = ref

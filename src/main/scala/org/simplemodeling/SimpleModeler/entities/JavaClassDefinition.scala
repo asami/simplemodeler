@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
  *  version Oct. 30, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -123,6 +123,7 @@ class JavaClassDefinition(
   }
 
   private def _implements_interfaces: Seq[String] = {
+    println("JavaClassDefinition#_implements_interfaces: " + pobject.getTraitNames)
     customImplementNames ++ pobject.getTraitNames
   }
 
@@ -131,6 +132,7 @@ class JavaClassDefinition(
     jm_pln("}")
   }
 
+  // XXX use not_derived_implements_attribute_definitions?
   override protected def constructors_null_constructor {
     if (!attributeDefinitions.filter(!_.isInject).isEmpty) {
       jm_public_constructor("%s()", name) {
@@ -146,7 +148,8 @@ class JavaClassDefinition(
       if (hasBaseObject) {
         jm_pln("super(o);")
       }
-      for (a <- not_derived_attribute_definitions) {
+      for (a <- not_derived_implements_attribute_definitions) {
+        println("JavaClassDefinition#constructors_copy_constructor(%s): %s".format(name, a.attr.name))
         if (aspects.find(_.weaveCopyConstructorAttributeBlock(a.attr, a.varName, "o")).isDefined) {}
         else jm_assign_this(a.varName, "o." + a.varName)
       }
@@ -162,7 +165,7 @@ class JavaClassDefinition(
           map(a => a.paramName).mkString(", ")
         jm_pln("super(%s);", vs)
       }
-      for (a <- not_derived_attribute_definitions) {
+      for (a <- not_derived_implements_attribute_definitions) {
         if (aspects.find(_.weavePlainConstructorAttributeBlock(a.attr, a.varName, a.paramName)).isDefined) {}
         else jm_assign_this(a.varName, a.paramName)
       }
@@ -174,7 +177,7 @@ class JavaClassDefinition(
       if (hasBaseObject) {
         jm_pln("super(o);")
       }
-      for (a <- not_derived_attribute_definitions) {
+      for (a <- not_derived_implements_attribute_definitions) {
         if (aspects.find(_.weaveDocConstructorAttributeBlock(a.attr, a.varName, "o")).isDefined) {}
         else {
           val in = "o." + a.varName
@@ -202,7 +205,8 @@ class JavaClassDefinition(
   }
 
   protected final def constructors_plain_constructor_for_document {
-    val params = attributeDefinitions.filter(!_.isInject).
+    val attrs = not_derived_implements_attribute_definitions
+    val params = attrs.filter(!_.isInject).
       map(a => {
         val typename = a.attr.attributeType match {
           case t: PEntityType => {
@@ -214,11 +218,11 @@ class JavaClassDefinition(
       }).mkString(", ")
     jm_public_constructor("%s(%s)", name, params) {
       if (hasBaseObject) {
-        val vs = attributeDefinitions.filter(!_.isInject).
+        val vs = attrs.filter(!_.isInject).
           map(a => a.paramName).mkString(", ")
         jm_pln("super(%s);", vs)
       }
-      for (a <- attributeDefinitions) {
+      for (a <- attrs) {
         jm_assign_this(a.varName, a.paramName)
       }
     }
