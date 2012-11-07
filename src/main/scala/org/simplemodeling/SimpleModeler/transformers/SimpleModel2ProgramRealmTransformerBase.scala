@@ -804,6 +804,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
   // XXX unify ResolveTransformerPhase methods with TransformerPhase methods
   abstract class ResolvePhase extends TransformerPhase {
+    def resolve_trait(obj: PTraitEntity) {
+      resolve_object(obj)
+    }
+
     def resolve_entity(obj: PEntityEntity) {
       resolve_object(obj)
     }
@@ -899,6 +903,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     override def enter(aNode: GTreeNode[GContent]) {
       aNode.asInstanceOf[GContainerEntityNode].entity match {
+        case Some(tr: PTraitEntity) => resolve_trait(tr)
         case Some(entity: PEntityPartEntity) => resolve_part(entity)
         case Some(entity: PEntityEntity) => resolve_entity(entity)
         case Some(powertype: PPowertypeEntity) => resolve_powertype(powertype)

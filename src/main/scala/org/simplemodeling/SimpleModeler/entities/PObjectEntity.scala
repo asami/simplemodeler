@@ -152,7 +152,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   }
 
   lazy val wholeAttributes: List[PAttribute] = {
-    println("PObjectEntity#wholeAttributes(%s): %s".format(name, _mixinTraits.map(_.reference.wholeAttributes.map(_.name))))
+    println("PObjectEntity#wholeAttributes(%s, %s): %s".format(name, _baseObject, _mixinTraits.map(_.reference.wholeAttributes.map(_.name))))
     (Option(_baseObject).orEmpty[List] ::: _mixinTraits.toList).flatMap(
       _.reference.wholeAttributes
     ) ::: attributes.toList

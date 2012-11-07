@@ -193,7 +193,7 @@ class JavaClassAttributeDefinition(
   }
 
   override def method_bean_multi_entity_Simple(e: PEntityType) {
-    sys.error("not supported yet")
+    multi_value_attribute_method
   }
 
   override def method_bean_multi_entity_Composition_Reference_Property(e: PEntityType) {

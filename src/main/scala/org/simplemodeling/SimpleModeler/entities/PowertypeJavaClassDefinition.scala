@@ -4,7 +4,8 @@ import org.simplemodeling.SimpleModeler.entity.SMPowertype
 
 /*
  * @since   Feb. 20, 2012
- * @version Feb. 20, 2012
+ *  version Feb. 20, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 class PowertypeJavaClassDefinition(
@@ -25,8 +26,8 @@ class PowertypeJavaClassDefinition(
 
   override protected def attribute_variables_Prologue {
     val mpower = pobject.modelObject.asInstanceOf[SMPowertype]
-    val last = mpower.kinds.last
-    for (k <- mpower.kinds) {
+    for (last <- mpower.kinds.lastOption;
+         k <- mpower.kinds) {
       val key = k.name
       val label = k.term
       jm_p("""%s""".format(key))
@@ -37,7 +38,7 @@ class PowertypeJavaClassDefinition(
       }
     }
   }
-
+/*
   protected def attribute_variables_Prologue0 {
     val mpower = pobject.modelObject.asInstanceOf[SMPowertype]
     val last = mpower.kinds.last
@@ -52,6 +53,7 @@ class PowertypeJavaClassDefinition(
       }
     }
   }
+*/
 
   override protected def attribute(attr: PAttribute) = {
     new ValueJavaClassAttributeDefinition(pContext, aspects, attr, this, jm_maker).withImmutable(true)

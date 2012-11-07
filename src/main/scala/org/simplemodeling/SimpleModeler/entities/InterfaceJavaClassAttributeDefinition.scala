@@ -2,7 +2,7 @@ package org.simplemodeling.SimpleModeler.entities
 
 /*
  * @since   Nov.  6, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 class InterfaceJavaClassAttributeDefinition(
@@ -114,7 +114,7 @@ class InterfaceJavaClassAttributeDefinition(
   }
 
   override def method_bean_multi_entity_Simple(e: PEntityType) {
-    sys.error("not supported yet")
+    multi_value_attribute_abstract_method
   }
 
   override def method_bean_multi_entity_Composition_Reference_Property(e: PEntityType) {
