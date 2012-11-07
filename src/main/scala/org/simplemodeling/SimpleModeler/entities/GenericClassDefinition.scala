@@ -43,7 +43,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov.  7, 2012
+ * @version Nov.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -119,9 +119,22 @@ abstract class GenericClassDefinition(
     }
   }
   lazy val implementsAttributeDefinitions: List[ATTR_DEF] = {
-    attributeDefinitions ::: traitsAttributeDefinitions
+    _cleansing(attributeDefinitions ::: traitsAttributeDefinitions)
   }
-  lazy val wholeAttributeDefinitions: List[ATTR_DEF] = parentAttributeDefinitions ::: implementsAttributeDefinitions
+  lazy val wholeAttributeDefinitions: List[ATTR_DEF] = {
+    _cleansing(parentAttributeDefinitions ::: implementsAttributeDefinitions)
+  }
+
+  private def _cleansing(attrs: List[ATTR_DEF]): List[ATTR_DEF] = {
+    attrs.foldLeft((nil[ATTR_DEF], Set.empty[String]))((a, x) => {
+      if (a._2.contains(x.attr.name)) {
+        record_warning("「%s」で属性・関連「%s」の重複があります。", name, x.attr.name)
+        a
+      } else {
+        (x :: a._1, a._2 + x.attr.name)
+      }
+    })._1
+  }
 
   lazy val effectiveAttributeDefinitions: List[ATTR_DEF] = {
     if (useWholeAttributes) {

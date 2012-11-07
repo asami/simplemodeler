@@ -171,7 +171,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
 //    println("PObjectEntity#wholeAttributes(%s, %s): %s".format(name, _baseObject, _mixinTraits.map(_.reference.wholeAttributes.map(_.name))))
     val a = whole_attributes(Set.empty)
     println("PObjectEntity#wholeAttributes(%s): %s".format(name, a._1.map(_.name)))
-    val b = a._1.foldRight((nil[PAttribute], Set.empty[String]))((x, a) => {
+    val b = a._1.foldLeft((nil[PAttribute], Set.empty[String]))((a, x) => {
       if (a._2.contains(x.name)) {
         record_warning("「%s」で属性・関連「%s」の重複があります。", name, x.name)
         a
@@ -198,7 +198,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
 
   def whole_attributes(used: Set[String]): (List[PAttribute], Set[String]) = {
     val a = Option(_baseObject).orEmpty[List] ::: _mixinTraits.toList
-    val b = a.foldRight((nil[PAttribute], Set.empty[String]))((x, a) => {
+    val b = a.foldLeft((nil[PAttribute], Set.empty[String]))((a, x) => {
       val c = x.reference.whole_attributes(a._2)
       (c._1 ::: a._1, c._2 ++ a._2)
     })
