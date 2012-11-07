@@ -18,11 +18,14 @@ class BuilderJavaClassDefinition(
   isStatic = true
   customName = Some("Builder")
   isCustomVariableImplementation = true
+  customBaseName = baseObject.map(_.name + ".Builder")
 
   override protected def head_imports_Prologue {
     super.head_imports_Prologue
     jm_import("org.json.*")
   }
+
+  override protected def implements_interfaces: Seq[String] = Nil
 
   override protected def constructors_copy_constructor {
     jm_public_constructor("%s(%s src)", name, pobject.name) {
@@ -41,7 +44,7 @@ class BuilderJavaClassDefinition(
   }
 
   override protected def service_methods {
-    val attrs = not_derived_implements_attribute_definitions
+    val attrs = wholeAttributeDefinitions
     jm_public_method("%s with_json(JSONObject json) throws JSONException", name) {
       for (attr <- attrs) {
         _with_json_attribute(attr)

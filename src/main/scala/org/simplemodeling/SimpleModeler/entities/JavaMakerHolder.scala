@@ -5,7 +5,7 @@ package org.simplemodeling.SimpleModeler.entities
  *  version Sep.  1, 2011
  *  version Feb. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaMakerHolder {
@@ -85,7 +85,6 @@ trait JavaMakerHolder {
   protected final def jm_private_instance_variable(attr: PAttribute, typename: String = null, varname: String = null) {
     val tname = if (typename == null) attr.typeName else typename;
     val vname = if (varname == null) attr.name else varname;
-    println("JavaMakerHolder#jm_private_instance_variable(%s, %s)".format(vname, tname))
     if (attr.isHasMany) {
       jm_private_instance_variable_list(tname, vname);
     } else {
@@ -99,6 +98,24 @@ trait JavaMakerHolder {
 
   protected final def jm_private_instance_variable_list(typename: String, varname: String) {
     _maker.privateInstanceVariableList(typename, varname);
+  }
+
+  protected final def jm_protected_instance_variable(attr: PAttribute, typename: String = null, varname: String = null) {
+    val tname = if (typename == null) attr.typeName else typename;
+    val vname = if (varname == null) attr.name else varname;
+    if (attr.isHasMany) {
+      jm_protected_instance_variable_list(tname, vname);
+    } else {
+      jm_protected_instance_variable_single(tname, vname);
+    }
+  }
+
+  protected final def jm_protected_instance_variable_single(typename: String, varname: String) {
+    _maker.protectedInstanceVariableSingle(typename, varname);
+  }
+
+  protected final def jm_protected_instance_variable_list(typename: String, varname: String) {
+    _maker.protectedInstanceVariableList(typename, varname);
   }
 
   protected final def jm_public_final_instance_variable(attr: PAttribute, typename: String = null, varname: String = null) {
@@ -153,6 +170,24 @@ trait JavaMakerHolder {
 
   protected final def jm_private_transient_instance_variable_list(typename: String, varname: String) {
     _maker.privateTransientInstanceVariableList(typename, varname);
+  }
+
+  protected final def jm_protected_transient_instance_variable(attr: PAttribute, typename: String = null, varname: String = null) {
+    val tname = if (typename == null) attr.typeName else typename;
+    val vname = if (varname == null) attr.name else varname;
+    if (attr.isHasMany) {
+      jm_protected_transient_instance_variable_list(tname, vname);
+    } else {
+      jm_protected_transient_instance_variable_single(tname, vname);
+    }
+  }
+
+  protected final def jm_protected_transient_instance_variable_single(typename: String, varname: String) {
+    _maker.protectedTransientInstanceVariableSingle(typename, varname);
+  }
+
+  protected final def jm_protected_transient_instance_variable_list(typename: String, varname: String) {
+    _maker.protectedTransientInstanceVariableList(typename, varname);
   }
 
   protected final def jm_public_static_final_String_literal(varname: String, form: String, params: AnyRef*) {

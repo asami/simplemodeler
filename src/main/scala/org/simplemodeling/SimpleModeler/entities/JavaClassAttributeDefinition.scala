@@ -14,7 +14,7 @@ import java.util.TimeZone
  *  version Aug.  7, 2011
  *  version Dec. 14, 2011
  *  version Feb. 20, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassAttributeDefinition(
@@ -40,11 +40,15 @@ class JavaClassAttributeDefinition(
   }
 
   override protected def variable_plain_Attribute_Instance_Variable(typename: String, varname: String) {
-    jm_private_instance_variable(attr, typename, varname);
+    // for inheritance
+//    jm_private_instance_variable(attr, typename, varname);
+    jm_protected_instance_variable(attr, typename, varname);
   }
 
   override protected def variable_plain_Transient_Instance_Variable(typename: String, varname: String) {
-    jm_private_transient_instance_variable(attr, typename, varname);
+    // for inheritance
+//    jm_private_transient_instance_variable(attr, typename, varname);
+    jm_protected_transient_instance_variable(attr, typename, varname);
   }
 
   override protected def method_bean_single_plain() {
@@ -1921,11 +1925,11 @@ class JavaClassAttributeDefinition(
         case p: PEntityPartType => {
           jm_pln("doc.%s = this.%s.make_document();", varName, refVarName)
         }
-        case p: PPowertypeType => {
-          jm_if_not_null("this." + varName) {
-            jm_pln("doc.%s = this.%s.getKey()", varName, powerVarName)
-          }
-        }
+//        case p: PPowertypeType => {
+//          jm_if_not_null("this." + varName) {
+//            jm_pln("doc.%s = this.%s.getKey();", varName, powerVarName)
+//          }
+//        }
         case v: PByteType    => update("%s.byteValue()")
         case v: PIntegerType => update("new BigInteger(%s)")
         case v: PDecimalType => update("new BigDecimal(%s)")

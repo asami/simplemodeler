@@ -555,8 +555,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     protected def make_entity_document(docName: String, modelObject: SMObject) = {
       for (obj <- create_Document(null)) {
+        val basename = modelObject.getBaseObject.map(make_document_name)
+        val qname = basename.map((_, modelObject.packageName))
         val mixins = modelObject.traits.map(x => make_trait_document(x.mixinTrait))
-        build_object_with_name(obj, docName, modelObject, mixins)
+        build_object_with_name(obj, docName, modelObject, qname, mixins)
       }
     }
 
@@ -572,9 +574,11 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           case _ => record_warning("%sとしてトレイト以外のもの(%s)が存在しています。", docname, s)
         }
         case None => {
+          val basename = modelObject.getBaseObject.map(make_class_name)
+          val qname = basename.map((_, modelObject.packageName))
           val obj = create_Trait(null)
           obj.isImmutable = true
-          build_object_with_name(obj, docname, mo, Nil)
+          build_object_with_name(obj, docname, mo, qname, Nil)
           println("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + obj.attributes)
         }
       }
@@ -599,11 +603,13 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
 
     protected def build_object(obj: PObjectEntity, modelObject: SMObject) = {
+      val basename = modelObject.getBaseObject.map(make_class_name)
+      val qname = basename.map((_, modelObject.packageName))
       val mixins = modelObject.traits.map(_.mixinTrait)
-      build_object_with_name(obj, make_object_name(modelObject.name), modelObject, mixins)
+      build_object_with_name(obj, make_object_name(modelObject.name), modelObject, qname, mixins)
     }
 
-    protected def build_object_with_name(obj: PObjectEntity, name: String, modelObject: SMObject, mixins: Seq[SMTrait]) = {
+    protected def build_object_with_name(obj: PObjectEntity, name: String, modelObject: SMObject, basename: Option[(String, String)], mixins: Seq[SMTrait]) = {
       obj.name = name
       obj.term = modelObject.term
       obj.term_en = modelObject.term_en
@@ -614,11 +620,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       obj.setKindedPackageName(make_PackageName(modelObject))
       obj.xmlNamespace = modelObject.xmlNamespace
       obj.modelObject = modelObject
-      modelObject.getBaseObject match {
-        case Some(base) => {
-          obj.setKindedBaseObjectType(make_class_name(base), base.packageName)
-        }
-        case None => {}
+      for ((n, p) <- basename) {
+        obj.setKindedBaseObjectType(n, p)
       }
       for (tr <- mixins) {
         obj.addKindedTraitObjectType(make_class_name(tr), tr.packageName)

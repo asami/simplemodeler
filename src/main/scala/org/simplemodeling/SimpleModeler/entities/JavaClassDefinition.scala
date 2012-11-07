@@ -104,7 +104,7 @@ class JavaClassDefinition(
       jm_p(" extends ")
       jm_p(base)
     }
-    val is = _implements_interfaces
+    val is = implements_interfaces
     if (!is.isEmpty) {
       jm_p(" implements ")
       jm_p(is.mkString(", "))
@@ -122,8 +122,8 @@ class JavaClassDefinition(
     jm_indent_up
   }
 
-  private def _implements_interfaces: Seq[String] = {
-    println("JavaClassDefinition#_implements_interfaces: " + pobject.getTraitNames)
+  protected def implements_interfaces: Seq[String] = {
+//    println("JavaClassDefinition#_implements_interfaces: " + pobject.getTraitNames)
     customImplementNames ++ pobject.getTraitNames
   }
 
@@ -134,7 +134,8 @@ class JavaClassDefinition(
 
   // XXX use not_derived_implements_attribute_definitions?
   override protected def constructors_null_constructor {
-    if (!attributeDefinitions.filter(!_.isInject).isEmpty) {
+    val attrs = not_derived_whole_attribute_definitions
+    if (!attrs.filter(!_.isInject).isEmpty) {
       jm_public_constructor("%s()", name) {
         if (hasBaseObject) {
           jm_pln("super();")
@@ -158,7 +159,7 @@ class JavaClassDefinition(
 
   override protected def constructors_plain_constructor {
     val params = not_derived_whole_attribute_definitions.filter(!_.isInject).
-      map(a => a.javaType + " " + a.paramName).mkString(", ")
+    map(a => a.javaType + " " + a.paramName).mkString(", ")
     jm_public_constructor("%s(%s)", name, params) {
       if (hasBaseObject) {
         val vs = not_derived_parent_attribute_definitions.filter(!_.isInject).
@@ -205,24 +206,23 @@ class JavaClassDefinition(
   }
 
   protected final def constructors_plain_constructor_for_document {
-    val attrs = not_derived_implements_attribute_definitions
-    val params = attrs.filter(!_.isInject).
-      map(a => {
-        val typename = a.attr.attributeType match {
-          case t: PEntityType => {
-            pContext.entityDocumentName(t.entity.modelEntity)
-          }
-          case _ => a.javaType
+    val params = not_derived_whole_attribute_definitions.filter(!_.isInject).
+    map(a => {
+      val typename = a.attr.attributeType match {
+        case t: PEntityType => {
+          pContext.entityDocumentName(t.entity.modelEntity)
         }
-        typename + " " + a.paramName 
-      }).mkString(", ")
+        case _ => a.javaType
+      }
+      typename + " " + a.paramName 
+    }).mkString(", ")
     jm_public_constructor("%s(%s)", name, params) {
       if (hasBaseObject) {
-        val vs = attrs.filter(!_.isInject).
+        val vs = not_derived_parent_attribute_definitions.filter(!_.isInject).
           map(a => a.paramName).mkString(", ")
         jm_pln("super(%s);", vs)
       }
-      for (a <- attrs) {
+      for (a <- not_derived_implements_attribute_definitions) {
         jm_assign_this(a.varName, a.paramName)
       }
     }
@@ -523,7 +523,7 @@ class JavaClassDefinition(
         if (isId) { // e.g. except Part
           jm_pln("doc.%s = get%s();", idName, idName.capitalize)
         }
-        for (a <- attributeDefinitions if !a.attr.isId) {
+        for (a <- wholeAttributeDefinitions if !a.attr.isId) {
           makeAttr(a)
         }
         jm_return("doc.build()")
@@ -544,6 +544,7 @@ class JavaClassDefinition(
 
   override protected def document_methods_update {
     jm_public_void_method("update_document(%s doc)", documentName) {
+/* XXX inheritance issue
       if (isId) { // e.g. except Part
         jm_if_not_null(idName) {
           jm_if_not_equals_expr("doc.%s", idName)("get%s()", idName.capitalize) {
@@ -551,6 +552,7 @@ class JavaClassDefinition(
           }
         }
       }
+*/
       for (a <- attributeDefinitions if !a.attr.isId) {
         a.document_methods_update_attribute
       }

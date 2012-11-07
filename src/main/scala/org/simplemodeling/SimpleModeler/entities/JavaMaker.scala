@@ -6,7 +6,7 @@ import scala.collection.mutable.ArrayBuffer
 /*
  * @since   May. 14, 2011
  *  version Jul. 26, 2011
- * @version Nov.  6, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaMaker extends JavaTextMaker {
@@ -103,12 +103,28 @@ class JavaMaker extends JavaTextMaker {
     pln("private List<%s> %s = new ArrayList<%s>();".format(typename, varname, typename))
   }
 
+  def protectedInstanceVariableSingle(typename: String, varname: String) {
+    pln("protected %s %s;".format(typename, varname))    
+  }
+
+  def protectedInstanceVariableList(typename: String, varname: String) {
+    pln("protected List<%s> %s = new ArrayList<%s>();".format(typename, varname, typename))
+  }
+
   def privateTransientInstanceVariableSingle(typename: String, varname: String) {
     pln("private transient %s %s;".format(typename, varname))    
   }
 
   def privateTransientInstanceVariableList(typename: String, varname: String) {
     pln("private transient List<%s> %s = new ArrayList<%s>();".format(typename, varname, typename))
+  }
+
+  def protectedTransientInstanceVariableSingle(typename: String, varname: String) {
+    pln("protected transient %s %s;".format(typename, varname))    
+  }
+
+  def protectedTransientInstanceVariableList(typename: String, varname: String) {
+    pln("protected transient List<%s> %s = new ArrayList<%s>();".format(typename, varname, typename))
   }
 
   // unify 
