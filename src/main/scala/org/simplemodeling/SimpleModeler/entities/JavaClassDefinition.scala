@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
  *  version Oct. 30, 2012
- * @version Nov.  7, 2012
+ * @version Nov.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -183,6 +183,15 @@ class JavaClassDefinition(
         else {
           val in = "o." + a.varName
           if (a.attr.isMulti) {
+            a.attr.attributeType match {
+              case t: PEntityType => {
+                jm_for(t.entity.documentName, "elem", in) {
+                  jm_pln("%s.add(new %s(elem));", a.varName, t.name)
+                }
+              }
+              case _ => jm_assign_this(a.varName, in)
+            }
+          } else {
             val rhs = a.attr.attributeType match {
               case t: PEntityType => {
                 "%s != null ? new %s(%s) : null".format(in, t.name, in)
@@ -190,15 +199,6 @@ class JavaClassDefinition(
               case _ => in
             }
             jm_assign_this(a.varName, rhs)
-          } else {
-            a.attr.attributeType match {
-              case t: PEntityType => {
-                jm_for(documentName, "elem", in) {
-                  jm_pln("%s.add(new %s(elem));", a.varName, t.name)
-                }
-              }
-              case _ => jm_assign_this(a.varName, in)
-            }
           }
         }
       }
