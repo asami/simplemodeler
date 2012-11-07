@@ -29,10 +29,10 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Jan. 30, 2012
  *  version Jun. 17, 2012
  *  version Oct. 16, 2012
- * @version Nov.  5, 2012
+ * @version Nov.  7, 2012
  * @author  ASAMI, Tomoharu
  */
-class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) {
+class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) with SimpleModelEntityHelper {
   override type TreeNode_TYPE = SMElement
   override type DataSource_TYPE = SObjectDataSource
   private val _done_classes = new mutable.HashSet[Class[SObject]]
@@ -1248,25 +1248,6 @@ record_trace("build_powertype_object = " + aPowertype)
   // context
   protected final def syntax_error(aMessage: String) {
     sys.error(aMessage)
-  }
-
-  // configuration : XXX separate
-  final def makeDomainDocumentPartName(anEntity: SMEntity): String = {
-    require (anEntity != SMNullEntity)
-    "DDI" + anEntity.term
-  }
-
-  final def makeImportAttributeName(anEntity: SMEntity, anAttr: SMAttribute): String = {
-    anEntity.term + "_" + anAttr.dslAttribute.name
-  }
-
-  final def makeImportAssociationName(anEntity: SMEntity, anAssoc: SMAssociation): String = {
-    anEntity.term + "_" + anAssoc.dslAssociation.name
-  }
-
-  final def makeDocumentPartAttributeName(anPart: SMDocumentPart): String = {
-    require (anPart != SMNullDocumentPart)
-    anPart.term
   }
 }
 

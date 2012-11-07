@@ -957,15 +957,17 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     aName.capitalize // XXX
   }
 
-  @deprecated("candidate", "before 20120506")
   protected final def make_document_name(anObject: SMObject): String = {
-    "DD" + UString.capitalize(make_term_name(anObject))
+    simpleModel.entityDocumentName(anObject)
+//    "DD" + UString.capitalize(make_term_name(anObject))
   }
 
   protected final def make_term_name(modelObject: SMObject): String = {
-    pickup_name(modelObject.term_en, modelObject.term, modelObject.name)
+    simpleModel.term_en(modelObject)
+//    pickup_name(modelObject.term_en, modelObject.term, modelObject.name)
   }
 
+/*
   protected final def pickup_name(names: String*): String = {
     for (name <- names) {
       if (!(name == null || "".equals(name))) {
@@ -974,6 +976,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
     throw new IllegalArgumentException("no name")
   }
+*/
 
   protected final def get_kinded_qname(kind: String, qname: String): String = {
     require (kind != null && kind.nonEmpty, "get_kinded_qname: kind should not be empty.")

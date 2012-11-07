@@ -203,7 +203,8 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   final def name_en(modelElement: SMElement) = {
-    pickup_name(modelElement.name_en, modelElement.term_en, modelElement.name)
+    model.name_en(modelElement)
+//    pickup_name(modelElement.name_en, modelElement.term_en, modelElement.name)
   }
 
   final def term_en(anObject: PObjectEntity): String = {
@@ -211,7 +212,8 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   final def term_en(modelElement: SMElement) = {
-    pickup_name(modelElement.term_en, modelElement.term, modelElement.name_en, modelElement.name)
+    model.term_en(modelElement)
+//    pickup_name(modelElement.term_en, modelElement.term, modelElement.name_en, modelElement.name)
   }
 
   @deprecated("candidate old feature", "before 0.3.3")
@@ -266,7 +268,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
    * SimpleModel2ProgramRealmTransformerBase uses this method.
    */
   final def entityDocumentName(anObject: SMObject): String = {
-    "Doc" + classNameBase(anObject)
+    model.entityDocumentName(anObject)
   }
 
   @deprecated("candidate old feature", "before 0.3.3")
@@ -444,66 +446,25 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   private def pickup_name(names: String*): String = {
-    for (name <- names) {
-      if (!(name == null || "".equals(name))) {
-        return name
-      }
-    }
-    throw new IllegalArgumentException("no name")
+    model.pickup_name(names: _*)
   }
 
   private def underscore_name(name: String): String = {
-    val buf = new StringBuilder
-    for (c <- name) {
-      c match {
-        case '-' => buf.append('_');
-        case ':' => buf.append('_');
-        case '.' => buf.append('_');
-        case ' ' => buf.append('_');
-        case _ => buf.append(c);
-      }
-    }
-    buf.toString
+    model.underscore_name(name)
   }
 
   /**
    * camel case (capitalize nuetral)
    */
   private def camel_case_name(name: String): String = {
-    val buf = new StringBuilder
-    var afterSpace = false
-    for (c <- name) {
-      c match {
-        case '-' => buf.append('_');afterSpace = false
-        case ':' => buf.append('_');afterSpace = false
-        case '.' => buf.append('_');afterSpace = false
-        case ' ' => afterSpace = true
-        case _ if afterSpace => buf.append(c.toUpperCase);afterSpace = false
-        case _ => buf.append(c);afterSpace = false
-      }
-    }
-    buf.toString
+    model.camel_case_name(name)
   }
 
   /**
    * capitalize camel case
    */
   private def pascal_case_name(name: String): String = {
-    val buf = new StringBuilder
-    var firstCharacter = true
-    var afterSpace = false
-    for (c <- name) {
-      c match {
-        case '-' => buf.append('_');afterSpace = false
-        case ':' => buf.append('_');afterSpace = false
-        case '.' => buf.append('_');afterSpace = false
-        case ' ' => afterSpace = true
-        case _ if firstCharacter => buf.append(c.toUpperCase);firstCharacter = false
-        case _ if afterSpace => buf.append(c.toUpperCase);afterSpace = false
-        case _ => buf.append(c);afterSpace = false
-      }
-    }
-    buf.toString
+    model.pascal_case_name(name)
   }
 
   def makePathname(obj: PObjectEntity): String = {
