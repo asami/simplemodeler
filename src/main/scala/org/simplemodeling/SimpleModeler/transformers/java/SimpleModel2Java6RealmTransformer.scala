@@ -26,7 +26,7 @@ import org.goldenport.entity.content.ResourceContent
  * @since   Dec. 12, 2011
  *  version Dec. 14, 2011
  *  version Oct. 26, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -69,7 +69,11 @@ class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
     }
 
     override protected def create_Trait(entity: SMDomainTrait): DomainTraitTYPE = {
-      new Java6TraitEntity(target_context)
+      if (entity != null && entity.isDocument) {
+        new Java6DocumentTraitEntity(target_context)
+      } else {
+        new Java6TraitEntity(target_context)
+      }
     }
 
     override protected def create_Actor(entity: SMDomainActor): DomainActorTYPE = {

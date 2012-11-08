@@ -4,7 +4,7 @@ package org.simplemodeling.SimpleModeler.entities
  * Value Java Class Attribute Definition
  * 
  * @since   Jul.  6, 2011
- * @version Aug.  6, 2011
+ * @version Nov.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class DocumentJavaClassAttributeDefinition(
@@ -12,7 +12,10 @@ class DocumentJavaClassAttributeDefinition(
   aspects: Seq[JavaAspect],
   attr: PAttribute,
   owner: JavaClassDefinition,
-  jmaker: JavaMaker) extends JavaClassAttributeDefinition(pContext, aspects, attr, owner, jmaker) {
+  jmaker: JavaMaker) extends JavaClassAttributeDefinition(pContext, aspects, attr, owner, jmaker) with DocumentJavaClassAttributeDefinitionBody
+
+trait DocumentJavaClassAttributeDefinitionBody {
+  self: JavaClassAttributeDefinition =>
 
   override protected def variable_plain_entity_attribute(e: PEntityType) {
     variable_plain_Attribute_Instance_Variable(e.entity.documentName, varName);

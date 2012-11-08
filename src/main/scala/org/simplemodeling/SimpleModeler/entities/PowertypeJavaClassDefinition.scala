@@ -13,14 +13,10 @@ class PowertypeJavaClassDefinition(
   aspects: Seq[JavaAspect],
   pobject: PObjectEntity
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
-  var _use_builder = false
-
   if (pobject.hasInheritance) {
-    _use_builder = true
     isData = true
     isImmutable = false
   } else {
-    _use_builder = false
     useDocument = false
     isImmutable = true
     isData = true
@@ -28,7 +24,7 @@ class PowertypeJavaClassDefinition(
     classifierKind = EnumClassifierKind
   }
 
-  override def useBuilder = _use_builder
+  override def useBuilder = false
 
   override protected def constructors_null_constructor {}
   override protected def constructors_copy_constructor {}
@@ -59,9 +55,9 @@ class PowertypeJavaClassDefinition(
   }
 */
 
-  override protected def attribute(attr: PAttribute) = {
-    new ValueJavaClassAttributeDefinition(pContext, aspects, attr, this, jm_maker)
-  }
+//  override protected def attribute(attr: PAttribute) = {
+//    new ValueJavaClassAttributeDefinition(pContext, aspects, attr, this, jm_maker)
+//  }
 
 //  override protected def to_methods_string {}
   override protected def object_methods_hashcode {}

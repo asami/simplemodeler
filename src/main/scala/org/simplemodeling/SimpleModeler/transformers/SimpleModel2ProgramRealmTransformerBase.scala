@@ -566,7 +566,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       println("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + modelObject.attributes)
       val docname = make_document_name(modelObject)
       val pkgname = modelObject.packageName
-      val mo = SMDomainTrait.create(docname, pkgname, modelObject)
+      val mo = SMDomainTrait.createDocument(docname, pkgname, modelObject)
       println("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + mo.attributes)
       findObject(docname, pkgname) match {
         case Some(s) => s match {
@@ -576,8 +576,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         case None => {
           val basename = modelObject.getBaseObject.map(make_class_name)
           val qname = basename.map((_, modelObject.packageName))
-          val obj = create_Trait(null)
+          val obj = create_Trait(mo)
           obj.isImmutable = true
+          obj.isDocument = mo.isDocument
           build_object_with_name(obj, docname, mo, qname, Nil)
           println("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + obj.attributes)
         }

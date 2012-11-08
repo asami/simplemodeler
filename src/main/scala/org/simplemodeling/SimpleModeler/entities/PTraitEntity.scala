@@ -10,8 +10,9 @@ import org.simplemodeling.SimpleModeler.entities.gaej.GaejUtil._
 
 /*
  * @since   Nov.  6, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 trait PTraitEntity extends PObjectEntity {
+  var isDocument = false
 }
