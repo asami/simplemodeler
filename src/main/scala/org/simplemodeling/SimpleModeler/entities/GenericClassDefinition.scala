@@ -193,6 +193,10 @@ abstract class GenericClassDefinition(
   var customImplementNames: List[String] = Nil
 //  var identityEquality: Boolean = true
   var isValueEquality: Boolean = false
+  /**
+   * The object is used as data so that data manipulation utility
+   * methods (e.g. XML, JSON), are supported.
+   */
   var isData: Boolean = false
   val customAttributes = new ArrayBuffer[PAttribute]
   var isCustomVariableImplementation = false

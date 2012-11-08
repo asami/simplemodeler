@@ -5,7 +5,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPowertype
 /*
  * @since   Feb. 20, 2012
  *  version Feb. 20, 2012
- * @version Nov.  7, 2012
+ * @version Nov.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class PowertypeJavaClassDefinition(
@@ -13,18 +13,29 @@ class PowertypeJavaClassDefinition(
   aspects: Seq[JavaAspect],
   pobject: PObjectEntity
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
-  useDocument = false
-  isImmutable = true
-  override def useBuilder = false
-  isData = true
-  isValueEquality = true
-  classifierKind = EnumClassifierKind
+  var _use_builder = false
+
+  if (pobject.hasInheritance) {
+    _use_builder = true
+    isData = true
+    isImmutable = false
+  } else {
+    _use_builder = false
+    useDocument = false
+    isImmutable = true
+    isData = true
+    isValueEquality = true
+    classifierKind = EnumClassifierKind
+  }
+
+  override def useBuilder = _use_builder
 
   override protected def constructors_null_constructor {}
   override protected def constructors_copy_constructor {}
   override protected def constructors_plain_constructor {}
 
   override protected def attribute_variables_Prologue {
+    if (pobject.hasInheritance) return
     val mpower = pobject.modelObject.asInstanceOf[SMPowertype]
     val labels =
       if (mpower.isEmpty) List("Unkonwn")
@@ -49,7 +60,7 @@ class PowertypeJavaClassDefinition(
 */
 
   override protected def attribute(attr: PAttribute) = {
-    new ValueJavaClassAttributeDefinition(pContext, aspects, attr, this, jm_maker).withImmutable(true)
+    new ValueJavaClassAttributeDefinition(pContext, aspects, attr, this, jm_maker)
   }
 
 //  override protected def to_methods_string {}

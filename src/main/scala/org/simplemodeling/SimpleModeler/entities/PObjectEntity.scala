@@ -157,6 +157,9 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     _mixinTraits.map(_.name)
   }
 
+  //
+  def hasInheritance: Boolean = _baseObject != null || _mixinTraits.nonEmpty
+
   // 
   def setKindedPackageName(pkgname: String) {
     packageName = get_kinded_package_name(pkgname)

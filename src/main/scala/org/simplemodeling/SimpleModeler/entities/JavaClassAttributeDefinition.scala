@@ -241,6 +241,7 @@ class JavaClassAttributeDefinition(
 
   // part
   override protected def method_bean_multi_part(p: PEntityPartType) {
+      jm_mark("// JavaClassAttributeDefinition#method_bean_multi_part")
     jm_public_method("public " + javaType + " get" + attrName.capitalize + " ()") {
       jm_pln("fill_%s();", attrName)
       jm_if_else(erPartVarName + " != null") {
@@ -251,9 +252,11 @@ class JavaClassAttributeDefinition(
       }
     }
     if (is_settable) {
+      jm_mark("// JavaClassAttributeDefinition#method_bean_multi_part")
       jm_public_void_method("set" + attrName.capitalize + "(" + javaType + " " + paramName + ")") {
         jm_assign_this(erPartVarName, "new ArrayList<%s>(%s)", javaElementType, paramName)  
       }
+      jm_mark("// JavaClassAttributeDefinition#method_bean_multi_part")
       jm_public_void_method("public void add" + attrName.capitalize + "(" + javaElementType + " " + paramName + ")") {
         jm_if_null("this." + erPartVarName) {
           jm_assign_this(erPartVarName, "new ArrayList<%s>()", javaElementType) 
@@ -264,16 +267,20 @@ class JavaClassAttributeDefinition(
   }
 
   override protected def method_bean_multi_powertype(e: PPowertypeType) {
+    jm_mark("// JavaClassAttributeDefinition#method_bean_multi_powertype")
     jm_public_get_list_method_prologue(javaType, attrName, varName) { // erPowerVarName) {
       jm_pln("fill_%s()", attrName)
     }
     if (is_settable()) {
+    jm_mark("// JavaClassAttributeDefinition#method_bean_multi_powertype")
       jm_public_set_list_method(attrName, javaElementType, paramName, varName) // erPowerVarName)
+    jm_mark("// JavaClassAttributeDefinition#method_bean_multi_powertype")
       jm_public_add_list_element_method(attrName, javaElementType, paramName, varName) // erPowerVarName)
     }
   }
 
   def multi_value_attribute_method {
+    jm_mark("// JavaClassAttributeDefinition#multi_value_attribute_method")
     jm_public_get_list_method(javaType, attrName, erPersistentVarName)
     if (is_settable()) {
       jm_public_set_list_method(attrName, javaElementType, paramName, erPersistentVarName)
@@ -282,6 +289,7 @@ class JavaClassAttributeDefinition(
   }
 
   def multi_value_attribute_abstract_method {
+    jm_mark("// JavaClassAttributeDefinition#multi_value_attribute_abstract_method")
     jm_public_get_list_abstract_method(javaType, attrName, erPersistentVarName)
     if (is_settable()) {
       jm_public_set_list_abstract_method(attrName, javaElementType, paramName, erPersistentVarName)
@@ -290,6 +298,7 @@ class JavaClassAttributeDefinition(
   }
 
   def mapping_multi_value_attribute_method(getter: String, setter: String) {
+    jm_mark("// JavaClassAttributeDefinition#mapping_multi_value_attribute_method")
     jm_public_method("%s get%s()", javaType, attrName.capitalize) {
       jm_if_else_not_null(attrName) {
         jm_var_List_new_ArrayList("result", attr.elementTypeName); 
@@ -303,7 +312,9 @@ class JavaClassAttributeDefinition(
       }
     }
     if (is_settable()) {
+      jm_mark("// JavaClassAttributeDefinition#mapping_multi_value_attribute_method")
       jm_public_set_list_method(attrName, javaElementType, paramName, erPartVarName)
+      jm_mark("// JavaClassAttributeDefinition#mapping_multi_value_attribute_method")
       jm_public_add_list_element_method(attrName, javaElementType, paramName, erPartVarName)
     }
   }
