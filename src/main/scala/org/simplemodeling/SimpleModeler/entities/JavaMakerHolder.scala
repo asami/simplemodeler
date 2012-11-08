@@ -35,6 +35,10 @@ trait JavaMakerHolder {
   }
 
   //
+  protected def jm_mark(s: String, params: AnyRef*) {
+    _maker.println(s, params: _*)
+  }    
+
   protected def jm_p(s: String, params: AnyRef*): String = {
     _maker.print(s, params: _*)
     s

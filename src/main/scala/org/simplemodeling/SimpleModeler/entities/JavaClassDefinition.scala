@@ -309,11 +309,7 @@ class JavaClassDefinition(
       for (a <- attributeDefinitions) {
         if (cont) jm_append_String(", ")
         else cont = true
-        if (a.isSystemType) {
-          jm_pln("""USimpleModeler.toJson(buf, %s, %s);""", a.propertyConstantName, code_get_value(a))
-        } else {
-          jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, code_var_name(a))
-        }
+        a.ext_to_json
       }
     }
   }
@@ -336,11 +332,7 @@ class JavaClassDefinition(
       for (a <- attributeDefinitions) {
         if (cont) jm_append_String(", ")
         else cont = true
-        if (a.isSystemType) {
-          jm_pln("""USimpleModeler.toJson(buf, %s, %s);""", a.propertyConstantName, code_get_value(a))
-        } else {
-          jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, code_var_name(a))
-        }
+        a.ext_to_csv
       }
     }
   }
@@ -364,11 +356,7 @@ class JavaClassDefinition(
       for (a <- attributeDefinitions) {
         if (cont) jm_append_String(", ")
         else cont = true
-        if (a.isSystemType) {
-          jm_pln("""USimpleModeler.toJson(buf, %s, %s);""", a.propertyConstantName, code_get_value(a))
-        } else {
-          jm_pln("""USimpleModeler.toJson(buf, %s, %s.toJson());""", a.propertyConstantName, code_var_name(a))
-        }
+        a.ext_to_yaml
       }
     }
   }
@@ -397,11 +385,7 @@ class JavaClassDefinition(
         jm_pln("super.toMapContent(r);")
       }
       for (a <- attributeDefinitions) {
-        if (a.isSystemType) {
-          jm_pln("""USimpleModeler.toStringMap(r, %s, %s);""", a.propertyConstantName, code_get_value(a))
-        } else {
-          jm_pln("""USimpleModeler.toStringMap(r, %s, %s.toJson());""", a.propertyConstantName, code_var_name(a))
-        }
+        a.ext_to_map
       }
     }
   }

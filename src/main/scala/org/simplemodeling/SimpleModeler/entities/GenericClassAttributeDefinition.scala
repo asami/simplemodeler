@@ -12,7 +12,7 @@ import java.util.TimeZone
  *  version Aug. 19, 2011
  *  version Feb. 19, 2012
  *  version May.  6, 2012
- * @version Nov.  7, 2012
+ * @version Nov.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -73,6 +73,7 @@ abstract class GenericClassAttributeDefinition(
   def isDerive: Boolean = {
     attr.isDerive && owner.useDerivedAttribute
   }
+  def isMulti = attr.isMulti
 
   /**
    * This kind is just used in case of PEntityType.

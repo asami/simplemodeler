@@ -6,7 +6,7 @@ import scala.collection.mutable.ArrayBuffer
 /*
  * @since   May. 14, 2011
  *  version Jul. 26, 2011
- * @version Nov.  7, 2012
+ * @version Nov.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaMaker extends JavaTextMaker {
@@ -220,6 +220,7 @@ class JavaMaker extends JavaTextMaker {
 
   def publicIsMethod(attrName: String, expr: AnyRef*) {
     method("public boolean is%s()", attrName.capitalize, attr_expr(attrName, expr)) {
+      makeReturn(attr_expr(attrName, expr))
     }
   }
 
