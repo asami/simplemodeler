@@ -5,7 +5,7 @@ package org.simplemodeling.SimpleModeler.entities
  *  version Sep.  1, 2011
  *  version Feb. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov.  7, 2012
+ * @version Nov.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaMakerHolder {
@@ -350,12 +350,7 @@ trait JavaMakerHolder {
   protected final def jm_public_add_list_element_abstract_method(attrName: String, elemTypeName: String, paramName: String, varName: String) {
     val pname = if (paramName != null) paramName else attrName
     val vname = if (varName != null) varName else attrName
-    jm_public_void_method("add%s(%s %s)", attrName, elemTypeName, pname) {
-      jm_if("this." + vname + " == null") {
-        jm_assign_this(vname, "new ArrayList<%s>()", elemTypeName) 
-      }
-      jm_pln("this.%s.add(%s);", vname, pname);
-    }
+    jm_public_void_abstract_method("add%s(%s %s)", attrName, elemTypeName, pname)
   }
 
   protected final def jm_public_get_list_method(elemTypeName: String, attrName: String, varName: String) {
@@ -372,14 +367,7 @@ trait JavaMakerHolder {
 
   protected final def jm_public_get_list_abstract_method(elemTypeName: String, attrName: String, varName: String) {
     val vname = if (varName != null) varName else attrName;  
-    jm_public_method("%s get%s()", elemTypeName, attrName.capitalize) {
-      jm_if_else(vname + " != null") {
-        jm_pln("return Collections.unmodifiableList(%s);", vname)
-      }
-      jm_else {
-        jm_pln("return Collections.emptyList();")
-      }
-    }
+    jm_public_abstract_method("%s get%s()", elemTypeName, attrName.capitalize)
   }
 
   protected final def jm_public_get_list_method_prologue(elemTypeName: String, attrName: String, varName: String)(body: => Unit) {

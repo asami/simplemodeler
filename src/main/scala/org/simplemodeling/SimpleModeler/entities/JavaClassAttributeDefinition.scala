@@ -14,7 +14,7 @@ import java.util.TimeZone
  *  version Aug.  7, 2011
  *  version Dec. 14, 2011
  *  version Feb. 20, 2012
- * @version Nov.  7, 2012
+ * @version Nov.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassAttributeDefinition(
@@ -181,15 +181,15 @@ class JavaClassAttributeDefinition(
   }
 
   override protected def method_bean_multi_byte() {
-    mapping_single_value_attribute_method("%s.byteValue()", "%s.shortValue()")
+    mapping_multi_value_attribute_method("%s.byteValue()", "%s.shortValue()")
   }
 
   override protected def method_bean_multi_integer() {
-    mapping_single_value_attribute_method("new BigInteger(%s)", "%s.toString()")
+    mapping_multi_value_attribute_method("new BigInteger(%s)", "%s.toString()")
   }    
 
   override protected def method_bean_multi_decimal() {
-    mapping_single_value_attribute_method("new BigDecimal(%s)", "%s.toString()")
+    mapping_multi_value_attribute_method("new BigDecimal(%s)", "%s.toString()")
   }
 
   override def method_bean_multi_entity_Simple(e: PEntityType) {

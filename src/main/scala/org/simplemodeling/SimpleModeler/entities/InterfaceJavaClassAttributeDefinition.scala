@@ -2,7 +2,7 @@ package org.simplemodeling.SimpleModeler.entities
 
 /*
  * @since   Nov.  6, 2012
- * @version Nov.  7, 2012
+ * @version Nov.  8, 2012
  * @author  ASAMI, Tomoharu
  */
 class InterfaceJavaClassAttributeDefinition(
@@ -19,15 +19,15 @@ class InterfaceJavaClassAttributeDefinition(
   }
 
   override protected def method_bean_single_byte() {
-    mapping_multi_value_attribute_abstract_method("%s.byteValue()", "%s.shortValue()") // XXX app engine ?
+    mapping_single_value_attribute_abstract_method("%s.byteValue()", "%s.shortValue()") // XXX app engine ?
   }
 
   override protected def method_bean_single_integer() {
-    mapping_multi_value_attribute_abstract_method("new BigInteger(%s)", "%s.toString()")
+    mapping_single_value_attribute_abstract_method("new BigInteger(%s)", "%s.toString()")
   }
 
   override protected def method_bean_single_decimal() {
-    mapping_multi_value_attribute_abstract_method("new BigDecimal(%s)", "%s.toString()")
+    mapping_single_value_attribute_abstract_method("new BigDecimal(%s)", "%s.toString()")
   }
 
   override def method_bean_single_entity_Simple(e: PEntityType) {
@@ -102,15 +102,15 @@ class InterfaceJavaClassAttributeDefinition(
   }
 
   override protected def method_bean_multi_byte() {
-    mapping_single_value_attribute_abstract_method("%s.byteValue()", "%s.shortValue()")
+    mapping_multi_value_attribute_abstract_method("%s.byteValue()", "%s.shortValue()")
   }
 
   override protected def method_bean_multi_integer() {
-    mapping_single_value_attribute_abstract_method("new BigInteger(%s)", "%s.toString()")
+    mapping_multi_value_attribute_abstract_method("new BigInteger(%s)", "%s.toString()")
   }    
 
   override protected def method_bean_multi_decimal() {
-    mapping_single_value_attribute_abstract_method("new BigDecimal(%s)", "%s.toString()")
+    mapping_multi_value_attribute_abstract_method("new BigDecimal(%s)", "%s.toString()")
   }
 
   override def method_bean_multi_entity_Simple(e: PEntityType) {
