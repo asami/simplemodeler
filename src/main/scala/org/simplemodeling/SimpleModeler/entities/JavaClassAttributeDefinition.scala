@@ -22,7 +22,7 @@ class JavaClassAttributeDefinition(
   aspects: Seq[JavaAspect],
   anattr: PAttribute,
   owner: JavaClassDefinition,
-  jmaker: JavaMaker) extends GenericClassAttributeDefinition(pContext, aspects, anattr, owner) with JavaMakerHolder with JavaClassAttributeDefinitionHelper {
+  jmaker: JavaMaker) extends GenericClassAttributeDefinition(pContext, aspects, anattr, owner) with JavaMakerHolder with JavaClassAttributeDefinitionHelper with JavaClassAttributeDefinitionExtension with JavaClassAttributeCodeUtils {
   type ATTR_DEF = JavaClassAttributeDefinition
 
   jm_open(jmaker, aspects)
