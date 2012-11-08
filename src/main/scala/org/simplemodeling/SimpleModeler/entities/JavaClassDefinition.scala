@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
  *  version Oct. 30, 2012
- * @version Nov.  8, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -20,6 +20,11 @@ class JavaClassDefinition(
   maker: JavaMaker = null
 ) extends GenericClassDefinition(pContext, aspects, pobject) with JavaMakerHolder with JavaClassCodeUtils {
   type ATTR_DEF = JavaClassAttributeDefinition
+
+  /**
+   * References to entity are converted to documents of entity.
+   */
+  def isDocument = false
 
   if (maker == null) {
     jm_open(aspects)
@@ -208,14 +213,25 @@ class JavaClassDefinition(
   protected final def constructors_plain_constructor_for_document {
     val params = not_derived_whole_attribute_definitions.filter(!_.isInject).
     map(a => {
-      val typename = a.attr.attributeType match {
-        case t: PEntityType => {
-          pContext.entityDocumentName(t.entity.modelEntity)
+      val typename = if (a.isMulti) {
+        a.attr.attributeType match {
+          case t: PEntityType => {
+            val b = pContext.entityDocumentName(t.entity.modelEntity)
+            "List<" + b + ">"
+          }
+          case _ => a.javaType
         }
-        case _ => a.javaType
+      } else {
+        a.attr.attributeType match {
+          case t: PEntityType => {
+            pContext.entityDocumentName(t.entity.modelEntity)
+          }
+          case _ => a.javaType
+        }
       }
       typename + " " + a.paramName 
     }).mkString(", ")
+    jm_mark("// JavaClassDefinition#constructors_plain_constructor_for_document")
     jm_public_constructor("%s(%s)", name, params) {
       if (hasBaseObject) {
         val vs = not_derived_parent_attribute_definitions.filter(!_.isInject).
@@ -227,6 +243,7 @@ class JavaClassDefinition(
       }
     }
   }
+
 /*
   override protected def constructors_plain_constructor {
     val params = attributeDefinitions.filter(!_.isInject).

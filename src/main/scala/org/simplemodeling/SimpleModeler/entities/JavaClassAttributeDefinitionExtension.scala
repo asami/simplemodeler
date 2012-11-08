@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.entity._
 
 /*
  * @since   Nov.  8, 2012
- * @version Nov.  8, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaClassAttributeDefinitionExtension {
@@ -19,12 +19,12 @@ trait JavaClassAttributeDefinitionExtension {
 
   private def _ext_to_xml_multi {
     if (isSystemType) {
-      jm_for(java_element_type, "elem", code_var_name) {
+      jm_for(code_element_type, "elem", code_var_name) {
         jm_mark("// JavaClassAttributeDefinitionExtension#_ext_to_xml_multi")
         jm_pln("""USimpleModeler.toXml(buf, "%s", elem);""", xmlElementName)
       }
     } else {
-      jm_for(java_element_type, "elem", code_var_name) {
+      jm_for(code_element_type, "elem", code_var_name) {
         jm_mark("// JavaClassAttributeDefinitionExtension#_ext_to_xml_multi")
         jm_pln("elem.toXmlElement(buf);")
       }
@@ -51,12 +51,12 @@ trait JavaClassAttributeDefinitionExtension {
 
   private def _ext_to_json_multi {
     if (isSystemType) {
-      jm_for(java_element_type, "elem", code_var_name) {
+      jm_for(code_element_type, "elem", code_var_name) {
         jm_mark("// JavaClassAttributeDefinitionExtension#_ext_to_json_multi")
           jm_pln("""USimpleModeler.toJson(buf, %s, elem);""", propertyConstantName)
       }
     } else {
-      jm_for(java_element_type, "elem", code_var_name) {
+      jm_for(code_element_type, "elem", code_var_name) {
         jm_mark("// JavaClassAttributeDefinitionExtension#_ext_to_json_multi")
         jm_pln("""USimpleModeler.toJson(buf, %s, elem.toJson());""", propertyConstantName)
       }
@@ -83,12 +83,12 @@ trait JavaClassAttributeDefinitionExtension {
 
   private def _ext_to_csv_multi {
     if (isSystemType) {
-      jm_for(java_element_type, "elem", code_var_name) {
+      jm_for(code_element_type, "elem", code_var_name) {
         jm_mark("// JavaClassAttributeDefinitionExtension#_ext_to_csv_multi")
-          jm_pln("""USimpleModeler.toCsv(buf, %s, elem);""", propertyConstantName)
+        jm_pln("""USimpleModeler.toCsv(buf, %s, elem);""", propertyConstantName)
       }
     } else {
-      jm_for(java_element_type, "elem", code_var_name) {
+      jm_for(code_element_type, "elem", code_var_name) {
         jm_mark("// JavaClassAttributeDefinitionExtension#_ext_to_csv_multi")
         jm_pln("""USimpleModeler.toCsv(buf, %s, elem.toCsv());""", propertyConstantName)
       }
@@ -115,12 +115,12 @@ trait JavaClassAttributeDefinitionExtension {
 
   private def _ext_to_yaml_multi {
     if (isSystemType) {
-      jm_for(java_element_type, "elem", code_var_name) {
+      jm_for(code_element_type, "elem", code_var_name) {
         jm_mark("// JavaClassAttributeDefinitionExtension#_ext_to_yaml_multi")
           jm_pln("""USimpleModeler.toYaml(buf, %s, elem);""", propertyConstantName)
       }
     } else {
-      jm_for(java_element_type, "elem", code_var_name) {
+      jm_for(code_element_type, "elem", code_var_name) {
         jm_mark("// JavaClassAttributeDefinitionExtension#_ext_to_yaml_multi")
         jm_pln("""USimpleModeler.toYaml(buf, %s, elem.toYaml());""", propertyConstantName)
       }
@@ -147,12 +147,12 @@ trait JavaClassAttributeDefinitionExtension {
 
   private def _ext_to_map_multi {
     if (isSystemType) {
-      jm_for(java_element_type, "elem", code_var_name) {
+      jm_for(code_element_type, "elem", code_var_name) {
         jm_mark("// JavaClassAttributeDefinitionExtension#_ext_to_map_multi")
           jm_pln("""USimpleModeler.toStringMap(buf, %s, elem);""", propertyConstantName)
       }
     } else {
-      jm_for(java_element_type, "elem", code_var_name) {
+      jm_for(code_element_type, "elem", code_var_name) {
         jm_mark("// JavaClassAttributeDefinitionExtension#_ext_to_map_multi")
         jm_pln("""USimpleModeler.toStringMap(buf, %s, elem.toStringMap());""", propertyConstantName)
       }

@@ -14,7 +14,7 @@ import java.util.TimeZone
  *  version Aug.  7, 2011
  *  version Dec. 14, 2011
  *  version Feb. 20, 2012
- * @version Nov.  8, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassAttributeDefinition(
@@ -24,6 +24,11 @@ class JavaClassAttributeDefinition(
   owner: JavaClassDefinition,
   jmaker: JavaMaker) extends GenericClassAttributeDefinition(pContext, aspects, anattr, owner) with JavaMakerHolder with JavaClassAttributeDefinitionHelper with JavaClassAttributeDefinitionExtension with JavaClassAttributeCodeUtils {
   type ATTR_DEF = JavaClassAttributeDefinition
+
+  /**
+   * References to entity are converted to documents of entity.
+   */
+  def isDocument = owner.isDocument
 
   jm_open(jmaker, aspects)
 

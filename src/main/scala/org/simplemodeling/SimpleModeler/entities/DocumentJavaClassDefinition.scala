@@ -3,7 +3,7 @@ package org.simplemodeling.SimpleModeler.entities
 /*
  * @since   Jul.  6, 2011
  *  version Dec. 13, 2011
- * @version Nov.  1, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 class DocumentJavaClassDefinition(
@@ -16,6 +16,7 @@ class DocumentJavaClassDefinition(
   isData = true
   isValueEquality = true
   isCustomVariableImplementation = true
+  override def isDocument = true
 
   override protected def constructors_null_constructor {
   }

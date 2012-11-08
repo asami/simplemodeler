@@ -6,7 +6,7 @@ import scala.collection.mutable.ArrayBuffer
 /*
  * @since   May. 14, 2011
  *  version Jul. 26, 2011
- * @version Nov.  8, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaMaker extends JavaTextMaker {
@@ -457,5 +457,17 @@ class JavaMaker extends JavaTextMaker {
 
   def assignThisNewArrayList(varname: String, classname: String, signature: String, params: Seq[AnyRef] = Nil) {
     assignThisNewContainer(varname, "ArrayList", classname, signature, params)
+  }
+
+  def ensureThisNewArrayList(varname: String, classname: String) {
+    makeIf("this." + varname + " == null") {
+      assignThisNewContainer(varname, "ArrayList", classname)
+    }
+  }
+
+  def ensureThisNewArrayList(varname: String, classname: String, signature: String, params: Seq[AnyRef] = Nil) {
+    makeIf("this." + varname + " == null") {
+      assignThisNewContainer(varname, "ArrayList", classname, signature, params)
+    }
   }
 }

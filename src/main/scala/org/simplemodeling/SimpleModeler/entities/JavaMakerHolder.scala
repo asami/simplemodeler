@@ -5,7 +5,7 @@ package org.simplemodeling.SimpleModeler.entities
  *  version Sep.  1, 2011
  *  version Feb. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov.  8, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaMakerHolder {
@@ -745,6 +745,14 @@ trait JavaMakerHolder {
 
   protected final def jm_assign_this_new_ArrayList(varname: String, classname: String, signature: String, params: AnyRef*) {
     _maker.assignThisNewArrayList(varname, classname, signature, params)
+  }
+
+  protected final def jm_ensure_this_new_ArrayList(varname: String, classname: String) {
+    _maker.ensureThisNewArrayList(varname, classname)
+  }
+
+  protected final def jm_ensure_this_new_ArrayList(varname: String, classname: String, signature: String, params: AnyRef*) {
+    _maker.ensureThisNewArrayList(varname, classname, signature, params)
   }
 
   protected final def jm_assign_this_null_or_object(attrname: String, nullvalue: String = "null")

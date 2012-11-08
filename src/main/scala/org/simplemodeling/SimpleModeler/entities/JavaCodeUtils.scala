@@ -1,12 +1,13 @@
 package org.simplemodeling.SimpleModeler.entities
 
 import scalaz._, Scalaz._
+import org.apache.commons.lang3.StringUtils.isNotBlank
 import com.asamioffice.goldenport.text.UJavaString
 import org.simplemodeling.SimpleModeler.entity._
 
 /*
  * @since   Nov.  8, 2012
- * @version Nov.  8, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaCodeUtils {
@@ -37,6 +38,16 @@ trait JavaCodeUtils {
     } else {
       attr.varName
     }
+  }
+
+  protected final def code_single_document_type(e: PEntityType) = {
+    require (isNotBlank(e.entity.documentName), "documentName in PEntityType must have value.")
+    e.entity.documentName
+  }
+
+  protected final def code_multi_document_type(e: PEntityType) = {
+    require (isNotBlank(e.entity.documentName), "documentName in PEntityType must have value.")
+    "List<" + e.entity.documentName + ">"
   }
 
   final protected def code_get_string_element(attr: PAttribute): String = {
