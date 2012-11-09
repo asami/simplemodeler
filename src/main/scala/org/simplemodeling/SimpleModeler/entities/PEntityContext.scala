@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -281,6 +281,35 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
    */
   final def entityServiceName(pkg: SMPackage): String = {
     classNameBase(pkg) + "RepositoryService"
+  }
+
+  /**
+   * GenericClassDefinition uses this method.
+   */
+  final def entityServiceName(aPackageName: String): String = {
+    val domainName = {
+      if (aPackageName == "") ""
+      else UJavaString.qname2simpleName(aPackageName)
+    }
+    UString.capitalize(domainName) + "RepositoryService"
+  }
+
+  /**
+   * SimpleModel2ProgramRealmTransformerBase uses this method.
+   */
+  final def eventServiceName(pkg: SMPackage): String = {
+    classNameBase(pkg) + "EventService"
+  }
+
+  /**
+   * GenericClassDefinition uses this method.
+   */
+  final def eventServiceName(aPackageName: String): String = {
+    val domainName = {
+      if (aPackageName == "") ""
+      else UJavaString.qname2simpleName(aPackageName)
+    }
+    UString.capitalize(domainName) + "EventService"
   }
 
   @deprecated("candidate old feature", "before 0.3.3")

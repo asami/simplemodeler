@@ -44,7 +44,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -78,6 +78,8 @@ abstract class GenericClassDefinition(
   lazy val errorModelName = pContext.errorModelName(packageName)
   lazy val agentName = pContext.agentName(packageName)
   lazy val controllerName = pContext.controllerName(packageName)
+  lazy val entityServiceName = pContext.entityServiceName(packageName)
+  lazy val eventServiceName = pContext.eventServiceName(packageName)
 
   def this(c: PEntityContext, o: PObjectEntity) = this(c, Nil, o)
 

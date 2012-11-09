@@ -14,7 +14,7 @@ import com.asamioffice.goldenport.text.UPathString
  *  version Feb.  7, 2012
  *  version Apr.  8, 2012
  *  version Oct. 16, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
@@ -100,6 +100,11 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
       else clazz.getName
     } else dslObject.baseObject.qualifiedName
   }
+
+  /**
+   * Used to decide creating event service.
+   */
+  def isEvent: Boolean = dslObject.isInstanceOf[SEvent]
 
   /**
    * stereotype candidate - first

@@ -27,7 +27,7 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -356,7 +356,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       val viewname = target_context.viewName(pkg)
       val modelname = target_context.modelName(pkg)
       val errormodelname = target_context.errorModelName(pkg)
-      val servicename = target_context.entityServiceName(pkg)
+      val entityservicename = target_context.entityServiceName(pkg)
+      val eventservicename = target_context.eventServiceName(pkg)
       val agentname = target_context.agentName(pkg)
 
       if (pkg.children.exists(_.isInstanceOf[SMEntity])) {
@@ -367,7 +368,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         val view = create_View()
         val model = create_Model()
         val errormodel = create_ErrorModel()
-        val service = create_Service()
+        val entityservice = create_EntityService()
+        val eventservice = create_EventService()
         val agent = create_Agent()
         if (usePackageObject) {
           build_package(ppkg, pkg)
@@ -400,8 +402,11 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         for (e <- errormodel) {
           build_object_for_package(e, pkg, ppkg, errormodelname)
         }
-        for (s <- service) {
-          build_object_for_package(s, pkg, ppkg, servicename)
+        for (s <- entityservice) {
+          build_object_for_package(s, pkg, ppkg, entityservicename)
+        }
+        for (s <- eventservice) {
+          build_object_for_package(s, pkg, ppkg, eventservicename)
         }
         for (a <- agent) {
           build_object_for_package(a, pkg, ppkg, agentname)
@@ -419,8 +424,11 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           if (errormodel.isDefined) {
             module.entries += PModuleEntry(errormodelname, None, true)
           }
-          if (service.isDefined) {
-            module.entries += PModuleEntry(servicename, None, true)
+          if (entityservice.isDefined) {
+            module.entries += PModuleEntry(entityservicename, None, true)
+          }
+          if (eventservice.isDefined) {
+            module.entries += PModuleEntry(eventservicename, None, true)
           }
           if (agent.isDefined) {
             module.entries += PModuleEntry(agentname, None, true)
@@ -441,8 +449,11 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           if (errormodel.isDefined) {
             factory.entries += PModuleEntry(errormodelname, None, true)
           }
-          if (service.isDefined) {
-            factory.entries += PModuleEntry(servicename, None, true)
+          if (entityservice.isDefined) {
+            factory.entries += PModuleEntry(entityservicename, None, true)
+          }
+          if (eventservice.isDefined) {
+            factory.entries += PModuleEntry(eventservicename, None, true)
           }
           if (agent.isDefined) {
             factory.entries += PModuleEntry(agentname, None, true)
@@ -523,8 +534,11 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       None
     }
 
-    // XXX
-    protected def create_Service(): Option[PServiceEntity] = {
+    protected def create_EntityService(): Option[PServiceEntity] = {
+      None
+    }
+
+    protected def create_EventService(): Option[PServiceEntity] = {
       None
     }
 

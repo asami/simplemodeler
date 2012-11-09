@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
  * @version Nov. 10, 2012
  * @author  ASAMI, Tomoharu
  */
-class ServiceJavaClassDefinition(
+class EventServiceJavaClassDefinition(
   pContext: PEntityContext,     
   aspects: Seq[JavaAspect],
   pobject: PObjectEntity
@@ -29,12 +29,8 @@ class ServiceJavaClassDefinition(
 @Inject
 protected %context% context;
 @Inject
-protected %event% event;
-@Inject
 protected %repository% repository;
-""", Map("%context%" -> contextName,
-         "%event%" -> eventServiceName,
-         "%repository%" -> entityServiceName))
+""", Map("%context%" -> contextName, "%repository%" -> entityServiceName))
   }
 
   override protected def package_methods_Actor(actor: SMDomainActor) {

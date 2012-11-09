@@ -26,7 +26,7 @@ import org.goldenport.entity.content.ResourceContent
  * @since   Dec. 12, 2011
  *  version Dec. 14, 2011
  *  version Oct. 26, 2012
- * @version Nov.  8, 2012
+ * @version Nov. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -167,8 +167,12 @@ class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
       Some(new Java6RepositoryEntity(target_context))
     }
 
-    override protected def create_Service(): Option[PServiceEntity] = {
+    override protected def create_EntityService(): Option[PServiceEntity] = {
       Some(new Java6RepositoryServiceEntity(target_context))
+    }
+
+    override protected def create_EventService(): Option[PServiceEntity] = {
+      Some(new Java6EventServiceEntity(target_context))
     }
 
     override protected def create_View(): Option[PViewEntity] = {

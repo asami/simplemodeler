@@ -18,7 +18,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -158,7 +158,13 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   }
 
   //
+  /**
+   * Used by enum or entity decision in powertype.
+   * This usages would be replacy by isEditable.
+   */
   def hasInheritance: Boolean = _baseObject != null || _mixinTraits.nonEmpty
+
+  def isEvent: Boolean = modelObject.isEvent
 
   // 
   def setKindedPackageName(pkgname: String) {
