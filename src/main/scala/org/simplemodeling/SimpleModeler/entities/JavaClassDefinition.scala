@@ -137,7 +137,6 @@ class JavaClassDefinition(
     jm_pln("}")
   }
 
-  // XXX use not_derived_implements_attribute_definitions?
   override protected def constructors_null_constructor {
     val attrs = not_derived_whole_attribute_definitions
     if (!attrs.filter(!_.isInject).isEmpty) {
@@ -163,6 +162,7 @@ class JavaClassDefinition(
   }
 
   override protected def constructors_plain_constructor {
+//    println("JavaClassDefinition#constructors_plain_constructor(%s) = %s".format(this.name, not_derived_whole_attribute_definitions.map(_.attr.name)))
     val params = not_derived_whole_attribute_definitions.filter(!_.isInject).
     map(a => a.javaType + " " + a.paramName).mkString(", ")
     jm_public_constructor("%s(%s)", name, params) {

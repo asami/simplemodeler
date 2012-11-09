@@ -14,7 +14,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Feb. 19, 2012
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
- * @version Nov.  8, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -29,12 +29,19 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   var modelAttribute: SMAttribute = null
   var modelAssociation: SMAssociation = null // XXX
   var modelPowertype: SMPowertypeRelationship = null // XXX
+//  var modelStateMachine: SMStateMachineRelationship = null // XXX
   def modelElement: SMElement = {
     if (modelAttribute != null) modelAttribute
     else if (modelAssociation != null) modelAssociation
     else if (modelPowertype != null) modelPowertype
-    else throw new IllegalArgumentException("modelElement should not be null.")
+    else throw new IllegalArgumentException("modelElement should not be null.: " + name)
   } 
+  def getModelElement: Option[SMElement] = {
+    if (modelAttribute != null) modelAttribute.some
+    else if (modelAssociation != null) modelAssociation.some
+    else if (modelPowertype != null) modelPowertype.some
+    else None
+  }
 
   final def typeName: String = type_name
   final def objectTypeName: String = type_name_object

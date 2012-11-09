@@ -1,8 +1,7 @@
 package org.simplemodeling.SimpleModeler.entities
 
 import org.apache.commons.lang3.StringUtils
-import scalaz._
-import Scalaz._
+import scalaz._, Scalaz._
 import scala.collection.mutable.ArrayBuffer
 import org.simplemodeling.SimpleModeler.entity.business.SMBusinessEntity
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainTrait
@@ -24,7 +23,9 @@ import org.simplemodeling.SimpleModeler.entity.AggregationParticipationRole
 import org.simplemodeling.SimpleModeler.entity.AssociationParticipationRole
 import org.simplemodeling.SimpleModeler.entity.AttributeParticipationRole
 import org.simplemodeling.SimpleModeler.entity.CompositionParticipationRole
+import org.simplemodeling.SimpleModeler.entity.SMAttribute
 import org.simplemodeling.SimpleModeler.entity.SMAssociation
+import org.simplemodeling.SimpleModeler.entity.SMPowertypeRelationship
 import org.simplemodeling.SimpleModeler.entity.SMDatatype
 import org.simplemodeling.SimpleModeler.entity.SMEntity
 import org.simplemodeling.SimpleModeler.entity.SMObject
@@ -107,33 +108,66 @@ abstract class GenericClassDefinition(
   def nameName = pobject.nameName
   def getNameName = pobject.getNameName
 
-  lazy val attributeDefinitions: List[ATTR_DEF] = attributes.map(attribute(_)).toList
+  lazy val attributeDefinitions: List[ATTR_DEF] = {
+    val a = attributes.map(attribute(_)).toList
+    _ordering(a)
+  }
   lazy val parentAttributeDefinitions: List[ATTR_DEF] = {
-    baseObject map {
+    val a: List[ATTR_DEF] = baseObject.map(
       _.reference.wholeAttributes.map(attribute).toList
-    } orZero
+    ).orZero
+    _ordering(a)
   }
   lazy val traitsAttributeDefinitions: List[ATTR_DEF] = {
-    mixinTraits flatMap {
+    val a = mixinTraits flatMap {
       _.reference.wholeAttributes.map(attribute)
     }
+    _ordering(a)
   }
   lazy val implementsAttributeDefinitions: List[ATTR_DEF] = {
-    _cleansing(attributeDefinitions ::: traitsAttributeDefinitions)
+    val a = attributeDefinitions ::: traitsAttributeDefinitions
+    _ordering(_cleansing(a))
   }
   lazy val wholeAttributeDefinitions: List[ATTR_DEF] = {
-    _cleansing(parentAttributeDefinitions ::: implementsAttributeDefinitions)
+    val a = parentAttributeDefinitions ::: implementsAttributeDefinitions
+    _ordering(_cleansing(a))
   }
 
+  /**
+   * Use foldLeft to preserve ordering.
+   */
   private def _cleansing(attrs: List[ATTR_DEF]): List[ATTR_DEF] = {
     attrs.foldLeft((nil[ATTR_DEF], Set.empty[String]))((a, x) => {
       if (a._2.contains(x.attr.name)) {
         record_warning("「%s」で属性・関連「%s」の重複があります。", name, x.attr.name)
         a
       } else {
-        (x :: a._1, a._2 + x.attr.name)
+        (a._1 :+ x, a._2 + x.attr.name)
       }
     })._1
+  }
+
+  implicit val orderer = new scala.math.Ordering[ATTR_DEF] {
+    def compare(lhs: ATTR_DEF, rhs: ATTR_DEF) = {
+      _numbering(lhs) compare _numbering(rhs)
+    }
+    private def _numbering(a: ATTR_DEF): Int = {
+      if (a.attr.isId) 1
+      else a.attr.getModelElement match {
+        case Some(s) => s match {
+          case p: SMPowertypeRelationship => 2
+//          case s: SMStateMachineRelationship => 3
+          case a: SMAttribute => 4
+          case a: SMAssociation => 5
+          case _ => 6
+        }
+        case None => 6
+      }
+    }
+  }
+
+  private def _ordering(attrs: List[ATTR_DEF]): List[ATTR_DEF] = {
+    attrs.sorted
   }
 
   lazy val effectiveAttributeDefinitions: List[ATTR_DEF] = {
