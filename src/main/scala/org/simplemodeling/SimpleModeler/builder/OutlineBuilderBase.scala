@@ -62,6 +62,8 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
       _mmx.documentTables.foreach(create_object_table(DocumentKind, _))
       _mmx.values.foreach(_create_value)
       _mmx.valueTables.foreach(create_object_table(ValueKind, _))
+      _mmx.services.foreach(_create_service)
+      _mmx.serviceTables.foreach(create_object_table(ServiceKind, _))
       _mmx.rules.foreach(_create_object(RuleKind, _, _build_rule))
       _mmx.ruleTables.foreach(create_object_table(RuleKind, _))
       _mmx.businessusecases.foreach(_create_object(BusinessUsecaseKind, _, _build_businessusecase))
@@ -111,6 +113,12 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _create_value(source: TopicNode) {
     val name = get_name_by_term(source.title)
     val target = model_Builder.createObject(ValueKind, name)
+    _build_object(source, target)
+  }
+
+  private def _create_service(source: TopicNode) {
+    val name = get_name_by_term(source.title)
+    val target = model_Builder.createObject(ServiceKind, name)
     _build_object(source, target)
   }
 

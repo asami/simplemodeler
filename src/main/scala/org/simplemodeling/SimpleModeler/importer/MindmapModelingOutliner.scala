@@ -122,6 +122,14 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
     _structure_node_thema_boi_tables(ValueLabel)
   }
 
+  def services = {
+    structure_node_children(thema, ServiceLabel)
+  }
+
+  def serviceTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(ServiceLabel)
+  }
+
   def rules = {
     structure_node_children(thema, RuleLabel)
   }
@@ -251,6 +259,14 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def roleTables(term: TopicNode): List[GTable[String]] = {
     _structure_node_tables(term, RoleLabel)
+  }
+
+  def services(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, ServiceLabel)
+  }
+
+  def serviceTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, ServiceLabel)
   }
 
   def states(term: TopicNode): List[TopicNode] = {

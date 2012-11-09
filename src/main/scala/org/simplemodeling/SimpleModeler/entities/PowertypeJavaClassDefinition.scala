@@ -5,7 +5,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPowertype
 /*
  * @since   Feb. 20, 2012
  *  version Feb. 20, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 class PowertypeJavaClassDefinition(
@@ -13,6 +13,7 @@ class PowertypeJavaClassDefinition(
   aspects: Seq[JavaAspect],
   pobject: PObjectEntity
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
+  // XXX: use modelPowertype.isEditable to switch entity powertype or enum powertype.
   if (pobject.hasInheritance) {
     isData = true
     isImmutable = false

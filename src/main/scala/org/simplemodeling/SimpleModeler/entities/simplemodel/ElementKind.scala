@@ -44,6 +44,7 @@ object NameKind extends ElementKind
 object PowertypeKind extends ElementKind
 object DocumentKind extends ElementKind
 object ValueKind extends ElementKind
+object ServiceKind extends ElementKind
 object BusinessUsecaseKind extends ElementKind
 object BusinessTaskKind extends ElementKind
 object UsecaseKind extends ElementKind

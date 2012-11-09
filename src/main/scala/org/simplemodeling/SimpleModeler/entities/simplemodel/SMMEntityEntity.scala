@@ -44,6 +44,7 @@ import org.simplemodeling.dsl.domain.DomainResource
 import org.simplemodeling.dsl.domain.DomainPowertype
 import org.simplemodeling.dsl.domain.DomainRole
 import org.simplemodeling.dsl.domain.DomainRule
+import org.simplemodeling.dsl.domain.DomainService
 import org.simplemodeling.dsl.domain.DomainState
 import org.simplemodeling.dsl.domain.DomainStateMachine
 import org.simplemodeling.dsl.domain.DomainSummary
@@ -918,12 +919,18 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 //        override def isObjectScope = true
         isMasterSingleton = true
       }
+      case ServiceKind    => new DomainService(name, packageName) {
+//        override def isObjectScope = true
+        isMasterSingleton = true
+      }
 /*
-      case StateMachineKind => new DomainStateMachine(name) {
-        override def isObjectScope = true        
+      case StateMachineKind => new DomainStateMachine(name, packageName) {
+//        override def isObjectScope = true        
+        isMasterSingleton = true
       }
       case StateMachineStateKind => new DomainState(name) {
-        override def isObjectScope = true        
+//        override def isObjectScope = true        
+        isMasterSingleton = true
       }
 */
       case BusinessUsecaseKind      => new BusinessUsecase(name, packageName) {
@@ -958,11 +965,12 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case Some(value: DomainValue) => _build_value(value)
       case Some(power: DomainPowertype) => _build_powertype(power, entities)
       case Some(doc: DomainDocument) => _build_document(doc, entities)
+      case Some(srv: DomainService) => _build_service(srv, entities)
+      case Some(dr: DomainRule) => _build_rule(entities, dr)
       case Some(uc: BusinessUsecase) => _build_businessusecase(entities, uc)
       case Some(t: BusinessTask) => _build_businesstask(entities, t)
       case Some(uc: RequirementUsecase) => _build_usecase(entities, uc)
       case Some(t: RequirementTask) => _build_task(entities, t)
-      case Some(dr: DomainRule) => _build_rule(entities, dr)
       case Some(x) => sys.error("buildSObject:" + x)
       case None => sys.error("buildSObject")
     }
@@ -1294,6 +1302,17 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     for (kind <- powertypeKinds) {
       entity.kind(kind)
     }
+  }
+
+  private def _build_service(srv: DomainService, entities: Map[String, SObject]): DomainService = {
+    _build_specifications(srv)
+    _build_base(entities, srv)
+    _build_traits(entities, srv)
+    _build_attributes(srv)
+    _build_associations(srv, entities)
+    _build_aggregations(srv, entities)
+    _build_compositions(srv, entities)
+    srv
   }
 
   private def _build_businessusecase(entities: Map[String, SObject], uc: BusinessUsecase) {
