@@ -27,7 +27,7 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov.  8, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -61,13 +61,13 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     target_context.srcMainDir = srcMainDir
     simpleModel.open()
     target_realm.open()
-    println("SimpleModel2ProgramRealTransform.transform: SimpleModel start")
-    simpleModel.dump()
-    println("SimpleModel2ProgramRealTransform.transform: SimpleModel end")
+    record_debug("SimpleModel2ProgramRealTransform.transform: SimpleModel tree start")
+    simpleModel.dumpDebug()
+    record_debug("SimpleModel2ProgramRealTransform.transform: SimpleModel tree end")
     simpleModel.traverse(make_Builder)
-    println("SimpleModel2ProgramRealTransform.transform: start")
-    target_realm.dump()
-    println("SimpleModel2ProgramRealTransform.transform: end")
+    record_debug("SimpleModel2ProgramRealTransform.transform: Target tree start")
+    target_realm.dumpDebug()
+    record_debug("SimpleModel2ProgramRealTransform.transform: Traget tree end")
     for (phase <- make_Phases) {
       target_realm.traverse(phase)
     }
@@ -563,11 +563,11 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
 
     protected def make_trait_document(modelObject: SMObject): SMDomainTrait = {
-      println("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + modelObject.attributes)
+//      println("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + modelObject.attributes)
       val docname = make_document_name(modelObject)
       val pkgname = modelObject.packageName
       val mo = SMDomainTrait.createDocument(docname, pkgname, modelObject)
-      println("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + mo.attributes)
+      record_trace("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + mo.attributes)
       findObject(docname, pkgname) match {
         case Some(s) => s match {
           case tr: PTraitEntity => ;
@@ -580,7 +580,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           obj.isImmutable = true
           obj.isDocument = mo.isDocument
           build_object_with_name(obj, docname, mo, qname, Nil)
-          println("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + obj.attributes)
+          record_trace("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + obj.attributes)
         }
       }
       mo
@@ -659,7 +659,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       require (obj != null, "store_object: object should be not null: " + obj)
       require (obj.name != null && obj.name.nonEmpty, "store_object: object name should not be empty:" + obj)
       val pathname = make_pathname(obj)
-      println("store_object = " + pathname)
+      record_trace("SimpleModel2ProgramRealmTransformerBase#store_object = " + pathname)
       target_realm.setEntity(pathname, obj)
       obj
     }      

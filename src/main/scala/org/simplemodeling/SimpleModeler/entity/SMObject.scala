@@ -14,7 +14,7 @@ import com.asamioffice.goldenport.text.UPathString
  *  version Feb.  7, 2012
  *  version Apr.  8, 2012
  *  version Oct. 16, 2012
- * @version Nov.  7, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
@@ -232,7 +232,7 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
    * Mutaters
    */
   def importOwnDefinition(s: SMObject) {
-    println("SMObject#importOwnDefinition: " + attributes)
+//    println("SMObject#importOwnDefinition: " + attributes)
     _powertypes ++= s.powertypes
     _attributes ++= s.attributes
     _associations ++= s.associations

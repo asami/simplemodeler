@@ -53,7 +53,7 @@ trait JavaMakerHolder {
   }
 
   protected final def jm_package(name: String) {
-    println("JavaMakerHolder[%s] = %s / %s".format(this, name, _maker))
+//    println("JavaMakerHolder[%s] = %s / %s".format(this, name, _maker))
     require (_maker != null, "_maker should initialized")
     _maker.declarePackage(name)
   }

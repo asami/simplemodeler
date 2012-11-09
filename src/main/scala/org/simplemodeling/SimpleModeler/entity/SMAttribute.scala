@@ -13,7 +13,8 @@ import org.simplemodeling.SimpleModeler.entity.domain.SMDomainValueName
  *  version Oct. 20, 2009
  *  version Dec. 15, 2011
  *  version Apr. 11, 2012
- * @version Oct. 30, 2012
+ *  version Oct. 30, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMAttribute(val dslAttribute: SAttribute) extends SMElement(dslAttribute) {
@@ -21,8 +22,8 @@ class SMAttribute(val dslAttribute: SAttribute) extends SMElement(dslAttribute) 
   val multiplicity = new SMMultiplicity(dslAttribute.multiplicity)
   val constraints = dslAttribute.constraints.map(SMConstraint.apply)
   val deriveExpression: Option[SMExpression] = {
-    println("SMAttribute#deriveExpression: " + dslAttribute.deriveExpression)
     (dslAttribute.deriveExpression != NullExpression) option {
+//      record_trace("SMAttribute#deriveExpression: " + dslAttribute.deriveExpression)
       SMExpression(dslAttribute.deriveExpression)
     }
   }

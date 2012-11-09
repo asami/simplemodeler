@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
  *  version Oct. 26, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -76,11 +76,11 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   def importDslObjects: List[SObject] = {
     build_model
     val objs = model_Builder.dslObjects
-    println("OutlineEntityBase:importDslObjects: %s".format(objs.map(x => {
-      "%s[%s]".format(x.name, x.getAttributes.map(a => {
-        "%s;%s".format(a.name, a.kind)
-      }))
-    })))
+//    println("OutlineEntityBase:importDslObjects: %s".format(objs.map(x => {
+//      "%s[%s]".format(x.name, x.getAttributes.map(a => {
+//        "%s;%s".format(a.name, a.kind)
+//      }))
+//    })))
     objs
   }
 

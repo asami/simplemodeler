@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.importer
 
+import scalaz._, Scalaz._
 import scala.collection.mutable.ArrayBuffer
 import org.goldenport.importer._
 import org.goldenport.service._
@@ -21,7 +22,8 @@ import com.asamioffice.goldenport.text.UString
  *  version Dec. 11, 2011
  *  version Jun. 17, 2012
  *  version Sep. 16, 2012
- * @version Oct. 19, 2012
+ *  version Oct. 19, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
@@ -37,17 +39,22 @@ class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
       request.parameter("import.builder.policy"))
 
   override def execute_Import() {
-    val args = request.arguments.map(reconstitute_entity)
+    val args = request.arguments.flatMap(x => {
+      reconstitute_entity(x) |> none_w("%sは正しいファイルではありません。".format(x))
+    })
     if (!args.isEmpty) {
-      request.setEntity(args(0).get)
-      request.setEntities(args.map(_.get))
+      request.setEntity(args(0))
+      request.setEntities(args)
     }
     //println("import start") 2009-03-01
     val objects = _dsl_objects
-    //println("after get_objects: " + objects)
+    record_trace("ScalaDslImporter DSL objects = " + objects)
+    if (objects.isEmpty && request.arguments.isEmpty) {
+      throw new IllegalArgumentException("ファイルが指定されていません。")
+    }
     val ds = new SObjectDataSource(entityContext)(objects: _*)
     val sm = new SimpleModelEntity(ds, entityContext)
-    for (o <- args.headOption; en <- o) {
+    for (en <- args.headOption) {
       val s = UPathString.getLastComponentBody(en.name)
       if (UString.notNull(s)) {
         sm.name = s + ".sm"

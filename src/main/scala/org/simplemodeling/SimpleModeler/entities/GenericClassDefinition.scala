@@ -43,7 +43,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov.  8, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -154,7 +154,7 @@ abstract class GenericClassDefinition(
    * Used by JavaClassDefinition to collect constructor parameters.
    */
   protected def not_derived_implements_attribute_definitions = {
-    println("GenericClassAttributeDefinition#not_derived_implements_attribute_definitions(%s): %s".format(name, implementsAttributeDefinitions.map(_.attr.name)))
+    record_trace("GenericClassDefinition#not_derived_implements_attribute_definitions(%s): %s".format(name, implementsAttributeDefinitions.map(_.attr.name)))
     if (useDerivedAttribute) 
       implementsAttributeDefinitions.filterNot(_.isDerive)
     else

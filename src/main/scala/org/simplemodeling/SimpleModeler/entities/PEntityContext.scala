@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
- * @version Nov.  7, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -37,10 +37,10 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   def setModel(m: SimpleModelEntity) {
     require (m != null, "model should not be null.")
     assert (_model.isEmpty, "model should not be setted.")
-    println("PEntityContext: start")
+    record_trace("PEntityContext: start")
     m.open()
-    m.dump()
-    println("PEntityContext: end")
+    m.dumpTrace()
+    record_trace("PEntityContext: end")
     _model = Some(m)
   }
 

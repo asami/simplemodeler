@@ -18,7 +18,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov.  8, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -173,7 +173,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   lazy val wholeAttributes: List[PAttribute] = {
 //    println("PObjectEntity#wholeAttributes(%s, %s): %s".format(name, _baseObject, _mixinTraits.map(_.reference.wholeAttributes.map(_.name))))
     val a = whole_attributes(Set.empty)
-    println("PObjectEntity#wholeAttributes(%s): %s".format(name, a._1.map(_.name)))
+//    println("PObjectEntity#wholeAttributes(%s): %s".format(name, a._1.map(_.name)))
     val b = a._1.foldLeft((nil[PAttribute], Set.empty[String]))((a, x) => {
       if (a._2.contains(x.name)) {
         record_warning("「%s」で属性・関連「%s」の重複があります。", name, x.name)
@@ -182,7 +182,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
         (x :: a._1, a._2 + x.name)
       }
     })
-    println("PObjectEntity#wholeAttributes2(%s, %s): %s".format(name, b._2, b._1.map(_.name)))
+    record_trace("PObjectEntity#wholeAttributes(%s, %s): %s".format(name, b._2, b._1.map(_.name)))
     b._1
 //    (Option(_baseObject).orEmpty[List] ::: _mixinTraits.toList).flatMap(
 //      _.reference.wholeAttributes

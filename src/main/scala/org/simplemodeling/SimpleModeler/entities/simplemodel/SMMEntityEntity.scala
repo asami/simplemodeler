@@ -80,7 +80,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -89,6 +89,8 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  */
 class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) with SMMElement {
   type DataSource_TYPE = GDataSource
+
+//  implicit def show_sobject(a: List[SObject]) = a.toString
 
   /**
    * SimpleModelDslBuilder turn on the variable after resolving.
@@ -362,7 +364,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   final def compositionOwn(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
 //    println("SMMEntityEntity#compositionOwn: %s %s %s".format(aName, anObject.name, name))
-    println(anObject.attributes)
+//    println(anObject.attributes)
     privateObjects += anObject
     composition(aName, anObject)
   }
@@ -850,7 +852,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case Some(s) => Some(s)
       case None => Some(_create_object())
     }
-    _sobject.get :: privateObjects.toList.flatMap(_.createSObjects())
+    dor_d("SMMEntityEntity#createSObjects(%s)", name) {
+      _sobject.get :: privateObjects.toList.flatMap(_.createSObjects())
+    }
   }
 
   private def _create_object(): SObject = {
@@ -993,13 +997,13 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_base(entities: Map[String, SObject], entity: SObject) {
     if (base != NullEntityEntity) {
-      do_w(_entity_ref(base.name, entities))(entity.base)
+      doe_w(_entity_ref(base.name, entities))(entity.base)
     }
   }
 
   private def _build_traits(entities: Map[String, SObject], entity: SObject) {
     for (tr <- traits) {
-      do_w(_entity_ref(tr.name, entities))(_ match {
+      doe_w(_entity_ref(tr.name, entities))(_ match {
         case dtrait: DomainTrait => entity.mixinTrait(dtrait)
         case entity => record_warning("%sはトレイト(特色)ではありません。", entity.name)
       })
@@ -1008,7 +1012,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_powertypes(entities: Map[String, SObject], entity: SObject) {
     for (power <- powertypes) {
-      do_w(_powertype_ref(power.powertypeType.name, entities))(p => {
+      doe_w(_powertype_ref(power.powertypeType.name, entities))(p => {
         entity.powertype(power.name, p, _dsl_multiplicity(power.multiplicity))
       })
     }
@@ -1016,7 +1020,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_roles(entities: Map[String, SObject], entity: SObject) {
     for (role <- roles) {
-      do_w(_role_ref(role.associationType.getName, entities))(r => {
+      doe_w(_role_ref(role.associationType.getName, entities))(r => {
         entity.role(role.name, r, _dsl_multiplicity(role.multiplicity))
       })
     }
@@ -1035,7 +1039,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
           /*
            * SimpleModel2JavaRealmTransformerBase converts SMAttributeType to PObjectType.
            */
-          println("SMMEntityEntity#_build_attributes(%s, %s)".format(a.name, a.attributeType.name))
+//          println("SMMEntityEntity#_build_attributes(%s, %s)".format(a.name, a.attributeType.name))
         }
       }
     }
@@ -1149,8 +1153,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_associations(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- associations) {
-      do_w(_entity_ref(assoc.associationType.getName, entities)) {
-        println("SMMEntityEntity#_build_associations: " + assoc.name)
+      doe_w(_entity_ref(assoc.associationType.getName, entities)) {
+        record_trace("SMMEntityEntity#_build_associations: " + assoc.name)
         entity.association(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
       }
     }
@@ -1158,8 +1162,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_aggregations(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- aggregations) {
-      do_w(_entity_ref(assoc.associationType.getName, entities)) {
-        println("SMMEntityEntity#_build_aggregations: " + assoc.name)
+      doe_w(_entity_ref(assoc.associationType.getName, entities)) {
+        record_trace("SMMEntityEntity#_build_aggregations: " + assoc.name)
         entity.aggregation(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
       }
     }
@@ -1167,8 +1171,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_compositions(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- compositions) {
-      do_w(_entity_ref(assoc.associationType.getName, entities)) {
-        println("SMMEntityEntity#_build_compositions: " + assoc.name)
+      doe_w(_entity_ref(assoc.associationType.getName, entities)) {
+        record_trace("SMMEntityEntity#_build_compositions: " + assoc.name)
         entity.composition(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
       }
     }
@@ -1322,13 +1326,13 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _describe_association(entities: Map[String, SObject], set: (String, SEntity, SMultiplicity) => SAssociation, assoc: SMMAssociation) {
-    do_w(_entity_ref(assoc.associationType.getName, entities)) { 
+    doe_w(_entity_ref(assoc.associationType.getName, entities)) { 
       set(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
     }
   }
 
   private def _describe_event_issue(entities: Map[String, SObject], uc: SStoryObject, step: SMMAssociation) {
-    do_w(_entity_ref(step.associationType.getName, entities)) {
+    doe_w(_entity_ref(step.associationType.getName, entities)) {
       case event: DomainEvent => uc.event_issue(event)()
       case story: BusinessUsecase => uc.include_business_usecase(story)
       case story: RequirementUsecase => uc.include_requirement_usecase(story)

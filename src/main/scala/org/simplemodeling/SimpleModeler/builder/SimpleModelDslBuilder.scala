@@ -18,7 +18,7 @@ import org.goldenport.recorder.Recordable
  *  version Feb.  8, 2012
  *  version Sep. 29, 2012
  *  version Oct. 21, 2012
- * @version Nov.  6, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -40,13 +40,13 @@ class SimpleModelDslBuilder(
 
   def dslObjects: List[SObject] = {
     import org.simplemodeling.dsl.domain._
-    println("dslObjects = " + entities)
+//    println("dslObjects = " + entities)
     _resolve_entities()
     _adjust_entities()
     val entitylist = entities.values.toList 
-    println("dslObjects = " + entities)
+//    record_trace("SimpleModelDslBuilder#dslObjects = " + entities)
     val objs: List[SObject] = entitylist.flatMap(_.createSObjects)
-    println("SimpleModelDslBuilder# names: %s".format(objs.map(x => x.name + "/" + x)))
+    record_debug("SimpleModelDslBuilder# names: %s".format(objs.map(x => x.name + "/" + x)))
     val names = objs.map(_.name)
     val sentities: List[SObject] = objs collect {
       case e: SEntity => e // include STrait
@@ -164,7 +164,7 @@ class SimpleModelDslBuilder(
    * Resolve
    */
   private def _resolve_entities() {
-    println("_resolve_entities: " + entities.values.map(_.name))
+    record_debug("SimpleModelDslBuilder#_resolve_entities: " + entities.values.map(_.name))
     entities.values.foreach(_resolve_entity)
   }
 
@@ -190,22 +190,22 @@ class SimpleModelDslBuilder(
     }
     for (term <- entity.narrativeParts) { // TODO 
       val (name, target, multiplicity) = get_association_by_term(term)
-      println("SimpleModelDslBuilder#_resolve_entity parts(%s): %s".format(entity.name, name))
+      record_trace("SimpleModelDslBuilder#_resolve_entity parts(%s): %s".format(entity.name, name))
       entity.aggregation(name, target) multiplicity_is multiplicity
     }
     for (term <- entity.narrativeCompositions) {
       val (name, target, multiplicity) = get_association_by_term(term)
-      println("SimpleModelDslBuilder#_resolve_entity composition(%s): %s".format(entity.name, name))
+      record_trace("SimpleModelDslBuilder#_resolve_entity composition(%s): %s".format(entity.name, name))
       entity.composition(name, target) multiplicity_is multiplicity
     }
     for (term <- entity.narrativeAggregations) {
       val (name, target, multiplicity) = get_association_by_term(term)
-      println("SimpleModelDslBuilder#_resolve_entity aggregation(%s): %s".format(entity.name, name))
+      record_trace("SimpleModelDslBuilder#_resolve_entity aggregation(%s): %s".format(entity.name, name))
       entity.aggregation(name, target) multiplicity_is multiplicity
     }
     for (term <- entity.narrativeAssociations) {
       val (name, target, multiplicity) = get_association_by_term(term)
-      println("SimpleModelDslBuilder#_resolve_entity association(%s): %s".format(entity.name, name))
+      record_trace("SimpleModelDslBuilder#_resolve_entity association(%s): %s".format(entity.name, name))
       entity.association(name, target) multiplicity_is multiplicity
     }
     for (term <- entity.narrativeStateTransitions) {
@@ -223,7 +223,7 @@ class SimpleModelDslBuilder(
 /*
     for (term <- entity.narrativeBusinessUsecases) {
       val (name, target) = get_businessusecase_by_term(term)
-      println("SimpleModelDslBuilder#_resolve_entity business usecase(%s): %s".format(entity.name, name))
+      record_trace("SimpleModelDslBuilder#_resolve_entity business usecase(%s): %s".format(entity.name, name))
       entity.aggregation(name, target)
     }
 */
@@ -255,31 +255,31 @@ class SimpleModelDslBuilder(
       val mul = get_multiplicity_by_term(term)
       entity.compositionOwn(name, part) multiplicity_is mul
     }
-    println("SimpleModelDslBuilder#narrativeOwnBusinessusecases: " + entity.narrativeOwnBusinessUsecases)
+    record_trace("SimpleModelDslBuilder#narrativeOwnBusinessusecases: " + entity.narrativeOwnBusinessUsecases)
     for ((term, part) <- entity.narrativeOwnBusinessUsecases) {
-      println("SimpleModelDslBuilder#narrativeOwnBusinessusecases: " + term)
+      record_trace("SimpleModelDslBuilder#narrativeOwnBusinessusecases: " + term)
       val name = get_name_by_term(term)
       entity.compositionOwn(name, part)
     }
-    println("SimpleModelDslBuilder#narrativeOwnBusinesstasks: " + entity.narrativeOwnBusinessTasks)
+    record_trace("SimpleModelDslBuilder#narrativeOwnBusinesstasks: " + entity.narrativeOwnBusinessTasks)
     for ((term, part) <- entity.narrativeOwnBusinessTasks) {
-      println("SimpleModelDslBuilder#narrativeOwnBusinesstasks: " + term)
+      record_trace("SimpleModelDslBuilder#narrativeOwnBusinesstasks: " + term)
       val name = get_name_by_term(term)
       entity.compositionOwn(name, part)
     }
-    println("SimpleModelDslBuilder#narrativeOwnUsecases: " + entity.narrativeOwnUsecases)
+    record_trace("SimpleModelDslBuilder#narrativeOwnUsecases: " + entity.narrativeOwnUsecases)
     for ((term, part) <- entity.narrativeOwnUsecases) {
-      println("SimpleModelDslBuilder#narrativeOwnUsecases: " + term)
+      record_trace("SimpleModelDslBuilder#narrativeOwnUsecases: " + term)
       val name = get_name_by_term(term)
       entity.compositionOwn(name, part)
     }
-    println("SimpleModelDslBuilder#narrativeOwnTasks: " + entity.narrativeOwnTasks)
+    record_trace("SimpleModelDslBuilder#narrativeOwnTasks: " + entity.narrativeOwnTasks)
     for ((term, part) <- entity.narrativeOwnTasks) {
-      println("SimpleModelDslBuilder#narrativeOwnTasks: " + term)
+      record_trace("SimpleModelDslBuilder#narrativeOwnTasks: " + term)
       val name = get_name_by_term(term)
       entity.compositionOwn(name, part)
     }
-    println("SimpleModelDslBuilder#privateObjects: " + entity.privateObjects.map(_.name))
+    record_trace("SimpleModelDslBuilder#privateObjects: " + entity.privateObjects.map(_.name))
     entity.privateObjects.foreach(_resolve_entity)
     entity.isResolved = true
   }
@@ -306,7 +306,7 @@ class SimpleModelDslBuilder(
     get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
 //      record_warning("Term is not found: %s, creates a resource entity implicitly.", aTerm)
       record_warning("用語「%s」の定義が見つからなかったのでリソース(道具)を自動で作成します。", aTerm)
-//      println("get_entity_by_term(%s): %s".format(aTerm, entities.values.map(x => x.name + "/" + x.term )))
+//      record_trace("get_entity_by_term(%s): %s".format(aTerm, entities.values.map(x => x.name + "/" + x.term )))
       val entity = createObject(ResourceKind, aTerm)
       _resolve_entity(entity)
       entity
@@ -404,7 +404,7 @@ class SimpleModelDslBuilder(
   def get_statemachine_by_term(aTerm: String): (String, SMMStateMachineType, GRMultiplicity) = {
     val name = get_name_by_term(aTerm)
     val states = get_labels_by_term(aTerm)
-    //	  println("statemachine = " + aTerm + ", states = " + states) 2009-02-26
+    //	  record_trace("statemachine = " + aTerm + ", states = " + states) 2009-02-26
     val mutiplicity = get_multiplicity_by_term(aTerm)
     val statemachine = new SMMStateMachineType(_naming_strategy.makeName(name, StateMachineKind), packageName)
     statemachine.term = name

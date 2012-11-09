@@ -155,7 +155,7 @@ class JavaClassDefinition(
         jm_pln("super(o);")
       }
       for (a <- not_derived_implements_attribute_definitions) {
-        println("JavaClassDefinition#constructors_copy_constructor(%s): %s".format(name, a.attr.name))
+        record_trace("JavaClassDefinition#constructors_copy_constructor(%s): %s".format(name, a.attr.name))
         if (aspects.find(_.weaveCopyConstructorAttributeBlock(a.attr, a.varName, "o")).isDefined) {}
         else jm_assign_this(a.varName, "o." + a.varName)
       }
