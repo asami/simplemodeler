@@ -5,7 +5,7 @@ package org.simplemodeling.SimpleModeler.entities.simplemodel
  *  version Dec.  8, 2011
  *  version Jan. 24, 2012
  *  version Oct. 15, 2012
- * @version Nov.  4, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 sealed abstract class ElementKind {
@@ -42,6 +42,8 @@ object RuleKind extends ElementKind
 object IdKind extends ElementKind
 object NameKind extends ElementKind
 object PowertypeKind extends ElementKind
+object DocumentKind extends ElementKind
+object ValueKind extends ElementKind
 object BusinessUsecaseKind extends ElementKind
 object BusinessTaskKind extends ElementKind
 object UsecaseKind extends ElementKind

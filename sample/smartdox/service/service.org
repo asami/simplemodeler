@@ -101,5 +101,5 @@ IDは、特性欄で指定しています。
 
 * Service
 
-** perchase
+** purchase
 

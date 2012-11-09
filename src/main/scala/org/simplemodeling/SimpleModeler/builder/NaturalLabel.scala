@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
- * @version Nov.  4, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -108,6 +108,14 @@ case object ObjecttypeLabel extends NaturalLabel {
 
 case object PowertypeLabel extends NaturalLabel {
   val candidates = List("powertype", "powers", "パワータイプ", "区分")
+}
+
+case object DocumentLabel extends NaturalLabel {
+  val candidates = List("document", "ドキュメント", "文書")
+}
+
+case object ValueLabel extends NaturalLabel {
+  val candidates = List("value", "バリュー", "値")
 }
 
 case object StateLabel extends NaturalLabel {
@@ -293,6 +301,8 @@ object NaturalLabel {
     RoleLabel,
     SummaryLabel,
     PowertypeLabel,
+    DocumentLabel,
+    ValueLabel,
     StateLabel,
     StatemachineLabel,
     RuleLabel,

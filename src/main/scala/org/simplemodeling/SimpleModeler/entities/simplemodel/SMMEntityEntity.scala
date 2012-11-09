@@ -35,6 +35,7 @@ import org.simplemodeling.dsl.business.BusinessActor
 import org.simplemodeling.dsl.business.BusinessResource
 import org.simplemodeling.dsl.business.BusinessEvent
 import org.simplemodeling.dsl.domain.DomainActor
+import org.simplemodeling.dsl.domain.DomainDocument
 import org.simplemodeling.dsl.domain.DomainEntity
 import org.simplemodeling.dsl.domain.DomainEntityPart
 import org.simplemodeling.dsl.domain.DomainTrait
@@ -913,6 +914,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 //        override def isObjectScope = true
         isMasterSingleton = true
       }
+      case DocumentKind    => new DomainDocument(name, packageName) {
+//        override def isObjectScope = true
+        isMasterSingleton = true
+      }
 /*
       case StateMachineKind => new DomainStateMachine(name) {
         override def isObjectScope = true        
@@ -952,6 +957,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case Some(entity: DomainEntity) => _build_entity(entity, entities)
       case Some(value: DomainValue) => _build_value(value)
       case Some(power: DomainPowertype) => _build_powertype(power, entities)
+      case Some(doc: DomainDocument) => _build_document(doc, entities)
       case Some(uc: BusinessUsecase) => _build_businessusecase(entities, uc)
       case Some(t: BusinessTask) => _build_businesstask(entities, t)
       case Some(uc: RequirementUsecase) => _build_usecase(entities, uc)
@@ -1259,6 +1265,17 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 //    _build_roles(value)
     _build_attributes(value)
     value
+  }
+
+  private def _build_document(doc: DomainDocument, entities: Map[String, SObject]): DomainDocument = {
+    _build_specifications(doc)
+    _build_base(entities, doc)
+    _build_traits(entities, doc)
+    _build_attributes(doc)
+    _build_associations(doc, entities)
+    _build_aggregations(doc, entities)
+    _build_compositions(doc, entities)
+    doc
   }
 
   private def _build_powertype(power: DomainPowertype, entities: Map[String, SObject]): DomainPowertype = {

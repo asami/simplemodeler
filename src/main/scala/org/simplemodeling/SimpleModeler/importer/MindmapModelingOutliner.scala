@@ -16,7 +16,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
  *  version Oct. 21, 2012
- * @version Nov.  4, 2012
+ * @version Nov.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -104,6 +104,22 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def powertypeTables: List[GTable[String]] = {
     _structure_node_thema_boi_tables(PowertypeLabel)
+  }
+
+  def documents = {
+    structure_node_children(thema, DocumentLabel)
+  }
+
+  def documentTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(DocumentLabel)
+  }
+
+  def values = {
+    structure_node_children(thema, ValueLabel)
+  }
+
+  def valueTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(ValueLabel)
   }
 
   def rules = {
@@ -211,6 +227,22 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def powertypeTables(term: TopicNode): List[GTable[String]] = {
     _structure_node_tables(term, PowertypeLabel)
+  }
+
+  def documents(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, DocumentLabel)
+  }
+
+  def documentTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, DocumentLabel)
+  }
+
+  def values(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, ValueLabel)
+  }
+
+  def valueTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, ValueLabel)
   }
 
   def roles(term: TopicNode): List[TopicNode] = {

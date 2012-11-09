@@ -58,6 +58,10 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
       _mmx.roleTables.foreach(create_object_table(RoleKind, _))
       _mmx.powertypes.foreach(_create_powertype)
       _mmx.powertypeTables.foreach(create_object_table(PowertypeKind, _))
+      _mmx.documents.foreach(_create_document)
+      _mmx.documentTables.foreach(create_object_table(DocumentKind, _))
+      _mmx.values.foreach(_create_value)
+      _mmx.valueTables.foreach(create_object_table(ValueKind, _))
       _mmx.rules.foreach(_create_object(RuleKind, _, _build_rule))
       _mmx.ruleTables.foreach(create_object_table(RuleKind, _))
       _mmx.businessusecases.foreach(_create_object(BusinessUsecaseKind, _, _build_businessusecase))
@@ -95,6 +99,18 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _create_powertype(source: TopicNode) {
     val name = get_name_by_term(source.title)
     val target = model_Builder.createObject(PowertypeKind, name)
+    _build_object(source, target)
+  }
+
+  private def _create_document(source: TopicNode) {
+    val name = get_name_by_term(source.title)
+    val target = model_Builder.createObject(DocumentKind, name)
+    _build_object(source, target)
+  }
+
+  private def _create_value(source: TopicNode) {
+    val name = get_name_by_term(source.title)
+    val target = model_Builder.createObject(ValueKind, name)
     _build_object(source, target)
   }
 
