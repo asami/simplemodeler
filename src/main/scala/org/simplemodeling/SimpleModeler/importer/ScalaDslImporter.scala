@@ -49,8 +49,8 @@ class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
     //println("import start") 2009-03-01
     val objects = _dsl_objects
     record_trace("ScalaDslImporter DSL objects = " + objects)
-    if (objects.isEmpty && request.arguments.isEmpty) {
-      throw new IllegalArgumentException("ファイルが指定されていません。")
+    if (objects.isEmpty && args.isEmpty) {
+      throw new IllegalArgumentException("モデルが指定されていません。")
     }
     val ds = new SObjectDataSource(entityContext)(objects: _*)
     val sm = new SimpleModelEntity(ds, entityContext)
