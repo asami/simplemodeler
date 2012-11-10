@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.entity._
 
 /*
  * @since   Nov.  8, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 11, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaCodeUtils {
@@ -191,6 +191,27 @@ trait JavaCodeUtils {
       jm_for("String value: values") {
         jm_pln("build_xml_element(name, value, buf);")
       }
+    }
+  }
+
+  /*
+   * Service
+   */
+  protected final def code_try_ok_failure[T](f: => T) {
+    jm_try {
+      jm_return("Response.ok()")
+    }
+    jm_catch_end("Exception e") {
+      jm_return("Response.failure(e)")
+    }
+  }
+
+  protected final def code_try_return_failure(s: String, args: Any*) {
+    jm_try {
+      jm_return("Response.ok(%s)", s.format(args: _*))
+    }
+    jm_catch_end("Exception e") {
+      jm_return("Response.failure(e)")
     }
   }
 }

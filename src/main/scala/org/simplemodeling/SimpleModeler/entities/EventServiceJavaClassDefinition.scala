@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov. 10, 2012
- * @version Nov. 10, 2012
+ * @version Nov. 11, 2012
  * @author  ASAMI, Tomoharu
  */
 class EventServiceJavaClassDefinition(
@@ -17,7 +17,9 @@ class EventServiceJavaClassDefinition(
   useDocument = false
 
   override protected def head_imports_Extension {
-    jm_import("java.io.IOException")
+    jm_import("org.simplemodeling.SimpleModeler.runtime.*")
+    jm_import("org.simplemodeling.SimpleModeler.runtime.Request.*")
+    jm_import("org.simplemodeling.SimpleModeler.runtime.Response.*")
     head_imports_Inject_Inject
   }
 
@@ -54,39 +56,31 @@ protected %repository% repository;
   }
 
   override protected def package_methods_platform_Entity(entity: PEntityEntity) {
+    if (!entity.isEvent) return
     val classname = entity.name;
     val docname = entity.documentName
     val cursor = "Cursor<%s>".format(classname)
     val query = "Query"
-    val idtype = "long"
-    jm_public_method("void create%s(%s data) throws IOException", classname, docname) {
-      jm_pln("repository.create%s(data);", classname)
+    val idtype = entity.idAttr.typeName
+    jm_public_method("Response<Void> issue%s(Request<%s> data)", classname, docname) {
+      code_try_ok_failure {
+        jm_pln("repository.create%s(data.value);", classname)
+      }
     }
-    jm_public_method("%s get%s(%s id) throws IOException", docname, classname, idtype) {
-      jm_return("repository.get%s(id)", classname)
+    jm_public_method("Response<Void> issue%s(%s data)", classname, docname) {
+      code_try_ok_failure {
+        jm_pln("repository.create%s(data);", classname)
+      }
     }
-/*
-    jm_public_method("%s query%s(%s query) throws IOException", cursor, classname, query) {
-      jm_UnsupportedOperationException
+    jm_public_method("Response<%s> issueId%s(Request<%s> data)", idtype, classname, docname) {
+      code_try_ok_failure {
+        jm_pln("repository.createId%s(data.value);", classname)
+      }
     }
-    jm_public_method("%s query%s(String query) throws IOException", cursor, classname) {
-      jm_UnsupportedOperationException
-    }
-*/
-    jm_public_method("void update%s(%s data) throws IOException", classname, docname) {
-      jm_pln("repository.update%s(data);", classname)
-    }
-    jm_public_method("void update%s(String data) throws IOException", classname) {
-      jm_pln("repository.update%s(data);", classname)
-    }
-    jm_public_method("void update%s(String[] data) throws IOException", classname) {
-      jm_pln("repository.update%s(data);", classname)
-    }
-    jm_public_method("void update%s(Map<String, Object> data) throws IOException", classname) {
-      jm_pln("repository.update%s(data);", classname)
-    }
-    jm_public_method("void delete%s(%s id) throws IOException", classname, idtype) {
-      jm_pln("repository.delete%s(id);", classname)
+    jm_public_method("Response<%s> issueId%s(%s data)", idtype, classname, docname) {
+      code_try_ok_failure {
+        jm_pln("repository.createId%s(data);", classname)
+      }
     }
   }
 
