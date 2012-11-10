@@ -65,6 +65,11 @@ protected %repository% repository;
         jm_pln("repository.create%s(data.value);", classname)
       }
     }
+    jm_public_method("Response<Void> createTx%s(Request<%s> data)", classname, docname) {
+      code_try_ok_failure {
+        jm_pln("repository.createTx%s(data.value, data.transaction);", classname)
+      }
+    }
     jm_public_method("Response<Void> create%s(%s data)", classname, docname) {
       code_try_ok_failure {
         jm_pln("repository.create%s(data);", classname)
