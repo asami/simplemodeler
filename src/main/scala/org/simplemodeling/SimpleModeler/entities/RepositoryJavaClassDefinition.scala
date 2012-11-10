@@ -20,6 +20,7 @@ class RepositoryJavaClassDefinition(
 
   override protected def head_imports_Extension {
     jm_import("java.io.IOException")
+    jm_import("org.simplemodeling.SimpleModeler.runtime.*")
     head_imports_Inject_Inject
   }
 
@@ -59,23 +60,41 @@ protected %context% context;
     val cursor = "Cursor<%s>".format(classname)
     val query = "Query"
     jm_public_method("void create%s(%s data) throws IOException", classname, classname) {
+      jm_pln("create%s(data, null);", classname)
+    }
+    jm_public_method("void create%s(%s data, ITransactionContext tx) throws IOException", classname, classname) {
       jm_UnsupportedOperationException
     }
     jm_public_method("void create%s(%s data) throws IOException", classname, docname) {
       jm_pln("create%s(new %s(data));".format(classname, classname))
+    }
+    jm_public_method("void create%s(%s data, ITransactionContext tx) throws IOException", classname, docname) {
+      jm_pln("create%s(new %s(data), tx);".format(classname, classname))
     }
     for (id <- entity.idAttrOption) {
       val idtype = id.typeName
       jm_public_method("%s createId%s(%s data) throws IOException", idtype, classname, classname) {
         jm_UnsupportedOperationException
       }
+      jm_public_method("%s createId%s(%s data, ITransactionContext tx) throws IOException", idtype, classname, classname) {
+        jm_UnsupportedOperationException
+      }
       jm_public_method("%s createId%s(%s data) throws IOException", idtype, classname, docname) {
+        jm_return("createId%s(new %s(data))".format(classname, classname))
+      }
+      jm_public_method("%s createId%s(%s data, ITransactionContext tx) throws IOException", idtype, classname, docname) {
         jm_return("createId%s(new %s(data))".format(classname, classname))
       }
       jm_public_method("%s get%s(%s id) throws IOException", classname, classname, idtype) {
         jm_UnsupportedOperationException
       }
+      jm_public_method("%s get%s(%s id, ITransactionContext tx) throws IOException", classname, classname, idtype) {
+        jm_UnsupportedOperationException
+      }
       jm_public_method("%s get%sDocument(%s id) throws IOException", docname, classname, idtype) {
+        jm_get_return_expr_or_null(classname, "get%s(id)".format(classname))("%s.make_document()")
+      }
+      jm_public_method("%s get%sDocument(%s id, ITransactionContext tx) throws IOException", docname, classname, idtype) {
         jm_get_return_expr_or_null(classname, "get%s(id)".format(classname))("%s.make_document()")
       }
     }
@@ -90,7 +109,13 @@ protected %context% context;
     jm_public_method("void update%s(%s data) throws IOException", classname, classname) {
       jm_UnsupportedOperationException
     }
+    jm_public_method("void update%s(%s data, ITransactionContext tx) throws IOException", classname, classname) {
+      jm_UnsupportedOperationException
+    }
     jm_public_method("void update%s(%s data) throws IOException", classname, docname) {
+      jm_pln("update%s(new %s(data));".format(classname, classname))
+    }
+    jm_public_method("void update%s(%s data, ITransactionContext tx) throws IOException", classname, docname) {
       jm_pln("update%s(new %s(data));".format(classname, classname))
     }
     jm_public_method("void update%s(String data) throws IOException", classname) {
@@ -102,9 +127,15 @@ protected %context% context;
     jm_public_method("void update%s(Map<String, Object> data) throws IOException", classname) {
       jm_UnsupportedOperationException
     }
+    jm_public_method("void update%s(Map<String, Object> data, ITransactionContext tx) throws IOException", classname) {
+      jm_UnsupportedOperationException
+    }
     for (id <- entity.idAttrOption) {
       val idtype = id.typeName
       jm_public_method("void delete%s(%s id) throws IOException", classname, idtype) {
+        jm_UnsupportedOperationException
+      }
+      jm_public_method("void delete%s(%s id, ITransactionContext tx) throws IOException", classname, idtype) {
         jm_UnsupportedOperationException
       }
     }
