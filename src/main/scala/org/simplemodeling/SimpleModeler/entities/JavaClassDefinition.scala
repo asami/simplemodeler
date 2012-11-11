@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
  *  version Oct. 30, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -20,6 +20,7 @@ class JavaClassDefinition(
   maker: JavaMaker = null
 ) extends GenericClassDefinition(pContext, aspects, pobject) with JavaMakerHolder with JavaClassCodeUtils {
   type ATTR_DEF = JavaClassAttributeDefinition
+  type OP_DEF = JavaClassOperationDefinition
 
   /**
    * References to entity are converted to documents of entity.
@@ -41,6 +42,10 @@ class JavaClassDefinition(
 
   override protected def attribute(attr: PAttribute): ATTR_DEF = {
     new JavaClassAttributeDefinition(pContext, aspects, attr, this, jm_maker)
+  }
+
+  override protected def operation(op: POperation): OP_DEF = {
+    new JavaClassOperationDefinition(pContext, aspects, op, this, jm_maker)
   }
 
   override protected def pln() {
@@ -278,6 +283,10 @@ class JavaClassDefinition(
     }
   }
 */
+
+  /*
+   * operation
+   */
 
   /*
    * to_methods

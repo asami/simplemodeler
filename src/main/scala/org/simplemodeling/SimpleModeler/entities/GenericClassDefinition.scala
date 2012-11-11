@@ -44,7 +44,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov. 10, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -53,6 +53,7 @@ abstract class GenericClassDefinition(
   val pobject: PObjectEntity
 ) extends Recordable {
   type ATTR_DEF <: GenericClassAttributeDefinition
+  type OP_DEF <: GenericClassOperationDefinition
 
   def name: String = customName getOrElse pobject.name
   val packageName = pobject.packageName
@@ -110,8 +111,11 @@ abstract class GenericClassDefinition(
   def nameName = pobject.nameName
   def getNameName = pobject.getNameName
 
+  /*
+   * Attributes info
+   */
   lazy val attributeDefinitions: List[ATTR_DEF] = {
-    val a = attributes.map(attribute(_)).toList
+    val a = attributes.map(attribute).toList
     _ordering(a)
   }
   lazy val parentAttributeDefinitions: List[ATTR_DEF] = {
@@ -209,6 +213,30 @@ abstract class GenericClassDefinition(
       parentAttributeDefinitions.filterNot(_.isDerive)
     else
       parentAttributeDefinitions
+  }
+
+  /*
+   * operation info
+   */
+  lazy val operationDefinitions: List[OP_DEF] = {
+    val a = operations.map(operation).toList
+    _ordering_operation(a)
+  }
+
+  lazy val traitsOperationDefinitions: List[OP_DEF] = {
+    val a = mixinTraits flatMap {
+      _.reference.wholeOperations.map(operation)
+    }
+    _ordering_operation(a)
+  }
+
+  lazy val implementsOperationDefinitions: List[OP_DEF] = {
+    val a = operationDefinitions ::: traitsOperationDefinitions
+    _ordering_operation(a)
+  }
+
+  private def _ordering_operation(ops: List[OP_DEF]): List[OP_DEF] = {
+    ops
   }
 
   //
@@ -416,6 +444,11 @@ abstract class GenericClassDefinition(
   }
 
   protected def attribute_variables_Epilogue {}
+
+  /*
+   * Operation
+   */
+  protected def operation(op: POperation): OP_DEF = NullClassOperationDefinition.asInstanceOf[OP_DEF]
 
   /*
    * Package (module) scope variables compartment
@@ -667,6 +700,9 @@ abstract class GenericClassDefinition(
    * Service methods
    */
   protected def service_methods {
+    for (op <- implementsOperationDefinitions) {
+      op.method
+    }
   }
 
   /*

@@ -18,7 +18,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov. 11, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -217,6 +217,32 @@ abstract class PObjectEntity(val pContext: PEntityContext)
 
   def wholeAttributesWithoutId: List[PAttribute] = {
     wholeAttributes.filter(!_.isId)
+  }
+
+  lazy val wholeOperations: List[POperation] = {
+//    println("PObjectEntity#wholeOperations(%s, %s): %s".format(name, _baseObject, _mixinTraits.map(_.reference.wholeOperations.map(_.name))))
+    val a = whole_operations(Set.empty)
+//    println("PObjectEntity#wholeOperations(%s): %s".format(name, a._1.map(_.name)))
+    val b = a._1.foldLeft((nil[POperation], Set.empty[String]))((a, x) => {
+      if (a._2.contains(x.name)) {
+        record_warning("「%s」で属性・関連「%s」の重複があります。", name, x.name)
+        a
+      } else {
+        (x :: a._1, a._2 + x.name)
+      }
+    })
+    record_trace("PObjectEntity#wholeOperations(%s, %s): %s".format(name, b._2, b._1.map(_.name)))
+    b._1
+  }
+
+  def whole_operations(used: Set[String]): (List[POperation], Set[String]) = {
+    val a = Option(_baseObject).orEmpty[List] ::: _mixinTraits.toList
+    val b = a.foldLeft((nil[POperation], Set.empty[String]))((a, x) => {
+      val c = x.reference.whole_operations(a._2)
+      (c._1 ::: a._1, c._2 ++ a._2)
+    })
+    if (b._2.contains(qualifiedName)) b
+    else (b._1 ::: operations.toList, b._2 + qualifiedName)
   }
 
   lazy val isId: Boolean = idAttrOption ? true | false

@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov. 10, 2012
- * @version Nov. 11, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 class EventServiceJavaClassDefinition(
@@ -57,6 +57,7 @@ protected %repository% repository;
 
   override protected def package_methods_platform_Entity(entity: PEntityEntity) {
     if (!entity.isEvent) return
+    val qname = pobject.qualifiedName
     val classname = entity.name;
     val docname = entity.documentName
     val cursor = "Cursor<%s>".format(classname)
@@ -65,22 +66,22 @@ protected %repository% repository;
     val issuemethod = "issue" + classname
     val issueidmethod = "issueId" + classname
     jm_public_method("Response<Void> %s(Request<%s> data)", issuemethod, docname) {
-      code_request_try_ok_failure(classname, issuemethod, "data") {
+      code_request_try_ok_failure(qname, issuemethod, "data") {
         jm_pln("repository.create%s(data.value);", classname)
       }
     }
     jm_public_method("Response<Void> %s(%s data)", issuemethod, docname) {
-      code_try_ok_failure(classname, issuemethod, "data") {
+      code_try_ok_failure(qname, issuemethod, "data") {
         jm_pln("repository.create%s(data);", classname)
       }
     }
     jm_public_method("Response<%s> %s(Request<%s> data)", idtype, issueidmethod, docname) {
-      code_try_return_failure(classname, issueidmethod, "data") {
+      code_try_return_failure(qname, issueidmethod, "data") {
         "repository.createId%s(data.value)".format(classname)
       }
     }
     jm_public_method("Response<%s> %s(%s data)", idtype, issueidmethod, docname) {
-      code_try_return_failure(classname, issueidmethod, "data") {
+      code_try_return_failure(qname, issueidmethod, "data") {
         "repository.createId%s(data)".format(classname)
       }
     }

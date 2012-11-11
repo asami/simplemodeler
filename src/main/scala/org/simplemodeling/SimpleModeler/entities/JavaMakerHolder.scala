@@ -5,7 +5,7 @@ package org.simplemodeling.SimpleModeler.entities
  *  version Sep.  1, 2011
  *  version Feb. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaMakerHolder {
@@ -306,6 +306,10 @@ trait JavaMakerHolder {
   protected final def jm_public_with_or_null_abstract_method(className: String, attrName: String, typeName: String,
       paramName: String = null, varName: String = null, expr: Seq[AnyRef] = Nil) {
     _maker.publicWithOrNullAbstractMethod(className, attrName, typeName, paramName)
+  }
+
+  protected final def jm_protected_method(signature: String, params: AnyRef*)(body: => Unit) {
+    _maker.protectedMethod(signature, params: _*)(body)
   }
 
   protected final def jm_override_protected_method(signature: String, params: AnyRef*)(body: => Unit) {
