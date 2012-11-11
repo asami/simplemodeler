@@ -70,8 +70,8 @@ protected %repository% repository;
     val updatetxmethod = "updateTx" + classname
     val deletemethod = "delete" + classname
     val deletetxmthod = "deleteTx" + classname
-    jm_public_method("Response<Void> create%s(Request<%s> data)", createmethod, docname) {
-      code_try_ok_failure(classname, createmethod, "data") {
+    jm_public_method("Response<Void> %s(Request<%s> data)", createmethod, docname) {
+      code_request_try_ok_failure(classname, createmethod, "data") {
         jm_pln("repository.create%s(data.value);", classname)
       }
     }

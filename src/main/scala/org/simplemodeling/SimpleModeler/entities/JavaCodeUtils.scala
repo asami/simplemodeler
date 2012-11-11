@@ -197,78 +197,87 @@ trait JavaCodeUtils {
   /*
    * Service
    */
-  protected final def code_try_ok_failure[T](service: String, operation: String, param: String)(f: => T) {
+  protected final def code_try_ok_failure[T](qname: String, operation: String, param: String)(f: => T) {
     jm_try {
-      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", service, operation, param)
-      jm_pln("context.authorizeAll();", service, operation, param)
+      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", qname, operation, param)
+      jm_pln("context.authorizeAll(%s);", _rsc(qname, operation))
       f
-      jm_return("context.ok(\"%s\", \"%s\")", service, operation)
+      jm_return("context.ok(\"%s\", \"%s\")", qname, operation)
     }
     jm_catch_end("Exception e") {
-      jm_pln("context.log_exception(\"%s\", \"%s\", e);", service, operation)
+      jm_pln("context.log_exception(\"%s\", \"%s\", e);", qname, operation)
       jm_return("Response.failure(e)")
     }
   }
 
-  protected final def code_request_try_ok_failure[T](service: String, operation: String, param: String)(f: => T) {
+  private def _rsc(qname: String, operation: String): String = {
+    '"' + qname + "#" + operation + '"'
+  }
+
+  protected final def code_request_try_ok_failure[T](qname: String, operation: String, param: String)(f: => T) {
+    val rsc = qname + "#" + operation
     jm_try {
-      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", service, operation, param)
-      jm_pln("context.authorize(%s.security);", param)
+      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", qname, operation, param)
+      jm_pln("context.authorize(%s, %s.security);", _rsc(qname, operation), param)
       f
-      jm_return("context.ok(\"%s\", \"%s\")", service, operation)
+      jm_return("context.ok(\"%s\", \"%s\")", qname, operation)
     }
     jm_catch_end("Exception e") {
-      jm_pln("context.log_exception(\"%s\", \"%s\", e);", service, operation)
+      jm_pln("context.log_exception(\"%s\", \"%s\", e);", qname, operation)
       jm_return("Response.failure(e)")
     }
   }
 
-  protected final def code_try_return_failure(service: String, operation: String, param: String)(s: String, args: Any*) {
+  protected final def code_try_return_failure(qname: String, operation: String, param: String)(s: String, args: Any*) {
+    val rsc = qname + "#" + operation
     jm_try {
-      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", service, operation, param)
-      jm_pln("context.authorizeAll();", service, operation, param)
-      jm_return("context.ok(\"%s\", \"%s\", %s)", service, operation, s.format(args: _*))
+      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", qname, operation, param)
+      jm_pln("context.authorizeAll(%s);", _rsc(qname, operation))
+      jm_return("context.ok(\"%s\", \"%s\", %s)", qname, operation, s.format(args: _*))
     }
     jm_catch_end("Exception e") {
-      jm_pln("context.log_exception(\"%s\", \"%s\", e);", service, operation)
+      jm_pln("context.log_exception(\"%s\", \"%s\", e);", qname, operation)
       jm_return("Response.failure(e)")
     }
   }
 
-  protected final def code_request_try_return_failure(service: String, operation: String, param: String)(s: String, args: Any*) {
+  protected final def code_request_try_return_failure(qname: String, operation: String, param: String)(s: String, args: Any*) {
+    val rsc = qname + "#" + operation
     jm_try {
-      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", service, operation, param)
-      jm_pln("context.authorize(%s.security);", param)
-      jm_return("context.ok(\"%s\", \"%s\", %s)", service, operation, s.format(args: _*))
+      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", qname, operation, param)
+      jm_pln("context.authorize(%s, %s.security);", _rsc(qname, operation), param)
+      jm_return("context.ok(\"%s\", \"%s\", %s)", qname, operation, s.format(args: _*))
     }
     jm_catch_end("Exception e") {
-      jm_pln("context.log_exception(\"%s\", \"%s\", e);", service, operation)
+      jm_pln("context.log_exception(\"%s\", \"%s\", e);", qname, operation)
       jm_return("Response.failure(e)")
     }
   }
 
-  protected final def code_try_block_return_failure[T](service: String, operation: String, param: String)(f: => T)(s: String, args: Any*) {
+  protected final def code_try_block_return_failure[T](qname: String, operation: String, param: String)(f: => T)(s: String, args: Any*) {
+    val rsc = qname + "#" + operation
     jm_try {
-      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", service, operation, param)
-      jm_pln("context.authorizeAll();", service, operation, param)
+      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", qname, operation, param)
+      jm_pln("context.authorizeAll(%s);", _rsc(qname, operation))
       f
-      jm_return("context.ok(\"%s\", \"%s\", %s)", service, operation, s.format(args: _*))
+      jm_return("context.ok(\"%s\", \"%s\", %s)", qname, operation, s.format(args: _*))
     }
     jm_catch_end("Exception e") {
-      jm_pln("context.log_exception(\"%s\", \"%s\", e);", service, operation)
+      jm_pln("context.log_exception(\"%s\", \"%s\", e);", qname, operation)
       jm_return("Response.failure(e)")
     }
   }
 
-  protected final def code_request_try_block_return_failure[T](service: String, operation: String, param: String)(f: => T)(s: String, args: Any*) {
+  protected final def code_request_try_block_return_failure[T](qname: String, operation: String, param: String)(f: => T)(s: String, args: Any*) {
+    val rsc = qname + "#" + operation
     jm_try {
-      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", service, operation, param)
-      jm_pln("context.authorize(%s.security);", param)
+      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", qname, operation, param)
+      jm_pln("context.authorize(%s, %s.security);", _rsc(qname, operation), param)
       f
-      jm_return("context.ok(\"%s\", \"%s\", %s)", service, operation, s.format(args: _*))
+      jm_return("context.ok(\"%s\", \"%s\", %s)", qname, operation, s.format(args: _*))
     }
     jm_catch_end("Exception e") {
-      jm_pln("context.log_exception(\"%s\", \"%s\", e);", service, operation)
+      jm_pln("context.log_exception(\"%s\", \"%s\", e);", qname, operation)
       jm_return("Response.failure(e)")
     }
   }

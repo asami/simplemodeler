@@ -65,7 +65,7 @@ protected %repository% repository;
     val issuemethod = "issue" + classname
     val issueidmethod = "issueId" + classname
     jm_public_method("Response<Void> %s(Request<%s> data)", issuemethod, docname) {
-      code_try_ok_failure(classname, issuemethod, "data") {
+      code_request_try_ok_failure(classname, issuemethod, "data") {
         jm_pln("repository.create%s(data.value);", classname)
       }
     }
