@@ -197,20 +197,78 @@ trait JavaCodeUtils {
   /*
    * Service
    */
-  protected final def code_try_ok_failure[T](f: => T) {
+  protected final def code_try_ok_failure[T](service: String, operation: String, param: String)(f: => T) {
     jm_try {
-      jm_return("Response.ok()")
+      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", service, operation, param)
+      jm_pln("context.authorizeAll();", service, operation, param)
+      f
+      jm_return("context.ok(\"%s\", \"%s\")", service, operation)
     }
     jm_catch_end("Exception e") {
+      jm_pln("context.log_exception(\"%s\", \"%s\", e);", service, operation)
       jm_return("Response.failure(e)")
     }
   }
 
-  protected final def code_try_return_failure(s: String, args: Any*) {
+  protected final def code_request_try_ok_failure[T](service: String, operation: String, param: String)(f: => T) {
     jm_try {
-      jm_return("Response.ok(%s)", s.format(args: _*))
+      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", service, operation, param)
+      jm_pln("context.authorize(%s.security);", param)
+      f
+      jm_return("context.ok(\"%s\", \"%s\")", service, operation)
     }
     jm_catch_end("Exception e") {
+      jm_pln("context.log_exception(\"%s\", \"%s\", e);", service, operation)
+      jm_return("Response.failure(e)")
+    }
+  }
+
+  protected final def code_try_return_failure(service: String, operation: String, param: String)(s: String, args: Any*) {
+    jm_try {
+      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", service, operation, param)
+      jm_pln("context.authorizeAll();", service, operation, param)
+      jm_return("context.ok(\"%s\", \"%s\", %s)", service, operation, s.format(args: _*))
+    }
+    jm_catch_end("Exception e") {
+      jm_pln("context.log_exception(\"%s\", \"%s\", e);", service, operation)
+      jm_return("Response.failure(e)")
+    }
+  }
+
+  protected final def code_request_try_return_failure(service: String, operation: String, param: String)(s: String, args: Any*) {
+    jm_try {
+      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", service, operation, param)
+      jm_pln("context.authorize(%s.security);", param)
+      jm_return("context.ok(\"%s\", \"%s\", %s)", service, operation, s.format(args: _*))
+    }
+    jm_catch_end("Exception e") {
+      jm_pln("context.log_exception(\"%s\", \"%s\", e);", service, operation)
+      jm_return("Response.failure(e)")
+    }
+  }
+
+  protected final def code_try_block_return_failure[T](service: String, operation: String, param: String)(f: => T)(s: String, args: Any*) {
+    jm_try {
+      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", service, operation, param)
+      jm_pln("context.authorizeAll();", service, operation, param)
+      f
+      jm_return("context.ok(\"%s\", \"%s\", %s)", service, operation, s.format(args: _*))
+    }
+    jm_catch_end("Exception e") {
+      jm_pln("context.log_exception(\"%s\", \"%s\", e);", service, operation)
+      jm_return("Response.failure(e)")
+    }
+  }
+
+  protected final def code_request_try_block_return_failure[T](service: String, operation: String, param: String)(f: => T)(s: String, args: Any*) {
+    jm_try {
+      jm_pln("context.log_enter(\"%s\", \"%s\", %s);", service, operation, param)
+      jm_pln("context.authorize(%s.security);", param)
+      f
+      jm_return("context.ok(\"%s\", \"%s\", %s)", service, operation, s.format(args: _*))
+    }
+    jm_catch_end("Exception e") {
+      jm_pln("context.log_exception(\"%s\", \"%s\", e);", service, operation)
       jm_return("Response.failure(e)")
     }
   }

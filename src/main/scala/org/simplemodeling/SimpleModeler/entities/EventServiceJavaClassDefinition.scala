@@ -62,24 +62,26 @@ protected %repository% repository;
     val cursor = "Cursor<%s>".format(classname)
     val query = "Query"
     val idtype = entity.idAttr.typeName
-    jm_public_method("Response<Void> issue%s(Request<%s> data)", classname, docname) {
-      code_try_ok_failure {
+    val issuemethod = "issue" + classname
+    val issueidmethod = "issueId" + classname
+    jm_public_method("Response<Void> %s(Request<%s> data)", issuemethod, docname) {
+      code_try_ok_failure(classname, issuemethod, "data") {
         jm_pln("repository.create%s(data.value);", classname)
       }
     }
-    jm_public_method("Response<Void> issue%s(%s data)", classname, docname) {
-      code_try_ok_failure {
+    jm_public_method("Response<Void> %s(%s data)", issuemethod, docname) {
+      code_try_ok_failure(classname, issuemethod, "data") {
         jm_pln("repository.create%s(data);", classname)
       }
     }
-    jm_public_method("Response<%s> issueId%s(Request<%s> data)", idtype, classname, docname) {
-      code_try_ok_failure {
-        jm_pln("repository.createId%s(data.value);", classname)
+    jm_public_method("Response<%s> %s(Request<%s> data)", idtype, issueidmethod, docname) {
+      code_try_return_failure(classname, issueidmethod, "data") {
+        "repository.createId%s(data.value)".format(classname)
       }
     }
-    jm_public_method("Response<%s> issueId%s(%s data)", idtype, classname, docname) {
-      code_try_ok_failure {
-        jm_pln("repository.createId%s(data);", classname)
+    jm_public_method("Response<%s> %s(%s data)", idtype, issueidmethod, docname) {
+      code_try_return_failure(classname, issueidmethod, "data") {
+        "repository.createId%s(data)".format(classname)
       }
     }
   }

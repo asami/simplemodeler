@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.entity.business.SMBusinessTask
 
 /*
  * @since   Jul. 14, 2011
- * @version Aug. 14, 2011
+ * @version Nov. 11, 2012
  * @author  ASAMI, Tomoharu
  */
 class ContextJavaClassDefinition(
@@ -17,8 +17,15 @@ class ContextJavaClassDefinition(
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
   useDocument = false
   isSingleton = true
+  customBaseName = Some("ContextBase")
+
   customAttributes += new PAttribute("factory", new PObjectReferenceType(factoryName, packageName))
   customAttributes += new PAttribute("moduleName", PStringType)
+
+  override protected def head_imports_Extension {
+    jm_import("org.simplemodeling.SimpleModeler.runtime.*")
+    head_imports_Inject_Inject
+  }
 
   override protected def object_auxiliary {
   }
