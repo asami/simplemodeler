@@ -1148,7 +1148,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _dsl_type(atype: SMMAttributeTypeSet, entities: Map[String, SObject]): Option[SAttributeType] = {
-    _dsl_type(atype.effectiveAttributeType, entities)
+    atype.getAttributeType.flatMap(_dsl_type(_, entities))
   }
 
   private def _dsl_type(otype: SMMObjectType, entities: Map[String, SObject]): Option[SAttributeType] = {
@@ -1246,8 +1246,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _entity_ref(name: String, entities: Map[String, SObject]): Either[String, SEntity] = {
     entities.get(name) match {
       case Some(entity: SEntity) => entity.right
-      case Some(x) => "エンティティに対してのみ関連・集約・合成を持つことができます。(参照元: %s, 参照先: %s)".format(this.name, x.name).left
-      case None => Left("エンティティ%sはみつかりません。(参照元: %s)".format(this.name))
+      case Some(x) => "エンティティに対してのみ関連・集約・合成を持つことができます。(参照元: %s, 参照先: %s)".format(this.name, name).left
+      case None => Left("エンティティ%sはみつかりません。(参照元: %s)".format(name, this.name))
     }
   }
 

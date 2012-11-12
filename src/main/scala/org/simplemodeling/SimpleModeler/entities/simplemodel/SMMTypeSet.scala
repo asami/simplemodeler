@@ -38,11 +38,17 @@ class SMMAttributeTypeSet(
     sqlDataType.map(_.name) getOrElse "Unknown"
   }
 
-  def effectiveAttributeType: SMMValueDataType = {
+  def getAttributeType: Option[SMMValueDataType] = {
     attributeType orElse
     dataType orElse
-    sqlDataType.map(_.dataType) getOrElse SMMStringType
+    sqlDataType.map(_.dataType)
   }
+
+/*
+  def effectiveAttributeType: SMMValueDataType = {
+    getAttributeType getOrElse SMMStringType
+  }
+*/
 
   def idType: Option[SMMValueIdType] = {
     attributeType collect {
