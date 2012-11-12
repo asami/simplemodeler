@@ -29,7 +29,7 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Jan. 30, 2012
  *  version Jun. 17, 2012
  *  version Oct. 16, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) with SimpleModelEntityHelper {
@@ -1153,29 +1153,41 @@ record_trace("build_powertype_object = " + aPowertype)
 
       def resolve_attribute(anAttr: SMAttribute) {
         val attrType = anAttr.attributeType
-        val target = getObject(attrType.qualifiedName)
-        attrType.typeObject = target
-        val participation = make_participation
-        participation.roleType = AttributeParticipationRole
-        participation.roleName = anAttr.name
-        target.addParticipation(participation)
+        findObject(attrType.qualifiedName) match {
+          case Some(target) => {
+            attrType.typeObject = target
+            val participation = make_participation
+            participation.roleType = AttributeParticipationRole
+            participation.roleName = anAttr.name
+            target.addParticipation(participation)
+          }
+          case None => {
+            record_warning("「%s」の属性「%s」は型「%s」が解決できません。", anObject.name, anAttr.name, attrType.name)
+          }
+        }
       }
 
       def resolve_association(anAssoc: SMAssociation) {
         val assocType = anAssoc.associationType
-        val target = getObject(assocType.qualifiedName)
-        assocType.typeObject = target
-        val participation = make_participation
-        participation.roleType = if (anAssoc.isComposition) {
-          CompositionParticipationRole
-        } else if (anAssoc.isAggregation) {
-          AggregationParticipationRole
-        } else {
-          AssociationParticipationRole
+        findObject(assocType.qualifiedName) match {
+          case Some(target) => {
+            assocType.typeObject = target
+            val participation = make_participation
+            participation.roleType = if (anAssoc.isComposition) {
+              CompositionParticipationRole
+            } else if (anAssoc.isAggregation) {
+              AggregationParticipationRole
+            } else {
+              AssociationParticipationRole
+            }
+            participation.roleName = anAssoc.name
+            participation.associationOption = Some(anAssoc)
+            target.addParticipation(participation)
+          }
+          case None => {
+            record_warning("「%s」の関連「%s」は存在しません。", anObject.name, anAssoc.name)
+          }
         }
-        participation.roleName = anAssoc.name
-        participation.associationOption = Some(anAssoc)
-        target.addParticipation(participation)
       }
 
       def make_participation = {
@@ -1191,12 +1203,18 @@ record_trace("build_powertype_object = " + aPowertype)
 
       def resolve_port(port: SMPort) {
         val portType = port.entityType
-        val target = getObject(portType.qualifiedName)
-        portType.typeObject = target
-        val participation = make_participation
-        participation.roleType = PortParticipationRole
-        participation.roleName = port.name
-        target.addParticipation(participation)
+        findObject(portType.qualifiedName) match {
+          case Some(target) => {
+            portType.typeObject = target
+            val participation = make_participation
+            participation.roleType = PortParticipationRole
+            participation.roleName = port.name
+            target.addParticipation(participation)
+          }
+          case None => {
+            record_warning("「%s」のポート「%s」は存在しません。", anObject.name, port.name)
+          }
+        }
       }
 
       resolve_base_object()
