@@ -23,11 +23,12 @@ class ServiceJavaClassOperationDefinition(
     val qname = owner.qualifiedName
     val bodymethodname = methodname + "Body"
     val implmethodname = methodname + "Impl"
+    val rt = resultType | "Void"
     val param = paramType | "Void"
     if (paramType.isDefined) {
-      jm_mark("ServiceJavaClassOperationDefinition#method")
+      jm_mark("// ServiceJavaClassOperationDefinition#method")
       jm_public_method("Response<%s> %s(Request<%s> in)",
-                       effectiveResultTypeName, methodname, param) {
+                       rt, methodname, param) {
         if (op.out.isDefined) {
           code_request_try_return_failure(qname, methodname, "in") {
             "%s(in)".format(bodymethodname)
@@ -38,24 +39,25 @@ class ServiceJavaClassOperationDefinition(
           }
         }
       }
-      jm_mark("ServiceJavaClassOperationDefinition#method")
-      jm_public_method("Response<%s> %s(Request<%s> in)",
-                       effectiveResultTypeName, bodymethodname, param) {
+      jm_mark("// ServiceJavaClassOperationDefinition#method")
+      jm_public_method("Response<%s> %s(Request<%s> in) throws Exception",
+                       rt, bodymethodname, param) {
         if (op.out.isDefined) {
-          jm_return("%s(in)".format(implmethodname))
+          jm_return("Response.ok(%s(in.value))".format(implmethodname))
         } else {
-          jm_pln("%s(in)".format(implmethodname))
+          jm_pln("%s(in.value);".format(implmethodname))
+          jm_pln("return null;")
         }
       }
-      jm_mark("ServiceJavaClassOperationDefinition#method")
-      jm_protected_method("%s %s(%s) throws Exception",
+      jm_mark("// ServiceJavaClassOperationDefinition#method x")
+      jm_protected_method("%s %s(%s in) throws Exception",
                           effectiveResultTypeName, implmethodname, param) {
         jm_UnsupportedOperationException
       }
     } else {
-      jm_mark("ServiceJavaClassOperationDefinition#method")
+      jm_mark("// ServiceJavaClassOperationDefinition#method")
       jm_public_method("Response<%s> %s(Request<%s> in)",
-                       effectiveResultTypeName, methodname, param) {
+                       rt, methodname, param) {
         if (op.out.isDefined) {
           code_request_try_return_failure(qname, methodname, "in") {
             "%s(in)".format(bodymethodname)
@@ -66,16 +68,17 @@ class ServiceJavaClassOperationDefinition(
           }
         }
       }
-      jm_mark("ServiceJavaClassOperationDefinition#method")
-      jm_public_method("Response<%s> %s(Request<%s> in)", effectiveResultTypeName, bodymethodname, param) {
+      jm_mark("// ServiceJavaClassOperationDefinition#method")
+      jm_public_method("Response<%s> %s(Request<%s> in) throws Exception", rt, bodymethodname, param) {
         if (op.out.isDefined) {
-          jm_return("%s(in)".format(implmethodname))
+          jm_return("Response.ok(%s(in.value))".format(implmethodname))
         } else {
-          jm_pln("%s(in)".format(implmethodname))
+          jm_pln("%s(in.value);".format(implmethodname))
+          jm_pln("return null;")
         }
       }
-      jm_mark("ServiceJavaClassOperationDefinition#method")
-      jm_protected_method("%s %s(%s) throws Exception", effectiveResultTypeName, implmethodname, param) {
+      jm_mark("// ServiceJavaClassOperationDefinition#method")
+      jm_protected_method("%s %s(%s in) throws Exception", effectiveResultTypeName, implmethodname, param) {
         jm_UnsupportedOperationException
       }
     }

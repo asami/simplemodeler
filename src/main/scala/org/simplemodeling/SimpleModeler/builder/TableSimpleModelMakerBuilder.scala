@@ -407,6 +407,23 @@ class TableSimpleModelMakerBuilder(
   /**
    * OutlineBuilderBase uses the method.
    */
+/*
+  def buildDocument(entity: SMMEntityEntity, table: GTable[String]) {
+    val rows = for (row <- table.rows) yield {
+      _columns(table.headAsStringList).zip(row)
+    }
+    rows.map(entry => add_document(entity, entry))
+  }
+
+  protected final def add_document(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
+    val entitytype = SMMEntityTypeSet(entity.packageName, entry)
+    val assoc = entity.document(_slot_name(entry), entitytype)
+  }
+*/
+
+  /**
+   * OutlineBuilderBase uses the method.
+   */
   def buildOperation(entity: SMMEntityEntity, table: GTable[String]) {
     println("buildOperationTable:" + table)
     val rows = for (row <- table.rows) yield {

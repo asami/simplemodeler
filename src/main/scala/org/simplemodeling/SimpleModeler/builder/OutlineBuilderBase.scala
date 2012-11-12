@@ -183,6 +183,8 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 //    _mmx.derivationTables(aNode).foreach(_build_derivation_table(_, target))
     _mmx.powertypes(aNode).foreach(_build_powertype(_, target))
     _mmx.powertypeTables(aNode).foreach(_build_powertype_table(_, target))
+    _mmx.documents(aNode).foreach(_build_document(_, target))
+    _mmx.documentTables(aNode).foreach(_build_document_table(_, target))
     _mmx.roles(aNode).foreach(_build_role(_, target))
 //    _mmx.roleTables(aNode).foreach(_build_role_table(_, target))
     _mmx.states(aNode).foreach(_build_state(_, target))
@@ -296,6 +298,10 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     _table_builder.buildPowertype(target, table)
   }
 
+  private def _build_document_table(table: GTable[String], target: SMMEntityEntity) {
+//    _table_builder.buildDocument(target, table)
+  }
+
   private def _build_attribute(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     target.addNarrativeAttribute(term)
@@ -318,6 +324,20 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     labels match {
       case Nil => target.addNarrativePowertype(term)
       case _ => target.addNarrativePowertype(term + labels.mkString("(", ";", ")"))
+    }
+  }
+
+  private def _build_document(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    val name = get_name_by_term(term)
+    if (!_mmx.isDefined(name)) {
+      _record_implicit_define("ドキュメント", target.name, name)
+      // _create_object registered the created object in global space.
+      val part = _create_object(DocumentKind, source, _build_object)
+//      target.addNarrativeDocument(term)
+    } else {
+      _record_duplicate_define(source, target.name, name)
+//      target.addNarrativeDocument(term)
     }
   }
 
