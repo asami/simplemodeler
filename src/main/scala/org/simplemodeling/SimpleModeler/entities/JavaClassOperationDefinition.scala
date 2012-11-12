@@ -23,13 +23,21 @@ class JavaClassOperationDefinition(
 ) extends GenericClassOperationDefinition(pContext, aspects, op, owner) with JavaMakerHolder {
   jm_open(jmaker, aspects)
 
+  private def _dt2docname(t: PDocumentType): String = {
+    t.document.fold(_.name, "UnknownDocument-" + t.name)
+  }
+
+  val methodname = op.name
+  val resultType = op.out.map(_dt2docname)
+  val paramType = op.in.map(_dt2docname)
+  val effectiveResultTypeName = resultType | "void"
+  val effectiveParamLists = paramType.map(x => {
+    x + " in"
+  }) | ""
+
   def method {
-    val resulttype = op.out.map(_.name) | "void"
-    val methodname = op.name
-    val params = op.in.map(x => {
-      x.name + " in"
-    }) | ""
-    jm_public_method("%s %s(%s)", resulttype, methodname, params) {
+    jm_public_method("%s %s(%s)", effectiveResultTypeName, methodname,
+                     effectiveParamLists) {
       jm_UnsupportedOperationException
     }
   }

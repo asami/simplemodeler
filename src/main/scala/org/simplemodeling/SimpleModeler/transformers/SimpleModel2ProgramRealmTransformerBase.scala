@@ -901,7 +901,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
             }
           }
           case documentType: PDocumentType => {
-            documentType.document = getDocument(documentType.qualifiedName)
+            documentType.document = findDocument(documentType.qualifiedName)
           }
           case valueType: PValueType => {
             if (useValue) {
@@ -916,11 +916,15 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     def resolve_operations(obj: PObjectEntity) {
       for (op <- obj.operations) {
         op.in match {
-          case Some(docType) => docType.document = getDocument(docType.qualifiedName)
+          case Some(docType) => {
+            docType.document = findDocument(docType.qualifiedName)
+          }
           case None => {}
         }
         op.out match {
-          case Some(docType) => docType.document = getDocument(docType.qualifiedName)
+          case Some(docType) => {
+            docType.document = findDocument(docType.qualifiedName)
+          }
           case None => {}
         }
       }

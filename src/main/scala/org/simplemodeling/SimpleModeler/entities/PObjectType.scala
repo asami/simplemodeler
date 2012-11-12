@@ -14,7 +14,7 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
  *  version Jul. 25, 2011
  *  version Apr. 11, 2012
  *  version Oct. 30, 2012
- * @version Nov.  7, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -517,12 +517,15 @@ class PDocumentType(val name: String, val packageName: String) extends PObjectTy
   def this(aDocument: PDocumentEntity) = this(aDocument.name, aDocument.packageName)
   override def objectTypeName = name
 
+  var document: Option[PDocumentEntity] = None
+/*
   private var _document: PDocumentEntity = _
   def document: PDocumentEntity = {
     require(_document != null, "PDocumentType " + name + " should be resolved a reference to the value entity.")
     _document
   }
   def document_=(aDocument: PDocumentEntity) = _document = aDocument
+*/
 
   def qualifiedName = {
     require (name != null && packageName != null)

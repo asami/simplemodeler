@@ -268,7 +268,6 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
 
   protected final def getDocument(aQName: String): PDocumentEntity = {
     println("SimpleModel2ProgramRealmTransformerBaseHelper#getDocument = " + aQName)
-    if (aQName == "app.") sys.error("????")
     try {
       findDocument(aQName).get
     } catch _no_entry("document", aQName)

@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov. 10, 2012
- * @version Nov. 11, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 class ServiceJavaClassDefinition(
@@ -15,6 +15,10 @@ class ServiceJavaClassDefinition(
   pobject: PObjectEntity
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
   useDocument = false
+
+  override protected def operation(op: POperation): OP_DEF = {
+    new ServiceJavaClassOperationDefinition(pContext, aspects, op, this, jm_maker)
+  }
 
   override protected def head_imports_Extension {
     jm_import("org.simplemodeling.SimpleModeler.runtime.*")
