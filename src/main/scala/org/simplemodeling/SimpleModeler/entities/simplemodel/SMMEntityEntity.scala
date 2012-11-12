@@ -87,7 +87,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1075,7 +1075,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
               val a = entity.attribute(attr.name, t, _dsl_multiplicity(attr.multiplicity))
               _build_attribute(a, attr)
             }
-            case None => record_warning("SMMEntityEntity#_build_attribute")
+            case None => {
+              record_warning("「%s」の属性「%s」は型「%s」が解決できません。", entity.name, attr.name, attr.attributeType.name)
+            }
           }
           /*
            * SimpleModel2JavaRealmTransformerBase converts SMAttributeType to PObjectType.
@@ -1314,7 +1316,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       val in = _dsl_type(op.inType, entities)
       val out = _dsl_type(op.outType, entities)
       val a = entity.operation(op.name, in, out)
-      println("SMMEntityEntity#_build_operations(%s, %s, %s)".format(op.name, in, out))
+      record_trace("SMMEntityEntity#_build_operations(%s, %s, %s)".format(op.name, in, out))
       _build_operation(a, op)
     }
   }
