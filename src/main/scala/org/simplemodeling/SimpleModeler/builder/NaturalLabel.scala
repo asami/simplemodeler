@@ -49,6 +49,14 @@ sealed abstract trait NaturalLabel {
   def find(entries: Seq[(String, String)]): Option[String] = {
     entries.find(x => isMatch(x._1)).map(_._2)
   }
+
+  /**
+   * In case of blank data, result is 'not find'.
+   * Data is trimed.
+   */
+  def findData(entries: Seq[(String, String)]): Option[String] = {
+    entries.find(x => isMatch(x._1)).map(_._2.trim).filter(isNotBlank)
+  }
 }
 
 case object KindLabel extends NaturalLabel {

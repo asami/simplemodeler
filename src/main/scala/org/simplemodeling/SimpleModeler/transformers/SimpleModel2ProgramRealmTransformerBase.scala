@@ -27,7 +27,7 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov. 10, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -721,7 +721,21 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
 
     private def build_operation(aObj: PObjectEntity, aOperation: SMOperation) {
-      // XXX
+      val in: Option[PDocumentType] = _document_type(aOperation.in)
+      val out: Option[PDocumentType] = _document_type(aOperation.out)
+      val op = _make_operation(aOperation.name, in, out)
+      aObj.addOperation(op)
+      op.model = aOperation
+    }
+
+    private def _document_type(in: Option[SMDocument]): Option[PDocumentType] = {
+      in.map(x => {
+        new PDocumentType(x.name, x.packageName)
+      })
+    }
+
+    private def _make_operation(name: String, in: Option[PDocumentType], out: Option[PDocumentType]) = {
+      new POperation(name, in, out)
     }
 
     private def object_type(anAttr: SMAttribute): PObjectType = {

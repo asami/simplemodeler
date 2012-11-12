@@ -305,11 +305,11 @@ class TableSimpleModelMakerBuilder(
   }
 
   private def _slot_kind(entry: Seq[(String, String)]): NaturalLabel = {
-    val feature = FeatureLabel.find(entry)
+    val feature = FeatureLabel.findData(entry)
     feature.collect {
       case NaturalLabel(label) => label
     } orElse {
-      IdLabel.find(entry).flatMap(x => {
+      IdLabel.findData(entry).flatMap(x => {
         isNotBlank(x).option(IdLabel)
       })
     } getOrElse AttributeLabel

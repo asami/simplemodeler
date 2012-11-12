@@ -700,7 +700,9 @@ abstract class GenericClassDefinition(
    * Service methods
    */
   protected def service_methods {
+    println("GenericClassDefinition#service_methods")
     for (op <- implementsOperationDefinitions) {
+      println("GenericClassDefinition#service_methods(%s)".format(op.op.name))
       op.method
     }
   }

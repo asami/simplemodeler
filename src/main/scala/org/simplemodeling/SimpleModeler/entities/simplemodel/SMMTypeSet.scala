@@ -17,7 +17,7 @@ trait SMMTypeSet {
 
 object SMMTypeSet {
   def sqlType(entry: Seq[(String, String)]): Option[SMMSqlDataType] = {
-    SqlDatatypeLabel.find(entry).flatMap(SMMObjectType.getSqlDataType)
+    SqlDatatypeLabel.findData(entry).flatMap(SMMObjectType.getSqlDataType)
   }
 }
 
@@ -60,11 +60,11 @@ object SMMAttributeTypeSet {
   }
 
   private def _value_data_type(entry: Seq[(String, String)], pkg: String): Option[SMMValueDataType] = {
-    TypeLabel.find(entry).map(SMMObjectType.getValueDataType(_, pkg))
+    TypeLabel.findData(entry).map(SMMObjectType.getValueDataType(_, pkg))
   }
 
   private def _data_type(entry: Seq[(String, String)]): Option[SMMDataType] = {
-    DatatypeLabel.find(entry).flatMap(SMMObjectType.getDataType)
+    DatatypeLabel.findData(entry).flatMap(SMMObjectType.getDataType)
   }
 
   def in(entry: Seq[(String, String)], pkg: String): SMMAttributeTypeSet = {
@@ -72,7 +72,7 @@ object SMMAttributeTypeSet {
   }
 
   private def _in_value_data_type(entry: Seq[(String, String)], pkg: String): Option[SMMValueDataType] = {
-    InLabel.find(entry).map(SMMObjectType.getValueDataType(_, pkg))
+    InLabel.findData(entry).map(SMMObjectType.getValueDataType(_, pkg))
   }
 
 
@@ -81,7 +81,7 @@ object SMMAttributeTypeSet {
   }
 
   private def _out_value_data_type(entry: Seq[(String, String)], pkg: String): Option[SMMValueDataType] = {
-    OutLabel.find(entry).map(SMMObjectType.getValueDataType(_, pkg))
+    OutLabel.findData(entry).map(SMMObjectType.getValueDataType(_, pkg))
   }
 }
 

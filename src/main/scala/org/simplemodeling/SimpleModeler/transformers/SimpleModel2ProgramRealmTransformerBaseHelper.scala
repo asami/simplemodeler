@@ -23,7 +23,7 @@ import org.goldenport.recorder.Recordable
 
 /**
  * @since   Nov.  2, 2012
- * @version Nov.  7, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SimpleModel2ProgramRealmTransformerBaseHelper {
@@ -248,13 +248,27 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
   }
 
   protected final def findDocument(aQName: String): Option[PDocumentEntity] = {
+    println("SimpleModel2ProgramRealmTransformerBaseHelper#findDocument = " + aQName)
     target_realm.getNode(make_pathname(aQName)) match {
-      case Some(node) => node.entity.asInstanceOf[Some[PDocumentEntity]]
+      case Some(node) => node.entity.get match {
+        case d: PDocumentEntity => Some(d)
+        case e: PEntityEntity => {
+          val docname = make_document_name(e.modelObject) // e.documentName
+          println("SimpleModel2ProgramRealmTransformerBaseHelper#findDocument = " + docname + "/" + e.documentName)
+          findDocument(_make_qname(docname, e.packageName))
+        }
+      }
       case None => None
     }
   }
 
+  private def _make_qname(name: String, pkg: String): String = {
+    pkg + "." + name
+  }
+
   protected final def getDocument(aQName: String): PDocumentEntity = {
+    println("SimpleModel2ProgramRealmTransformerBaseHelper#getDocument = " + aQName)
+    if (aQName == "app.") sys.error("????")
     try {
       findDocument(aQName).get
     } catch _no_entry("document", aQName)

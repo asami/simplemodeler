@@ -15,8 +15,8 @@ import org.simplemodeling.SimpleModeler.entity.domain.SMDomainDocument
  * @author  ASAMI, Tomoharu
  */
 class SMOperation(val dslOperation: SOperation) extends SMElement(dslOperation) {
-  val in = _make_inout(dslOperation.in)
-  val out = _make_inout(dslOperation.out)
+  val in: Option[SMDocument] = _make_inout(dslOperation.in)
+  val out: Option[SMDocument] = _make_inout(dslOperation.out)
 
   add_feature(FeatureName, SText(name)) label_is "操作名"
   add_feature(FeatureInput, input_literal) label_is "入力"
@@ -36,17 +36,20 @@ class SMOperation(val dslOperation: SOperation) extends SMElement(dslOperation) 
       case Some(out) => {
     SIAnchor(SText(out.name)) unresolvedRef_is new SElementRef(out.packageName, out.name) summary_is out.summary
       }
-      case None => sys.error("???")
+      case None => SText("None")
     }
   }
 
-  private def _make_inout(a: Option[SAttributeType]) = {
+  private def _make_inout(a: Option[SAttributeType]): Option[SMDocument] = {
     a match {
       case Some(t) => t match {
-        case d: DomainDocument => new SMDomainDocument(d)
-        case d: SDocument => new SMDocument(d)
+        case d: DomainDocument => Some(new SMDomainDocument(d))
+        case d: SDocument => Some(new SMDocument(d))
+        case _ => {
+          sys.error("SMOperation#_make_inout(%s) = %s".format(dslOperation.name, t.name))
+        }
       }
-      case None => 
+      case None => None
     }
   }
 

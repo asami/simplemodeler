@@ -14,7 +14,7 @@ import com.asamioffice.goldenport.text.UPathString
  *  version Feb.  7, 2012
  *  version Apr.  8, 2012
  *  version Oct. 16, 2012
- * @version Nov. 10, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
@@ -269,6 +269,7 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   }
 
   private def add_operation(anOperation: SOperation) {
+    println("SMObject#add_operation(%s)".format(anOperation.name))
     _operations += new SMOperation(anOperation)
   }
 

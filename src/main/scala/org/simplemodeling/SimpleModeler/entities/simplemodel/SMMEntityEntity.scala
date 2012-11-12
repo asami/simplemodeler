@@ -1152,15 +1152,18 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _dsl_type(otype: SMMObjectType, entities: Map[String, SObject]): Option[SAttributeType] = {
+    import StringUtils.isNotBlank
     def stubvalue(name: String, pkgname: String) = {
       val v = new SValue(name, pkgname)
       v.isMasterSingleton = false
       v
     }
     def doc(name: String, pkgname: String) = {
+      require (isNotBlank(name), "document name must not be blank.")
       new SDocument(name, pkgname)
     }
     def entitydoc(e: SMMEntityType): Option[SDocument] = {
+      require (isNotBlank(e.name), "entity name must not be blank.")
       _entity_ref(e.name, entities) match {
         case Right(r) => Some(new SEntityDocument(e.name, e.packageName))
         case Left(_) => None
@@ -1311,6 +1314,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       val in = _dsl_type(op.inType, entities)
       val out = _dsl_type(op.outType, entities)
       val a = entity.operation(op.name, in, out)
+      println("SMMEntityEntity#_build_operations(%s, %s, %s)".format(op.name, in, out))
       _build_operation(a, op)
     }
   }
@@ -1397,6 +1401,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     _build_associations(srv, entities)
     _build_aggregations(srv, entities)
     _build_compositions(srv, entities)
+    _build_operations(srv, entities)
     srv
   }
 
