@@ -9,7 +9,7 @@ import org.goldenport.values.{LayeredSequenceNumber, NullLayeredSequenceNumber}
 
 /*
  * @since   Dec.  5, 2008
- * @version Sep. 22, 2009
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMInvocationStep(val dslInvocationStep: SInvocationStep) extends SMStep(dslInvocationStep) {
@@ -37,7 +37,7 @@ class SMInvocationStep(val dslInvocationStep: SInvocationStep) extends SMStep(ds
 
   final def getRequestDocumentTerm: SDoc = {
     def to_term(anOperation: SOperation) = {
-      val doc = anOperation.in
+      val doc = anOperation.in.get // XXX 
       new SIAnchor(doc.term) unresolvedRef_is new SElementRef(doc.packageName, doc.name)
     }
 
@@ -52,7 +52,7 @@ class SMInvocationStep(val dslInvocationStep: SInvocationStep) extends SMStep(ds
 
   final def getResponseDocumentTerm: SDoc = {
     def to_term(anOperation: SOperation) = {
-      val doc = anOperation.out
+      val doc = anOperation.out.get // XXX
       new SIAnchor(doc.term) unresolvedRef_is new SElementRef(doc.packageName, doc.name)
     }
 

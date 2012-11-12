@@ -27,7 +27,8 @@ import com.asamioffice.goldenport.util.MultiValueMap
 /*
  * @since   Apr.  9, 2009
  *  version Apr. 17, 2011
- * @version Dec. 15, 2011
+ *  version Dec. 15, 2011
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2GaeJavaRealmTransformer(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext) {
@@ -579,6 +580,8 @@ class SimpleModel2GaeJavaRealmTransformer(val simpleModel: SimpleModelEntity, va
   }
 
   private def make_operation(anOperation: SMOperation): GaejOperation = {
+    throw new UnsupportedOperationException("SimpleModel2GaeRealmTransformer#make_operation")
+/*
     def make_document(doc: SMDocument) = doc match {
       case SMNullDocument => None
       case _ => Some(new GaejDocumentType(doc.name, doc.packageName))
@@ -587,6 +590,7 @@ class SimpleModel2GaeJavaRealmTransformer(val simpleModel: SimpleModelEntity, va
     val in = make_document(anOperation.in)
     val out = make_document(anOperation.out)
     new GaejOperation(anOperation.name, in , out)
+*/
   }
   
 

@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -100,6 +100,14 @@ case object TypeLabel extends NaturalLabel {
 
 case object DatatypeLabel extends NaturalLabel {
   val candidates = List("data type", "データ型", "データタイプ")
+}
+
+case object InLabel extends NaturalLabel {
+  val candidates = List("in", "input", "入力", "インプット")
+}
+
+case object OutLabel extends NaturalLabel {
+  val candidates = List("out", "output", "出力", "アウトプット")
 }
 
 case object ObjecttypeLabel extends NaturalLabel {
@@ -247,6 +255,10 @@ case object DeriveLabel extends NaturalLabel {
   val candidates = List("derive", "derived", "派生")
 }
 
+case object OperationLabel extends NaturalLabel {
+  val candidates = List("operation", "method", "オペレーション", "メソッド", "操作")
+}
+
 case object PrimaryActorLabel extends NaturalLabel {
   val candidates = List("primary actor", "primary", "プライマリ アクタ", "主役")
 }
@@ -331,6 +343,7 @@ object NaturalLabel {
     IsaLabel,
     MultiplicityLabel,
     DeriveLabel,
+    OperationLabel,
     PrimaryActorLabel,
     SecondaryActorLabel,
     SupportingActorLabel,

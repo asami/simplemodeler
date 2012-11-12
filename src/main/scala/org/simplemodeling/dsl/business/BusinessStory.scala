@@ -1,13 +1,14 @@
 package org.simplemodeling.dsl.business
 
+import scalaz._, Scalaz._
 import org.simplemodeling.dsl._
 import org.simplemodeling.dsl.domain._
 // import org.simplemodeling.dsl.StepActorKind._
 
 /*
  * @since   Dec.  8, 2008
- * @version Sep. 22, 2009
- * @version Nov.  4, 2011
+ *  version Nov.  4, 2011
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 trait BusinessStory extends SStoryObject {
@@ -48,8 +49,8 @@ trait BusinessStory extends SStoryObject {
     val step = new SInvocationStep
     step.primaryActorKind = BusinessClientActorKind
     step.secondaryActorKind = BusinessWorkerActorKind
-    step.requestDocument = aRequestDocument
-    step.responseDocument = aResponseDocument
+    step.requestDocument = aRequestDocument.some
+    step.responseDocument = aResponseDocument.some
     step.informalOperationName = anOperationName
     execute_step(step, theSteps)
     step
@@ -83,8 +84,8 @@ trait BusinessStory extends SStoryObject {
     val step = new SInvocationStep
     step.primaryActorKind = BusinessWorkerActorKind
     step.secondaryActorKind = SystemUnderDiscussionActorKind
-    step.requestDocument = aRequestDocument
-    step.responseDocument = aResponseDocument
+    step.requestDocument = aRequestDocument.some
+    step.responseDocument = aResponseDocument.some
     step.informalOperationName = anOperation
     execute_step(step, theSteps)
     step

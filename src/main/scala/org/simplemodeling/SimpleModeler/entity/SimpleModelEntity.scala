@@ -29,7 +29,7 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Jan. 30, 2012
  *  version Jun. 17, 2012
  *  version Oct. 16, 2012
- * @version Nov.  7, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) with SimpleModelEntityHelper {
@@ -109,6 +109,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
     build_datatype(XPositiveInteger)
     build_datatype(XShort)
     build_datatype(XString)
+    build_datatype(XToken)
     build_datatype(XTime)
     build_datatype(XUnsignedByte)
     build_datatype(XUnsignedInt)
@@ -627,10 +628,8 @@ record_trace("build_powertype_object = " + aPowertype)
   }
 
   private def build_operation_object(anOper: SOperation) {
-    if (anOper.in != NullDocument)
-      build_object(anOper.in)
-    if (anOper.out != NullDocument)
-      build_object(anOper.out)
+    anOper.in.foreach(build_object)
+    anOper.out.foreach(build_object)
   }
 
   private def build_stateMachine_object(aStateMachine: (String, SStateMachine)) {

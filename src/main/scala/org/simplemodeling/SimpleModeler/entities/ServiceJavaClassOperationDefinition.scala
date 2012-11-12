@@ -23,6 +23,7 @@ class ServiceJavaClassOperationDefinition(
     val qname = owner.qualifiedName
     val resulttype = op.out.map(_.name) | "Void"
     val methodname = op.name
+    val bodymethodname = methodname + "Body"
     val implmethodname = methodname + "Impl"
     val params = op.in.map(x => {
       x.name + " in"
@@ -30,12 +31,19 @@ class ServiceJavaClassOperationDefinition(
     jm_public_method("Response<%s> %s(Request<%s> in)", resulttype, methodname, params) {
       if (op.out.isDefined) {
         code_request_try_return_failure(qname, methodname, "in") {
-          "%s(in)".format(implmethodname)
+          "%s(in)".format(bodymethodname)
         }
       } else {
         code_request_try_ok_failure(qname, methodname, "in") {
-          jm_pln("%s(in)".format(implmethodname))
+          jm_pln("%s(in)".format(bodymethodname))
         }
+      }
+    }
+    jm_public_method("Response<%s> %s(Request<%s> in)", resulttype, bodymethodname, params) {
+      if (op.out.isDefined) {
+        jm_return("%s(in)".format(implmethodname))
+      } else {
+        jm_pln("%s(in)".format(implmethodname))
       }
     }
     jm_protected_method("%s %s(%s) throws Exception", resulttype, implmethodname, params) {

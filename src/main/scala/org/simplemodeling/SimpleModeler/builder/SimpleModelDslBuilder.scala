@@ -18,7 +18,7 @@ import org.goldenport.recorder.Recordable
  *  version Feb.  8, 2012
  *  version Sep. 29, 2012
  *  version Oct. 21, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -216,6 +216,10 @@ class SimpleModelDslBuilder(
       val (name, target, multiplicity) = get_statemachine_by_term(term)
       entity.statemachine(name, target) multiplicity_is multiplicity
     }
+    for (term <- entity.narrativeOperations) {
+      val (name, in, out) = get_operation_by_term(term, entity.packageName)
+      entity.operation(name, in, out)
+    }
     for (term <- entity.narrativeAnnotations) {
       val (name, value) = get_annotation_by_term(term)
       entity.annotation(name, value)
@@ -410,6 +414,13 @@ class SimpleModelDslBuilder(
     statemachine.term = name
     statemachine.states ++= states.map(s => (s, _naming_strategy.makeName(s, StateMachineStateKind)))
     (name, statemachine, mutiplicity)
+  }
+
+  def get_operation_by_term(aTerm: String, pkg: String): (String, SMMAttributeTypeSet, SMMAttributeTypeSet) = {
+    val name = get_name_by_term(aTerm)
+    val in = get_in_by_term(aTerm, pkg)
+    val out = get_out_by_term(aTerm, pkg)
+    (name, in, out)
   }
 
   def get_annotation_by_term(aTerm: String): (String, String) = {

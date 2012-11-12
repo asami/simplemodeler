@@ -3,8 +3,10 @@ package org.simplemodeling.dsl
 import scala.collection.mutable.ArrayBuffer
 
 /*
- * Nov. 17, 2008
- * Dec.  5, 2008
+ * @since   Nov. 17, 2008
+ *  version Dec.  5, 2008
+ * @version Nov. 12, 2012
+ * @author  ASAMI, Tomoharu
  */
 class SOperationSet {
   private val _operations = new ArrayBuffer[SOperation]
@@ -13,7 +15,7 @@ class SOperationSet {
   def operations: Seq[SOperation] = _operations
 
   // from model itself
-  def apply(aName: String, aRequest: SDocument, aResponse: SDocument): SOperation = {
+  def apply(aName: String, aRequest: Option[SAttributeType], aResponse: Option[SAttributeType]): SOperation = {
     create(aName, aRequest, aResponse)
   }
 
@@ -30,7 +32,7 @@ class SOperationSet {
   }    
 
   //
-  def create(aName: String, aRequest: SDocument, aResponse: SDocument): SOperation = {
+  def create(aName: String, aRequest: Option[SAttributeType], aResponse: Option[SAttributeType]): SOperation = {
     val oper = new SOperation(aName, aRequest, aResponse)
     _operations += oper
     oper
@@ -39,6 +41,6 @@ class SOperationSet {
   // from SOperationCandidate
   final def create(aCandidate: SOperationCandidate, aName: String, aRequest: SDocument, aResponse: SDocument): SOperation = {
     aCandidate.done = true
-    create(aName, aRequest, aResponse)
+    create(aName, Some(aRequest), Some(aResponse))
   }
 }

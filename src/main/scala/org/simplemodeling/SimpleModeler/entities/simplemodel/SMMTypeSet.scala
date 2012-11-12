@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.builder._
 /*
  * @since   Oct.  8, 2012
  *  version Oct. 26, 2012
- * @version Nov.  4, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMTypeSet {
@@ -52,20 +52,36 @@ class SMMAttributeTypeSet(
 }
 
 object SMMAttributeTypeSet {
-  def apply(entry: Seq[(String, String)]): SMMAttributeTypeSet = {
+  def apply(entry: Seq[(String, String)], pkg: String): SMMAttributeTypeSet = {
     new SMMAttributeTypeSet(
-      _value_data_type(entry),
+      _value_data_type(entry, pkg),
       _data_type(entry),
       SMMTypeSet.sqlType(entry))
   }
 
-  // TODO handle Value object
-  private def _value_data_type(entry: Seq[(String, String)]): Option[SMMValueDataType] = {
-    TypeLabel.find(entry).flatMap(SMMObjectType.getDataType)
+  private def _value_data_type(entry: Seq[(String, String)], pkg: String): Option[SMMValueDataType] = {
+    TypeLabel.find(entry).map(SMMObjectType.getValueDataType(_, pkg))
   }
 
   private def _data_type(entry: Seq[(String, String)]): Option[SMMDataType] = {
     DatatypeLabel.find(entry).flatMap(SMMObjectType.getDataType)
+  }
+
+  def in(entry: Seq[(String, String)], pkg: String): SMMAttributeTypeSet = {
+    new SMMAttributeTypeSet(_in_value_data_type(entry, pkg))
+  }
+
+  private def _in_value_data_type(entry: Seq[(String, String)], pkg: String): Option[SMMValueDataType] = {
+    InLabel.find(entry).map(SMMObjectType.getValueDataType(_, pkg))
+  }
+
+
+  def out(entry: Seq[(String, String)], pkg: String): SMMAttributeTypeSet = {
+    new SMMAttributeTypeSet(_out_value_data_type(entry, pkg))
+  }
+
+  private def _out_value_data_type(entry: Seq[(String, String)], pkg: String): Option[SMMValueDataType] = {
+    OutLabel.find(entry).map(SMMObjectType.getValueDataType(_, pkg))
   }
 }
 

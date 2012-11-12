@@ -24,6 +24,8 @@ import org.simplemodeling.dsl.datatype.XString
 import org.simplemodeling.dsl.datatype.XDate
 import org.simplemodeling.dsl.datatype.XTime
 import org.simplemodeling.dsl.datatype.XDateTime
+import org.simplemodeling.dsl.datatype.XToken
+import org.simplemodeling.dsl.datatype.ext.XText
 import org.simplemodeling.dsl.datatype.business.XMoney
 import org.simplemodeling.dsl.datatype.business.XPercent
 import org.simplemodeling.dsl.datatype.business.XUnit
@@ -55,10 +57,13 @@ import org.simplemodeling.dsl.One
 import org.simplemodeling.dsl.OneMore
 import org.simplemodeling.dsl.SAttribute
 import org.simplemodeling.dsl.SAttributeType
+import org.simplemodeling.dsl.SOperation
 import org.simplemodeling.dsl.SEntity
 import org.simplemodeling.dsl.STrait
 import org.simplemodeling.dsl.SMultiplicity
 import org.simplemodeling.dsl.SObject
+import org.simplemodeling.dsl.SDocument
+import org.simplemodeling.dsl.SEntityDocument
 import org.simplemodeling.dsl.SValue
 import org.simplemodeling.dsl.SExpression
 import org.simplemodeling.dsl.ZeroMore
@@ -82,7 +87,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -124,15 +129,16 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val aggregations = new ArrayBuffer[SMMAssociation]
   val compositions = new ArrayBuffer[SMMAssociation]
   val statemachines = new ArrayBuffer[SMMStateMachine]
+  val statemachineStates = new ArrayBuffer[(String, String)]
+  val operations = new ArrayBuffer[SMMOperation]
   val powertypeKinds = new ArrayBuffer[String]
   val primaryActors = new ArrayBuffer[SMMAssociation]
   val secondaryActors = new ArrayBuffer[SMMAssociation]
   val supportingActors = new ArrayBuffer[SMMAssociation]
-  val statemachineStates = new ArrayBuffer[(String, String)]
   val scenarioSteps = new ArrayBuffer[SMMAssociation]
 
   /*
-   * Used by 
+   * Used by SimpleModelDslBuilder.
    */
   var narrativeBase: String = ""
   val narrativeTraits = new ArrayBuffer[String]
@@ -154,6 +160,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val narrativeSupportingActors = new ArrayBuffer[String]
   val narrativeGoals = new ArrayBuffer[String]
   val narrativeStateTransitions = new ArrayBuffer[String]
+  val narrativeOperations = new ArrayBuffer[String]
   val narrativeScenarioSteps = new ArrayBuffer[String]
   /**
    * SimpleModelDslBuilder uses to collect composition classes in narrative.
@@ -412,6 +419,16 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     sm
   }
 
+  /**
+   * SimpleModelDslBuilder and TableSimpleModelMakerBuilder
+   * uses this method to add a operation.
+   */
+  final def operation(aName: String, inType: SMMAttributeTypeSet, outType: SMMAttributeTypeSet): SMMOperation = {
+    val op = new SMMOperation(aName, inType, outType)
+    operations += op
+    op
+  }
+
   override protected def set_Annotation_Pf(key: String, value: String) = {
     key match {
       case "tableName"   => tableName = value; true
@@ -531,6 +548,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   def addNarrativeStateTransition(name: String) {
     narrativeStateTransitions += name
+  }
+
+  def addNarrativeOperation(name: String) {
+    narrativeOperations += name
   }
 
   def addNarrativeScenarioStep(step: String) {
@@ -996,12 +1017,13 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     _build_traits(entities, entity)
     _build_powertypes(entities, entity)
     _build_roles(entities, entity)
-    _build_attributes(entity)
+    _build_attributes(entity, entities)
     _build_associations(entity, entities)
     _build_aggregations(entity, entities)
     _build_compositions(entity, entities)
     _build_statemachines(entity)
     _build_statemachineStates(entity)
+    _build_operations(entity, entities)
     entity
   }
 
@@ -1040,7 +1062,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
-  private def _build_attributes(entity: SObject) {
+  private def _build_attributes(entity: SObject, entities: Map[String, SObject]) {
     for (attr <- attributes) {
       attr.attributeType.idType match {
         case Some(t) => {
@@ -1048,8 +1070,13 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
           _build_attribute(entity.attribute_id, attr)
         }
         case _ => {
-          val a = entity.attribute(attr.name, _dsl_type(attr.attributeType), _dsl_multiplicity(attr.multiplicity))
-          _build_attribute(a, attr)
+          _dsl_type(attr.attributeType, entities) match {
+            case Some(t) => {
+              val a = entity.attribute(attr.name, t, _dsl_multiplicity(attr.multiplicity))
+              _build_attribute(a, attr)
+            }
+            case None => record_warning("SMMEntityEntity#_build_attribute")
+          }
           /*
            * SimpleModel2JavaRealmTransformerBase converts SMAttributeType to PObjectType.
            */
@@ -1120,35 +1147,49 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     else Some(s)
   }
 
-  private def _dsl_type(atype: SMMAttributeTypeSet): SAttributeType = {
-    _dsl_type(atype.effectiveAttributeType)
+  private def _dsl_type(atype: SMMAttributeTypeSet, entities: Map[String, SObject]): Option[SAttributeType] = {
+    _dsl_type(atype.effectiveAttributeType, entities)
   }
 
-  private def _dsl_type(otype: SMMObjectType): SAttributeType = {
+  private def _dsl_type(otype: SMMObjectType, entities: Map[String, SObject]): Option[SAttributeType] = {
     def stubvalue(name: String, pkgname: String) = {
       val v = new SValue(name, pkgname)
       v.isMasterSingleton = false
       v
     }
+    def doc(name: String, pkgname: String) = {
+      new SDocument(name, pkgname)
+    }
+    def entitydoc(e: SMMEntityType): Option[SDocument] = {
+      _entity_ref(e.name, entities) match {
+        case Right(r) => Some(new SEntityDocument(e.name, e.packageName))
+        case Left(_) => None
+      }
+    }
     otype match {
-      case v: SMMValueIdType => stubvalue(v.name, v.packageName)
-      case v: SMMValueType => stubvalue(v.name, v.packageName)
-      case _: SMMStringType => XString
-      case _: SMMBooleanType => XBoolean
-      case _: SMMByteType => XByte
-      case _: SMMShortType => XShort
-      case _: SMMIntType => XInt
-      case _: SMMLongType => XLong
-      case _: SMMFloatType => XFloat
-      case _: SMMDoubleType => XDouble
-      case _: SMMIntegerType => XInteger
-      case _: SMMDecimalType => XDecimal
-      case _: SMMDateType => XDate
-      case _: SMMTimeType => XTime
-      case _: SMMDateTimeType => XDateTime
-      case _: SMMMoneyType => XMoney
-      case _: SMMPercentType => XPercent
-      case _: SMMUnitType => XUnit
+      case v: SMMValueIdType => stubvalue(v.name, v.packageName).some
+      case v: SMMValueType => stubvalue(v.name, v.packageName).some
+      case _: SMMStringType => XString.some
+      case _: SMMTokenType => XToken.some
+      case _: SMMTextType => XText.some
+      case _: SMMBooleanType => XBoolean.some
+      case _: SMMByteType => XByte.some
+      case _: SMMShortType => XShort.some
+      case _: SMMIntType => XInt.some
+      case _: SMMLongType => XLong.some
+      case _: SMMFloatType => XFloat.some
+      case _: SMMDoubleType => XDouble.some
+      case _: SMMIntegerType => XInteger.some
+      case _: SMMDecimalType => XDecimal.some
+      case _: SMMDateType => XDate.some
+      case _: SMMTimeType => XTime.some
+      case _: SMMDateTimeType => XDateTime.some
+      case _: SMMMoneyType => XMoney.some
+      case _: SMMPercentType => XPercent.some
+      case _: SMMUnitType => XUnit.some
+      case v: SMMDocumentType => doc(v.name, v.packageName).some
+      case e: SMMEntityType => entitydoc(e)
+      case _ => None
     }
   }
 
@@ -1265,13 +1306,57 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     // TODO
   }
 
+  private def _build_operations(entity: SObject, entities: Map[String, SObject]) {
+    for (op <- operations) {
+      val in = _dsl_type(op.inType, entities)
+      val out = _dsl_type(op.outType, entities)
+      val a = entity.operation(op.name, in, out)
+      _build_operation(a, op)
+    }
+  }
+
+  private def _build_operation(attr: SOperation, src: SMMOperation) {
+    for (a <- _dsl_text(src.name_ja)) {
+      attr.name_ja = a
+    }
+    for (a <- _dsl_text(src.name_en)) {
+      attr.name_en = a
+    }
+    for (a <- _dsl_text(src.term)) {
+      attr.term = a
+    }
+    for (a <- _dsl_text(src.term_ja)) {
+      attr.term_ja = a
+    }
+    for (a <- _dsl_text(src.term_en)) {
+      attr.term_en = a
+    }
+    for (a <- _dsl_text(src.title)) {
+//      attr.title = a XXX
+      attr.caption = a
+    }
+    for (a <- _dsl_text(src.subtitle)) {
+//      attr.subtitle = a XXX
+      attr.brief = a
+    }
+    for (a <- _dsl_text(src.caption)) {
+      attr.caption = a
+    }
+    for (a <- _dsl_text(src.brief)) {
+      attr.brief = a
+    }
+    for (a <- _dsl_text(src.summary)) {
+      attr.summary = a
+    }
+  }
+
   private def _build_value(value: DomainValue): DomainValue = {
     value.term = name
 //    _build_specifications(value)
 //    _build_base(value)
 //    _build_powertypes(value)
 //    _build_roles(value)
-    _build_attributes(value)
+    _build_attributes(value, Map.empty)
     value
   }
 
@@ -1279,7 +1364,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     _build_specifications(doc)
     _build_base(entities, doc)
     _build_traits(entities, doc)
-    _build_attributes(doc)
+    _build_attributes(doc, entities)
     _build_associations(doc, entities)
     _build_aggregations(doc, entities)
     _build_compositions(doc, entities)
@@ -1291,7 +1376,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     _build_base(entities, power)
     _build_traits(entities, power)
     _build_powertypeKinds(power)
-    _build_attributes(power)
+    _build_attributes(power, entities)
     _build_associations(power, entities)
     _build_aggregations(power, entities)
     _build_compositions(power, entities)
@@ -1308,7 +1393,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     _build_specifications(srv)
     _build_base(entities, srv)
     _build_traits(entities, srv)
-    _build_attributes(srv)
+    _build_attributes(srv, entities)
     _build_associations(srv, entities)
     _build_aggregations(srv, entities)
     _build_compositions(srv, entities)
@@ -1337,7 +1422,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 //    _build_base(value)
 //    _build_powertypes(value)
 //    _build_roles(value)
-    _build_attributes(uc)
+    _build_attributes(uc, entities)
     _build_associations(uc, entities)
     _build_aggregations(uc, entities)
     _build_compositions(uc, entities)
@@ -1354,7 +1439,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_rule(entities: Map[String, SObject], dr: DomainRule): DomainRule = {
     dr.term = name
-    _build_attributes(dr)
+    _build_attributes(dr, entities)
 //    _build_associations(dr, entities)
 //    _build_aggregations(dr, entities)
 //    _build_compositions(dr, entities)

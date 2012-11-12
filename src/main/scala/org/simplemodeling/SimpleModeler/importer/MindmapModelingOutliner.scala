@@ -16,7 +16,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
  *  version Oct. 21, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -275,6 +275,14 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def stateTables(term: TopicNode): List[GTable[String]] = {
     _structure_node_tables(term, StateLabel)
+  }
+
+  def operations(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, OperationLabel)
+  }
+
+  def operationTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, OperationLabel)
   }
 
   def annotations(term: TopicNode): List[TopicNode] = {

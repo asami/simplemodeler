@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -131,7 +131,7 @@ class TableSimpleModelMakerBuilder(
     _slot_kind(entry) match {
       case IdLabel => add_id(obj, entry)
       case _ => {
-        val atype = SMMAttributeTypeSet(entry)
+        val atype = SMMAttributeTypeSet(entry, obj.packageName)
         val attr = obj.attribute(_slot_name(entry), atype)
         _build_attribute(attr, entry)
       }
@@ -140,7 +140,7 @@ class TableSimpleModelMakerBuilder(
 
   protected final def add_id(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
 //    println("TableSimpleModelMakerBuilder#add_id:" + entry)
-    val atype = SMMAttributeTypeSet(entry)
+    val atype = SMMAttributeTypeSet(entry, obj.packageName)
     val attr = obj.attribute(_slot_name(entry), atype, true)
     _build_attribute(attr, entry)
   }
@@ -402,5 +402,22 @@ class TableSimpleModelMakerBuilder(
   protected final def add_powertype(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
     val entitytype = SMMEntityTypeSet(entity.packageName, entry)
     val assoc = entity.powertype(_slot_name(entry), entitytype)
+  }
+
+  /**
+   * OutlineBuilderBase uses the method.
+   */
+  def buildOperation(entity: SMMEntityEntity, table: GTable[String]) {
+    println("buildOperationTable:" + table)
+    val rows = for (row <- table.rows) yield {
+      _columns(table.headAsStringList).zip(row)
+    }
+    rows.map(entry => add_operation(entity, entry))
+  }
+
+  protected final def add_operation(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
+    val in = SMMAttributeTypeSet.in(entry, entity.packageName)
+    val out = SMMAttributeTypeSet.out(entry, entity.packageName)
+    val op = entity.operation(_slot_name(entry), in, out)
   }
 }

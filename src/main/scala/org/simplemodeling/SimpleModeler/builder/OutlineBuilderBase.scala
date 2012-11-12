@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
  *  version Oct. 26, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -187,6 +187,8 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 //    _mmx.roleTables(aNode).foreach(_build_role_table(_, target))
     _mmx.states(aNode).foreach(_build_state(_, target))
 //    _mmx.stateTables(aNode).foreach(_build_state_table(_, target))
+    _mmx.operations(aNode).foreach(_build_operation(_, target))
+    _mmx.operationTables(aNode).foreach(_build_operation_table(_, target))
     _mmx.annotations(aNode).foreach(_build_annotation(_, target))
 //    _mmx.annotationTables(aNode).foreach(_build_annotation_table(_, target))
     _mmx.businessusecases(aNode).foreach(_build_businessusecase_compositions(_, target))
@@ -329,6 +331,15 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     target.addNarrativeStateTransition(term)
   }
 
+  private def _build_operation(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    target.addNarrativeOperation(term)
+  }
+
+  private def _build_operation_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildOperation(target, table)
+  }
+
   private def _build_annotation(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     target.addNarrativeAnnotation(term)
@@ -337,7 +348,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _build_businessusecase_aggregations(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     val name = get_name_by_term(term)
-    println("_build_businessusecase_aggregations: " + term)
+//    println("_build_businessusecase_aggregations: " + term)
 //    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
     if (!_mmx.isDefined(name)) {
       record_report("「%s」に集約対象のビジネス・ユースケース「%s」を生成しました。".format(target.name, name))
@@ -353,7 +364,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _build_businesstask_aggregations(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     val name = get_name_by_term(term)
-    println("_build_businesstask_aggregations: " + term)
+//    println("_build_businesstask_aggregations: " + term)
 //    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
     if (!_mmx.isDefined(name)) {
       record_report("「%s」に集約対象のビジネス・タスク「%s」を生成しました。".format(target.name, name))
@@ -369,7 +380,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _build_usecase_aggregations(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     val name = get_name_by_term(term)
-    println("_build_usecase_aggregations: " + term)
+//    println("_build_usecase_aggregations: " + term)
 //    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
     if (!_mmx.isDefined(name)) {
       record_report("「%s」に集約対象のユースケース「%s」を生成しました。".format(target.name, name))
@@ -385,7 +396,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _build_task_aggregations(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     val name = get_name_by_term(term)
-    println("_build_task_aggregations: " + term)
+//    println("_build_task_aggregations: " + term)
 //    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
     if (!_mmx.isDefined(name)) {
       record_report("「%s」に集約対象のタスク「%s」を生成しました。".format(target.name, name))
@@ -401,7 +412,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _build_businessusecase_compositions(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     val name = get_name_by_term(term)
-    println("_build_businessusecase_compositions: " + term)
+//    println("_build_businessusecase_compositions: " + term)
 //    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
     if (!_mmx.isDefined(name)) {
       record_report("「%s」に合成対象のビジネス・ユースケース「%s」を生成しました。".format(target.name, name))
@@ -416,7 +427,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _build_businesstask_compositions(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     val name = get_name_by_term(term)
-    println("_build_businesstask_compositions: " + term)
+//    println("_build_businesstask_compositions: " + term)
 //    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
     if (!_mmx.isDefined(name)) {
       record_report("「%s」に合成対象のビジネス・タスク「%s」を生成しました。".format(target.name, name))
@@ -432,7 +443,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _build_usecase_compositions(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     val name = get_name_by_term(term)
-    println("_build_usecase_compositions: " + term)
+//    println("_build_usecase_compositions: " + term)
 //    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
     if (!_mmx.isDefined(name)) {
       record_report("「%s」に合成対象のユースケース「%s」を生成しました。".format(target.name, name))
@@ -448,7 +459,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _build_task_compositions(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     val name = get_name_by_term(term)
-    println("_build_task_compositions: " + term)
+//    println("_build_task_compositions: " + term)
 //    if (_mmx.isDefinition(source)) { // XXX name conflict, use "!_mmx.isDefined(name)" ?
     if (!_mmx.isDefined(name)) {
       record_report("「%s」に合成対象のタスク「%s」を生成しました。".format(target.name, name))

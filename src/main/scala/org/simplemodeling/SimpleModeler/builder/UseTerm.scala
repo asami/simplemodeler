@@ -8,11 +8,11 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel._
  * @since   Feb.  7, 2012
  *  version Feb.  9, 2012
  *  version Oct. 16, 2012
- * @version Nov.  7, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 trait UseTerm {
-  protected def get_name_by_term(aTerm: String): String = {
+  protected final def get_name_by_term(aTerm: String): String = {
     val index = aTerm.indexOf(':')
     if (index != -1) return _normalize_plain_name(aTerm.substring(0, index))
     val index2 = aTerm.indexOf('(')
@@ -55,24 +55,24 @@ trait UseTerm {
   }
 */
 
-  protected def get_entity_by_term_in_entities(entities: Traversable[SMMEntityEntity], term: String): Option[SMMEntityEntity] = {
+  protected final def get_entity_by_term_in_entities(entities: Traversable[SMMEntityEntity], term: String): Option[SMMEntityEntity] = {
     val entityname = get_entity_type_name_by_term(term).toLowerCase
     val r  = entities.find(_.term.toLowerCase == entityname)
 //    println("get_entity_type_name_by_term: " + r + " => " + entities.map(x => x.name -> x.term) + " / " + entityname)
     r
   } 
 
-  protected def get_entity_type_name_by_term(term: String): String = {
+  protected final def get_entity_type_name_by_term(term: String): String = {
     get_type_name_explicitly(term) | trim_adornment(term)
   }
 
-  protected def get_attribute_type_by_term(aTerm: String): SMMAttributeTypeSet = {
+  protected final def get_attribute_type_by_term(aTerm: String): SMMAttributeTypeSet = {
     val t = get_type_name_explicitly(aTerm).flatMap(SMMObjectType.getDataType) | SMMStringType
     new SMMAttributeTypeSet(t.some)
   }
 
 /*
-  protected def get_attribute_type_by_term(aTerm: String): SMMObjectType = {
+  protected final def get_attribute_type_by_term(aTerm: String): SMMObjectType = {
     def get_type(aTypeName: String) = {
       aTypeName match {
         case "boolean"       => SMMBooleanType
@@ -96,7 +96,7 @@ trait UseTerm {
   }
 */
 
-  protected def get_type_name_explicitly(term: String): Option[String] = {
+  protected final def get_type_name_explicitly(term: String): Option[String] = {
     val index = term.indexOf(':')
     if (index == -1) return None
     val index2 = term.indexOf('(', index)
@@ -107,7 +107,7 @@ trait UseTerm {
     }
   }
 
-  protected def trim_adornment(term: String) = {
+  protected final def trim_adornment(term: String) = {
     @inline def isadornment(c: Char) = {
       c == ':' || c == '(' ||
       c == '?' || c == '+' || c == '*'
@@ -116,7 +116,7 @@ trait UseTerm {
     term.takeWhile(nonadornment).trim
   }
 
-  protected def get_labels_by_term(aTerm: String): Seq[String] = {
+  protected final def get_labels_by_term(aTerm: String): Seq[String] = {
     val start = aTerm.indexOf('(')
     if (start == -1) return Nil
     val delimiter = "[;. ]+"
@@ -125,13 +125,41 @@ trait UseTerm {
     else aTerm.substring(start + 1, end).split(delimiter)
   }
 
-  protected def get_multiplicity_by_term(aTerm: String): GRMultiplicity = {
+  protected final def get_multiplicity_by_term(aTerm: String): GRMultiplicity = {
     aTerm(aTerm.length - 1) match {
       case '?' => GRZeroOne
       case '+' => GROneMore
       case '*' => GRZeroMore
       case _   => GROne
     }
+  }
+
+  protected final def get_in_by_term(term: String, pkg: String): SMMAttributeTypeSet = {
+    val a = _in_type_name(term).map(SMMObjectType.getValueDataType(_, pkg))
+    new SMMAttributeTypeSet(a)
+  }
+
+  private def _in_type_name(term: String): Option[String] = {
+    val index = term.indexOf('(')
+    if (index == -1) return None
+    val index2 = term.indexOf(')', index)
+    if (index2 == -1) return None
+    val index3 = term.indexOf(':', index)
+    if (index3 == -1) term.substring(index + 1, index2 - 1).some
+    else term.substring(index3 + 1, index2 - 1).some
+  }
+
+  protected final def get_out_by_term(term: String, pkg: String): SMMAttributeTypeSet = {
+    val a = _out_type_name(term).map(SMMObjectType.getValueDataType(_, pkg))
+    new SMMAttributeTypeSet(a)
+  }
+
+  private def _out_type_name(term: String): Option[String] = {
+    val index = term.indexOf(')')
+    if (index == -1) return None
+    val index2 = term.indexOf(':', index)
+    if (index2 == -1) None
+    else term.substring(index + 2).trim.some
   }
 }
 /*

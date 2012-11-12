@@ -7,7 +7,8 @@ import scala.collection.mutable.ArrayBuffer
  * @since   Jan. 30, 2009
  *  version Jul. 12, 2009
  *  version Mar. 24, 2012
- * @version Oct. 30, 2012
+ *  version Oct. 30, 2012
+ * @version Nov. 12, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -80,6 +81,16 @@ class SMMStringType extends SMMDataType("XString", "org.simplemodeling.dsl.datat
   val candidates = List("string")
 }
 object SMMStringType extends SMMStringType
+
+class SMMTokenType extends SMMDataType("XToken", "org.simplemodeling.dsl.datatype") {
+  val candidates = List("token")
+}
+object SMMTokenType extends SMMTokenType
+
+class SMMTextType extends SMMDataType("XText", "org.simplemodeling.dsl.datatype") {
+  val candidates = List("text")
+}
+object SMMTextType extends SMMTextType
 
 class SMMBooleanType extends SMMDataType("XBoolean", "org.simplemodeling.dsl.datatype") {
   val candidates = List("boolean")
@@ -177,6 +188,11 @@ class SMMUnitType extends SMMDataType("XUnit", "org.simplemodeling.dsl.datatype.
 }
 object SMMUnitType extends SMMUnitType
 
+//
+class SMMDocumentType(name: String, pkg: String) extends SMMDataType(name, pkg) {
+  val candidates = Nil
+}
+
 // Special datatype
 class SMMUnknownDataType(val unkonwn: String) extends SMMDataType("XString", "org.simplemodeling.dsl.datatype") {
   val candidates = Nil
@@ -254,6 +270,9 @@ class SMMSqlUnknownDataType(val unkonwn: String) extends SMMSqlDataType("TEXT", 
  */
 object SMMObjectType {
   val datatypes = List(
+    SMMStringType,
+    SMMTokenType,
+    SMMTextType,
     SMMShortType,
     SMMBooleanType,
     SMMByteType,
@@ -277,6 +296,10 @@ object SMMObjectType {
 
   def getDataType(string: String): Option[SMMDataType] = {
     datatypes.find(_.isMatch(string))
+  }
+
+  def getValueDataType(name: String, pkgname: String): SMMDataType = {
+    getDataType(name) | new SMMDocumentType(name, pkgname)
   }
 
   def getDataTypeOrUnkonwn(string: String): SMMDataType = {
