@@ -5,13 +5,14 @@ import org.goldenport.value._
 import org.goldenport.sdoc._
 
 /*
- * Dec. 20, 2008
- * Mar. 18, 2009
+ * @since   Dec. 20, 2008
+ *  version Mar. 18, 2009
+ * @version Nov. 13, 2012
  * ASAMI, Tomoharu
  */
-class SStateMachine(aName: String) extends SElement(aName) {
-  type Descriptable_TYPE = SStateMachine
-  type Historiable_TYPE = SStateMachine
+class SStateMachine(aName: String, pkgname: String) extends SObject(aName, pkgname) {
+//  type Descriptable_TYPE = SStateMachine
+//  type Historiable_TYPE = SStateMachine
   val stateMap = new LinkedHashMap[String, SState]
   protected var _current: SState = null
 
@@ -19,7 +20,7 @@ class SStateMachine(aName: String) extends SElement(aName) {
     set_name_by_className
   }
 
-  def this() = this(null)
+  def this() = this(null, null)
 
   final def transitions: Seq[STransition] = {
     for {
@@ -44,4 +45,4 @@ class SStateMachine(aName: String) extends SElement(aName) {
   }
 }
 
-object NullStateMachine extends SStateMachine(null)
+object NullStateMachine extends SStateMachine(null, null)

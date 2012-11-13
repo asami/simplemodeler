@@ -32,6 +32,7 @@ import org.simplemodeling.dsl.datatype.business.XUnit
 import org.simplemodeling.dsl.IdAttributeKind
 import org.simplemodeling.dsl.SUsecase
 import org.simplemodeling.dsl.STask
+import org.simplemodeling.dsl.SPowertypeKind
 import org.simplemodeling.dsl.business.BusinessEntity
 import org.simplemodeling.dsl.business.BusinessActor
 import org.simplemodeling.dsl.business.BusinessResource
@@ -129,13 +130,26 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val aggregations = new ArrayBuffer[SMMAssociation]
   val compositions = new ArrayBuffer[SMMAssociation]
   val statemachines = new ArrayBuffer[SMMStateMachine]
-  val statemachineStates = new ArrayBuffer[(String, String)]
+//  val statemachineStates = new ArrayBuffer[(String, String)]
   val operations = new ArrayBuffer[SMMOperation]
-  val powertypeKinds = new ArrayBuffer[String]
+//  val powertypeKinds = new ArrayBuffer[String]
   val primaryActors = new ArrayBuffer[SMMAssociation]
   val secondaryActors = new ArrayBuffer[SMMAssociation]
   val supportingActors = new ArrayBuffer[SMMAssociation]
   val scenarioSteps = new ArrayBuffer[SMMAssociation]
+
+  /*
+   * TableSimpleModelMakerBuilder registers kinds and states.
+   * Used by SimpleModelDslBuilder. XXX
+   */
+  /**
+   * Be active in case of Powertype.
+   */
+  val powertypeKinds = new ArrayBuffer[SMMPowertypeKind]
+  /**
+   * Be active in case of StateMachine.
+   */
+  val statemachineStates = new ArrayBuffer[SMMStateMachineState]
 
   /*
    * Used by SimpleModelDslBuilder.
@@ -143,6 +157,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   var narrativeBase: String = ""
   val narrativeTraits = new ArrayBuffer[String]
   val narrativePowertypes = new ArrayBuffer[String]
+  val narrativeKinds = new ArrayBuffer[String]
   val narrativeRoles = new ArrayBuffer[String]
   val narrativeAttributes = new ArrayBuffer[String]
   val narrativeParts = new ArrayBuffer[String]
@@ -236,6 +251,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
+  /**
+   * not used
+   */
   def effectiveAttributes(): Seq[SMMAttribute] = {
     require (isResolved, "SMMEntityEntity#effectiveAttributes requires that entity has been resolved: " + name)
     base.effectiveAttributes ++ traits.flatMap(_.effectiveAttributes) ++ attributes
@@ -260,7 +278,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     powertype.kind = PowertypeKind
     powertype.term = aPowertypeType.term
     powertype.packageName = aPowertypeType.packageName
-    powertype.powertypeKinds ++= aPowertypeType.instances
+    powertype.powertypeKinds ++= aPowertypeType.instances.map(SMMPowertypeKind.create)
     addPrivateObject(powertype)
     val pt = new SMMPowertype(aName, aPowertypeType)
     powertypes += pt
@@ -404,7 +422,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     statemachine.kind = StateMachineKind
     statemachine.term = aStateMachineType.term
     statemachine.packageName = aStateMachineType.packageName
-    statemachine.statemachineStates ++= states
+    statemachine.statemachineStates ++= states.map(SMMStateMachineState.create)
     addPrivateObject(statemachine)
     for (state <- states) {
       val s = new SMMEntityEntity(entityContext)
@@ -492,6 +510,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   final def addNarrativePowertype(aName: String) {
     narrativePowertypes += aName
+  }
+
+  final def addNarrativeKind(aName: String) {
+    narrativeKinds += aName
   }
 
   final def addNarrativeRole(aName: String) {
@@ -806,7 +828,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
         buffer.print("kind")
         buffer.print("(")
         buffer.print("\"")
-        buffer.print(kind)
+        buffer.print(kind.toString) // XXX
         buffer.print("\"")
         buffer.print(")")
         buffer.println()
@@ -817,7 +839,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       for (state <- statemachineStates) {
         buffer.print("state")
         buffer.print("(")
-        buffer.print(state._2)
+        buffer.print(state.toString) // XXX
         buffer.print("()")
         buffer.print(")")
         buffer.println()
@@ -936,6 +958,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 //        override def isObjectScope = true
         isMasterSingleton = true
       }
+      case StateMachineKind    => new DomainStateMachine(name, packageName) {
+//        override def isObjectScope = true
+        isMasterSingleton = true
+      }
       case DocumentKind    => new DomainDocument(name, packageName) {
 //        override def isObjectScope = true
         isMasterSingleton = true
@@ -985,6 +1011,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case Some(entity: DomainEntity) => _build_entity(entity, entities)
       case Some(value: DomainValue) => _build_value(value)
       case Some(power: DomainPowertype) => _build_powertype(power, entities)
+      case Some(sm: DomainStateMachine) => _build_statemachine(sm, entities)
       case Some(doc: DomainDocument) => _build_document(doc, entities)
       case Some(srv: DomainService) => _build_service(srv, entities)
       case Some(dr: DomainRule) => _build_rule(entities, dr)
@@ -992,7 +1019,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case Some(t: BusinessTask) => _build_businesstask(entities, t)
       case Some(uc: RequirementUsecase) => _build_usecase(entities, uc)
       case Some(t: RequirementTask) => _build_task(entities, t)
-      case Some(x) => sys.error("buildSObject:" + x)
+      case Some(x) => sys.error("buildSObject: " + x)
       case None => sys.error("buildSObject")
     }
     privateObjects.foreach(_.buildSObjects(entities))
@@ -1391,7 +1418,27 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_powertypeKinds(entity: DomainPowertype) {
     for (kind <- powertypeKinds) {
-      entity.kind(kind)
+      val k = new SPowertypeKind(kind.name, kind.value)
+      entity.kind(k)
+    }
+  }
+
+  private def _build_statemachine(sm: DomainStateMachine, entities: Map[String, SObject]): DomainStateMachine = {
+    _build_specifications(sm)
+    _build_base(entities, sm)
+    _build_traits(entities, sm)
+    _build_statemachineStates(sm)
+    _build_attributes(sm, entities)
+    _build_associations(sm, entities)
+    _build_aggregations(sm, entities)
+    _build_compositions(sm, entities)
+    sm
+  }
+
+  private def _build_statemachineStates(entity: DomainStateMachine) {
+    for (state <- statemachineStates) {
+      val s = new DomainState(state.name)
+      entity.state(s)
     }
   }
 

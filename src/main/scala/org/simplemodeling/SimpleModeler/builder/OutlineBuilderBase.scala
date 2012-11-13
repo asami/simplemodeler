@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
  *  version Oct. 26, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -58,6 +58,8 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
       _mmx.roleTables.foreach(create_object_table(RoleKind, _))
       _mmx.powertypes.foreach(_create_powertype)
       _mmx.powertypeTables.foreach(create_object_table(PowertypeKind, _))
+      _mmx.statemachines.foreach(_create_statemachine)
+      _mmx.statemachineTables.foreach(create_object_table(StateMachineKind, _))
       _mmx.documents.foreach(_create_document)
       _mmx.documentTables.foreach(create_object_table(DocumentKind, _))
       _mmx.values.foreach(_create_value)
@@ -101,6 +103,12 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _create_powertype(source: TopicNode) {
     val name = get_name_by_term(source.title)
     val target = model_Builder.createObject(PowertypeKind, name)
+    _build_object(source, target)
+  }
+
+  private def _create_statemachine(source: TopicNode) {
+    val name = get_name_by_term(source.title)
+    val target = model_Builder.createObject(StateMachineKind, name)
     _build_object(source, target)
   }
 
@@ -183,12 +191,16 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 //    _mmx.derivationTables(aNode).foreach(_build_derivation_table(_, target))
     _mmx.powertypes(aNode).foreach(_build_powertype(_, target))
     _mmx.powertypeTables(aNode).foreach(_build_powertype_table(_, target))
+    _mmx.kinds(aNode).foreach(_build_kind(_, target))
+    _mmx.kindTables(aNode).foreach(_build_kind_table(_, target))
+    _mmx.statemachines(aNode).foreach(_build_statemachine(_, target))
+    _mmx.statemachineTables(aNode).foreach(_build_statemachine_table(_, target))
+    _mmx.states(aNode).foreach(_build_state(_, target))
+    _mmx.stateTables(aNode).foreach(_build_state_table(_, target))
     _mmx.documents(aNode).foreach(_build_document(_, target))
     _mmx.documentTables(aNode).foreach(_build_document_table(_, target))
     _mmx.roles(aNode).foreach(_build_role(_, target))
 //    _mmx.roleTables(aNode).foreach(_build_role_table(_, target))
-    _mmx.states(aNode).foreach(_build_state(_, target))
-//    _mmx.stateTables(aNode).foreach(_build_state_table(_, target))
     _mmx.operations(aNode).foreach(_build_operation(_, target))
     _mmx.operationTables(aNode).foreach(_build_operation_table(_, target))
     _mmx.annotations(aNode).foreach(_build_annotation(_, target))
@@ -298,6 +310,19 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     _table_builder.buildPowertype(target, table)
   }
 
+  private def _build_kind_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildPowertypeKind(target, table)
+  }
+
+  private def _build_statemachine_table(table: GTable[String], target: SMMEntityEntity) {
+//    _table_builder.buildStatemachine(target, table)
+  }
+
+  private def _build_state_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildState(target, table)
+  }
+
+
   private def _build_document_table(table: GTable[String], target: SMMEntityEntity) {
 //    _table_builder.buildDocument(target, table)
   }
@@ -327,6 +352,39 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     }
   }
 
+  private def _build_kind(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    val labels = source.children.map(_.title)
+    labels match {
+      case Nil => target.addNarrativeKind(term)
+      case _ => target.addNarrativeKind(term + labels.mkString("(", ";", ")"))
+    }
+  }
+
+  private def _build_statemachine(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    val labels = source.children.map(_.title)
+    labels match {
+      case Nil => target.addNarrativeStateMachine(term)
+      case _ => target.addNarrativeStateMachine(term + labels.mkString("(", ";", ")"))
+    }
+  }
+
+  private def _build_state(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    target.addNarrativeStateTransition(term)
+  }
+/*
+  private def _build_state(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    val labels = source.children.map(_.title)
+    labels match {
+      case Nil => target.addNarrativeState(term)
+      case _ => target.addNarrativeState(term + labels.mkString("(", ";", ")"))
+    }
+  }
+*/
+
   private def _build_document(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     val name = get_name_by_term(term)
@@ -344,11 +402,6 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   private def _build_role(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     target.addNarrativeRole(term)
-  }
-
-  private def _build_state(source: TopicNode, target: SMMEntityEntity) {
-    val term = source.title
-    target.addNarrativeStateTransition(term)
   }
 
   private def _build_operation(source: TopicNode, target: SMMEntityEntity) {

@@ -16,7 +16,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
  *  version Oct. 21, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -104,6 +104,14 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def powertypeTables: List[GTable[String]] = {
     _structure_node_thema_boi_tables(PowertypeLabel)
+  }
+
+  def statemachines = {
+    structure_node_children(thema, StatemachineLabel)
+  }
+
+  def statemachineTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(StatemachineLabel)
   }
 
   def documents = {
@@ -235,6 +243,22 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def powertypeTables(term: TopicNode): List[GTable[String]] = {
     _structure_node_tables(term, PowertypeLabel)
+  }
+
+  def kinds(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, KindLabel)
+  }
+
+  def kindTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, KindLabel)
+  }
+
+  def statemachines(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, StatemachineLabel)
+  }
+
+  def statemachineTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, StatemachineLabel)
   }
 
   def documents(term: TopicNode): List[TopicNode] = {

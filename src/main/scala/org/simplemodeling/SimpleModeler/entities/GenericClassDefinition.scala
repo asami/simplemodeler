@@ -44,7 +44,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -700,9 +700,8 @@ abstract class GenericClassDefinition(
    * Service methods
    */
   protected def service_methods {
-    println("GenericClassDefinition#service_methods")
     for (op <- implementsOperationDefinitions) {
-      println("GenericClassDefinition#service_methods(%s)".format(op.op.name))
+      record_trace("GenericClassDefinition#service_methods(%s)".format(op.op.name))
       op.method
     }
   }

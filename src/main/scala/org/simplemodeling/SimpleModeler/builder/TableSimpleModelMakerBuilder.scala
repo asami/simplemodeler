@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -392,6 +392,26 @@ class TableSimpleModelMakerBuilder(
   /**
    * OutlineBuilderBase uses the method.
    */
+  def buildOperation(entity: SMMEntityEntity, table: GTable[String]) {
+    println("buildOperationTable:" + table)
+    val rows = for (row <- table.rows) yield {
+      _columns(table.headAsStringList).zip(row)
+    }
+    rows.map(entry => add_operation(entity, entry))
+  }
+
+  protected final def add_operation(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
+    val in = SMMAttributeTypeSet.in(entry, entity.packageName)
+    val out = SMMAttributeTypeSet.out(entry, entity.packageName)
+    val op = entity.operation(_slot_name(entry), in, out)
+  }
+
+  /*
+   * Special objects
+   */
+  /**
+   * OutlineBuilderBase uses the method.
+   */
   def buildPowertype(entity: SMMEntityEntity, table: GTable[String]) {
     val rows = for (row <- table.rows) yield {
       _columns(table.headAsStringList).zip(row)
@@ -402,6 +422,38 @@ class TableSimpleModelMakerBuilder(
   protected final def add_powertype(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
     val entitytype = SMMEntityTypeSet(entity.packageName, entry)
     val assoc = entity.powertype(_slot_name(entry), entitytype)
+  }
+
+  /**
+   * OutlineBuilderBase uses the method.
+   * An entity of SMMEntityEntity should be Powertype.
+   */
+  def buildPowertypeKind(entity: SMMEntityEntity, table: GTable[String]) {
+    val rows = for (row <- table.rows) yield {
+      _columns(table.headAsStringList).zip(row)
+    }
+    rows.map(entry => add_powertypekind(entity, entry))
+  }
+
+  protected final def add_powertypekind(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
+    val k = SMMPowertypeKind.create(entry)
+    entity.powertypeKinds += k
+  }
+
+  /**
+   * OutlineBuilderBase uses the method.
+   * An entity of SMMEntityEntity should be StateMachine.
+   */
+  def buildState(entity: SMMEntityEntity, table: GTable[String]) {
+    val rows = for (row <- table.rows) yield {
+      _columns(table.headAsStringList).zip(row)
+    }
+    rows.map(entry => add_state(entity, entry))
+  }
+
+  protected final def add_state(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
+    val s = SMMStateMachineState.create(entry)
+    entity.statemachineStates += s
   }
 
   /**
@@ -420,21 +472,5 @@ class TableSimpleModelMakerBuilder(
     val assoc = entity.document(_slot_name(entry), entitytype)
   }
 */
-
-  /**
-   * OutlineBuilderBase uses the method.
-   */
-  def buildOperation(entity: SMMEntityEntity, table: GTable[String]) {
-    println("buildOperationTable:" + table)
-    val rows = for (row <- table.rows) yield {
-      _columns(table.headAsStringList).zip(row)
-    }
-    rows.map(entry => add_operation(entity, entry))
-  }
-
-  protected final def add_operation(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
-    val in = SMMAttributeTypeSet.in(entry, entity.packageName)
-    val out = SMMAttributeTypeSet.out(entry, entity.packageName)
-    val op = entity.operation(_slot_name(entry), in, out)
-  }
 }
+
