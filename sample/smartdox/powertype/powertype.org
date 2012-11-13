@@ -1,0 +1,14 @@
+#+title: Powertype
+
+* Powertype
+
+** Inline(one;two;three)
+
+** Table
+
+#+caption: kind
+| name    | value | description |
+|---------+-------+-------------|
+| unknown |     0 | unknown     |
+| male    |     1 | man         |
+| female  |     2 | woman       |

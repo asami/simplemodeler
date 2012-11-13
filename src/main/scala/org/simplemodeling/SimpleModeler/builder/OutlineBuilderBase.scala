@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
  *  version Oct. 26, 2012
- * @version Nov. 13, 2012
+ * @version Nov. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -101,9 +101,14 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   private def _create_powertype(source: TopicNode) {
-    val name = get_name_by_term(source.title)
+    val term = source.title
+    val name = get_name_by_term(term)
+    val labels = get_labels_by_term(term)
     val target = model_Builder.createObject(PowertypeKind, name)
     _build_object(source, target)
+    for (k <- labels) {
+      target.powertypeKinds += SMMPowertypeKind.create(k)
+    }
   }
 
   private def _create_statemachine(source: TopicNode) {
