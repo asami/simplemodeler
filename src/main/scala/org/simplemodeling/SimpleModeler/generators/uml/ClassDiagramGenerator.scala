@@ -17,7 +17,7 @@ import org.goldenport.Strings
  *  version Nov. 20, 2011
  *  version Sep. 18, 2012
  *  version Oct. 23, 2012
- * @version Nov.  5, 2012
+ * @version Nov. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -389,10 +389,10 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
             def process_object(aSmOwner: SMObject, aSmOwnerId: String, aDerived: Boolean) {
               add_derivation_statemachine_objects(aSmOwner, aSmOwnerId)
               for (stateMachine <- aSmOwner.stateMachines) {
-                if (stateMachine.isReceiveEvent(aSource)) {
+                val sm = stateMachine.statemachine
+                if (sm.isReceiveEvent(aSource)) {
                   val smId = aSmOwnerId + "association" + "statemachine" + counter
                   counter += 1
-                  val sm = stateMachine
                   aThema match {
                     case "hilight" => graph.addStateMachineSimple(sm, smId)
                     case "perspective" => {
@@ -519,16 +519,16 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
           for (stateMachine <- aSource.stateMachines) {
             val targetId = "statemachine" + counter
             counter += 1
-            val target = stateMachine
+            val target = stateMachine.statemachine
             aThema match {
               case "hilight" => graph.addStateMachineSimple(target, targetId)
               case "perspective" => {
                 graph.addStateMachineFull(target, targetId)
-                add_income_events(stateMachine, targetId)
+                add_income_events(target, targetId)
               }
               case "detail" => {
                 graph.addStateMachineFull(target, targetId)
-                add_income_events(stateMachine, targetId)
+                add_income_events(target, targetId)
               }
             }
             if (aDerived)

@@ -14,7 +14,7 @@ import com.asamioffice.goldenport.text.UPathString
  *  version Feb.  7, 2012
  *  version Apr.  8, 2012
  *  version Oct. 16, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
@@ -31,7 +31,7 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   val _associations = new ArrayBuffer[SMAssociation]
   val _operations = new ArrayBuffer[SMOperation]
   val _ports = new ArrayBuffer[SMPort]
-  val _stateMachines = new ArrayBuffer[SMStateMachine]
+  val _stateMachines = new ArrayBuffer[SMStateMachineRelationship]
   val _roles = new ArrayBuffer[SMRoleRelationship]
   val _services = new ArrayBuffer[SMServiceRelationship]
   val _rules = new ArrayBuffer[SMRuleRelationship]
@@ -225,7 +225,7 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   def associations: Seq[SMAssociation] = _associations
   def operations: Seq[SMOperation] = _operations
   def ports: Seq[SMPort] = _ports
-  def stateMachines: Seq[SMStateMachine] = _stateMachines
+  def stateMachines: Seq[SMStateMachineRelationship] = _stateMachines
   def roles: Seq[SMRoleRelationship] = _roles
   def services: Seq[SMServiceRelationship] = _services
   def rules: Seq[SMRuleRelationship] = _rules
@@ -277,8 +277,8 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
     _ports += new SMPort(aPort)
   }
 
-  private def add_stateMachine(aStatemachine: (String, SStateMachine)) {
-    _stateMachines += new SMStateMachine(aStatemachine._2, this)
+  private def add_stateMachine(aStatemachine: SStateMachineRelationship) {
+    _stateMachines += new SMStateMachineRelationship(aStatemachine)
   }
 
   private def add_role(aRole: SRoleRelationship) {

@@ -1,0 +1,13 @@
+#+title: StateMachine
+
+* StateMachine
+
+** Typical
+
+#+caption: state
+| 名前      | 値 | 概要            |
+|-----------+----+-----------------|
+| available |  0 | running         |
+| suspended |  1 | stopped         |
+| deleted   |  2 | already removed |
+

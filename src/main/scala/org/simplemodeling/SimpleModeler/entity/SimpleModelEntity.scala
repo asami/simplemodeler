@@ -29,7 +29,7 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Jan. 30, 2012
  *  version Jun. 17, 2012
  *  version Oct. 16, 2012
- * @version Nov. 13, 2012
+ * @version Nov. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) with SimpleModelEntityHelper {
@@ -173,6 +173,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
       case value: DomainValue => build_domain_value(value)
       case document: DomainDocument => build_domain_document(document)
       case powertype: DomainPowertype => build_domain_powertype(powertype)
+      case sm: DomainStateMachine => build_domain_statemachine(sm)
       case service: DomainService => build_domain_service(service)
       case rule: DomainRule => build_domain_rule(rule)
       case entity: BusinessActor => build_business_actor(entity)
@@ -367,6 +368,14 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
     build_object(powertype, aPowertype)
     pkg.addChild(powertype)
     build_relation_objects(aPowertype)
+  }
+
+  private def build_domain_statemachine(sm: DomainStateMachine) {
+    val pkg = build_package(sm)
+    val statemachine = new SMDomainStateMachine(sm)
+//    build_object(statemachine, sm)
+    pkg.addChild(statemachine)
+    build_relation_objects(sm)
   }
 
   private def build_domain_service(aService: DomainService) {
@@ -632,7 +641,7 @@ record_trace("build_powertype_object = " + aPowertype)
     anOper.out.foreach(build_object)
   }
 
-  private def build_stateMachine_object(aStateMachine: (String, SStateMachine)) {
+  private def build_stateMachine_object(aStateMachine: SStateMachineRelationship) {
     def build_state(aState: SState) {
       val state = SStateRepository.getState(aState.qualifiedName)
       for (transition <- state.transitions) {
@@ -641,7 +650,7 @@ record_trace("build_powertype_object = " + aPowertype)
       state.subStates.foreach(build_state)
     }
 
-    for (state <- aStateMachine._2.stateMap.values.toList) {
+    for (state <- aStateMachine.statemachine.stateMap.values.toList) {
       build_state(state)
     }
   }
@@ -882,13 +891,14 @@ record_trace("build_powertype_object = " + aPowertype)
       }
 
       private def resolve_stateMachines(anObject: SMObject) {
-        def resolve_stateMachine(aMachine: SMStateMachine) {
+        def resolve_stateMachine(aMachine: SMStateMachineRelationship) {
+          val sm = aMachine.statemachine
           def resolve_state(aState: SMState) {
             for (transition <- aState.transitions) {
               transition.resource = anObject
               transition.event = getObject(transition.dslTransition.event.qualifiedName)
-              transition.preState = aMachine.getState(transition.dslTransition.preState)
-              transition.postState = aMachine.getState(transition.dslTransition.postState)
+              transition.preState = sm.getState(transition.dslTransition.preState)
+              transition.postState = sm.getState(transition.dslTransition.postState)
               transition.event match {
                 case event: SMDomainEvent => event.resourceTransitions += transition
                 case _ => sys.error("not event = " + transition.event)
@@ -899,7 +909,7 @@ record_trace("build_powertype_object = " + aPowertype)
             }
           }
 
-          for (state <- aMachine.states) {
+          for (state <- sm.states) {
             resolve_state(state)
           }
 /*

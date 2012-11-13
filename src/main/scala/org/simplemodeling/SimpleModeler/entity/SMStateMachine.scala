@@ -7,11 +7,15 @@ import org.goldenport.sdoc._
 import org.simplemodeling.SimpleModeler.sdoc._
 
 /*
- * Dec. 22, 2008
- * Mar. 19, 2009
- * ASAMI, Tomoharu
+ * @since   Dec. 22, 2008
+ *  version Mar. 19, 2009
+ * @version Nov. 14, 2012
+ * @author  ASAMI, Tomoharu
  */
-class SMStateMachine(val dslStateMachine: SStateMachine, val ownerObject: SMObject) extends SMElement(dslStateMachine) {
+class SMStateMachine(
+  val dslStateMachine: SStateMachine
+//  , val ownerObject: SMObject
+) extends SMObject(dslStateMachine) {
   val wholeStateMap = new LinkedHashMap[String, SMState]
   val stateMap = new LinkedHashMap[String, SMState]
   def states = stateMap.values.toList
@@ -238,4 +242,5 @@ class SMStateMachine(val dslStateMachine: SStateMachine, val ownerObject: SMObje
   }
 }
 
-object SMNullStateMachine extends SMStateMachine(NullStateMachine, SMNullObject)
+// object SMNullStateMachine extends SMStateMachine(NullStateMachine, SMNullObject)
+object SMNullStateMachine extends SMStateMachine(NullStateMachine)

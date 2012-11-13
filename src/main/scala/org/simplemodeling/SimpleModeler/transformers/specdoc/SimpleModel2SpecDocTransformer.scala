@@ -18,7 +18,8 @@ import org.simplemodeling.dsl.domain._
 
 /*
  * @since   Sep. 13, 2008
- * @version Apr. 17, 2011
+ *  version Apr. 17, 2011
+ * @version Nov. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2SpecDocTransformer(val simpleModel: SimpleModelEntity) {
@@ -1148,22 +1149,24 @@ class SimpleModel2SpecDocTransformer(val simpleModel: SimpleModelEntity) {
       }
 
       // stateMachine
-      def add_stateMachine(aStateMachine: SMStateMachine): SDEntity = {
+      def add_stateMachine(aStateMachine: SMStateMachineRelationship): SDEntity = {
+        val sm = aStateMachine.statemachine
         val stateMachineEntity = new SDEntity(aStateMachine.name)
 
         def add_states {
           val spec = new SBDivision()
           if (drawDiagram) {
             val generator = new StateMachineDiagramGenerator(simpleModel)
-            val binary = generator.makeStateMachineDiagramPng(aStateMachine)
+            val binary = generator.makeStateMachineDiagramPng(aStateMachine.statemachine)
             val figure = new SBBinaryContentFigure(binary)
-            figure.src = "StateMachineDiagram" + aStateMachine.ownerObject.name + aStateMachine.name + ".png"
+//            figure.src = "StateMachineDiagram" + aStateMachine.ownerObject.name + aStateMachine.name + ".png"
+            figure.src = "StateMachineDiagram" + sm.name + ".png"
             spec.addChild(figure)
           }
           //
           val table = SBTable()
           table.title = "状態遷移表"
-          aStateMachine.buildStateTransitionTable(table.table)
+          sm.buildStateTransitionTable(table.table)
           spec.addChild(table)
           //
           stateMachineEntity.specification = spec
@@ -1182,7 +1185,7 @@ class SimpleModel2SpecDocTransformer(val simpleModel: SimpleModelEntity) {
         stateMachineEntity
       }
 
-      def add_derived_stateMachine(aStateMachine: SMStateMachine, anOwner: SMObject) {
+      def add_derived_stateMachine(aStateMachine: SMStateMachineRelationship, anOwner: SMObject) {
         val smEntity = add_stateMachine(aStateMachine)
         smEntity.addFeature(FeatureOwnerClass, object_literal(anOwner))
       }

@@ -26,7 +26,7 @@ import org.goldenport.entity.content.ResourceContent
  * @since   Dec. 12, 2011
  *  version Dec. 14, 2011
  *  version Oct. 26, 2012
- * @version Nov. 10, 2012
+ * @version Nov. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -107,6 +107,12 @@ class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
     override protected def create_Powertype(entity: SMDomainPowertype): Option[DomainPowertypeTYPE] = {
       val r = new Java6PowertypeEntity(target_context)
       r.modelPowertype = entity
+      Some(r)
+    }
+
+    override protected def create_StateMachine(entity: SMDomainStateMachine): Option[DomainStateMachineTYPE] = {
+      val r = new Java6StateMachineEntity(target_context)
+      r.modelStateMachine = entity
       Some(r)
     }
 

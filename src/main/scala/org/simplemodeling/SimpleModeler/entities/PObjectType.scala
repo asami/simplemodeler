@@ -14,7 +14,7 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
  *  version Jul. 25, 2011
  *  version Apr. 11, 2012
  *  version Oct. 30, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -545,6 +545,25 @@ class PPowertypeType(val name: String, val packageName: String) extends PObjectT
     _powertype
   }
   def powertype_=(aPowertype: PPowertypeEntity) = _powertype = aPowertype
+
+  def qualifiedName = {
+    require (name != null && packageName != null)
+    if (packageName == "") name
+    else packageName + "." + name
+  }
+}
+
+// StateMachine
+class PStateMachineType(val name: String, val packageName: String) extends PObjectType(null) {
+  def this(aStateMachine: PStateMachineEntity) = this(aStateMachine.name, aStateMachine.packageName)
+  override def objectTypeName = name
+
+  private var _powertype: PStateMachineEntity = _
+  def powertype: PStateMachineEntity = {
+    require(_powertype != null)
+    _powertype
+  }
+  def powertype_=(aStateMachine: PStateMachineEntity) = _powertype = aStateMachine
 
   def qualifiedName = {
     require (name != null && packageName != null)

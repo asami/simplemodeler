@@ -27,7 +27,7 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -44,6 +44,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
   var useEntityDocument = true
   var useValue = true
   var usePowertype = true
+  var useStateMachine = true
   var isMakeProject = true
   var useKindPackage = false 
   var usePackageObject = true // TODO turn off
@@ -105,6 +106,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     type DomainValueNameTYPE = PValueEntity
     type DomainValueTYPE = PValueEntity
     type DomainPowertypeTYPE = PPowertypeEntity
+    type DomainStateMachineTYPE = PStateMachineEntity
     type DomainDocumentTYPE = PDocumentEntity
     type DomainRuleTYPE = PRuleEntity
     type DomainServiceTYPE = PServiceEntity
@@ -128,6 +130,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         case name: SMDomainValueName => transform_Name(name)
         case value: SMDomainValue => transform_Value(value)
         case powertype: SMDomainPowertype => transform_Powertype(powertype)
+        case sm: SMDomainStateMachine => transform_StateMachine(sm)
         case document: SMDomainDocument => transform_Document(document)
         case rule: SMDomainRule => transform_Rule(rule)
         case service: SMDomainService => transform_Service(service)
@@ -268,6 +271,20 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
 
     protected def make_Powertypes(entity: SMDomainPowertype, po: DomainPowertypeTYPE): List[PObjectEntity] = Nil
+
+    protected def transform_StateMachine(powertype: SMDomainStateMachine) {
+      if (!useStateMachine) return;
+      for (obj <- create_StateMachine(powertype)) {
+        build_object(obj, powertype)
+        make_StateMachines(powertype, obj).foreach(build_derived_object(powertype, obj))
+      }
+    }
+
+    protected def create_StateMachine(entity: SMDomainStateMachine): Option[DomainStateMachineTYPE] = {
+      throw new UnsupportedOperationException
+    }
+
+    protected def make_StateMachines(entity: SMDomainStateMachine, po: DomainStateMachineTYPE): List[PObjectEntity] = Nil
 
     protected def transform_Id(id: SMDomainValueId) {
       if (!useValue) return
@@ -684,9 +701,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     }
 
     private def build_properties(obj: PObjectEntity, anObject: SMObject) {
+      anObject.powertypes.foreach(build_powertype(obj, _))
+      anObject.stateMachines.foreach(build_statemachine(obj, _))
       anObject.attributes.foreach(build_attribute(obj, _))
       anObject.associations.foreach(build_association(obj, _))
-      anObject.powertypes.foreach(build_powertype(obj, _))
       anObject.operations.foreach(build_operation(obj, _))
     }
 
@@ -711,6 +729,12 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       aObj.addAttribute(attr)
       attr.multiplicity = get_multiplicity(aPowertype.multiplicity)
       attr.modelPowertype = aPowertype
+    }
+
+    private def build_statemachine(aObj: PObjectEntity, aStateMachine: SMStateMachineRelationship) {
+      val attr = make_attribute(aStateMachine.name, object_type(aStateMachine))
+      aObj.addAttribute(attr)
+      attr.modelStateMachine = aStateMachine
     }
 
     private def make_attribute(name: String, otype: PObjectType) = {
@@ -790,6 +814,15 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       val name = make_object_name(powertype.name)
       record_trace("transformer(py): powertype name = " + name)
       val objectType = new PPowertypeType(name, powertype.packageName)
+      objectType
+    }
+
+    private def object_type(aStateMachine: SMStateMachineRelationship): PObjectType = {
+      val powertype = aStateMachine.statemachine
+      record_trace("transformer(py): powertype = " + powertype.name)
+      val name = make_object_name(powertype.name)
+      record_trace("transformer(py): powertype name = " + name)
+      val objectType = new PStateMachineType(name, powertype.packageName)
       objectType
     }
 
