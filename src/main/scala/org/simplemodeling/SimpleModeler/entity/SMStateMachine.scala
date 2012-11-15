@@ -9,13 +9,14 @@ import org.simplemodeling.SimpleModeler.sdoc._
 /*
  * @since   Dec. 22, 2008
  *  version Mar. 19, 2009
- * @version Nov. 14, 2012
+ * @version Nov. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMStateMachine(
   val dslStateMachine: SStateMachine
 //  , val ownerObject: SMObject
 ) extends SMObject(dslStateMachine) {
+  override def typeName: String = "state machine"
   val wholeStateMap = new LinkedHashMap[String, SMState]
   val stateMap = new LinkedHashMap[String, SMState]
   def states = stateMap.values.toList

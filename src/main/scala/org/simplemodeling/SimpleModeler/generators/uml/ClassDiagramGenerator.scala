@@ -17,7 +17,7 @@ import org.goldenport.Strings
  *  version Nov. 20, 2011
  *  version Sep. 18, 2012
  *  version Oct. 23, 2012
- * @version Nov. 14, 2012
+ * @version Nov. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -166,6 +166,20 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
           }
         }
 
+        def add_statemachine_relationships(aSource: SMObject) {
+          for (rel <- aSource.stateMachines) {
+            val target = rel.statemachine
+            val sourceId = ids.get(aSource).get
+            val targetId = ids.get(target).get
+            aThema match {
+              case "perspective" => graph.addSimpleStateMachineRelationship(sourceId, targetId, rel)
+              case "hilight"     => graph.addPlainStateMachineRelationship(sourceId, targetId, rel)
+              case "detail"      => graph.addStateMachineRelationship(sourceId, targetId, rel)
+              case _             => graph.addSimpleStateMachineRelationship(sourceId, targetId, rel)
+            }
+          }
+        }
+
         def add_role_relationships(aSource: SMObject) {
           for (rel <- aSource.roles) {
             val target = rel.role
@@ -269,6 +283,7 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
         add_generalization_relationships(anObject)
         add_trait_relationships(anObject)
         add_powertype_relationships(anObject)
+        add_statemachine_relationships(anObject)
         add_role_relationships(anObject)
         if (anObject.isInstanceOf[SMUsecase]) {
           add_usecase_association_relationships(anObject)

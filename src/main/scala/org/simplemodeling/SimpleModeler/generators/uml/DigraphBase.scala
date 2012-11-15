@@ -17,7 +17,7 @@ import com.asamioffice.goldenport.text.UString
  * @since   Jan. 15, 2009
  *  version Mar. 27, 2011
  *  version Nov. 20, 2011
- * @version Nov.  5, 2012
+ * @version Nov. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
@@ -264,6 +264,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     edge
   }
 
+  // powertype
   final def addPowertypeRelationship(aSourceId: String, aTargetId: String, aRel: SMPowertypeRelationship) {
     addPowertypeRelationship(aSourceId, aTargetId, aRel, false)
   }
@@ -300,6 +301,40 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     edge
   }
 
+  // statemachine
+  final def addStateMachineRelationship(aSourceId: String, aTargetId: String, aRel: SMStateMachineRelationship) {
+    addStateMachineRelationship(aSourceId, aTargetId, aRel, false)
+  }
+
+  final def addDerivedStateMachineRelationship(aSourceId: String, aTargetId: String, aRel: SMStateMachineRelationship) {
+    addStateMachineRelationship(aSourceId, aTargetId, aRel, true)
+  }
+
+  final def addStateMachineRelationship(aSourceId: String, aTargetId: String, aRel: SMStateMachineRelationship, aDerived: Boolean) {
+    val edge = make_statemachine_edge(aSourceId, aTargetId)
+    edge.taillabel = aRel.name
+    graph.edges += edge
+  }
+
+  final def addPlainStateMachineRelationship(aSourceId: String, aTargetId: String, aRel: SMStateMachineRelationship) {
+    val edge = make_statemachine_edge(aSourceId, aTargetId)
+    graph.edges += edge
+  }
+
+  final def addSimpleStateMachineRelationship(aSourceId: String, aTargetId: String, aRel: SMStateMachineRelationship) {
+    val edge = make_statemachine_edge(aSourceId, aTargetId)
+    graph.edges += edge
+  }
+
+  private def make_statemachine_edge(aSourceId: String, aTargetId: String): GVEdge = {
+    val edge = new GVEdge(aTargetId, "p", aSourceId, "p")
+    edge.arrowhead = "none"
+    edge.arrowtail = "none"
+    edge.color = "#44617b" // 紺鼠 こんねず
+    edge
+  }
+
+  // role
   final def addRoleRelationship(aSourceId: String, aTargetId: String, aRel: SMRoleRelationship) {
     addRoleRelationship(aSourceId, aTargetId, aRel, false)
   }
@@ -515,7 +550,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
 
   private def get_stereotypes(elem: SMElement): Seq[String] = {
     elem match {
-      case sm: SMStateMachine => get_stereotypes(sm)
+//      case sm: SMStateMachine => get_stereotypes(sm)
       case o: SMObject => get_stereotypes(o)
     }
   }
@@ -567,9 +602,9 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
   }
 */
 
-  private def get_stereotypes(aStateMachine: SMStateMachine): Seq[String] = {
-    Array("&#171;stateMachine&#187;")
-  }
+//  private def get_stereotypes(aStateMachine: SMStateMachine): Seq[String] = {
+//    Array("&#171;stateMachine&#187;")
+//  }
 
   private def get_stereotype_color(elem: SMElement): String = {
     // "extension") "#ffffff"
