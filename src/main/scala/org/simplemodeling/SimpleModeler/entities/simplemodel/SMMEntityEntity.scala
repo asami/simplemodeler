@@ -25,7 +25,9 @@ import org.simplemodeling.dsl.datatype.XDate
 import org.simplemodeling.dsl.datatype.XTime
 import org.simplemodeling.dsl.datatype.XDateTime
 import org.simplemodeling.dsl.datatype.XToken
+import org.simplemodeling.dsl.datatype.XAnyURI
 import org.simplemodeling.dsl.datatype.ext.XText
+import org.simplemodeling.dsl.datatype.ext.XLink
 import org.simplemodeling.dsl.datatype.business.XMoney
 import org.simplemodeling.dsl.datatype.business.XPercent
 import org.simplemodeling.dsl.datatype.business.XUnit
@@ -1257,6 +1259,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case _: SMMDateType => XDate.some
       case _: SMMTimeType => XTime.some
       case _: SMMDateTimeType => XDateTime.some
+      case _: SMMUriType => XAnyURI.some
+      case _: SMMLinkType => XLink.some
       case _: SMMMoneyType => XMoney.some
       case _: SMMPercentType => XPercent.some
       case _: SMMUnitType => XUnit.some

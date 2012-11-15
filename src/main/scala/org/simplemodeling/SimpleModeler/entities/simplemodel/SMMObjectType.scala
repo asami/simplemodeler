@@ -8,7 +8,7 @@ import scala.collection.mutable.ArrayBuffer
  *  version Jul. 12, 2009
  *  version Mar. 24, 2012
  *  version Oct. 30, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -172,6 +172,17 @@ class SMMDateTimeType extends SMMDataType("XDateTime", "org.simplemodeling.dsl.d
 }
 object SMMDateTimeType extends SMMDateTimeType
 
+class SMMUriType extends SMMDataType("XAnyUri", "org.simplemodeling.dsl.datatype") {
+  val candidates = List("uri")
+}
+object SMMUriType extends SMMUriType
+
+// Extension (AppEngine)
+class SMMLinkType extends SMMDataType("XLink", "org.simplemodeling.dsl.datatype.ext") {
+  val candidates = List("link", "url")
+}
+object SMMLinkType extends SMMLinkType
+
 // Business datatype
 class SMMMoneyType extends SMMDataType("XMoney", "org.simplemodeling.dsl.datatype.business") {
   val candidates = List("money")
@@ -290,6 +301,8 @@ object SMMObjectType {
     SMMDateType,
     SMMDateTimeType,
     SMMTimeType,
+    SMMUriType,
+    SMMLinkType,
     SMMMoneyType,
     SMMPercentType,
     SMMUnitType)
