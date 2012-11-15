@@ -27,7 +27,7 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov. 14, 2012
+ * @version Nov. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -810,19 +810,19 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     private def object_type(aPowertype: SMPowertypeRelationship): PObjectType = {
       val powertype = aPowertype.powertype
-      record_trace("transformer(py): powertype = " + powertype.name)
+      record_trace("SimpleModel2ProgramRealmTransformerBase#object_type: powertype = " + powertype.name)
       val name = make_object_name(powertype.name)
-      record_trace("transformer(py): powertype name = " + name)
+      record_trace("SimpleModel2ProgramRealmTransformerBase#object_type: powertype name = " + name)
       val objectType = new PPowertypeType(name, powertype.packageName)
       objectType
     }
 
     private def object_type(aStateMachine: SMStateMachineRelationship): PObjectType = {
-      val powertype = aStateMachine.statemachine
-      record_trace("transformer(py): powertype = " + powertype.name)
-      val name = make_object_name(powertype.name)
-      record_trace("transformer(py): powertype name = " + name)
-      val objectType = new PStateMachineType(name, powertype.packageName)
+      val statemachine = aStateMachine.statemachine
+      record_trace("SimpleModel2ProgramRealmTransformerBase#object_type: statemachine = " + statemachine.name)
+      val name = make_object_name(statemachine.name)
+      record_trace("SimpleModel2ProgramRealmTransformerBase#object_type: statemachine name = " + name)
+      val objectType = new PStateMachineType(name, statemachine.packageName)
       objectType
     }
 
@@ -921,6 +921,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         /*
          * attributeType is setted in SimpleModelProgramRealmTransformerBase.
          */
+        println("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s) = %s / %s".format(obj.name, attr.name, attr.getModelElement))
         attr.attributeType match {
           case entityType: PEntityType => {
             entityType.entity = getModelEntity(entityType.qualifiedName)
@@ -931,6 +932,12 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           case powertypeType: PPowertypeType => {
             if (usePowertype) {
               powertypeType.powertype = getPowertype(powertypeType.qualifiedName)
+            }
+          }
+          case smType: PStateMachineType => {
+            if (usePowertype) {
+              println("SimpleModel2ProgramRealmTransformerBase#resolve_attributes: " + smType.qualifiedName)
+              smType.statemachine = getStateMachine(smType.qualifiedName)
             }
           }
           case documentType: PDocumentType => {

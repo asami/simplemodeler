@@ -15,6 +15,7 @@ import org.simplemodeling.SimpleModeler.entity.domain.SMDomainResource
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainRole
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainRule
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainService
+import org.simplemodeling.SimpleModeler.entity.domain.SMDomainStateMachine
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainSummary
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainValue
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainValueId
@@ -23,6 +24,7 @@ import org.simplemodeling.SimpleModeler.entity.AggregationParticipationRole
 import org.simplemodeling.SimpleModeler.entity.AssociationParticipationRole
 import org.simplemodeling.SimpleModeler.entity.AttributeParticipationRole
 import org.simplemodeling.SimpleModeler.entity.CompositionParticipationRole
+import org.simplemodeling.SimpleModeler.entity.StateMachineParticipationRole
 import org.simplemodeling.SimpleModeler.entity.SMAttribute
 import org.simplemodeling.SimpleModeler.entity.SMAssociation
 import org.simplemodeling.SimpleModeler.entity.SMPowertypeRelationship
@@ -44,7 +46,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov. 13, 2012
+ * @version Nov. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -428,6 +430,7 @@ abstract class GenericClassDefinition(
           participation.association.isQueryReference
         }
         case AttributeParticipationRole => false
+        case StateMachineParticipationRole => false
       }
     }
 
@@ -474,6 +477,7 @@ abstract class GenericClassDefinition(
         case name: SMDomainValueName      => package_variables_Name(name)
         case value: SMDomainValue         => package_variables_Value(value)
         case powertype: SMDomainPowertype => package_variables_Powertype(powertype)
+        case sm: SMDomainStateMachine => package_variables_StateMachine(sm)
         case document: SMDomainDocument   => package_variables_Document(document)
         case rule: SMDomainRule           => package_variables_Rule(rule)
         case service: SMDomainService     => package_variables_Service(service)
@@ -518,6 +522,9 @@ abstract class GenericClassDefinition(
   }
 
   protected def package_variables_Powertype(powertype: SMDomainPowertype) {
+  }
+
+  protected def package_variables_StateMachine(powertype: SMDomainStateMachine) {
   }
 
   protected def package_variables_Id(id: SMDomainValueId) {
@@ -889,6 +896,7 @@ abstract class GenericClassDefinition(
         case name: SMDomainValueName      => package_methods_Name(name)
         case value: SMDomainValue         => package_methods_Value(value)
         case powertype: SMDomainPowertype => package_methods_Powertype(powertype)
+        case sm: SMDomainStateMachine     => package_methods_StateMachine(sm)
         case document: SMDomainDocument   => package_methods_Document(document)
         case rule: SMDomainRule           => package_methods_Rule(rule)
         case service: SMDomainService     => package_methods_Service(service)
@@ -933,6 +941,9 @@ abstract class GenericClassDefinition(
   }
 
   protected def package_methods_Powertype(powertype: SMDomainPowertype) {
+  }
+
+  protected def package_methods_StateMachine(powertype: SMDomainStateMachine) {
   }
 
   protected def package_methods_Id(id: SMDomainValueId) {

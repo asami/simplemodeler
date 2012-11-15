@@ -5,7 +5,7 @@ import org.simplemodeling.dsl._
 /*
  * @since   Dec. 20, 2008
  *  version Nov. 13, 2010
- * @version Nov. 13, 2012
+ * @version Nov. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class DomainStateMachine(aName: String, pkgname: String) extends SStateMachine(aName, pkgname) {
@@ -27,4 +27,6 @@ abstract class DomainStateMachine(aName: String, pkgname: String) extends SState
     stateMap.put(aState.name, aState)
     aState
   }
+
+  override def class_Name = "DomainStateMachine"
 }

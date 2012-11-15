@@ -29,7 +29,7 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Jan. 30, 2012
  *  version Jun. 17, 2012
  *  version Oct. 16, 2012
- * @version Nov. 14, 2012
+ * @version Nov. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) with SimpleModelEntityHelper {
@@ -137,11 +137,16 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
   }
 
   def build_object(anObject: SObject) {
-    record_trace("build_object = " + anObject.name)
+    record_debug("SimpleModelEntity#build_object = " + anObject.name)
     if (_new_logic) {
-      if (!anObject.isMasterSingleton) return
+      if (!anObject.isMasterSingleton) {
+        record_trace("SimpleModelEntity#build_object -> isMasterSingleton is false")
+        return
+      }
       if (!is_exists_or_register(anObject)) {
         build_object_body(anObject)
+      } else {
+        record_trace("SimpleModelEntity#build_object -> is_exists_or_register is true")
       }
     } else {
       if (anObject.isObjectScope) {
@@ -157,7 +162,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
   }
 
   private def build_object_body(anObject: SObject) {
-    record_trace("build_object_body = " + anObject.name + "," + anObject.isInstanceOf[DataSource])
+    record_trace("SimpleModelEntity#build_object_body = " + anObject.name + "," + anObject)
     anObject match {
       case actor: DomainActor => build_domain_actor(actor)
       case event: DomainEvent => build_domain_event(event)
@@ -371,9 +376,10 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
   }
 
   private def build_domain_statemachine(sm: DomainStateMachine) {
+    println("SimpleModelEntity#build_domain_statemachine: " + sm.name)
     val pkg = build_package(sm)
     val statemachine = new SMDomainStateMachine(sm)
-//    build_object(statemachine, sm)
+    build_object(statemachine, sm)
     pkg.addChild(statemachine)
     build_relation_objects(sm)
   }
@@ -892,6 +898,7 @@ record_trace("build_powertype_object = " + aPowertype)
 
       private def resolve_stateMachines(anObject: SMObject) {
         def resolve_stateMachine(aMachine: SMStateMachineRelationship) {
+          aMachine.relationshipType.typeObject = getObject(aMachine.dslStateMachineRelationship.statemachine.qualifiedName)
           val sm = aMachine.statemachine
           def resolve_state(aState: SMState) {
             for (transition <- aState.transitions) {
@@ -1153,6 +1160,14 @@ record_trace("build_powertype_object = " + aPowertype)
         resolve_relationship_with_participation(aRoleRel, RoleParticipationRole)
       }
 
+      def resolve_stateMachine(rel: SMStateMachineRelationship) {
+        println("SimpleModelEntity#resolve_stateMachine: " + rel.relationshipType.qualifiedName + " / " + rel.relationshipType.typeObject)
+        /*
+         * TODO: Unifies resolving mecanism with PackageCollector.
+         */
+        resolve_relationship_with_participation(rel, StateMachineParticipationRole)
+      }
+
       def resolve_service(aServiceRel: SMServiceRelationship) {
         resolve_relationship_with_participation(aServiceRel, ServiceParticipationRole)
       }
@@ -1229,6 +1244,7 @@ record_trace("build_powertype_object = " + aPowertype)
 
       resolve_base_object()
       anObject.traits.foreach(resolve_trait)
+      anObject.stateMachines.foreach(resolve_stateMachine)
       anObject.roles.foreach(resolve_role)
       anObject.services.foreach(resolve_service)
       anObject.rules.foreach(resolve_rule)

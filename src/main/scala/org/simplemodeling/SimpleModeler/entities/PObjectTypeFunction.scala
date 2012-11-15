@@ -2,7 +2,8 @@ package org.simplemodeling.SimpleModeler.entities
 
 /*
  * @since   Jul. 23, 2011
- * @version Aug. 21, 2011
+ *  version Aug. 21, 2011
+ * @version Nov. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 trait PObjectTypeFunction[T] extends PartialFunction[PObjectType, T] {
@@ -57,6 +58,7 @@ trait PObjectTypeFunction[T] extends PartialFunction[PObjectType, T] {
       case ot: PValueType => apply_ValueType(ot)
       case ot: PDocumentType => apply_DocumentType(ot)
       case ot: PPowertypeType => apply_PowertypeType(ot)
+      case ot: PStateMachineType => apply_StateMachineType(ot)
       case ot: PEntityType => apply_EntityType(ot)
       case ot: PEntityPartType => apply_EntityPartType(ot)
       case ot: PGenericType => apply_GenericType(ot)
@@ -258,6 +260,10 @@ trait PObjectTypeFunction[T] extends PartialFunction[PObjectType, T] {
   }
 
   protected def apply_PowertypeType(datatype: PPowertypeType): T = {
+    handle_model(datatype)
+  }
+
+  protected def apply_StateMachineType(datatype: PStateMachineType): T = {
     handle_model(datatype)
   }
 

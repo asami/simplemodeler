@@ -5,7 +5,7 @@ package org.simplemodeling.SimpleModeler.entities
  *  version Aug. 27, 2011
  *  version Dec. 14, 2011
  *  version Feb.  8, 2012
- * @version Nov.  7, 2012
+ * @version Nov. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 class BuilderJavaClassDefinition(
@@ -152,7 +152,8 @@ class BuilderJavaClassDefinition(
         }
 
         override protected def apply_DocumentType(datatype: PDocumentType) = "XDocument"
-        override protected def apply_PowertypeType(datatype: PPowertypeType) = "XPower"
+        override protected def apply_PowertypeType(datatype: PPowertypeType) = "XPowertype"
+        override protected def apply_StateMachineType(datatype: PStateMachineType) = "XStateMachine"
         override protected def apply_EntityType(datatype: PEntityType) = "XEntity"
         override protected def apply_EntityPartType(datatype: PEntityPartType) = "XEntityPart"
         override protected def apply_GenericType(datatype: PGenericType) = "XGeneric"

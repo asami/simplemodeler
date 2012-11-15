@@ -88,7 +88,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 13, 2012
+ * @version Nov. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -119,6 +119,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     _base = b
   }
   /*
+   * Uses in buildSObject.
    * Internal use only except SimpleModelOutlineBuilder(deprecated) and
    * CsvXMindConverter. Virtually obsolated.
    */
@@ -130,6 +131,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val aggregations = new ArrayBuffer[SMMAssociation]
   val compositions = new ArrayBuffer[SMMAssociation]
   val statemachines = new ArrayBuffer[SMMStateMachine]
+  val statemachineRelationships = new ArrayBuffer[SMMAssociation]
 //  val statemachineStates = new ArrayBuffer[(String, String)]
   val operations = new ArrayBuffer[SMMOperation]
 //  val powertypeKinds = new ArrayBuffer[String]
@@ -363,7 +365,6 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     assoc
   }
 
-
   /**
    * 
    */
@@ -415,7 +416,30 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     assoc
   }
 
+  /**
+   * Used by TableSimpleModelMakerBuilder.
+   */
+  final def statemachine(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
+    val sm = new SMMAssociation(aName, entityType)
+    statemachineRelationships += sm
+    sm
+  }
+
+  /**
+   * Used by SimpleModelDslBuilder.
+   */
+  final def statemachine(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
+    val assocType = new SMMEntityType(anObject.name, anObject.packageName)
+    assocType.term = anObject.term
+    statemachine(aName, new SMMEntityTypeSet(assocType.some))
+  }
+
+  /**
+   * Used by SimpleModelMakerEntity.
+   * Notice that SimpleModelMakerEntity is virtually obsolated.
+   */
   final def statemachine(aName: String, aStateMachineType: SMMStateMachineType): SMMStateMachine = {
+    record_warning("SMMEntityEntity#statemachine(%s) = %s", this.name, aName)
     val states = aStateMachineType.states
     val statemachine = new SMMEntityEntity(entityContext)
     statemachine.name = aStateMachineType.name
@@ -889,6 +913,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   var count = 1
 
   /**
+   * Used by SimpleModelDslBuilder#dslObjects.
    * In debug, compare SimpleModelDslBuilder#createObject.
    */
   def createSObjects(): List[SObject] = {
@@ -897,7 +922,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case Some(s) => Some(s)
       case None => Some(_create_object())
     }
-    dor_d("SMMEntityEntity#createSObjects(%s)", name) {
+    dor_d("SMMEntityEntity#createSObjects(%s: %s)", name, kind) {
       _sobject.get :: privateObjects.toList.flatMap(_.createSObjects())
     }
   }
@@ -1004,6 +1029,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   // produce SObject
   def buildSObjects(entities: Map[String, SObject]) {
+    record_debug("SMMEntityEntity#buildSObjects = " + entities)
     _sobject match {
       case Some(tr: DomainTrait) => _build_trait(tr, entities)
       case Some(entity: BusinessEntity) => _build_entity(entity, entities)
@@ -1043,13 +1069,13 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     _build_base(entities, entity)
     _build_traits(entities, entity)
     _build_powertypes(entities, entity)
+    _build_statemachines(entities, entity)
     _build_roles(entities, entity)
     _build_attributes(entity, entities)
     _build_associations(entity, entities)
     _build_aggregations(entity, entities)
     _build_compositions(entity, entities)
-    _build_statemachines(entity)
-    _build_statemachineStates(entity)
+    _build_statemachineStates(entity) // XXX
     _build_operations(entity, entities)
     entity
   }
@@ -1075,8 +1101,22 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_powertypes(entities: Map[String, SObject], entity: SObject) {
     for (power <- powertypes) {
+      println("SMMEntityEntity#_build_powertypes: " + power.name)
       doe_w(_powertype_ref(power.powertypeType.name, entities))(p => {
         entity.powertype(power.name, p, _dsl_multiplicity(power.multiplicity))
+      })
+    }
+  }
+
+  private def _build_statemachines(entities: Map[String, SObject], entity: SObject) {
+    for (sm <- statemachines) {
+      doe_w(_statemachine_ref(sm.statemachineType.name, entities))(p => {
+        entity.statemachine(sm.name, p)
+      })
+    }
+    for (sm <- statemachineRelationships) {
+      doe_w(_statemachine_ref(sm.associationType.name, entities))(p => {
+        entity.statemachine(sm.name, p)
       })
     }
   }
@@ -1091,6 +1131,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_attributes(entity: SObject, entities: Map[String, SObject]) {
     for (attr <- attributes) {
+      println("SMMEntityEntity#_build_attributes(%s) = %s".format(name, attr.name))
       attr.attributeType.idType match {
         case Some(t) => {
 //          entity.attribute_id.attributeType = _dsl_type(t)
@@ -1315,6 +1356,23 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     }
   }
 
+
+  private def _statemachine_ref(name: Option[String], entities: Map[String, SObject]): Either[String, DomainStateMachine] = {
+    name match {
+      case Some(s) => _statemachine_ref(s, entities)
+      case None => "状態機械名がありません。(参照元: %s)".format(this.name).left
+    }
+  }
+
+  private def _statemachine_ref(name: String, entities: Map[String, SObject]): Either[String, DomainStateMachine] = {
+    entities.get(name) match {
+      case Some(p: DomainStateMachine) => p.right
+      case Some(x) => "%sは状態機械ではありません。(参照元: %s)".format(x.name, this.name).left
+      case None => println(entities);Left("状態機械%sはみつかりません。(参照元: %s)".format(name, this.name))
+
+    }
+  }
+
   private def _role_ref(name: Option[String], entities: Map[String, SObject]): Either[String, DomainRole] = {
     name match {
       case Some(s) => _role_ref(s, entities)
@@ -1328,10 +1386,6 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case Some(x) => "%sはロール(役割)ではありません。(参照元: %s)".format(x.name, this.name).left
       case None => Left("ロール(役割)%sはみつかりません。(参照元: %s)".format(name, this.name))
     }
-  }
-
-  private def _build_statemachines(entity: SObject) {
-    // TODO
   }
 
   private def _build_statemachineStates(entity: SObject) {

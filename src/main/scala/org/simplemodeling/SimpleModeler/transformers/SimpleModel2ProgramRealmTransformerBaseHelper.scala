@@ -23,7 +23,7 @@ import org.goldenport.recorder.Recordable
 
 /**
  * @since   Nov.  2, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SimpleModel2ProgramRealmTransformerBaseHelper {
@@ -245,6 +245,19 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
     try {
       findPowertype(aQName).get
     } catch _no_entry("powertype", aQName)
+  }
+
+  protected final def findStateMachine(aQName: String): Option[PStateMachineEntity] = {
+    target_realm.getNode(make_pathname(aQName)) match {
+      case Some(node) => node.entity.asInstanceOf[Some[PStateMachineEntity]]
+      case None => None
+    }
+  }
+
+  protected final def getStateMachine(aQName: String): PStateMachineEntity = {
+    try {
+      findStateMachine(aQName).get
+    } catch _no_entry("statemachine", aQName)
   }
 
   protected final def findDocument(aQName: String): Option[PDocumentEntity] = {

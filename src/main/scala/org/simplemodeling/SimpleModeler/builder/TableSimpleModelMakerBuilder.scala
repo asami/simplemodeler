@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 13, 2012
+ * @version Nov. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -293,7 +293,11 @@ class TableSimpleModelMakerBuilder(
       case AggregationLabel => add_aggregation(entity, entry)
       case AssociationLabel => add_association(entity, entry)
       case PowertypeLabel => add_powertype(entity, entry)
-      case _ => add_attribute(entity, entry)
+      case StateMachineLabel => add_statemachine(entity, entry)
+      case x => {
+//        record_warning("未定義の特性「%s」が指定されています。", x)
+        add_attribute(entity, entry)
+      }
     }
   }
 
@@ -437,7 +441,26 @@ class TableSimpleModelMakerBuilder(
 
   protected final def add_powertypekind(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
     val k = SMMPowertypeKind.create(entry)
+    println("TableSimpleModelMakerBuilder#add_powertypekind(%s) = %s".format(entity.name, k))
     entity.powertypeKinds += k
+  }
+
+  /**
+   * OutlineBuilderBase uses the method. (XXX future)
+   */
+  def buildStateMachine(entity: SMMEntityEntity, table: GTable[String]) {
+    val rows = for (row <- table.rows) yield {
+      _columns(table.headAsStringList).zip(row)
+    }
+    rows.map(entry => add_statemachine(entity, entry))
+  }
+
+  /**
+   * Used by add_feature.
+   */
+  protected final def add_statemachine(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
+    val entitytype = SMMEntityTypeSet(entity.packageName, entry)
+    val assoc = entity.statemachine(_slot_name(entry), entitytype)
   }
 
   /**

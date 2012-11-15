@@ -8,7 +8,7 @@ import org.simplemodeling.dsl.SObject
 import com.asamioffice.goldenport.text.UJavaString
 import com.asamioffice.goldenport.text.UString
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
-import org.simplemodeling.dsl.{SEntity, STrait, SPowertype, SUsecase}
+import org.simplemodeling.dsl.{SEntity, STrait, SPowertype, SStateMachine, SUsecase}
 import org.goldenport.recorder.ForwardingRecorder
 import org.goldenport.recorder.Recordable
 
@@ -18,7 +18,7 @@ import org.goldenport.recorder.Recordable
  *  version Feb.  8, 2012
  *  version Sep. 29, 2012
  *  version Oct. 21, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -46,11 +46,12 @@ class SimpleModelDslBuilder(
     val entitylist = entities.values.toList 
 //    record_trace("SimpleModelDslBuilder#dslObjects = " + entities)
     val objs: List[SObject] = entitylist.flatMap(_.createSObjects)
-    record_debug("SimpleModelDslBuilder# names: %s".format(objs.map(x => x.name + "/" + x)))
+    record_debug("SimpleModelDslBuilder#dslObjects: %s".format(objs.map(x => x.name + "/" + x)))
     val names = objs.map(_.name)
     val sentities: List[SObject] = objs collect {
       case e: SEntity => e // include STrait
       case p: SPowertype => p
+      case s: SStateMachine => s
     }
     val tuples: List[(String, SObject)] = sentities.map(_.name) zip sentities
     val entitymap: Map[String, SObject] = tuples.toMap
@@ -119,7 +120,7 @@ class SimpleModelDslBuilder(
    */
   final def createObject(aKind: ElementKind, aName: String): SMMEntityEntity = {
     val name = _naming_strategy.makeName(aName, aKind)
-//    println("createObject(%s, %s, %s)".format(aKind, aName, name))
+    record_debug("createObject(%s, %s, %s)".format(aKind, aName, name))
     entities.get(name) match {
       case Some(entity) => entity
       case None => {
@@ -213,8 +214,8 @@ class SimpleModelDslBuilder(
       entity.association(name, target) multiplicity_is multiplicity // XXX association for state transition
     }
     for (term <- entity.narrativeStateMachines) {
-      val (name, target, multiplicity) = get_statemachine_by_term(term)
-      entity.statemachine(name, target) multiplicity_is multiplicity
+      val (name, target) = get_statemachine_by_term(term)
+      entity.statemachine(name, target)
     }
     for (term <- entity.narrativeOperations) {
       val (name, in, out) = get_operation_by_term(term, entity.packageName)
@@ -405,7 +406,17 @@ class SimpleModelDslBuilder(
     }
   }
 
-  def get_statemachine_by_term(aTerm: String): (String, SMMStateMachineType, GRMultiplicity) = {
+  def get_statemachine_by_term(aTerm: String): (String, SMMEntityEntity) = {
+    val entity = get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
+      record_warning("用語「%s」の定義が見つからなかったので状態機械を自動で作成します。", aTerm)
+      val entity = createObject(StateMachineKind, aTerm)
+      _resolve_entity(entity)
+      entity
+    }
+    (get_name_by_term(aTerm), entity)
+  }
+
+  def get_statemachine_by_term0(aTerm: String): (String, SMMStateMachineType, GRMultiplicity) = {
     val name = get_name_by_term(aTerm)
     val states = get_labels_by_term(aTerm)
     //	  record_trace("statemachine = " + aTerm + ", states = " + states) 2009-02-26
@@ -433,43 +444,43 @@ class SimpleModelDslBuilder(
   }
 
   def get_businessusecase_by_term(aTerm: String): (String, SMMEntityEntity) = {
-    get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
+    val entity = get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
       record_warning("用語「%s」の定義が見つからなかったのでビジネス・ユースケースを自動で作成します。", aTerm)
       val entity = createObject(BusinessUsecaseKind, aTerm)
       _resolve_entity(entity)
       entity
     }
-    (get_name_by_term(aTerm), get_entity_by_term(aTerm))
+    (get_name_by_term(aTerm), entity)
   }
 
   def get_businesstask_by_term(aTerm: String): (String, SMMEntityEntity) = {
-    get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
+    val entity = get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
       record_warning("用語「%s」の定義が見つからなかったのでビジネス・タスクを自動で作成します。", aTerm)
       val entity = createObject(BusinessTaskKind, aTerm)
       _resolve_entity(entity)
       entity
     }
-    (get_name_by_term(aTerm), get_entity_by_term(aTerm))
+    (get_name_by_term(aTerm), entity)
   }
 
   def get_usecase_by_term(aTerm: String): (String, SMMEntityEntity) = {
-    get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
+    val entity = get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
       record_warning("用語「%s」の定義が見つからなかったのでビジネス・ユースケースを自動で作成します。", aTerm)
       val entity = createObject(UsecaseKind, aTerm)
       _resolve_entity(entity)
       entity
     }
-    (get_name_by_term(aTerm), get_entity_by_term(aTerm))
+    (get_name_by_term(aTerm), entity)
   }
 
   def get_task_by_term(aTerm: String): (String, SMMEntityEntity) = {
-    get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
+    val entity = get_entity_by_term_in_entities(entities.values, aTerm) getOrElse {
       record_warning("用語「%s」の定義が見つからなかったのでタスクを自動で作成します。", aTerm)
       val entity = createObject(TaskKind, aTerm)
       _resolve_entity(entity)
       entity
     }
-    (get_name_by_term(aTerm), get_entity_by_term(aTerm))
+    (get_name_by_term(aTerm), entity)
   }
 }
 

@@ -72,12 +72,14 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
         case tr: SMTrait => tr
         case rule: SMRule if !rule.associations.isEmpty => rule
         case powertype: SMPowertype => powertype
+        case sm: SMStateMachine     => sm
         case service: SMService     => service
         case flow: SMFlow           => flow
         case uc: SMUsecase          => uc
         case t: SMTask              => t
+        case x => sys.error("unknown object = " + x)
       }
-//      println("makeClassDiagramDot: " + classes)
+      record_debug("ClassDiagramGenerator#makeClassDiagramDot: " + classes.map(x => x.name + ": " + x))
       //        filter(child => child.isInstanceOf[SMEntity] || child.isInstanceOf[SMRule] || child.isInstanceOf[SMPowertype] || child.isInstanceOf[SMService]).map(_.asInstanceOf[SMObject])
 
       var counter = 1

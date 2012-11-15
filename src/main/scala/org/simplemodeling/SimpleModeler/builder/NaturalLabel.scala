@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -138,7 +138,7 @@ case object StateLabel extends NaturalLabel {
   val candidates = List("state", "ステート", "状態")
 }
 
-case object StatemachineLabel extends NaturalLabel {
+case object StateMachineLabel extends NaturalLabel {
   val candidates = List("state machine", "ステート マシーン", "ステート チャート", "状態機械")
 }
 
@@ -324,7 +324,7 @@ object NaturalLabel {
     DocumentLabel,
     ValueLabel,
     StateLabel,
-    StatemachineLabel,
+    StateMachineLabel,
     RuleLabel,
     ServiceLabel,
     BusinessUsecaseLabel,

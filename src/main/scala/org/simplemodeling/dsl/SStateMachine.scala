@@ -7,7 +7,7 @@ import org.goldenport.sdoc._
 /*
  * @since   Dec. 20, 2008
  *  version Mar. 18, 2009
- * @version Nov. 13, 2012
+ * @version Nov. 15, 2012
  * ASAMI, Tomoharu
  */
 class SStateMachine(aName: String, pkgname: String) extends SObject(aName, pkgname) {
@@ -16,9 +16,9 @@ class SStateMachine(aName: String, pkgname: String) extends SObject(aName, pkgna
   val stateMap = new LinkedHashMap[String, SState]
   protected var _current: SState = null
 
-  if (aName == null) {
-    set_name_by_className
-  }
+//  if (aName == null) {
+//    set_name_by_className
+//  }
 
   def this() = this(null, null)
 

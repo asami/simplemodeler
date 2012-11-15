@@ -17,6 +17,11 @@ import com.asamioffice.goldenport.text.UPathString
  * @version Nov. 14, 2012
  * @author  ASAMI, Tomoharu
  */
+/**
+ * SimpleModelEntity produces SMObject variant's objects from a set of SObject.
+ * SObject is originally Scala DSL object.
+ * The SObject set is produces from a set of SMMObject by SimpleModelDslBuilder.
+ */
 class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   // resolved in SimpleModelEntity#ParicipationBuilder. Until resolving
   // only baseObjectName, baseObjectPackageName and baseObjectQualifiedName
