@@ -228,7 +228,7 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
 
           for (assoc <- aSource.associations) {
             val target = assoc.associationType.typeObject
-            println("ClassDiagramGenerator#add_usecase_association_relationships: " + target)
+//            println("ClassDiagramGenerator#add_usecase_association_relationships: " + target)
             val sourceId = get_id(aSource)
             val targetId = get_id(target)
             target match {
@@ -262,8 +262,8 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
 	      exceptionFlow
 */
               for (step <- usecase.basicFlow) {
-                println("ClassDiagramGenerator step (%s) = %s".format(usecase.name, step))
-                println("children = " + step.children)
+//                println("ClassDiagramGenerator step (%s) = %s".format(usecase.name, step))
+//                println("children = " + step.children)
               }
               for (story <- usecase.includedStories) {
                 val sourceid = get_id(aSource)
