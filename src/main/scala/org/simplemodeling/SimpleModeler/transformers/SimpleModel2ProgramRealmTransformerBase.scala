@@ -27,7 +27,7 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov. 15, 2012
+ * @version Nov. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -766,6 +766,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       val attributeType = anAttr.attributeType
       val objectType = anAttr.attributeType.qualifiedName match {
         case "org.simplemodeling.dsl.datatype.XString" => PStringType
+        case "org.simplemodeling.dsl.datatype.XToken" => PTokenType
         case "org.simplemodeling.dsl.datatype.XHexByte" => PByteStringType
         case "org.simplemodeling.dsl.datatype.XBase64Byte" => PBlobType
         case "org.simplemodeling.dsl.datatype.XBoolean" => PBooleanType
@@ -776,11 +777,13 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         case "org.simplemodeling.dsl.datatype.XFloat" => new PFloatType(attributeType)
         case "org.simplemodeling.dsl.datatype.XDouble" => new PDoubleType(attributeType)
         case "org.simplemodeling.dsl.datatype.XInteger" => new PIntegerType(attributeType)
+        case "org.simplemodeling.dsl.datatype.XDecimal" => new PDecimalType(attributeType)
         case "org.simplemodeling.dsl.datatype.XDateTime" => PDateTimeType
         case "org.simplemodeling.dsl.datatype.XDate" => PDateType
         case "org.simplemodeling.dsl.datatype.XTime" => PTimeType
-        case "org.simplemodeling.dsl.datatype.XAnyURI" => PLinkType
+        case "org.simplemodeling.dsl.datatype.XAnyURI" => PAnyURIType
         case "org.simplemodeling.dsl.datatype.ext.XText" => PTextType
+        case "org.simplemodeling.dsl.datatype.ext.XLink" => PLinkType
         case "org.simplemodeling.dsl.datatype.ext.XCategory" => PCategoryType
         case "org.simplemodeling.dsl.datatype.ext.XUser" => PUserType
         case "org.simplemodeling.dsl.datatype.ext.XEmail" => PEmailType
@@ -795,7 +798,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         case _ => anAttr.attributeType.dslAttributeType match { 
           case v: SValue => new PValueType(v.name, v.packageName);
           case d: SDocument => new PDocumentType(d.name, d.packageName)
-          case _ => new PGenericType(attributeType)
+          case _ => {
+            record_warning("「%s」は未定義のデータ型です。", anAttr.attributeType.qualifiedName)
+            new PGenericType(attributeType)
+          }
         }
       }
       objectType

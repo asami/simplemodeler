@@ -14,7 +14,7 @@ import java.util.TimeZone
  *  version Aug.  7, 2011
  *  version Dec. 14, 2011
  *  version Feb. 20, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassAttributeDefinition(
@@ -50,6 +50,7 @@ class JavaClassAttributeDefinition(
   override protected def variable_plain_Attribute_Instance_Variable(typename: String, varname: String) {
     // for inheritance
 //    jm_private_instance_variable(attr, typename, varname);
+    println("JavaClassAttributeDefinition#variable_plain_Attribute_Instance_Variable(%s): %s %s".format(attr.name, typename, varname))
     jm_protected_instance_variable(attr, typename, varname);
   }
 
@@ -105,17 +106,23 @@ class JavaClassAttributeDefinition(
     }
   }
 
+/*
   override protected def method_bean_single_byte() {
-    mapping_multi_value_attribute_method("%s.byteValue()", "%s.shortValue()") // XXX app engine ?
+    mapping_single_value_attribute_method("%s.byteValue()", "%s.shortValue()") // XXX app engine ?
   }
 
   override protected def method_bean_single_integer() {
-    mapping_multi_value_attribute_method("new BigInteger(%s)", "%s.toString()")
+    mapping_single_value_attribute_method("new BigInteger(%s)", "%s.toString()")
   }
 
+   **
+   * In case of special persistent datatype(e.g. JDO in App Engine), override it.
+   *
   override protected def method_bean_single_decimal() {
-    mapping_multi_value_attribute_method("new BigDecimal(%s)", "%s.toString()")
+    method_bean_single_plain
+//    mapping_single_value_attribute_method("new BigDecimal(%s)", "%s.toString()")
   }
+*/
 
   override def method_bean_single_entity_Simple(e: PEntityType) {
     single_value_attribute_method
@@ -188,6 +195,7 @@ class JavaClassAttributeDefinition(
     multi_value_attribute_method
   }
 
+/*
   override protected def method_bean_multi_byte() {
     mapping_multi_value_attribute_method("%s.byteValue()", "%s.shortValue()")
   }
@@ -196,9 +204,14 @@ class JavaClassAttributeDefinition(
     mapping_multi_value_attribute_method("new BigInteger(%s)", "%s.toString()")
   }    
 
+  **
+   * In case of special persistent datatype(e.g. JDO in App Engine), override it.
+   *
   override protected def method_bean_multi_decimal() {
-    mapping_multi_value_attribute_method("new BigDecimal(%s)", "%s.toString()")
+    method_bean_multi_plain
+//    mapping_multi_value_attribute_method("new BigDecimal(%s)", "%s.toString()")
   }
+*/
 
   override def method_bean_multi_entity_Simple(e: PEntityType) {
     multi_value_attribute_method
@@ -1949,9 +1962,10 @@ class JavaClassAttributeDefinition(
 //            jm_pln("doc.%s = this.%s.getKey();", varName, powerVarName)
 //          }
 //        }
-        case v: PByteType    => update("%s.byteValue()")
-        case v: PIntegerType => update("new BigInteger(%s)")
-        case v: PDecimalType => update("new BigDecimal(%s)")
+//        consider in case of jdo special types.
+//        case v: PByteType    => update("%s.byteValue()")
+//        case v: PIntegerType => update("new BigInteger(%s)")
+//        case v: PDecimalType => update("new BigDecimal(%s)")
         case _ => jm_pln("doc.%s = this.%s;", varName, varName)
       }
     } // one
@@ -2002,9 +2016,9 @@ class JavaClassAttributeDefinition(
             }
           }
         }
-        case v: PByteType    => update("%s.byteValue()")
-        case v: PIntegerType => update("new BigInteger(%s)")
-        case v: PDecimalType => update("new BigDecimal(%s)")
+//        case v: PByteType    => update("%s.byteValue()")
+//        case v: PIntegerType => update("new BigInteger(%s)")
+//        case v: PDecimalType => update("new BigDecimal(%s)")
         case _ => {
           jm_if_not_null("this." + varName) {
             jm_pln("doc.%s.addAll(this.%s);", varName, varName)  
@@ -2261,9 +2275,10 @@ class JavaClassAttributeDefinition(
         }
         case p: PPowertypeType => {
         }
-        case v: PByteType    => update("%s.shortValue()")
-        case v: PIntegerType => update("%s.toString()")
-        case v: PDecimalType => update("%s.toString()")
+//        consider in case of jdo special types.
+//        case v: PByteType    => update("%s.shortValue()")
+//        case v: PIntegerType => update("%s.toString()")
+//        case v: PDecimalType => update("%s.toString()")
         case _ => jm_assign_this(varName, "doc." + varName)
       }
     }
@@ -2319,10 +2334,11 @@ class JavaClassAttributeDefinition(
             }
           }
         }
-        case p: PPowertypeType => sys.error("not supported yet")
-        case v: PByteType      => update("%s.shortValue()")
-        case v: PIntegerType   => update("%s.toString()")
-        case v: PDecimalType   => update("%s.toString()")
+//        consider in case of jdo special types.
+//        case p: PPowertypeType => sys.error("not supported yet")
+//        case v: PByteType      => update("%s.shortValue()")
+//        case v: PIntegerType   => update("%s.toString()")
+//        case v: PDecimalType   => update("%s.toString()")
         case _ => jm_assign_this_new_ArrayList(varName, persistent_element_type(), "doc." + varName)
       }
     }

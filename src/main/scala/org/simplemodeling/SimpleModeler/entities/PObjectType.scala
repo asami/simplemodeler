@@ -14,7 +14,7 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
  *  version Jul. 25, 2011
  *  version Apr. 11, 2012
  *  version Oct. 30, 2012
- * @version Nov. 15, 2012
+ * @version Nov. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -84,6 +84,13 @@ class PStringType(aModelAttrType: SMAttributeType) extends PObjectType {
   def this() = this(null)
 }
 object PStringType extends PStringType
+
+class PTokenType(aModelAttrType: SMAttributeType) extends PObjectType {
+  override def objectTypeName = "String"
+
+  def this() = this(null)
+}
+object PTokenType extends PTokenType
 
 class PByteStringType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) {
   override def objectTypeName = "ShortBlob" // com.google.appengine.api.datastore.ShortBlob
@@ -373,7 +380,8 @@ class PBlobType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrT
 object PBlobType extends PBlobType
 
 class PTextType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) {
-  override def objectTypeName = "Text" // com.google.appengine.api.datastore.Text
+  override def objectTypeName = "String"
+//  override def objectTypeName = "Text" // com.google.appengine.api.datastore.Text
 
   def this() = this(null)
 }

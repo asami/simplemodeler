@@ -3,7 +3,7 @@ package org.simplemodeling.SimpleModeler.entities
 /*
  * @since   Jul. 23, 2011
  *  version Aug. 21, 2011
- * @version Nov. 15, 2012
+ * @version Nov. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 trait PObjectTypeFunction[T] extends PartialFunction[PObjectType, T] {
@@ -12,6 +12,7 @@ trait PObjectTypeFunction[T] extends PartialFunction[PObjectType, T] {
   override def apply(objecttype: PObjectType): T = {
     objecttype match {
       case ot: PStringType => apply_StringType(ot)
+      case ot: PTokenType => apply_TokenType(ot)
       case ot: PByteStringType => apply_ByteStringType(ot)
       case ot: PByteType => apply_ByteType(ot)
       case ot: PBooleanType => apply_BooleanType(ot)
@@ -176,6 +177,10 @@ trait PObjectTypeFunction[T] extends PartialFunction[PObjectType, T] {
   }
 
   protected def apply_TimeType(datatype: PTimeType): T = {
+    handle_xml(datatype)
+  }
+
+  protected def apply_TokenType(datatype: PTokenType): T = {
     handle_xml(datatype)
   }
 

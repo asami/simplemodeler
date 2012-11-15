@@ -12,7 +12,7 @@ import java.util.TimeZone
  *  version Aug. 19, 2011
  *  version Feb. 19, 2012
  *  version May.  6, 2012
- * @version Nov.  8, 2012
+ * @version Nov. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -425,7 +425,8 @@ abstract class GenericClassAttributeDefinition(
       variable_plain_inject_annotation
     }
     variable_plain_persistent_annotation
-    variable_plain_Attribute_Instance_Variable(persistent_element_type, varName);
+//    variable_plain_Attribute_Instance_Variable(persistent_element_type, varName);
+    variable_plain_Attribute_Instance_Variable(java_element_type, varName)
   }
 
   // entity
@@ -684,16 +685,19 @@ abstract class GenericClassAttributeDefinition(
     }
   }
 
+  /**
+   * In case of special persistent datatype(e.g. JDO in App Engine), override it.
+   */
   protected def method_bean_single_plain() {}
-  protected def method_bean_single_byte() {}
-  protected def method_bean_single_integer() {}
-  protected def method_bean_single_decimal() {}
+  protected def method_bean_single_byte() = method_bean_single_plain
+  protected def method_bean_single_integer() = method_bean_single_plain
+  protected def method_bean_single_decimal() = method_bean_single_plain
   protected def method_bean_single_part(p: PEntityPartType) {}
   protected def method_bean_single_powertype(e: PPowertypeType) {}
   protected def method_bean_multi_plain() {}
-  protected def method_bean_multi_byte() {}
-  protected def method_bean_multi_integer() {}
-  protected def method_bean_multi_decimal() {}
+  protected def method_bean_multi_byte() = method_bean_multi_plain
+  protected def method_bean_multi_integer() = method_bean_multi_plain
+  protected def method_bean_multi_decimal() = method_bean_multi_plain
   protected def method_bean_multi_part(p: PEntityPartType) {}
   protected def method_bean_multi_powertype(e: PPowertypeType) {}
 

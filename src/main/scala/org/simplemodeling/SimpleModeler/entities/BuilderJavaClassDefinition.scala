@@ -5,7 +5,7 @@ package org.simplemodeling.SimpleModeler.entities
  *  version Aug. 27, 2011
  *  version Dec. 14, 2011
  *  version Feb.  8, 2012
- * @version Nov. 15, 2012
+ * @version Nov. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class BuilderJavaClassDefinition(
@@ -106,14 +106,17 @@ class BuilderJavaClassDefinition(
         override protected def apply_NonPositiveIntegerType(datatype: PNonPositiveIntegerType) = "XNonPositiveInteger"
         override protected def apply_PositiveIntegerType(datatype: PPositiveIntegerType) = "XPositiveInteger"
         override protected def apply_ShortType(datatype: PShortType) = "XShort"
-
         override protected def apply_StringType(datatype: PStringType) = {
           jm_if("!json.isNull(%s)", propname) { 
             jm_assign_this(attrname, "json.getString(%s)", propname)
           }
         }
-
         override protected def apply_TimeType(datatype: PTimeType) = "XTime"
+        override protected def apply_TokenType(datatype: PTokenType) = {
+          jm_if("!json.isNull(%s)", propname) { 
+            jm_assign_this(attrname, "json.getString(%s)", propname)
+          }
+        }
         override protected def apply_UnsignedByteType(datatype: PUnsignedByteType) = "XUnsignedByte"
         override protected def apply_UnsignedIntType(datatype: PUnsignedIntType) = "XUnsignedInt"
         override protected def apply_UnsignedLongType(datatype: PUnsignedLongType) = "XUnsignedLong"
