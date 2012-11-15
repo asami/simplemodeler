@@ -17,7 +17,7 @@ import org.goldenport.Strings
  *  version Nov. 20, 2011
  *  version Sep. 18, 2012
  *  version Oct. 23, 2012
- * @version Nov. 15, 2012
+ * @version Nov. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -77,7 +77,7 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
         case flow: SMFlow           => flow
         case uc: SMUsecase          => uc
         case t: SMTask              => t
-        case x => sys.error("unknown object = " + x)
+//        case x => sys.error("unknown object = " + x)
       }
       record_debug("ClassDiagramGenerator#makeClassDiagramDot: " + classes.map(x => x.name + ": " + x))
       //        filter(child => child.isInstanceOf[SMEntity] || child.isInstanceOf[SMRule] || child.isInstanceOf[SMPowertype] || child.isInstanceOf[SMService]).map(_.asInstanceOf[SMObject])

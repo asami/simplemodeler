@@ -29,7 +29,7 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Jan. 30, 2012
  *  version Jun. 17, 2012
  *  version Oct. 16, 2012
- * @version Nov. 15, 2012
+ * @version Nov. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) with SimpleModelEntityHelper {
@@ -376,7 +376,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
   }
 
   private def build_domain_statemachine(sm: DomainStateMachine) {
-    println("SimpleModelEntity#build_domain_statemachine: " + sm.name)
+    record_trace("SimpleModelEntity#build_domain_statemachine: " + sm.name)
     val pkg = build_package(sm)
     val statemachine = new SMDomainStateMachine(sm)
     build_object(statemachine, sm)
@@ -1161,7 +1161,7 @@ record_trace("build_powertype_object = " + aPowertype)
       }
 
       def resolve_stateMachine(rel: SMStateMachineRelationship) {
-        println("SimpleModelEntity#resolve_stateMachine: " + rel.relationshipType.qualifiedName + " / " + rel.relationshipType.typeObject)
+        record_trace("SimpleModelEntity#resolve_stateMachine: " + rel.relationshipType.qualifiedName + " / " + rel.relationshipType.typeObject)
         /*
          * TODO: Unifies resolving mecanism with PackageCollector.
          */

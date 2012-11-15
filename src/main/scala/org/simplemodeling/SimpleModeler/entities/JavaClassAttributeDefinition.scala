@@ -50,7 +50,7 @@ class JavaClassAttributeDefinition(
   override protected def variable_plain_Attribute_Instance_Variable(typename: String, varname: String) {
     // for inheritance
 //    jm_private_instance_variable(attr, typename, varname);
-    println("JavaClassAttributeDefinition#variable_plain_Attribute_Instance_Variable(%s): %s %s".format(attr.name, typename, varname))
+//    println("JavaClassAttributeDefinition#variable_plain_Attribute_Instance_Variable(%s): %s %s".format(attr.name, typename, varname))
     jm_protected_instance_variable(attr, typename, varname);
   }
 

@@ -18,7 +18,7 @@ import com.asamioffice.goldenport.text.UPathString
 /*
  * @since   Dec. 14, 2008
  *  version Nov.  4, 2011
- * @version Nov.  5, 2012
+ * @version Nov. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class StepFlowBuilder(
@@ -28,7 +28,7 @@ abstract class StepFlowBuilder(
   val addUse: SMUse => Unit
 ) extends GTreeVisitor[SStep] {
   var _current_step: SMStep = root.content
-  println("StepFlowBuilder: " + _current_step)
+//  println("StepFlowBuilder: " + _current_step)
   require (_current_step != null, "root content must not null.")
   
   private def register_mark(aStep: SMStep) {
@@ -39,7 +39,7 @@ abstract class StepFlowBuilder(
   }
 
   override def enter(aNode: GTreeNode[SStep]) {
-    println("StepFlowBuilder#enter: " + _current_step)
+//    record_trace("StepFlowBuilder#enter: " + _current_step)
     require (_current_step != null, "_current_step must be initialized.")
     def enter_extendUsecase_step(aStep: ExtendBusinessUsecaseStep) {
       val usecases = aStep.businessUsecases
@@ -48,7 +48,7 @@ abstract class StepFlowBuilder(
       register_mark(step)
       _enter_add(step)
       // include relationships
-      println("StepFlowBuilder#enter_extendUsecase_step: " + aStep)
+//      record_trace("StepFlowBuilder#enter_extendUsecase_step: " + aStep)
     }
 
     def enter_business_usecase_step(aStep: BusinessUsecaseStep) {
@@ -58,7 +58,7 @@ abstract class StepFlowBuilder(
       register_mark(step)
       _enter_add(step)
       // include relationships
-      println("StepFlowBuilder#enter_business_usecase_step: " + aStep)
+//      record_trace("StepFlowBuilder#enter_business_usecase_step: " + aStep)
     }
 
     def enter_business_task_step(aStep: BusinessTaskStep) {
@@ -67,7 +67,7 @@ abstract class StepFlowBuilder(
       // XXX alternate and exception flow
       register_mark(step)
       _enter_add(step)
-      println("StepFlowBuilder#enter_business_task_step: " + aStep)
+//      record_trace("StepFlowBuilder#enter_business_task_step: " + aStep)
     }
 
     def enter_requirement_usecase_step(aStep: RequirementUsecaseStep) {
@@ -77,7 +77,7 @@ abstract class StepFlowBuilder(
       register_mark(step)
       _enter_add(step)
       // include relationships
-      println("StepFlowBuilder#enter_requirement_usecase_step: " + aStep)
+//      record_trace("StepFlowBuilder#enter_requirement_usecase_step: " + aStep)
     }
 
     def enter_requirement_task_step(aStep: RequirementTaskStep) {
@@ -86,7 +86,7 @@ abstract class StepFlowBuilder(
       // XXX alternate and exception flow
       register_mark(step)
       _enter_add(step)
-      println("StepFlowBuilder#enter_requirement_usecase_step: " + aStep)
+//      record_trace("StepFlowBuilder#enter_requirement_usecase_step: " + aStep)
     }
 
     def enter_action_step(aStep: SActionStep) {
@@ -144,7 +144,7 @@ abstract class StepFlowBuilder(
   }
 
   override def leave(aNode: GTreeNode[SStep]) {
-    println("StepFlowBuilder#leave: " + _current_step)
+//    record_trace("StepFlowBuilder#leave: " + _current_step)
     def leave_extendUsecase_step(aStep: ExtendBusinessUsecaseStep) {
       leave_step(aStep)
     }
@@ -320,7 +320,7 @@ abstract class StepFlowBuilder0(
       register_mark(step)
       _current_step.addChild(step)
       // include relationships
-      println("StepFlowBuilder#enter_extendUsecase_step: " + aStep)
+//      record_trace("StepFlowBuilder#enter_extendUsecase_step: " + aStep)
     }
 
     def enter_business_usecase_step(aStep: BusinessUsecaseStep) {
@@ -333,7 +333,7 @@ abstract class StepFlowBuilder0(
       register_mark(step)
       _current_step.addChild(step)
       // include relationships
-      println("StepFlowBuilder#enter_business_usecase_step: " + aStep)
+//      record_trace("StepFlowBuilder#enter_business_usecase_step: " + aStep)
     }
 
     def enter_business_task_step(aStep: BusinessTaskStep) {
@@ -342,7 +342,7 @@ abstract class StepFlowBuilder0(
       val step = new SMBusinessTaskStep(aStep, task)
       // XXX alternate and exception flow
       set_task(task, step)
-      println("StepFlowBuilder#enter_business_task_step: " + aStep)
+//      record_trace("StepFlowBuilder#enter_business_task_step: " + aStep)
     }
 
     def enter_requirement_usecase_step(aStep: RequirementUsecaseStep) {
@@ -355,7 +355,7 @@ abstract class StepFlowBuilder0(
       register_mark(step)
       _current_step.addChild(step)
       // include relationships
-      println("StepFlowBuilder#enter_requirement_usecase_step: " + aStep)
+//      record_trace("StepFlowBuilder#enter_requirement_usecase_step: " + aStep)
     }
 
     def enter_requirement_task_step(aStep: RequirementTaskStep) {
@@ -364,7 +364,7 @@ abstract class StepFlowBuilder0(
       val step = new SMRequirementTaskStep(aStep, task)
       // XXX alternate and exception flow
       set_task(task, step)
-      println("StepFlowBuilder#enter_requirement_usecase_step: " + aStep)
+//      record_trace("StepFlowBuilder#enter_requirement_usecase_step: " + aStep)
     }
 
     def enter_action_step(aStep: SActionStep) {

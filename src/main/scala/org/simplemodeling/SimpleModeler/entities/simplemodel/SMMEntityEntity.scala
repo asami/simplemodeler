@@ -90,7 +90,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 15, 2012
+ * @version Nov. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1103,7 +1103,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_powertypes(entities: Map[String, SObject], entity: SObject) {
     for (power <- powertypes) {
-      println("SMMEntityEntity#_build_powertypes: " + power.name)
+      record_trace("SMMEntityEntity#_build_powertypes: " + power.name)
       doe_w(_powertype_ref(power.powertypeType.name, entities))(p => {
         entity.powertype(power.name, p, _dsl_multiplicity(power.multiplicity))
       })
@@ -1133,7 +1133,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_attributes(entity: SObject, entities: Map[String, SObject]) {
     for (attr <- attributes) {
-      println("SMMEntityEntity#_build_attributes(%s) = %s".format(name, attr.name))
+      record_trace("SMMEntityEntity#_build_attributes(%s) = %s".format(name, attr.name))
       attr.attributeType.idType match {
         case Some(t) => {
 //          entity.attribute_id.attributeType = _dsl_type(t)

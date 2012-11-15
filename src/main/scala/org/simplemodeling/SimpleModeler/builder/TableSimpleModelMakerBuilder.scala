@@ -281,7 +281,7 @@ class TableSimpleModelMakerBuilder(
    * OutlineBuilderBase uses the method.
    */
   def buildFeature(entity: SMMEntityEntity, table: GTable[String]) {
-    println("TableSimpleModelMakerBuilder#buildFeature(%s) = %s/%s/%s".format(entity.name, table.width, table.height, table.head))
+//    record_trace("TableSimpleModelMakerBuilder#buildFeature(%s) = %s/%s/%s".format(entity.name, table.width, table.height, table.head))
     for (h <- table.headAsStringList) {
       val rows = for (row <- table.rows) yield h.zip(row)
       rows.map(entry => add_feature(entity, entry))
@@ -444,7 +444,7 @@ class TableSimpleModelMakerBuilder(
 
   protected final def add_powertypekind(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
     val k = SMMPowertypeKind.create(entry)
-    println("TableSimpleModelMakerBuilder#add_powertypekind(%s) = %s".format(entity.name, k))
+//    record_trace("TableSimpleModelMakerBuilder#add_powertypekind(%s) = %s".format(entity.name, k))
     entity.powertypeKinds += k
   }
 

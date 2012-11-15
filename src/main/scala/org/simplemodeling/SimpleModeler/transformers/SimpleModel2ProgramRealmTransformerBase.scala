@@ -927,7 +927,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         /*
          * attributeType is setted in SimpleModelProgramRealmTransformerBase.
          */
-        println("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s) = %s / %s".format(obj.name, attr.name, attr.getModelElement))
+        record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s) = %s / %s".format(obj.name, attr.name, attr.getModelElement))
         attr.attributeType match {
           case entityType: PEntityType => {
             entityType.entity = getModelEntity(entityType.qualifiedName)
@@ -942,7 +942,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           }
           case smType: PStateMachineType => {
             if (usePowertype) {
-              println("SimpleModel2ProgramRealmTransformerBase#resolve_attributes: " + smType.qualifiedName)
+              record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes powertype: " + smType.qualifiedName)
               smType.statemachine = getStateMachine(smType.qualifiedName)
             }
           }
