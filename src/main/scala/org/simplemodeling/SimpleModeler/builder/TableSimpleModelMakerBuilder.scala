@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 15, 2012
+ * @version Nov. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -33,10 +33,12 @@ class TableSimpleModelMakerBuilder(
    * OutlineBuilderBase uses the methed.
    */
   def createObjects(kind: ElementKind, table: GTable[String]): List[SMMEntityEntity] = {
-    val rows: Seq[List[(String, String)]] = for (row <- table.rows) yield {
-      _columns(table.headAsStringList).zip(row)
-    }
-    rows.map(entry => createObject(kind, entry)).toList
+    (for (h <- table.headAsStringList) yield {
+      val rows: Seq[List[(String, String)]] = for (row <- table.rows) yield {
+        h.zip(row)
+      }
+      rows.map(entry => createObject(kind, entry)).toList
+    }) getOrElse Nil
   }
 
   private def _object_kind(kind: ElementKind, entry: Seq[(String, String)]): ElementKind = {
@@ -106,11 +108,11 @@ class TableSimpleModelMakerBuilder(
     }
   }
   
-  private def _default_columns = List("name")
+//  private def _default_columns = List("name")
 
-  private def _columns(head: Option[List[String]]): List[String] = {
-    head | _default_columns 
-  }
+//  private def _columns(head: Option[List[String]]): List[String] = {
+//    head | _default_columns 
+//  }
 
   /*
    * build
@@ -120,11 +122,11 @@ class TableSimpleModelMakerBuilder(
    */
   def buildAttribute(entity: SMMEntityEntity, table: GTable[String]) {
 //    println("buildAttributeTable:" + table)
-    val rows = for (row <- table.rows) yield {
-      _columns(table.headAsStringList).zip(row)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_attribute(entity, entry))
+      entity.adjustAttributes // XXX more upper position.
     }
-    rows.map(entry => add_attribute(entity, entry))
-    entity.adjustAttributes // XXX more upper position.
   }
 
   protected final def add_attribute(obj: SMMEntityEntity, entry: Seq[(String, String)]) {
@@ -279,10 +281,11 @@ class TableSimpleModelMakerBuilder(
    * OutlineBuilderBase uses the method.
    */
   def buildFeature(entity: SMMEntityEntity, table: GTable[String]) {
-    val rows = for (row <- table.rows) yield {
-      _columns(table.headAsStringList).zip(row)
+    println("TableSimpleModelMakerBuilder#buildFeature(%s) = %s/%s/%s".format(entity.name, table.width, table.height, table.head))
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_feature(entity, entry))
     }
-    rows.map(entry => add_feature(entity, entry))
   }
 
   protected final def add_feature(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
@@ -323,10 +326,10 @@ class TableSimpleModelMakerBuilder(
    * OutlineBuilderBase uses the method.
    */
   def buildComposition(entity: SMMEntityEntity, table: GTable[String]) {
-    val rows = for (row <- table.rows) yield {
-      _columns(table.headAsStringList).zip(row)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_composition(entity, entry))
     }
-    rows.map(entry => add_composition(entity, entry))
   }
 
   protected final def add_composition(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
@@ -339,10 +342,10 @@ class TableSimpleModelMakerBuilder(
    * OutlineBuilderBase uses the method.
    */
   def buildAggregation(entity: SMMEntityEntity, table: GTable[String]) {
-    val rows = for (row <- table.rows) yield {
-      _columns(table.headAsStringList).zip(row)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_aggregation(entity, entry))
     }
-    rows.map(entry => add_aggregation(entity, entry))
   }
 
   protected final def add_aggregation(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
@@ -355,10 +358,10 @@ class TableSimpleModelMakerBuilder(
    * OutlineBuilderBase uses the method.
    */
   def buildAssociation(entity: SMMEntityEntity, table: GTable[String]) {
-    val rows = for (row <- table.rows) yield {
-      _columns(table.headAsStringList).zip(row)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_association(entity, entry))
     }
-    rows.map(entry => add_association(entity, entry))
   }
 
   protected final def add_association(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
@@ -398,10 +401,10 @@ class TableSimpleModelMakerBuilder(
    */
   def buildOperation(entity: SMMEntityEntity, table: GTable[String]) {
     println("buildOperationTable:" + table)
-    val rows = for (row <- table.rows) yield {
-      _columns(table.headAsStringList).zip(row)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_operation(entity, entry))
     }
-    rows.map(entry => add_operation(entity, entry))
   }
 
   protected final def add_operation(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
@@ -417,10 +420,10 @@ class TableSimpleModelMakerBuilder(
    * OutlineBuilderBase uses the method.
    */
   def buildPowertype(entity: SMMEntityEntity, table: GTable[String]) {
-    val rows = for (row <- table.rows) yield {
-      _columns(table.headAsStringList).zip(row)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_powertype(entity, entry))
     }
-    rows.map(entry => add_powertype(entity, entry))
   }
 
   protected final def add_powertype(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
@@ -433,10 +436,10 @@ class TableSimpleModelMakerBuilder(
    * An entity of SMMEntityEntity should be Powertype.
    */
   def buildPowertypeKind(entity: SMMEntityEntity, table: GTable[String]) {
-    val rows = for (row <- table.rows) yield {
-      _columns(table.headAsStringList).zip(row)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_powertypekind(entity, entry))
     }
-    rows.map(entry => add_powertypekind(entity, entry))
   }
 
   protected final def add_powertypekind(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
@@ -449,10 +452,10 @@ class TableSimpleModelMakerBuilder(
    * OutlineBuilderBase uses the method. (XXX future)
    */
   def buildStateMachine(entity: SMMEntityEntity, table: GTable[String]) {
-    val rows = for (row <- table.rows) yield {
-      _columns(table.headAsStringList).zip(row)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_statemachine(entity, entry))
     }
-    rows.map(entry => add_statemachine(entity, entry))
   }
 
   /**
@@ -468,10 +471,10 @@ class TableSimpleModelMakerBuilder(
    * An entity of SMMEntityEntity should be StateMachine.
    */
   def buildState(entity: SMMEntityEntity, table: GTable[String]) {
-    val rows = for (row <- table.rows) yield {
-      _columns(table.headAsStringList).zip(row)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_state(entity, entry))
     }
-    rows.map(entry => add_state(entity, entry))
   }
 
   protected final def add_state(entity: SMMEntityEntity, entry: Seq[(String, String)]) {
