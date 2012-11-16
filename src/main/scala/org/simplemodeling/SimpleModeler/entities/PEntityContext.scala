@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
- * @version Nov. 10, 2012
+ * @version Nov. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -503,7 +503,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   def makePathname(qname: String): String = {
-    require (qname != "app")
+//    require (qname != "app", "qname should not be \"app\" which means just default package name without class name.")
     srcMainDir + UJavaString.className2pathname(qname) + "." + defaultFileSuffix
   }
 

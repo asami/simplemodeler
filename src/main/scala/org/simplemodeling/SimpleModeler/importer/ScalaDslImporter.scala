@@ -23,7 +23,7 @@ import com.asamioffice.goldenport.text.UString
  *  version Jun. 17, 2012
  *  version Sep. 16, 2012
  *  version Oct. 19, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {
@@ -157,6 +157,8 @@ object ScalaDslImporter extends GImporterClass {
   type Instance_TYPE = ScalaDslImporter
 
   override protected def accept_Service_Call(aCall: GServiceCall): Option[Boolean] = {
+    Some(!aCall.service.isSystemService)
+/*
     aCall.service.name match {
       case "html"    => Some(true)
       case "java"    => Some(true)
@@ -171,6 +173,7 @@ object ScalaDslImporter extends GImporterClass {
       case "play" => Some(true)
       case _         => None
     }
+*/
   }
 
   override protected def new_Importer(aCall: GServiceCall): GImporter = {

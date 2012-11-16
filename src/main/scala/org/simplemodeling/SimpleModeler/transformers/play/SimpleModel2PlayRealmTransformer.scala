@@ -25,7 +25,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
  * @since   Mar. 31, 2012
  *  version Mar. 31, 2012
  *  version Oct. 26, 2012
- * @version Nov.  2, 2012
+ * @version Nov. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2PlayRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -43,9 +43,10 @@ class SimpleModel2PlayRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCont
     new PlayBuilder 
   }
 
-//  override protected def make_Phases(): List[TransformerPhase] = {
+  override protected def make_Phases(): List[TransformerPhase] = {
+    List(new PlayResolve(), new PlayMakeCrud())
 //    List(new PlayBuilder2(), new PlayResolve(), new PlayMakeCrud())
-//  }
+  }
 
   override protected def make_Project() {
 /*
