@@ -16,7 +16,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
  *  version Oct. 21, 2012
- * @version Nov. 14, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -96,6 +96,14 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def roleTables: List[GTable[String]] = {
     _structure_node_thema_boi_tables(RoleLabel)
+  }
+
+  def summarys = {
+    structure_node_children(thema, SummaryLabel)
+  }
+
+  def summaryTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(SummaryLabel)
   }
 
   def powertypes = {
@@ -283,6 +291,14 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def roleTables(term: TopicNode): List[GTable[String]] = {
     _structure_node_tables(term, RoleLabel)
+  }
+
+  def summarys(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, SummaryLabel)
+  }
+
+  def summaryTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, SummaryLabel)
   }
 
   def services(term: TopicNode): List[TopicNode] = {

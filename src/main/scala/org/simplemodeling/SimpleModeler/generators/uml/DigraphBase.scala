@@ -17,7 +17,7 @@ import com.asamioffice.goldenport.text.UString
  * @since   Jan. 15, 2009
  *  version Mar. 27, 2011
  *  version Nov. 20, 2011
- * @version Nov. 15, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
@@ -624,7 +624,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
       case _: SMDomainRole => "#e49e61" // 小麦色 こむぎいろ
       case _: SMDomainResource => "#38a1db" // 露草色 つゆくさいろ
       case _: SMDomainEvent => "#e2041b" // 猩々緋 しょうじょうひ
-      case _: SMDomainSummary => "#674196" // 菖蒲色 しょうぶいろ
+      case _: SMDomainSummary => "#84a2d4" // 青藤色 あおふじいろ // "#674196" // 菖蒲色 しょうぶいろ
       case _: SMDomainEntity => "#c1e4e9" // 白藍 しらあい
       case _: SMDomainTrait => "#b3ada0" // 利休白茶
       // Domain(implicit)

@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
  *  version Oct. 26, 2012
- * @version Nov. 14, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -56,6 +56,8 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
       _mmx.eventTables.foreach(create_object_table(EventKind, _))
       _mmx.roles.foreach(_create_object(RoleKind, _, _build_object))
       _mmx.roleTables.foreach(create_object_table(RoleKind, _))
+      _mmx.summarys.foreach(_create_object(SummaryKind, _, _build_object))
+      _mmx.summaryTables.foreach(create_object_table(SummaryKind, _))
       _mmx.powertypes.foreach(_create_powertype)
       _mmx.powertypeTables.foreach(create_object_table(PowertypeKind, _))
       _mmx.statemachines.foreach(_create_statemachine)
