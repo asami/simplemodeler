@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.entity._
 
 /*
  * @since   Nov.  8, 2012
- * @version Nov. 11, 2012
+ * @version Nov. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 trait JavaCodeUtils {
@@ -280,5 +280,86 @@ trait JavaCodeUtils {
       jm_pln("context.log_exception(\"%s\", \"%s\", e);", qname, operation)
       jm_return("Response.failure(e)")
     }
+  }
+
+  // Repository
+  protected final def code_method_name_create(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "create" + entity.name
+  }
+
+  protected final def code_method_name_create_tx(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "create" + entity.name + "Tx"
+  }
+
+  protected final def code_method_name_create_id(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "create" + entity.name + "Id"
+  }
+
+  protected final def code_method_name_create_id_tx(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "create" + entity.name + "IdTx"
+  }
+
+  protected final def code_method_name_get(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "get" + entity.name
+  }
+
+  protected final def code_method_name_get_tx(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "get" + entity.name + "Tx"
+  }
+
+  protected final def code_method_name_get_doc(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "get" + entity.name + "Document"
+  }
+
+  protected final def code_method_name_get_doc_tx(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "get" + entity.name + "DocumentTx"
+  }
+
+  protected final def code_method_name_update(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "update" + entity.name
+  }
+
+  protected final def code_method_name_update_tx(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "update" + entity.name + "Tx"
+  }
+
+  protected final def code_method_name_delete(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "delete" + entity.name
+  }
+
+  protected final def code_method_name_delete_tx(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "delete" + entity.name + "Tx"
+  }
+
+  protected final def code_method_name_issue(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "issue" + entity.name
+  }
+
+  protected final def code_method_name_issue_tx(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "issue" + entity.name + "Tx"
+  }
+
+  protected final def code_method_name_issue_id(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "issue" + entity.name + "Id"
+  }
+
+  protected final def code_method_name_issue_id_tx(entity: PObjectEntity): String = {
+    val classname = entity.name
+    "issue" + entity.name + "IdTx"
   }
 }

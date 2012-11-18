@@ -8,7 +8,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
  * @since   Jul. 13, 2011
  *  version Aug.  7, 2011
  *  version Dec. 13, 2011
- * @version Nov. 11, 2012
+ * @version Nov. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class RepositoryJavaClassDefinition(
@@ -57,45 +57,57 @@ protected %context% context;
   override protected def package_methods_platform_Entity(entity: PEntityEntity) {
     val classname = entity.name;
     val docname = entity.documentName
+    val mcreate = code_method_name_create(entity)
+    val mcreateid = code_method_name_create_id(entity)
+    val mcreatetx = code_method_name_create_tx(entity)
+    val mcreateidtx = code_method_name_create_id_tx(entity)
+    val mget = code_method_name_get(entity)
+    val mgetdoc = code_method_name_get_doc(entity)
+    val mgettx = code_method_name_get_tx(entity)
+    val mgetdoctx = code_method_name_get_doc_tx(entity)
+    val mupdate = code_method_name_update(entity)
+    val mupdatetx = code_method_name_update_tx(entity)
+    val mdelete = code_method_name_delete(entity)
+    val mdeletetx = code_method_name_delete_tx(entity)
     val cursor = "Cursor<%s>".format(classname)
     val query = "Query"
-    jm_public_method("void create%s(%s data) throws IOException", classname, classname) {
+    jm_public_method("void %s(%s data) throws IOException", mcreate, classname) {
       jm_UnsupportedOperationException
     }
-    jm_public_method("void createTx%s(%s data, ITransactionContext tx) throws IOException", classname, classname) {
+    jm_public_method("void %s(%s data, ITransactionContext tx) throws IOException", mcreatetx, classname) {
       jm_UnsupportedOperationException
     }
-    jm_public_method("void create%s(%s data) throws IOException", classname, docname) {
-      jm_pln("create%s(new %s(data));".format(classname, classname))
+    jm_public_method("void %s(%s data) throws IOException", mcreate, docname) {
+      jm_pln("%s(new %s(data));".format(mcreate, classname))
     }
-    jm_public_method("void createTx%s(%s data, ITransactionContext tx) throws IOException", classname, docname) {
-      jm_pln("createTx%s(new %s(data), tx);".format(classname, classname))
+    jm_public_method("void %s(%s data, ITransactionContext tx) throws IOException", mcreatetx, docname) {
+      jm_pln("%s(new %s(data), tx);".format(mcreatetx, classname))
     }
     for (id <- entity.idAttrOption) {
       val idtype = id.typeName
-      jm_public_method("%s createId%s(%s data) throws IOException", idtype, classname, classname) {
+      jm_public_method("%s %s(%s data) throws IOException", idtype, mcreateid, classname) {
         jm_UnsupportedOperationException
       }
-      jm_public_method("%s createIdTx%s(%s data, ITransactionContext tx) throws IOException", idtype, classname, classname) {
+      jm_public_method("%s %s(%s data, ITransactionContext tx) throws IOException", idtype, mcreateidtx, classname) {
         jm_UnsupportedOperationException
       }
-      jm_public_method("%s createId%s(%s data) throws IOException", idtype, classname, docname) {
-        jm_return("createId%s(new %s(data))".format(classname, classname))
+      jm_public_method("%s %s(%s data) throws IOException", idtype, mcreateid, docname) {
+        jm_return("%s(new %s(data))".format(mcreateid, classname))
       }
-      jm_public_method("%s createIdTx%s(%s data, ITransactionContext tx) throws IOException", idtype, classname, docname) {
-        jm_return("createId%s(new %s(data))".format(classname, classname))
+      jm_public_method("%s %s(%s data, ITransactionContext tx) throws IOException", idtype, mcreateidtx, docname) {
+        jm_return("%s(new %s(data), tx)".format(mcreateidtx, classname))
       }
-      jm_public_method("%s get%s(%s id) throws IOException", classname, classname, idtype) {
+      jm_public_method("%s %s(%s id) throws IOException", classname, mget, idtype) {
         jm_UnsupportedOperationException
       }
-      jm_public_method("%s getTx%s(%s id, ITransactionContext tx) throws IOException", classname, classname, idtype) {
+      jm_public_method("%s %s(%s id, ITransactionContext tx) throws IOException", classname, mgettx, idtype) {
         jm_UnsupportedOperationException
       }
-      jm_public_method("%s get%sDocument(%s id) throws IOException", docname, classname, idtype) {
-        jm_get_return_expr_or_null(classname, "get%s(id)".format(classname))("%s.make_document()")
+      jm_public_method("%s %s(%s id) throws IOException", docname, mgetdoc, idtype) {
+        jm_get_return_expr_or_null(classname, "%s(id)".format(mget))("%s.make_document()")
       }
-      jm_public_method("%s getTx%sDocument(%s id, ITransactionContext tx) throws IOException", docname, classname, idtype) {
-        jm_get_return_expr_or_null(classname, "get%s(id)".format(classname))("%s.make_document()")
+      jm_public_method("%s %s(%s id, ITransactionContext tx) throws IOException", docname, mgetdoctx, idtype) {
+        jm_get_return_expr_or_null(classname, "%s(id, tx)".format(mgettx))("%s.make_document()")
       }
     }
 /*
@@ -106,36 +118,36 @@ protected %context% context;
       jm_UnsupportedOperationException
     }
 */
-    jm_public_method("void update%s(%s data) throws IOException", classname, classname) {
+    jm_public_method("void %s(%s data) throws IOException", mupdate, classname) {
       jm_UnsupportedOperationException
     }
-    jm_public_method("void updateTx%s(%s data, ITransactionContext tx) throws IOException", classname, classname) {
+    jm_public_method("void %s(%s data, ITransactionContext tx) throws IOException", mupdatetx, classname) {
       jm_UnsupportedOperationException
     }
-    jm_public_method("void update%s(%s data) throws IOException", classname, docname) {
-      jm_pln("update%s(new %s(data));".format(classname, classname))
+    jm_public_method("void %s(%s data) throws IOException", mupdate, docname) {
+      jm_pln("%s(new %s(data));".format(mupdate, classname))
     }
-    jm_public_method("void updateTx%s(%s data, ITransactionContext tx) throws IOException", classname, docname) {
-      jm_pln("update%s(new %s(data));".format(classname, classname))
+    jm_public_method("void %s(%s data, ITransactionContext tx) throws IOException", mupdatetx, docname) {
+      jm_pln("%s(new %s(data), tx);".format(mupdatetx, classname))
     }
-    jm_public_method("void update%s(String data) throws IOException", classname) {
+    jm_public_method("void %s(String data) throws IOException", mupdate) {
       jm_UnsupportedOperationException
     }
-    jm_public_method("void update%s(String[] data) throws IOException", classname) {
+    jm_public_method("void %s(String[] data) throws IOException", mupdate) {
       jm_UnsupportedOperationException
     }
-    jm_public_method("void update%s(Map<String, Object> data) throws IOException", classname) {
+    jm_public_method("void %s(Map<String, Object> data) throws IOException", mupdate) {
       jm_UnsupportedOperationException
     }
-    jm_public_method("void updateTx%s(Map<String, Object> data, ITransactionContext tx) throws IOException", classname) {
+    jm_public_method("void %s(Map<String, Object> data, ITransactionContext tx) throws IOException", mupdatetx) {
       jm_UnsupportedOperationException
     }
     for (id <- entity.idAttrOption) {
       val idtype = id.typeName
-      jm_public_method("void delete%s(%s id) throws IOException", classname, idtype) {
+      jm_public_method("void %s(%s id) throws IOException", mdelete, idtype) {
         jm_UnsupportedOperationException
       }
-      jm_public_method("void deleteTx%s(%s id, ITransactionContext tx) throws IOException", classname, idtype) {
+      jm_public_method("void %s(%s id, ITransactionContext tx) throws IOException", mdeletetx, idtype) {
         jm_UnsupportedOperationException
       }
     }

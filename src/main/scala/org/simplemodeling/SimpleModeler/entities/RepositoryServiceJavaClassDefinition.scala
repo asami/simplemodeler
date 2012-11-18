@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov.  2, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class RepositoryServiceJavaClassDefinition(
@@ -61,19 +61,21 @@ protected %repository% repository;
     val docname = entity.documentName
     val cursor = "Cursor<%s>".format(classname)
     val query = "Query"
-    val createmethod = "create" + classname
-    val createtxmethod = "createTx" + classname
-    val createidmethod = "createId" + classname
-    val createidtxmethod = "createIdTx" + classname
-    val getmethod = "get" + classname
-    val gettxmethod = "getTx" + classname
-    val updatemethod = "update" + classname
-    val updatetxmethod = "updateTx" + classname
-    val deletemethod = "delete" + classname
-    val deletetxmthod = "deleteTx" + classname
+    val createmethod = code_method_name_create(entity)
+    val createtxmethod = code_method_name_create_tx(entity)
+    val createidmethod = code_method_name_create_id(entity)
+    val createidtxmethod = code_method_name_create_id_tx(entity)
+    val getmethod = code_method_name_get(entity)
+    val gettxmethod = code_method_name_get_tx(entity)
+    val getdocmethod = code_method_name_get_doc(entity)
+    val getdoctxmethod = code_method_name_get_doc_tx(entity)
+    val updatemethod = code_method_name_update(entity)
+    val updatetxmethod = code_method_name_update_tx(entity)
+    val deletemethod = code_method_name_delete(entity)
+    val deletetxmthod = code_method_name_delete_tx(entity)
     jm_public_method("Response<Void> %s(Request<%s> data)", createmethod, docname) {
       code_request_try_ok_failure(qname, createmethod, "data") {
-        jm_pln("repository.create%s(data.value);", classname)
+        jm_pln("repository.%s(data.value);", createmethod)
       }
     }
 /*
@@ -86,22 +88,22 @@ protected %repository% repository;
 */
     jm_public_method("Response<Void> %s(%s data)", createmethod, docname) {
       code_try_ok_failure(qname, createmethod, "data") {
-        jm_pln("repository.create%s(data);", classname)
+        jm_pln("repository.%s(data);", createmethod)
       }
     }
     for (id <- entity.idAttrOption) {
       val idtype = id.objectTypeName
       jm_public_method("Response<%s> %s(Request<%s> data)", idtype, createidmethod, docname) {
-        code_request_try_return_failure(qname, createidmethod, "data")("repository.createId%s(data.value)".format(classname))
+        code_request_try_return_failure(qname, createidmethod, "data")("repository.%s(data.value)".format(createidmethod))
       }
       jm_public_method("Response<%s> %s(%s data)", idtype, createidmethod, docname) {
-        code_try_return_failure(qname, createidmethod, "data")("repository.createId%s(data)", classname)
+        code_try_return_failure(qname, createidmethod, "data")("repository.%s(data)", createidmethod)
       }
       jm_public_method("Response<%s> %s(Request<%s> id)", docname, getmethod, idtype) {
-        code_request_try_return_failure(qname, getmethod, "id")("repository.get%sDocument(id.value)", classname)
+        code_request_try_return_failure(qname, getmethod, "id")("repository.%s(id.value)", getdocmethod)
       }
       jm_public_method("Response<%s> %s(%s id)", docname, getmethod, id.typeName) {
-        code_try_return_failure(qname, getmethod, "id")("repository.get%sDocument(id)", classname)
+        code_try_return_failure(qname, getmethod, "id")("repository.%s(id)", getdocmethod)
       }
     }
 /*
@@ -114,39 +116,39 @@ protected %repository% repository;
 */
     jm_public_method("Response<Void> %s(Request<%s> data)", updatemethod, docname) {
       code_request_try_ok_failure(qname, updatemethod, "data") {
-        jm_pln("repository.update%s(data.value);", classname)
+        jm_pln("repository.%s(data.value);", updatemethod)
       }
     }
     jm_public_method("Response<Void> %s(%s data)", updatemethod, docname) {
       code_try_ok_failure(qname, updatemethod, "data") {
-        jm_pln("repository.update%s(data);", classname)
+        jm_pln("repository.%s(data);", updatemethod)
       }
     }
     jm_public_method("Response<Void> %s(String data)", updatemethod) {
       code_try_ok_failure(qname, updatemethod, "data") {
-        jm_pln("repository.update%s(data);", classname)
+        jm_pln("repository.%s(data);", updatemethod)
       }
     }
     jm_public_method("Response<Void> %s(String[] data)", updatemethod) {
       code_try_ok_failure(qname, updatemethod, "data") {
-        jm_pln("repository.update%s(data);", classname)
+        jm_pln("repository.%s(data);", updatemethod)
       }
     }
     jm_public_method("Response<Void> %s(Map<String, Object> data)", updatemethod) {
       code_try_ok_failure(qname, updatemethod, "data") {
-        jm_pln("repository.update%s(data);", classname)
+        jm_pln("repository.%s(data);", updatemethod)
       }
     }
     for (id <- entity.idAttrOption) {
       val idtype = id.objectTypeName
       jm_public_method("Response<Void> %s(Request<%s> id)", deletemethod, idtype) {
         code_request_try_ok_failure(qname, deletemethod, "id") {
-          jm_pln("repository.delete%s(id.value);", classname)
+          jm_pln("repository.%s(id.value);", deletemethod)
         }
       }
       jm_public_method("Response<Void> %s(%s id)", deletemethod, id.typeName) {
         code_try_ok_failure(qname, deletemethod, "id") {
-          jm_pln("repository.delete%s(id);", classname)
+          jm_pln("repository.%s(id);", deletemethod)
         }
       }
     }
