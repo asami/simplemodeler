@@ -1,0 +1,23 @@
+#+title: Knowledge
+
+* Powertype
+
+** Goal
+
+#+caption: Attributes
+| name  | type   | description |
+|-------+--------+-------------|
+| one   | string | string      |
+| two   | int    | int number  |
+| three | money  | total money |
+
+** Orientation
+
+*** Knowledge
+
+#+caption: Attributes
+| name  | type   | description |
+|-------+--------+-------------|
+| one   | string | string      |
+| two   | int    | int number  |
+| three | money  | total money |
