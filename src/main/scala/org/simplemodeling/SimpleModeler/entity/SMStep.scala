@@ -6,11 +6,12 @@ import org.goldenport.sdoc.inline.SIAnchor
 import org.goldenport.sdoc.inline.SElementRef
 import org.goldenport.sdoc.inline.SHelpRef
 import org.goldenport.values.{LayeredSequenceNumber, NullLayeredSequenceNumber}
+import org.simplemodeling.SimpleModeler.util._
 
 /*
  * @since   Nov.  9, 2008
  *  version Dec.  8, 2008
- * @version Nov.  5, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SMStep(val dslStep: SStep) extends SMElement(dslStep) {
@@ -62,7 +63,7 @@ abstract class SMStep(val dslStep: SStep) extends SMElement(dslStep) {
     allSteps.flatMap(_.includedStories)
   }
 
-  def resolve(f: String => SMObject): Boolean = true
+  def resolve(f: String => Option[SMObject]): ResolveResult = ResolveSuccess
 }
 
 object NullSMStep extends SMStep(NullStep) {

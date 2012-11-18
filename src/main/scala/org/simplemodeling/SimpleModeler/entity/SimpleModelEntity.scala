@@ -29,7 +29,7 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Jan. 30, 2012
  *  version Jun. 17, 2012
  *  version Oct. 16, 2012
- * @version Nov. 16, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) with SimpleModelEntityHelper {
@@ -539,6 +539,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
   private def build_relation_objects_in_flows(aStory: SStoryObject) {
     aStory.basicFlow.traverse(new GTreeVisitor[SStep] {
       override def enter(aNode: GTreeNode[SStep]) {
+        record_trace("SimpleModelEntity#build_relation_objects_in_flows: " + aNode.content)
         aNode.content match {
           case step: BusinessTaskStep => {
             if (step.businessTask != NullBusinessTask) {
@@ -1034,10 +1035,7 @@ record_trace("build_powertype_object = " + aPowertype)
 //          case uc: SMBusinessUsecase => resolve_usecase(uc)
 //          case uc: SMRequirementUsecase => resolve_usecase(uc)
           case s: SMStoryObject => {
-            s.resolve(getObject) match {
-              case true => ;
-              case false => sys.error("?")
-            }
+            s.resolve(findObject).foreach(x => record_warning(x.toString))
           }
           case _ => //
         }

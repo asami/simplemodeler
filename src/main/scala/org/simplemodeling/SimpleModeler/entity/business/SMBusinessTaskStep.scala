@@ -9,11 +9,12 @@ import org.goldenport.sdoc.inline.SHelpRef
 import org.goldenport.values.{LayeredSequenceNumber, NullLayeredSequenceNumber}
 import org.simplemodeling.SimpleModeler.sdoc._
 import org.simplemodeling.SimpleModeler.entity._
+import org.simplemodeling.SimpleModeler.util._
 
 /*
  * @since   Dec.  7, 2008
  *  version Dec. 18, 2010
- * @version Nov.  5, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMBusinessTaskStep(val dslBusinessTaskStep: BusinessTaskStep, val dslBusinessTask: BusinessTask) extends SMTaskStep(dslBusinessTaskStep, dslBusinessTask) {
@@ -25,10 +26,12 @@ class SMBusinessTaskStep(val dslBusinessTaskStep: BusinessTaskStep, val dslBusin
 
   override def includedStories() = businessTasks
 
-  override def resolve(f: String => SMObject): Boolean = {
-    f(dslBusinessTaskStep.businessTask.qualifiedName) match {
-      case t: SMBusinessTask => businessTasks += t; true
-      case _ => false
+  override def resolve(f: String => Option[SMObject]): ResolveResult = {
+    val qname = dslBusinessTaskStep.businessTask.qualifiedName
+    f(qname) match {
+      case Some(t: SMBusinessTask) => businessTasks += t; ResolveSuccess
+      case Some(x) => ResolveResult.notMatch(qname, x.toString)
+      case None => ResolveResult.notFound(qname)
     }
   }
 }

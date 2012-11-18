@@ -11,11 +11,13 @@ import org.simplemodeling.SimpleModeler.sdoc._
 
 /*
  * @since   Dec.  8, 2008
- * Dec.  9, 2008
- * @version Nov.  4, 2011
+ *  version Dec.  9, 2008
+ *  version Nov.  4, 2011
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMTaskStep(val dslTaskStep: STaskStep, val dslTask: STask) extends SMStep(dslTaskStep) {
+/*
   var entities: List[SMEntity] = Nil
 
   def entityNames: List[String] = {
@@ -24,4 +26,5 @@ class SMTaskStep(val dslTaskStep: STaskStep, val dslTask: STask) extends SMStep(
         case es: SExecutionStep => es
       }.map(_.entity.qualifiedName).toList
   }
+*/
 }

@@ -9,11 +9,12 @@ import org.goldenport.sdoc.inline.SHelpRef
 import org.goldenport.values.{LayeredSequenceNumber, NullLayeredSequenceNumber}
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.sdoc._
+import org.simplemodeling.SimpleModeler.util._
 
 /*
  * @since   Dec. 18, 2008
  *  version Dec. 18, 2010
- * @version Nov.  5, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMRequirementUsecaseStep(val dslRequirementUsecaseStep: RequirementUsecaseStep, val dslRequirementUsecase: RequirementUsecase) extends SMUsecaseStep(dslRequirementUsecaseStep, dslRequirementUsecase) {
@@ -25,10 +26,15 @@ class SMRequirementUsecaseStep(val dslRequirementUsecaseStep: RequirementUsecase
 
   override def includedStories() = requirementUsecases
 
-  override def resolve(f: String => SMObject): Boolean = {
-    f(dslRequirementUsecaseStep.requirementUsecase.qualifiedName) match {
-      case t: SMRequirementUsecase => requirementUsecases += t; true
-      case _ => false
+  override def resolve(f: String => Option[SMObject]): ResolveResult = {
+    val qname = dslRequirementUsecaseStep.requirementUsecase.qualifiedName
+    f(qname) match {
+      case Some(t: SMRequirementUsecase) => {
+        requirementUsecases += t
+        ResolveSuccess
+      }
+      case Some(x) => ResolveResult.notMatch(qname, x.toString)
+      case None => ResolveResult.notFound(qname)
     }
   }
 }

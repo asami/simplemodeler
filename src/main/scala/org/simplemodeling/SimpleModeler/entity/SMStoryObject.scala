@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entity
 
+import scalaz._, Scalaz._
 import scala.collection.mutable.{Buffer, ArrayBuffer, HashMap}
 import java.util.UUID
 import org.simplemodeling.dsl._
@@ -7,6 +8,7 @@ import org.simplemodeling.dsl.business._
 import org.simplemodeling.SimpleModeler.entity.business._
 import org.simplemodeling.SimpleModeler.entity.requirement._
 import org.simplemodeling.SimpleModeler.entity.util._
+import org.simplemodeling.SimpleModeler.util._
 import org.goldenport.sdoc._
 import org.goldenport.sdoc.inline._
 import org.goldenport.value.{GTree, GTreeNode, GTreeVisitor, PlainTree, GTreeCursor}
@@ -18,7 +20,7 @@ import org.simplemodeling.SimpleModeler.entity.util.StepFlowBuilder
 /*
  * @since   Dec.  7, 2008
  *  version Nov.  4, 2011
- * @version Nov.  5, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SMStoryObject(val dslStoryObject: SStoryObject) extends SMObject(dslStoryObject) {
@@ -41,15 +43,15 @@ abstract class SMStoryObject(val dslStoryObject: SStoryObject) extends SMObject(
   build_alternateFlow
   build_exceptionFlow
 
-  def resolve(f: String => SMObject): Boolean = {
-    _basic_flow.traverseContent {
-      case s: SMBusinessUsecaseStep => s.resolve(f)
-      case s: SMBusinessTaskStep => s.resolve(f)
-      case s: SMRequirementUsecaseStep => s.resolve(f)
-      case s: SMRequirementTaskStep => s.resolve(f)
+  def resolve(f: String => Option[SMObject]): ResolveResult = {
+    _basic_flow.collectContent {
+//      case s: SMBusinessUsecaseStep => s.resolve(f)
+//      case s: SMBusinessTaskStep => s.resolve(f)
+//      case s: SMRequirementUsecaseStep => s.resolve(f)
+//      case s: SMRequirementTaskStep => s.resolve(f)
+      case s: SMStep => s.resolve(f)
     }
-    true // XXX
-  }
+  }.sumr
 
   private def _all_steps: Seq[SMStep] = {
     // collectContent includes the target node itself.
