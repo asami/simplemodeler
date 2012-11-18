@@ -14,7 +14,7 @@ import com.asamioffice.goldenport.text.UPathString
  *  version Feb.  7, 2012
  *  version Apr.  8, 2012
  *  version Oct. 16, 2012
- * @version Nov. 18, 2012
+ * @version Nov. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -150,7 +150,7 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   def powertypeName: String = null
 
   def stereotypes: List[String] = {
-    println("SMObject(%s) = %s / %s".format(name, typeName, kindName))
+//    println("SMObject(%s) = %s / %s".format(name, typeName, kindName))
     import StringUtils.{ isBlank, isNotBlank }
     val istypename = isNotBlank(typeName)
     val iskindname = isNotBlank(kindName)
@@ -296,7 +296,7 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   }
 
   private def add_operation(anOperation: SOperation) {
-    println("SMObject#add_operation(%s)".format(anOperation.name))
+//    println("SMObject#add_operation(%s)".format(anOperation.name))
     _operations += new SMOperation(anOperation)
   }
 

@@ -17,7 +17,7 @@ import com.asamioffice.goldenport.text.UString
  * @since   Jan. 15, 2009
  *  version Mar. 27, 2011
  *  version Nov. 20, 2011
- * @version Nov. 18, 2012
+ * @version Nov. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
@@ -560,7 +560,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
   }
 
   private def get_stereotypes(anObject: SMObject): Seq[String] = {
-    println("DigraphBase#get_stereotypes: = " + anObject.stereotypes.map(x => "&#171;" + x + "&#187;"))
+//    println("DigraphBase#get_stereotypes: = " + anObject.stereotypes.map(x => "&#171;" + x + "&#187;"))
     anObject.stereotypes.map(x => "&#171;" + x + "&#187;")
   }
 
