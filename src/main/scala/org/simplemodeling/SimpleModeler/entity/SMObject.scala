@@ -14,7 +14,7 @@ import com.asamioffice.goldenport.text.UPathString
  *  version Feb.  7, 2012
  *  version Apr.  8, 2012
  *  version Oct. 16, 2012
- * @version Nov. 14, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -58,9 +58,30 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
     }
   }
 
+  def hasBaseObject: Boolean = {
+    baseObject != SMNullObject
+  }
+
   def baseObject_=(aBase: SMObject) {
     require (aBase != null)
     _baseObject = aBase
+  }
+
+  def hasTraits: Boolean = {
+    _traits.nonEmpty
+  }
+
+  def hasFeatures: Boolean = {
+    _powertypes.nonEmpty ||
+    _attributes.nonEmpty ||
+    _associations.nonEmpty ||
+    _operations.nonEmpty ||
+    _ports.nonEmpty ||
+    _stateMachines.nonEmpty ||
+    _roles.nonEmpty ||
+    _services.nonEmpty ||
+    _rules.nonEmpty ||
+    _documents.nonEmpty
   }
 
   def derivedObjectNames: Seq[String] = {
@@ -129,6 +150,7 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   def powertypeName: String = null
 
   def stereotypes: List[String] = {
+    println("SMObject(%s) = %s / %s".format(name, typeName, kindName))
     import StringUtils.{ isBlank, isNotBlank }
     val istypename = isNotBlank(typeName)
     val iskindname = isNotBlank(kindName)

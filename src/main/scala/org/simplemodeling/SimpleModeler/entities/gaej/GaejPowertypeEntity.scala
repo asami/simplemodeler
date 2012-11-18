@@ -10,7 +10,8 @@ import org.simplemodeling.SimpleModeler.entities.gaej.GaejUtil._
 
 /*
  * @since   Oct. 25, 2009
- * @version Oct. 28, 2009
+ *  version Oct. 28, 2009
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class GaejPowertypeEntity(aContext: GaejEntityContext) extends GaejObjectEntity(aContext) {
@@ -21,11 +22,11 @@ class GaejPowertypeEntity(aContext: GaejEntityContext) extends GaejObjectEntity(
     case _ => "null"
   }
 
-  private def is_editable = modelPowertype.isEditable
+  private def is_knowledge = modelPowertype.isKnowledge
 
   override protected def write_Content(out: BufferedWriter) {
-    println("is_editable = " + is_editable)
-    if (is_editable)
+    println("is_knowledge = " + is_knowledge)
+    if (is_knowledge)
       out.append(new EntityPowertypeCode(gaejContext).code())
     else
       out.append(new EnumPowertypeCode(gaejContext).code())

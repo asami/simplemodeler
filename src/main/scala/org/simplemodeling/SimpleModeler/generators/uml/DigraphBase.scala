@@ -178,7 +178,11 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
 
     node_color(aPowertype, node)
     name_compartment(aPowertype, node)
-    kind_compartment(aPowertype, node)
+    if (aPowertype.isKnowledge) {
+      attribute_compartment(aPowertype, node)
+    } else {
+      kind_compartment(aPowertype, node)
+    }
     graph.elements += node
   }
 
@@ -556,6 +560,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
   }
 
   private def get_stereotypes(anObject: SMObject): Seq[String] = {
+    println("DigraphBase#get_stereotypes: = " + anObject.stereotypes.map(x => "&#171;" + x + "&#187;"))
     anObject.stereotypes.map(x => "&#171;" + x + "&#187;")
   }
 

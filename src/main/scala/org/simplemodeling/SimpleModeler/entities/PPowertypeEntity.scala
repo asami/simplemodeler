@@ -12,7 +12,8 @@ import org.simplemodeling.SimpleModeler.entities.gaej.GaejUtil._
 /*
  * @since   Apr. 23, 2011
  *  version Aug. 20, 2011
- * @version Apr.  8, 2012
+ *  version Apr.  8, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 trait PPowertypeEntity extends PObjectEntity {
@@ -23,11 +24,11 @@ trait PPowertypeEntity extends PObjectEntity {
     case _ => "null"
   }
 
-  private def is_editable = modelPowertype.isEditable
+  def isKnowledge: Boolean = modelPowertype.isKnowledge
 
   override protected def write_Content(out: BufferedWriter) {
     // println("is_editable = " + is_editable)
-    if (is_editable)
+    if (isKnowledge)
       out.append(new EntityPowertypeCode(pContext).code())
     else
       out.append(new EnumPowertypeCode(pContext).code())

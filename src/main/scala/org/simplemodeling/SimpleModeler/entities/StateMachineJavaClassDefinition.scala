@@ -4,16 +4,16 @@ import org.simplemodeling.SimpleModeler.entity.SMStateMachine
 
 /*
  * @since   Nov. 14, 2012
- * @version Nov. 14, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class StateMachineJavaClassDefinition(
   pContext: PEntityContext,     
   aspects: Seq[JavaAspect],
-  pobject: PObjectEntity
+  pobject: PStateMachineEntity
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
-  // XXX: use modelStateMachine.isEditable to switch entity powertype or enum powertype.
-  if (pobject.hasInheritance) {
+  val isKnowledge = false // XXX
+  if (isKnowledge) {
     isData = true
     isImmutable = false
   } else {
@@ -31,7 +31,7 @@ class StateMachineJavaClassDefinition(
   override protected def constructors_plain_constructor {}
 
   override protected def attribute_variables_Prologue {
-    if (pobject.hasInheritance) return
+    if (isKnowledge) return
     val sm = pobject.modelObject.asInstanceOf[SMStateMachine]
     val states = sm.states
     val labels =

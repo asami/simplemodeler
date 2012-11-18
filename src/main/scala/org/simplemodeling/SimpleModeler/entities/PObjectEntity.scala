@@ -18,7 +18,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -160,9 +160,9 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   //
   /**
    * Used by enum or entity decision in powertype.
-   * This usages would be replacy by isEditable.
+   * This usages would be replacy by isKnowledge.
    */
-  def hasInheritance: Boolean = _baseObject != null || _mixinTraits.nonEmpty
+//  def hasInheritance: Boolean = _baseObject != null || _mixinTraits.nonEmpty
 
   def isEvent: Boolean = modelObject.isEvent
 

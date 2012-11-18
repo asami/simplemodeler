@@ -17,7 +17,7 @@ import org.goldenport.Strings
  *  version Nov. 20, 2011
  *  version Sep. 18, 2012
  *  version Oct. 23, 2012
- * @version Nov. 16, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {

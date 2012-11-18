@@ -4,10 +4,8 @@ import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.dsl.domain._
 
 /*
- * Jan. 20, 2009
- * Jan. 20, 2009
+ * @since   Jan. 20, 2009
+ * @version Nov. 18, 2012
  */
 class SMDomainPowertype(val dslDomainPowertype: DomainPowertype) extends SMPowertype(dslDomainPowertype) {
-  override def kindName: String = null
-  override def powertypeName: String = null
 }

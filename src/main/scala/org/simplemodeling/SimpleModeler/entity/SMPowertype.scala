@@ -11,14 +11,25 @@ import com.asamioffice.goldenport.text.UPathString
 
 /*
  * @since   Dec. 22, 2008
- * @version Jan. 20, 2009
+ *  version Jan. 20, 2009
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMPowertype(val dslPowertype: SPowertype) extends SMObject(dslPowertype) {
-  override def typeName: String = "powertype"
+  override def typeName: String = "powertypex"
+  override def kindName: String = {
+    if (isKnowledge) "knowledge"
+    else null
+  }
 
   final def kinds = dslPowertype.kinds
-  final def isEditable = dslPowertype.editable
+  /**
+   * isKnowledge means that kinds of this powertype are managed a database
+   * and updates as master data.
+   */
+  final def isKnowledge = {
+    hasBaseObject || hasTraits || hasFeatures
+  }
 }
 
 object SMNullPowertype extends SMPowertype(NullPowertype)

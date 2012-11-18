@@ -5,16 +5,16 @@ import org.simplemodeling.SimpleModeler.entity.SMPowertype
 /*
  * @since   Feb. 20, 2012
  *  version Feb. 20, 2012
- * @version Nov. 10, 2012
+ * @version Nov. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class PowertypeJavaClassDefinition(
   pContext: PEntityContext,     
   aspects: Seq[JavaAspect],
-  pobject: PObjectEntity
+  pobject: PPowertypeEntity
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
   // XXX: use modelPowertype.isEditable to switch entity powertype or enum powertype.
-  if (pobject.hasInheritance) {
+  if (pobject.isKnowledge) {
     isData = true
     isImmutable = false
   } else {
@@ -32,7 +32,7 @@ class PowertypeJavaClassDefinition(
   override protected def constructors_plain_constructor {}
 
   override protected def attribute_variables_Prologue {
-    if (pobject.hasInheritance) return
+    if (pobject.isKnowledge) return
     val mpower = pobject.modelObject.asInstanceOf[SMPowertype]
     val kinds = mpower.kinds
     val labels =
