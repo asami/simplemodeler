@@ -26,12 +26,15 @@ import org.goldenport.entity.content.ResourceContent
  * @since   Dec. 12, 2011
  *  version Dec. 14, 2011
  *  version Oct. 26, 2012
- * @version Nov. 14, 2012
+ * @version Nov. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
   type EntityContextTYPE = Java6EntityContext
   type TargetRealmTYPE = Java6RealmEntity
+
+  var isMaven: Boolean = true
+  var isSbt: Boolean = true
 
   override val target_context = new Java6EntityContext(sm.entityContext, sctx)
   override val target_realm = new Java6RealmEntity(target_context)  
@@ -49,8 +52,12 @@ class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
   }
 
   override protected def make_Project() {
-    target_realm.setContent("/build.sbt", new ResourceContent("/org/simplemodeling/SimpleModeler/entities/java6/build.sbt", target_context))
-    target_realm.setContent("/pom.xml", new ResourceContent("/org/simplemodeling/SimpleModeler/entities/java6/pom.xml", target_context))
+    if (isMaven) {
+      target_realm.setContent("/build.sbt", new ResourceContent("/org/simplemodeling/SimpleModeler/entities/java6/build.sbt", target_context))
+    }
+    if (isSbt) {
+      target_realm.setContent("/pom.xml", new ResourceContent("/org/simplemodeling/SimpleModeler/entities/java6/pom.xml", target_context))
+    }
 /*
     make_service_utilities()
     _gaejRealm.traverse(new CrudMaker())
