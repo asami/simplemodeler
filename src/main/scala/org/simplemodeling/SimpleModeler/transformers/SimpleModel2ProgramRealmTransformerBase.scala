@@ -27,7 +27,7 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov. 16, 2012
+ * @version Nov. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -69,9 +69,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     record_debug("SimpleModel2ProgramRealTransform.transform: Target tree start")
     target_realm.dumpDebug()
     record_debug("SimpleModel2ProgramRealTransform.transform: Traget tree end")
-    for (phase <- make_Phases) {
-      target_realm.traverse(phase)
-    }
+    make_Pre_Resolver_Phases.foreach(target_realm.traverse)
+    make_Resolver.foreach(target_realm.traverse)
+    make_Phases.foreach(target_realm.traverse)
     if (isMakeProject) {
       make_Project()
     }
@@ -80,6 +80,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
   }
 
   protected def make_Builder(): BuilderBase
+
+  protected def make_Pre_Resolver_Phases(): List[TransformerPhase] = Nil
+
+  protected def make_Resolver(): Option[ResolvePhase] = None
 
   protected def make_Phases(): List[TransformerPhase] = {
     Nil

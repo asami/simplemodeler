@@ -25,7 +25,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
  * @since   Mar. 31, 2012
  *  version Mar. 31, 2012
  *  version Oct. 26, 2012
- * @version Nov. 17, 2012
+ * @version Nov. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2PlayRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -43,8 +43,12 @@ class SimpleModel2PlayRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCont
     new PlayBuilder 
   }
 
+  override protected def make_Resolver() = {
+    Some(new PlayResolve())
+  }
+
   override protected def make_Phases(): List[TransformerPhase] = {
-    List(new PlayResolve(), new PlayMakeCrud())
+    List(new PlayMakeCrud())
 //    List(new PlayBuilder2(), new PlayResolve(), new PlayMakeCrud())
   }
 
@@ -59,7 +63,7 @@ class SimpleModel2PlayRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCont
 */
   }
 
-  class PlayBuilder extends BuilderBase {
+  class PlayBuilder extends JavaBuilder {
 /*
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
       val appname = target_context.className(pkg, "Application")
@@ -184,9 +188,9 @@ class SimpleModel2PlayRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCont
 */
   }
 
-  class PlayResolve extends ResolvePhase {
+  class PlayResolve extends JavaResolve {
   }
 
-  class PlayMakeCrud extends CrudMakePhase {
+  class PlayMakeCrud extends JavaMakeCrud {
   }
 }

@@ -44,11 +44,7 @@ class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
   def toJavaRealm() = transform
 
   override protected def make_Builder() = {
-    new JavaBuilder 
-  }
-
-  override protected def make_Phases(): List[TransformerPhase] = {
-    List(new JavaResolve(), new JavaMakeCrud())
+    new Java6Builder 
   }
 
   override protected def make_Project() {
@@ -68,7 +64,7 @@ class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
 */
   }
 
-  class JavaBuilder extends BuilderBase {
+  class Java6Builder extends JavaBuilder {
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
       val appname = target_context.className(pkg, "Application")
       val app = new Java6ApplicationEntity(target_context)
@@ -191,11 +187,5 @@ class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
     override protected def create_View(): Option[PViewEntity] = {
       None
     }
-  }
-
-  class JavaResolve extends ResolvePhase {
-  }
-
-  class JavaMakeCrud extends CrudMakePhase {
   }
 }

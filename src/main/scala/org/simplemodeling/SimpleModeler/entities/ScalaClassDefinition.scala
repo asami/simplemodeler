@@ -5,7 +5,8 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
 /*
  * @since   Aug. 19, 2011
  *  version Aug. 19, 2011
- * @version Feb. 11, 2012
+ *  version Feb. 11, 2012
+ * @version Nov. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassDefinition(
@@ -15,6 +16,8 @@ class ScalaClassDefinition(
   maker: ScalaMaker = null
 ) extends GenericClassDefinition(pContext, aspects, pobject) with ScalaMakerHolder {
   type ATTR_DEF = ScalaClassAttributeDefinition
+
+  var scalaKind: ScalaClassifierKind = ClassScalaKind
 
   if (maker == null) {
     sm_open(aspects)
@@ -66,12 +69,34 @@ class ScalaClassDefinition(
     sm_end_import_section()
   }
 
+  protected final def base_name: Option[String] = {
+    customBaseName orElse baseObject.map(_.name)
+  }
+
+  protected final def trait_names: Seq[String] = {
+    mixinTraits.map(_.name) ++ customImplementNames
+  }
+
   override protected def class_open_body {
     if (isSingleton) {
       sm_pln("@Singleton")
     }
-    sm_p("class ")
+    sm_p(scalaKind.keyword)
+    sm_p(" ")
     sm_p(name)
+    base_name match {
+      case Some(bn) => {
+        sm_p(" extends ")
+        sm_p(bn)
+        sm_p(" with ")
+        sm_p(trait_names.mkString(" with "))
+      }
+      case None => {
+        sm_p(" extends ")
+        sm_p(trait_names.mkString(" with "))
+      }
+    }
+/*
     for (base <- customBaseName orElse baseObject.map(_.name)) {
       sm_p(" extends ")
       sm_p(base)
@@ -80,6 +105,7 @@ class ScalaClassDefinition(
       sm_p(" with ")
       sm_p(customImplementNames.mkString(" with "))
     }
+*/
 /*
     baseObject match {
       case Some(base) => {
@@ -523,4 +549,20 @@ protected final void to_string_map(Map<String, String> map, String name, Object 
 
   override protected def builder_auxiliary {
   }
+}
+
+sealed trait ScalaClassifierKind {
+  def keyword: String
+}
+object ClassScalaKind extends ScalaClassifierKind {
+  def keyword = "class"
+}
+object ObjectScalaKind extends ScalaClassifierKind {
+  def keyword = "object"
+}
+object TraitScalaKind extends ScalaClassifierKind {
+  def keyword = "trait"
+}
+object AbstractClassScalaKind extends ScalaClassifierKind {
+  def keyword = "abstract class"
 }

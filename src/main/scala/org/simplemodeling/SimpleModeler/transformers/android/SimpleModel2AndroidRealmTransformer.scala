@@ -24,7 +24,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 /*
  * @since   Apr. 18, 2011
  *  version Oct. 26, 2011
- * @version Nov.  2, 2012
+ * @version Nov. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2AndroidRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -42,8 +42,16 @@ class SimpleModel2AndroidRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
     new AndroidBuilder 
   }
 
+  override protected def make_Pre_Resolver_Phases() = {
+    List(new AndroidBuilder2())
+  }
+
+  override protected def make_Resolver() = {
+    Some(new AndroidResolve())
+  }
+
   override protected def make_Phases(): List[TransformerPhase] = {
-    List(new AndroidBuilder2(), new AndroidResolve(), new AndroidMakeCrud())
+    List(new AndroidMakeCrud())
   }
 
   override protected def make_Project() {
@@ -57,7 +65,7 @@ class SimpleModel2AndroidRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
 */
   }
 
-  class AndroidBuilder extends BuilderBase {
+  class AndroidBuilder extends JavaBuilder {
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
       val appname = target_context.className(pkg, "Application")
       val app = new AndroidApplicationEntity(target_context)
@@ -224,9 +232,9 @@ class SimpleModel2AndroidRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
     }
   }
 
-  class AndroidResolve extends ResolvePhase {
+  class AndroidResolve extends JavaResolve {
   }
 
-  class AndroidMakeCrud extends CrudMakePhase {
+  class AndroidMakeCrud extends JavaMakeCrud {
   }
 }

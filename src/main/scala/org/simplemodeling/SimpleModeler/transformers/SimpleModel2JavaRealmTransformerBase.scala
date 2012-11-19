@@ -26,7 +26,7 @@ import org.goldenport.recorder.Recordable
  *  version Apr.  7, 2012
  *  version Jun. 16, 2012
  *  version Oct. 30, 2012
- * @version Nov.  6, 2012
+ * @version Nov. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2JavaRealmTransformerBase(
@@ -35,6 +35,27 @@ abstract class SimpleModel2JavaRealmTransformerBase(
   srcMainDir = "/src"
   usePackageObject = false
   val defaultFileSuffix = "java"
+
+  override protected def make_Builder() = {
+    new JavaBuilder 
+  }
+
+  override protected def make_Resolver() = {
+    Some(new JavaResolve)
+  }
+
+  override protected def make_Phases(): List[TransformerPhase] = {
+    List(new JavaMakeCrud)
+  }
+
+  class JavaBuilder extends BuilderBase {
+  }
+
+  class JavaResolve extends ResolvePhase {
+  }
+
+  class JavaMakeCrud extends CrudMakePhase {
+  }
 }
 
 /*

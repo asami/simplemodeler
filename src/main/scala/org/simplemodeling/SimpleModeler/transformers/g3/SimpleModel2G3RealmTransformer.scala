@@ -24,7 +24,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 /*
  * @since   Jul. 11, 2011
  *  version Aug. 25, 2011
- * @version Nov.  2, 2012
+ * @version Nov. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2G3RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -41,8 +41,12 @@ class SimpleModel2G3RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContex
     new G3Builder 
   }
 
+  override protected def make_Resolver() = {
+    Some(new G3Resolve())
+  }
+
   override protected def make_Phases(): List[TransformerPhase] = {
-    List(new G3Resolve(), new G3MakeCrud())
+    List(new G3MakeCrud())
   }
 
   override protected def make_Project() {
@@ -56,7 +60,7 @@ class SimpleModel2G3RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContex
 */
   }
 
-  class G3Builder extends BuilderBase {
+  class G3Builder extends JavaBuilder {
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
       val appname = target_context.className(pkg, "Application")
       val app = new G3ApplicationEntity(target_context)
@@ -173,9 +177,9 @@ class SimpleModel2G3RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContex
 */
   }
 
-  class G3Resolve extends ResolvePhase {
+  class G3Resolve extends JavaResolve {
   }
 
-  class G3MakeCrud extends CrudMakePhase {
+  class G3MakeCrud extends JavaMakeCrud {
   }
 }
