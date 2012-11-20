@@ -2,7 +2,7 @@ package org.simplemodeling.SimpleModeler.entities
 
 /*
  * @since   Aug. 19, 2011
- * @version Aug. 19, 2011
+ * @version Nov. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class BuilderScalaClassDefinition(
@@ -17,15 +17,9 @@ class BuilderScalaClassDefinition(
   isCustomVariableImplementation = true
 
   override protected def constructors_copy_constructor {
-    sm_public_constructor("%s(%s src)", name, pobject.name) {
-      for (a <- attributeDefinitions) {
-        sm_assign_this(a.varName, "src." + a.varName)
-      }
-    }
   }
 
   override protected def constructors_plain_constructor {
-    constructors_plain_constructor_for_document
   }
 
   override protected def attribute(attr: PAttribute) = {

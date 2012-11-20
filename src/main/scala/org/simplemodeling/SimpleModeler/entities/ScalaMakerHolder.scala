@@ -3,7 +3,8 @@ package org.simplemodeling.SimpleModeler.entities
 /**
  * @since   Aug. 19, 2011
  *  version Aug. 21, 2011
- * @version May.  3, 2012
+ *  version May.  3, 2012
+ * @version Nov. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 trait ScalaMakerHolder {
@@ -62,6 +63,93 @@ trait ScalaMakerHolder {
     _maker.println("}")
   }
 
+  // 2012-11-20
+  /**
+   * Used by ScalaClassDefinition.
+   */
+  protected final def sm_param_list(params: Seq[String]) {
+    params.toList match {
+      case Nil => {} // sm_p("()")
+      case x :: Nil => {
+        sm_p("(")
+        sm_p(x)
+        sm_p(")")
+      }
+      case List(xs) if xs.length < 3 => {
+        sm_p("(")
+        sm_p(xs.mkString(", "))
+        sm_p(")")
+      }
+      case x :: xs => {
+        sm_pln("(")
+        sm_indent_up
+        sm_p(x)
+        for (a <- xs) {
+          sm_pln(",")
+          sm_p(a)
+        }
+        sm_pln
+        sm_indent_down
+        sm_pln(")")
+      }
+    }
+  }
+
+  // 2012-11-20
+  /**
+   * Used by custom configured class definition.
+   */
+  protected final def sm_object(name: String, parent: String = null, params: Seq[String] = Nil, mixins: Seq[String] = Nil)(body: => Unit) {
+    _maker.print("object ")
+    _maker.print(name)
+    if (parent != null) {
+      _maker.print(" extends ")
+      _maker.print(parent)
+      sm_param_list(params)
+      if (mixins.nonEmpty) {
+        _maker.print(" with ")
+        _maker.print(mixins.mkString(" with "))
+      }
+      _maker.println(" {")
+    } else if (mixins.nonEmpty) {
+      _maker.print(" extends ")
+      _maker.print(mixins.mkString(" with "))
+      _maker.println(" {")
+    } else {
+      _maker.println(" {")
+    }
+    sm_indent_up
+    body
+    sm_indent_down
+    _maker.println("}")
+  }
+
+  // 2012-11-20
+  /**
+   * Used by custom configured class definition.
+   */
+  protected final def sm_object_without_body(name: String, parent: String = null, params: Seq[String] = Nil, mixins: Seq[String] = Nil) {
+    _maker.print("object ")
+    _maker.print(name)
+    if (parent != null) {
+      _maker.print(" extends ")
+      _maker.print(parent)
+      sm_param_list(params)
+      if (mixins.isEmpty) {
+        _maker.println
+      } else {
+        _maker.print(" with ")
+        _maker.println(mixins.mkString(" with "))
+      }
+    } else if (mixins.nonEmpty) {
+      _maker.print(" extends ")
+      _maker.println(mixins.mkString(" with "))
+    } else {
+      _maker.println
+    }
+  }
+
+  //
   protected final def sm_package(name: String) {
     _maker.declarePackage(name)
   }

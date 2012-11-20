@@ -46,7 +46,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov. 15, 2012
+ * @version Nov. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -245,6 +245,11 @@ abstract class GenericClassDefinition(
   var useDocument: Boolean = false
   var usePersistent: Boolean = false
   /**
+   * Used by ModuleTraitScalaClassDefinition
+   * to disable attributes in top level trait.
+   */
+  var useAttribute: Boolean = true
+  /**
    * Sets true in EntityJavaClassDefinition.
    * In case of Entity is true.
    * In case of Value is false to convey real value.
@@ -285,12 +290,16 @@ abstract class GenericClassDefinition(
       head_imports
     }
     class_open
-    attribute_variables
+    if (useAttribute) {
+      attribute_variables
+    }
     package_variables
     lifecycle_variables
     constructors
     lifecycle_methods
-    attribute_methods
+    if (useAttribute) {
+      attribute_methods
+    }
     service_methods
     to_methods
     update_methods

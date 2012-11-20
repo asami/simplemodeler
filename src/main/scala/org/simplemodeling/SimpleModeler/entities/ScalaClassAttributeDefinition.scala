@@ -11,7 +11,7 @@ import org.simplemodeling.dsl._
  * @since   Aug. 19, 2011
  *  version Feb. 20, 2012
  *  version May.  6, 2012
- * @version Nov.  7, 2012
+ * @version Nov. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassAttributeDefinition(
@@ -27,7 +27,8 @@ class ScalaClassAttributeDefinition(
   }
 
   override def constant_property {
-    sm_public_static_final_String_literal(propertyConstantName, propertyLiteral)
+    // TODO move to companion object
+//    sm_public_static_final_String_literal(propertyConstantName, propertyLiteral)
   }
 
   override protected def variable_plain_Inject_Annotation {
