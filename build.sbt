@@ -34,7 +34,7 @@ libraryDependencies += "de.odysseus.juel" % "juel-spi" % "2.2.5"
 
 libraryDependencies += "de.odysseus.juel" % "juel-impl" % "2.2.5"
 
-libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.6-SNAPSHOT"
+libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.6"
 
 libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.2.0"
 
