@@ -1,0 +1,13 @@
+#+title: entity knowledge
+
+* Resource
+
+** AdvertiseMail
+
+#+caption: Attributes
+| name |
+|------|
+|      |
+
+*** Knowledge
+
