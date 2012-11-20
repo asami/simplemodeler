@@ -29,7 +29,7 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Jan. 30, 2012
  *  version Jun. 17, 2012
  *  version Oct. 16, 2012
- * @version Nov. 18, 2012
+ * @version Nov. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) with SimpleModelEntityHelper {
@@ -421,7 +421,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
   private def build_extensionBusinessUsecase(aUsecase: ExtensionBusinessUsecase) {
     val pkg = build_package(aUsecase)
     val buc = new SMExtensionBusinessUsecase(aUsecase)
-    record_trace("SMExtensionBusinessUsecase = " + buc.name)
+    record_trace("SimpleModelEntity#build_extensionBusinessUsecase = " + buc.name)
     build_object(buc, aUsecase)
     pkg.addChild(buc)
     build_relation_objects_in_flows(aUsecase)
@@ -432,7 +432,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
   private def build_businessUsecase(aUsecase: BusinessUsecase) {
     val pkg = build_package(aUsecase)
     val buc = new SMBusinessUsecase(aUsecase)
-    record_trace("SMBusinessUsecase = " + buc.name)
+    record_trace("SimpleModelEntity#build_businessUsecase = " + buc.name)
     build_object(buc, aUsecase)
     pkg.addChild(buc)
     build_relation_objects_in_flows(aUsecase)
@@ -455,7 +455,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
   private def build_businessTask(aTask: BusinessTask) {
     val pkg = build_package(aTask)
     val task = new SMBusinessTask(aTask)
-    record_trace("SMBusinessTask = " + task.name)
+    record_trace("SimpleModelEntity#build_businessTask = " + task.name)
     build_object(task, aTask)
     pkg.addChild(task)
     build_relation_objects_in_flows(aTask)
@@ -465,7 +465,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
   private def build_extensionRequirementUsecase(aUsecase: ExtensionRequirementUsecase) {
     val pkg = build_package(aUsecase)
     val buc = new SMExtensionRequirementUsecase(aUsecase)
-    record_trace("SMExtensionRequirementUsecase = " + buc.name)
+    record_trace("SimpleModelEntity#build_extensionRequirementUsecase = " + buc.name)
     build_object(buc, aUsecase)
     pkg.addChild(buc)
     build_relation_objects_in_flows(aUsecase)
@@ -475,7 +475,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
   private def build_requirementUsecase(aUsecase: RequirementUsecase) {
     val pkg = build_package(aUsecase)
     val buc = new SMRequirementUsecase(aUsecase)
-    record_trace("SMRequirementUsecase = " + buc.name)
+    record_trace("SimpleModelEntity#build_requirementUsecase = " + buc.name)
     build_object(buc, aUsecase)
     pkg.addChild(buc)
     aUsecase.businessTasks.foreach(build_object)
@@ -486,7 +486,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
   private def build_requirementTask(aTask: RequirementTask) {
     val pkg = build_package(aTask)
     val task = new SMRequirementTask(aTask)
-    record_trace("SMRequirementTask = " + task.name)
+    record_trace("SimpleModelEntity#build_requirementTask = " + task.name)
     build_object(task, aTask)
     pkg.addChild(task)
     build_relation_objects_in_flows(aTask)
@@ -692,7 +692,7 @@ record_trace("build_powertype_object = " + aPowertype)
       case None => setNode(pathName).asInstanceOf[SMPackage]
     }
     val dslPkg = pkg.dslPackage
-    if (dslPkg.manifestOption.isEmpty) {
+    if (dslPkg.manifestOption.isEmpty) { // XXX cache
       try {
         val manifestClass = anObject.getClass.getClassLoader.loadClass(pkgQName + ".MANIFEST")
         val manifest = manifestClass.newInstance.asInstanceOf[SManifest]
@@ -706,10 +706,12 @@ record_trace("build_powertype_object = " + aPowertype)
         dslPkg.note = manifest.note
         dslPkg.history.copyIn(manifest.history)
         dslPkg.manifestOption = Some(manifest)
-        record_trace("manifest = " + manifest)
+        record_trace("SimpleModelEntity#build_package manifest = " + manifest)
       } catch {
-        case e: ClassNotFoundException => record_trace("bad manifest = " + pkgQName) //
-        dslPkg.manifestOption = None
+        case e: ClassNotFoundException => {
+          record_trace("SimpleModelEntity#build_package no manifest = " + pkgQName)
+          dslPkg.manifestOption = None
+        }
       }
     }
     pkg

@@ -90,7 +90,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 16, 2012
+ * @version Nov. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1566,11 +1566,26 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _describe_event_issue(entities: Map[String, SObject], uc: SStoryObject, step: SMMAssociation) {
     doe_w(_entity_ref(step.associationType.getName, entities)) {
-      case event: DomainEvent => uc.event_issue(event)()
-      case story: BusinessUsecase => uc.include_business_usecase(story)
-      case story: RequirementUsecase => uc.include_requirement_usecase(story)
-      case story: BusinessTask => uc.include_business_task(story)
-      case story: RequirementTask => uc.include_requirement_task(story)
+      case event: DomainEvent => {
+        record_trace("SMMEntityEntity#_describe_event_issue(%s) = %s / %s = %s".format(name, step.name, step.associationType.getName, event))
+        uc.event_issue(event)()
+      }
+      case story: BusinessUsecase => {
+        record_trace("SMMEntityEntity#_describe_event_issue(%s) = %s / %s = %s".format(name, step.name, step.associationType.getName, story))
+        uc.include_business_usecase(story)
+      }
+      case story: RequirementUsecase => {
+        record_trace("SMMEntityEntity#_describe_event_issue(%s) = %s / %s = %s".format(name, step.name, step.associationType.getName, story))
+        uc.include_requirement_usecase(story)
+      }
+      case story: BusinessTask => {
+        record_trace("SMMEntityEntity#_describe_event_issue(%s) = %s / %s = %s".format(name, step.name, step.associationType.getName, story))
+        uc.include_business_task(story)
+      }
+      case story: RequirementTask => {
+        record_trace("SMMEntityEntity#_describe_event_issue(%s) = %s / %s = %s".format(name, step.name, step.associationType.getName, story))
+        uc.include_requirement_task(story)
+      }
       case x => {
         record_warning("SMMEntityEntity#_describe_event_issue: " + x)
       }

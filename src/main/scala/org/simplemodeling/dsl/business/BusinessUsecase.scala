@@ -12,7 +12,8 @@ import org.goldenport.value._
  * @since   Nov.  6, 2008
  *  version Nov.  6, 2011
  *  version Sep. 18, 2012
- * @version Oct. 21, 2012
+ *  version Oct. 21, 2012
+ * @version Nov. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 class BusinessUsecase(name:String, packageName: String) extends SUsecase(name, packageName) with BusinessStory {
@@ -66,7 +67,8 @@ class BusinessUsecase(name:String, packageName: String) extends SUsecase(name, p
     step
   }
 
-  //
+/* 2012-11-21 deleted 
+ * To remove redundant task creattion
   override protected def adjust_Embedded_Task(aRoot: GTreeNode[SStep]): Unit = {
     val children = aRoot.children
     for (child <- children) {
@@ -107,6 +109,7 @@ class BusinessUsecase(name:String, packageName: String) extends SUsecase(name, p
 //    util.UDsl.printFlow(task.basicFlow.root)
     task
   }
+*/
 
   override protected def merge_Alternate_Path(thePaths: GTreeNode[SPath], theSteps: GTreeNode[SStep]) {
     val pathsByMark = make_pathsByMark(thePaths)
