@@ -1,5 +1,5 @@
 [app]
-  version: 0.4.0-RC4-SNAPSHOT
+  version: 0.4.0-RC4
   org: org.simplemodeling
   name: simplemodeler
   class: org.simplemodeling.SimpleModeler.AppMain

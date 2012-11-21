@@ -3,7 +3,7 @@ package org.simplemodeling.SimpleModeler.entities
 /*
  * @since   Jul.  6, 2011
  *  version Dec. 13, 2011
- * @version Nov.  9, 2012
+ * @version Nov. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 class DocumentJavaClassDefinition(
@@ -36,8 +36,8 @@ class DocumentJavaClassDefinition(
   }
 
   override protected def object_auxiliary {
-    jm_public_method("String fetchSql()") {
-      jm_return(sql_select(pobject))
+    jm_public_method("String sqlSelect()") {
+      jm_return(sql_select_literal(pobject))
     }
   }
 }
