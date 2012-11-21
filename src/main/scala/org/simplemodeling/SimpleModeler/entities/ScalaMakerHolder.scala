@@ -1,10 +1,13 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import scalaz._, Scalaz._
+import com.asamioffice.goldenport.text.UJavaString
+
 /**
  * @since   Aug. 19, 2011
  *  version Aug. 21, 2011
  *  version May.  3, 2012
- * @version Nov. 20, 2012
+ * @version Nov. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 trait ScalaMakerHolder {
@@ -63,13 +66,17 @@ trait ScalaMakerHolder {
     _maker.println("}")
   }
 
+  protected final def sm_string_literal(s: String) = {
+    UJavaString.stringLiteral(s)
+  }
+
   // 2012-11-20
   /**
    * Used by ScalaClassDefinition.
    */
   protected final def sm_param_list(params: Seq[String]) {
     params.toList match {
-      case Nil => {} // sm_p("()")
+      case Nil => sm_p("()")
       case x :: Nil => {
         sm_p("(")
         sm_p(x)
@@ -95,6 +102,60 @@ trait ScalaMakerHolder {
     }
   }
 
+  protected final def sm_param_list_or_empty(params: Seq[String]) {
+    if (params.nonEmpty) sm_param_list(params)
+  }
+
+  protected final def sm_param_tree(params: Tree[String]) {
+    import Stream.Empty
+    params.subForest match {
+      case Empty => sm_p("()")
+      case x #:: Stream.Empty => {
+        sm_p("(")
+        sm_param_tree_inner(x)
+        sm_p(")")
+      }
+      case x #:: xs => {
+        sm_pln("(")
+        sm_indent_up
+        sm_param_tree_inner(x)
+        for (a <- xs) {
+          sm_pln(",")
+          sm_param_tree_inner(a)
+        }
+        sm_pln
+        sm_indent_down
+        sm_pln(")")
+      }
+    }
+  }
+
+  protected final def sm_param_tree_inner(param: Tree[String]) {
+    import Stream.Empty
+    param.subForest match {
+      case Empty => sm_p(param.rootLabel)
+      case x #:: Stream.Empty => {
+        sm_p(param.rootLabel)
+        sm_p("(")
+        sm_param_tree_inner(x)
+        sm_p(")")
+      }
+      case x #:: xs => {
+        sm_p(param.rootLabel)
+        sm_pln("(")
+        sm_indent_up
+        sm_param_tree_inner(x)
+        for (a <- xs) {
+          sm_pln(",")
+          sm_param_tree_inner(a)
+        }
+        sm_pln
+        sm_indent_down
+        sm_pln(")")
+      }
+    }
+  }
+
   // 2012-11-20
   /**
    * Used by custom configured class definition.
@@ -105,7 +166,7 @@ trait ScalaMakerHolder {
     if (parent != null) {
       _maker.print(" extends ")
       _maker.print(parent)
-      sm_param_list(params)
+      sm_param_list_or_empty(params)
       if (mixins.nonEmpty) {
         _maker.print(" with ")
         _maker.print(mixins.mkString(" with "))
@@ -134,7 +195,7 @@ trait ScalaMakerHolder {
     if (parent != null) {
       _maker.print(" extends ")
       _maker.print(parent)
-      sm_param_list(params)
+      sm_param_list_or_empty(params)
       if (mixins.isEmpty) {
         _maker.println
       } else {
@@ -147,6 +208,29 @@ trait ScalaMakerHolder {
     } else {
       _maker.println
     }
+  }
+
+  protected final def sm_object_tree_params_without_body(name: String, parent: String, params: Tree[String], mixins: Seq[String] = Nil) {
+    require (parent != null, "parent must not be null.")
+    _maker.print("object ")
+    _maker.print(name)
+    _maker.print(" extends ")
+    _maker.print(parent)
+    sm_param_tree(params)
+    if (mixins.isEmpty) {
+      _maker.println
+    } else {
+      _maker.print(" with ")
+      _maker.println(mixins.mkString(" with "))
+    }
+  }
+
+  protected final def sm_val_case_class_tree_params(name: String, caseclass: String, params: Tree[String]) {
+    _maker.print("val ")
+    _maker.print(name)
+    _maker.print(" = ")
+    _maker.print(caseclass)
+    sm_param_tree(params)
   }
 
   //

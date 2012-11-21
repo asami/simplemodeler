@@ -18,7 +18,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov. 18, 2012
+ * @version Nov. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -110,7 +110,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   lazy val contextName = pContext.contextName(packageName)
 
   final def modelEntity: SMEntity = {
-    require (modelObject.isInstanceOf[SMEntity], "modelObject should be SMEntity.")
+    require (modelObject.isInstanceOf[SMEntity], "modelObject should be SMEntity. (%s): %s".format(name, modelObject))
     modelObject.asInstanceOf[SMEntity]    
   }
 

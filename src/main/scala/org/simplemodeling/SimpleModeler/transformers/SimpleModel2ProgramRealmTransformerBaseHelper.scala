@@ -23,7 +23,7 @@ import org.goldenport.recorder.Recordable
 
 /**
  * @since   Nov.  2, 2012
- * @version Nov. 15, 2012
+ * @version Nov. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SimpleModel2ProgramRealmTransformerBaseHelper {
@@ -39,7 +39,7 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
     obj.classNameBase = target_context.classNameBase(modelPackage)
     obj.modelPackage = Some(modelPackage)
     obj.platformPackage = Some(ppkg)
-    obj.setKindedPackageName(modelPackage.qualifiedName)
+    obj.setKindedPackageName(make_PackageName(modelPackage))
     obj.xmlNamespace = modelPackage.xmlNamespace
 //      obj.modelObject = modelPackage
 //      build_properties(obj, modelPackage)
@@ -58,7 +58,7 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
     obj.classNameBase = target_context.classNameBase(modelPackage)
     obj.modelPackage = Some(modelPackage)
     obj.platformPackage = Some(ppkg)
-    obj.packageName = modelPackage.qualifiedName
+    obj.setKindedPackageName(make_PackageName(modelPackage))
     obj.xmlNamespace = modelPackage.xmlNamespace
 //      obj.modelObject = modelPackage
 //      build_properties(obj, modelPackage)
@@ -76,13 +76,33 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
     obj.classNameBase = target_context.classNameBase(modelPackage)
     obj.modelPackage = Some(modelPackage)
     obj.platformPackage = Some(ppkg)
-    obj.packageName = modelPackage.qualifiedName
+    obj.setKindedPackageName(make_PackageName(modelPackage))
     obj.xmlNamespace = modelPackage.xmlNamespace
     //      obj.modelObject = modelPackage
     //      build_properties(obj, modelPackage)
     val pathname = scriptSrcDir + "/" + obj.name + "." + obj.fileSuffix
     target_realm.setEntity(pathname, obj)
     obj
+  }
+
+  protected final def build_object_for_package_at_package(
+    obj: PObjectEntity, modelPackage: SMPackage,
+    name: String, packagename: String
+  ) = {
+    obj.name = name
+    obj.term = modelPackage.term
+    obj.term_en = modelPackage.term_en
+    obj.term_ja = modelPackage.term_ja
+    obj.asciiName = target_context.asciiName(modelPackage)
+    obj.uriName = target_context.uriName(modelPackage)
+    obj.classNameBase = target_context.classNameBase(modelPackage)
+    obj.modelPackage = Some(modelPackage)
+//    obj.platformPackage = Some(ppkg)
+    obj.setKindedPackageName(packagename)
+    obj.xmlNamespace = modelPackage.xmlNamespace
+//    obj.modelObject = modelPackage
+//    build_properties(obj, modelPackage)
+    store_object(obj)
   }
 
   protected final def build_package(ppkg: PPackageEntity, modelPackage: SMPackage) = {
@@ -94,7 +114,7 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
     ppkg.classNameBase = target_context.classNameBase(modelPackage)
 //      ppkg.modelPackage = Some(modelPackage)
 //      ppkg.platformPackage = Some(ppkg)
-    ppkg.packageName = modelPackage.qualifiedName
+    ppkg.setKindedPackageName(make_PackageName(modelPackage))
     ppkg.xmlNamespace = modelPackage.xmlNamespace
 //      ppkg.modelObject = modelPackage
 //      build_properties(ppkg, modelPackage)
@@ -144,6 +164,39 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
     target_realm.setEntity(pathname, obj)
     obj
   }
+
+  /**
+   * Created at 2012-11-21.
+   * Currently unused.
+   */
+  protected def build_object_with_name(
+    obj: PObjectEntity,
+    name: String,
+    packagename: String,
+    basename: Option[(String, String)],
+    mixins: Seq[(String, String)]
+  ) = {
+    obj.name = name
+//      obj.classNameBase = target_context.classNameBase(modelObject)
+    obj.setKindedPackageName(packagename)
+//      obj.xmlNamespace = modelObject.xmlNamespace
+    for ((n, p) <- basename) {
+      obj.setKindedBaseObjectType(n, p)
+    }
+    for ((n, p) <- mixins) {
+      obj.addKindedTraitObjectType(n, p)
+    }
+    store_object(obj)
+  }
+
+  protected final def store_object(obj: PObjectEntity) = {
+    require (obj != null, "store_object: object should be not null: " + obj)
+    require (obj.name != null && obj.name.nonEmpty, "store_object: object name should not be empty:" + obj)
+    val pathname = make_pathname(obj)
+    record_trace("SimpleModel2ProgramRealmTransformerBaseHelper#store_object = " + pathname)
+    target_realm.setEntity(pathname, obj)
+    obj
+  }      
 
   /*
    * find objects in the realm space.

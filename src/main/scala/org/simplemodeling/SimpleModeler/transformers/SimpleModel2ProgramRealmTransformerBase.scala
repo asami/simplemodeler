@@ -27,7 +27,7 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov. 19, 2012
+ * @version Nov. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -94,6 +94,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
   protected def make_PackageName(obj: SMObject): String = {
     obj.packageName
+  }
+
+  protected def make_PackageName(pkg: SMPackage): String = {
+    pkg.qualifiedName
   }
 
   abstract class BuilderBase extends GTreeVisitor[SMElement] { 
@@ -630,7 +634,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         obj.asciiName = target_context.asciiName(modelPkg)
         obj.uriName = target_context.uriName(modelPkg)
         obj.classNameBase = target_context.classNameBase(modelPkg)
-        obj.setKindedPackageName(modelPkg.qualifiedName)
+        obj.setKindedPackageName(make_PackageName(modelPkg))
         obj.xmlNamespace = modelPkg.xmlNamespace
         obj.modelPackage = Some(modelPkg)
         // XXX
@@ -666,6 +670,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       store_object(obj)
     }
 
+
     private def build_derived_object(modelObject: SMObject, source: PObjectEntity)(obj: PObjectEntity) = {
       obj.modelObject = modelObject
       obj.sourcePlatformObject = Some(source)
@@ -689,15 +694,6 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       build_properties(obj, modelObject)
       store_object(obj)
     }
-
-    private def store_object(obj: PObjectEntity) = {
-      require (obj != null, "store_object: object should be not null: " + obj)
-      require (obj.name != null && obj.name.nonEmpty, "store_object: object name should not be empty:" + obj)
-      val pathname = make_pathname(obj)
-      record_trace("SimpleModel2ProgramRealmTransformerBase#store_object = " + pathname)
-      target_realm.setEntity(pathname, obj)
-      obj
-    }      
 
     private def build_super(obj: PObjectEntity, anObject: SMObject) {
 //      obj.setBaseClass(new PEntityType(obj.name, obj.packageName))

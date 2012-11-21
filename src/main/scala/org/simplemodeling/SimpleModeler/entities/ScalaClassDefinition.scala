@@ -6,15 +6,15 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
  * @since   Aug. 19, 2011
  *  version Aug. 19, 2011
  *  version Feb. 11, 2012
- * @version Nov. 20, 2012
+ * @version Nov. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassDefinition(
-  pContext: PEntityContext,
+  aContext: PEntityContext,
   aspects: Seq[ScalaAspect],
-  pobject: PObjectEntity,
+  anObject: PObjectEntity,
   maker: ScalaMaker = null
-) extends GenericClassDefinition(pContext, aspects, pobject) with ScalaMakerHolder {
+) extends GenericClassDefinition(aContext, aspects, anObject) with ScalaMakerHolder {
   type ATTR_DEF = ScalaClassAttributeDefinition
 
   var scalaKind: ScalaClassifierKind = ClassScalaKind
@@ -74,8 +74,10 @@ class ScalaClassDefinition(
   }
 
   protected final def trait_names: Seq[String] = {
-    mixinTraits.map(_.name) ++ customImplementNames
+    mixinTraits.map(_.name) ++ customImplementNames ++ custom_Trait_Names
   }
+
+  protected def custom_Trait_Names: Seq[String] = Nil
 
   override protected def class_open_body {
     if (isSingleton) {
@@ -92,13 +94,13 @@ class ScalaClassDefinition(
         sm_p(" extends ")
         sm_p(bn)
         class_open_body_parent_constructor
-        sm_p(" with ")
-        sm_p(trait_names.mkString(" with "))
+        if (trait_names.nonEmpty) {
+          sm_p(" with ")
+          sm_p(trait_names.mkString(" with "))
+        }
       }
       case None => {
-        if (trait_names.isEmpty) {
-          sm_p(" ")
-        } else {
+        if (trait_names.nonEmpty) {
           sm_p(" extends ")
           sm_p(trait_names.mkString(" with "))
         }

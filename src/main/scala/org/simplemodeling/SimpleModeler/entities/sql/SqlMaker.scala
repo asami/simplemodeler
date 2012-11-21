@@ -7,21 +7,30 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Nov.  2, 2012
- * @version Nov.  2, 2012
+ * @version Nov. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
   def select: String
+  def selectLiteral: String
 }
 
 class EntitySqlMaker(entity: PEntityEntity) extends SqlMaker {
   def select = {
-    UJavaString.stringLiteral("select %s from %s".format("columns", "table"))
+    "select %s from %s".format("columns", "table")
+  }
+
+  def selectLiteral = {
+    UJavaString.stringLiteral(select)
   }
 }
 
 class DocumentSqlMaker(document: PDocumentEntity) extends SqlMaker {
   def select = {
-    UJavaString.stringLiteral("select %s from %s".format("columns", "table"))
+    "select %s from %s".format("columns", "table")
+  }
+
+  def selectLiteral = {
+    UJavaString.stringLiteral(select)
   }
 }

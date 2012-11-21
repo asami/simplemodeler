@@ -46,7 +46,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov. 20, 2012
+ * @version Nov. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -1274,25 +1274,37 @@ abstract class GenericClassDefinition(
    */
   protected final def actor_entities = {
     collect_entities_in_module {
-      case x: PEntityEntity if (x.modelEntity.isInstanceOf[SMDomainActor]) => x
+      case x: PEntityEntity if (x.modelObject.isInstanceOf[SMDomainActor]) => x
     }
   }
 
   protected final def role_entities = {
     collect_entities_in_module {
-      case x: PEntityEntity if (x.modelEntity.isInstanceOf[SMDomainRole]) => x
+      case x: PEntityEntity if (x.modelObject.isInstanceOf[SMDomainRole]) => x
     }
   }
 
   protected final def event_entities = {
     collect_entities_in_module {
-      case x: PEntityEntity if (x.modelEntity.isInstanceOf[SMDomainEvent]) => x
+      case x: PEntityEntity if (x.modelObject.isInstanceOf[SMDomainEvent]) => x
     }
   }
 
   protected final def resource_entities = {
     collect_entities_in_module {
-      case x: PEntityEntity if (x.modelEntity.isInstanceOf[SMDomainResource]) => x
+      case x: PEntityEntity if (x.modelObject.isInstanceOf[SMDomainResource]) => x
     }
+  }
+
+  protected final def summary_entities = {
+    collect_entities_in_module {
+      case x: PEntityEntity if (x.modelObject.isInstanceOf[SMDomainSummary]) => x
+    }
+  }
+
+  protected final def domain_entities = {
+    actor_entities ++ role_entities ++
+    event_entities ++ resource_entities ++
+    summary_entities
   }
 }
