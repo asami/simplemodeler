@@ -8,5 +8,5 @@
 [repositories]
   local
   maven-central
-  sonatype-releases
+  sonatype-oss-releases
   asamioffice:http://www.asamioffice.com/maven
