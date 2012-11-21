@@ -14,7 +14,7 @@ scalacOptions += "-deprecation"
 
 scalacOptions += "-unchecked"
 
-resolvers += "Scala Tools Snapshots" at "http://scala-tools.org/repo-snapshots/"
+// resolvers += "Scala Tools Snapshots" at "http://scala-tools.org/repo-snapshots/"
 
 resolvers += Classpaths.typesafeResolver
 
