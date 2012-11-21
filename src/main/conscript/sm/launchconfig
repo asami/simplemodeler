@@ -7,6 +7,6 @@
   version: 2.9.2
 [repositories]
   local
-  scala-tools-releases
   maven-central
+  sonatype-releases
   asamioffice:http://www.asamioffice.com/maven
