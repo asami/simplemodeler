@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
- * @version Nov. 22, 2012
+ * @version Nov. 23, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -361,6 +361,79 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     UString.capitalize(a)
   }
 
+  /**
+   * Generic title string.
+   */
+  final def titleName(anObject: PObjectEntity): String = {
+    titleName(anObject.modelObject)
+  }
+
+  final def titleName(attr: PAttribute): String = {
+    titleName(attr.modelElement)
+  }
+
+  final def titleName(modelElement: SMElement): String = {
+    val a = pickup_name(
+      modelElement.title_sdoc.toText,
+      modelElement.caption.toText,
+      modelElement.label.toText,
+      modelElement.term_ja,
+      modelElement.term_en,
+      modelElement.term,
+      modelElement.name_ja,
+      modelElement.name_en,
+      modelElement.name)
+    UString.capitalize(a)
+  }
+
+  /**
+   * Label for GUI tab label.
+   */
+  final def tabName(anObject: PObjectEntity): String = {
+    tabName(anObject.modelObject)
+  }
+
+  final def tabName(attr: PAttribute): String = {
+    tabName(attr.modelElement)
+  }
+
+  final def tabName(modelElement: SMElement): String = {
+    val a = pickup_name(
+      modelElement.label.toText,
+      modelElement.title_sdoc.toText,
+      modelElement.term_ja,
+      modelElement.term_en,
+      modelElement.term,
+      modelElement.name_ja,
+      modelElement.name_en,
+      modelElement.name)
+    UString.capitalize(a)
+  }
+
+  /**
+   * Label for GUI navigation tree label.
+   */
+  final def naviName(anObject: PObjectEntity): String = {
+    naviName(anObject.modelObject)
+  }
+
+  final def naviName(attr: PAttribute): String = {
+    naviName(attr.modelElement)
+  }
+
+  final def naviName(modelElement: SMElement): String = {
+    val a = pickup_name(
+      modelElement.label.toText,
+      modelElement.term_ja,
+      modelElement.term_en,
+      modelElement.term,
+      modelElement.name_ja,
+      modelElement.name_en,
+      modelElement.name)
+    UString.capitalize(a)
+  }
+
+  //
   final def dataKey(attr: PAttribute): String = {
     asciiName(attr)
   }
