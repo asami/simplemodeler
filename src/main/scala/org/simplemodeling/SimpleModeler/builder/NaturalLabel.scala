@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
- * @version Nov. 14, 2012
+ * @version Nov. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -198,6 +198,10 @@ case object SubtitleLabel extends NaturalLabel {
   val candidates = List("subtitle", "サブタイトル", "副題")
 }
 
+case object LabelLabel extends NaturalLabel {
+  val candidates = List("label", "ラベル")
+}
+
 case object CaptionLabel extends NaturalLabel {
   val candidates = List("caption")
 }
@@ -336,6 +340,7 @@ object NaturalLabel {
     TermEnLabel,
     TitleLabel,
     SubtitleLabel,
+    LabelLabel,
     CaptionLabel,
     BriefLabel,
     SummaryLabel,
@@ -421,12 +426,12 @@ object NaturalLabel {
   }
 
   def getObjectName(entry: Seq[(String, String)]): Option[String] = {
-    val cs = Stream(NameLabel, NameJaLabel, NameEnLabel, TermLabel, TermJaLabel, TermEnLabel, ColumnNameLabel, TitleLabel, CaptionLabel)
+    val cs = Stream(NameLabel, NameJaLabel, NameEnLabel, TermLabel, TermJaLabel, TermEnLabel, ColumnNameLabel, TitleLabel, LabelLabel, CaptionLabel)
     _find_candidate(cs, entry)
   }
 
   def getSlotName(entry: Seq[(String, String)]): Option[String] = {
-    val cs = Stream(NameLabel, NameJaLabel, NameEnLabel, TermLabel, TermJaLabel, TermEnLabel, ColumnNameLabel, TypeLabel, TitleLabel, CaptionLabel)
+    val cs = Stream(NameLabel, NameJaLabel, NameEnLabel, TermLabel, TermJaLabel, TermEnLabel, ColumnNameLabel, TypeLabel, TitleLabel, LabelLabel, CaptionLabel)
     _find_candidate(cs, entry)
   }
 

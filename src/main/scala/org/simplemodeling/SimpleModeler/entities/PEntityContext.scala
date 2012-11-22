@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
- * @version Nov. 21, 2012
+ * @version Nov. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -61,7 +61,13 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   def applicationName(po: PObjectEntity): String = {
-    applicationName(po.packageName)
+    val pkg = {
+      po.modelPackage.map(applicationName) orElse
+      po.getModelObject.map(_.packageName) orElse
+      po.platformPackage.map(_.qualifiedName) orElse
+      po.sourcePlatformObject.map(_.packageName) getOrElse po.packageName
+    }
+    applicationName(pkg)
   }
 
   def applicationName(pkg: SMPackage): String = {
@@ -343,7 +349,16 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
 
   final def labelName(modelElement: SMElement): String = {
 //    underscore_name(enTerm(modelElement))
-    UString.capitalize(localeTerm(modelElement))
+    val a = pickup_name(
+      modelElement.label.toText,
+      modelElement.title_sdoc.toText,
+      modelElement.term_ja,
+      modelElement.term_en,
+      modelElement.term,
+      modelElement.name_ja,
+      modelElement.name_en,
+      modelElement.name)
+    UString.capitalize(a)
   }
 
   final def dataKey(attr: PAttribute): String = {

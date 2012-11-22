@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import org.apache.commons.lang3.StringUtils
 import scalaz._
 import Scalaz._
 import scala.collection.mutable.{Buffer, ArrayBuffer}
@@ -14,7 +15,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Feb. 19, 2012
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
- * @version Nov. 14, 2012
+ * @version Nov. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -73,6 +74,41 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     multiplicity == POne && attributeType.isDataType
   }
 
+  /*
+   * attributes for GUI
+   * 
+  final def name_en = dslElement.name_en
+  final def name_ja = dslElement.name_ja
+  final def term = dslElement.term
+  final def term_en = dslElement.term_en
+  final def term_ja = dslElement.term_ja
+  // XXX another name stuff
+  final def caption = dslElement.caption
+  final def brief = dslElement.brief
+  final def summary = dslElement.summary
+  final def resume = dslElement.resume
+  final def description = dslElement.description
+  final def note = dslElement.note
+  final def history = dslElement.history
+   */
+/* use PEntityContext#labelName
+  def labelString: String = {
+    // TODO locale
+    getModelElement.flatMap(x => {
+      _get_label(
+        x.label.toText, x.title_sdoc.toText, x.term_ja, x.term_en, x.term,
+        x.name_ja, x.name_en)
+    }) | name
+  }
+
+  private def _get_label(candidates: String*): Option[String] = {
+    candidates.find(StringUtils.isNotBlank)
+  }
+*/
+
+  /*
+   *
+   */
   final def isName: Boolean = {
     if (modelAttribute == null) return false
     else modelAttribute.isName

@@ -46,7 +46,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov. 21, 2012
+ * @version Nov. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -1307,4 +1307,17 @@ abstract class GenericClassDefinition(
     event_entities ++ resource_entities ++
     summary_entities
   }
+}
+
+object NullClassDefinition extends GenericClassDefinition(
+  null, Nil, null
+) {
+  protected def pln() {}
+  protected def class_open_body {}
+  protected def class_close_body {}
+  protected def attribute(attr: PAttribute): ATTR_DEF = {
+    sys.error("not reached.")
+  }
+  override def build() {}
+  override def toText = "Not implemented yet. override class_Defition or write_Content in PObjectEntity."
 }

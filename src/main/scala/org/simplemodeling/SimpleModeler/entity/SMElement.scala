@@ -13,7 +13,8 @@ import org.simplemodeling.SimpleModeler.sdoc.SMObjectRef
 /**
  * @since   Sep. 15, 2008
  *  version Dec. 18, 2010
- * @version Feb. 22, 2012
+ *  version Feb. 22, 2012
+ * @version Nov. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMElement] {
@@ -52,6 +53,12 @@ abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMEleme
   final def term_en = dslElement.term_en
   final def term_ja = dslElement.term_ja
   // XXX another name stuff
+  /**
+   * Name title is conflict with GTreeNode#title.
+   */
+  final def title_sdoc = dslElement.title
+  final def subtitle = dslElement.subtitle
+  final def label = dslElement.label
   final def caption = dslElement.caption
   final def brief = dslElement.brief
   final def summary = dslElement.summary

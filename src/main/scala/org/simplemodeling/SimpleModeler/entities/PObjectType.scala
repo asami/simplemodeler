@@ -14,7 +14,7 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
  *  version Jul. 25, 2011
  *  version Apr. 11, 2012
  *  version Oct. 30, 2012
- * @version Nov. 16, 2012
+ * @version Nov. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -26,6 +26,9 @@ abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
   val constraints = mutable.Map[String, PConstraint]()
   def isEntity = false
   def isDataType = getDatatypeName.isDefined
+  def dslName: Option[String] = {
+    Option(model_attribute_type).map(_.name)
+  }
 
   if (model_attribute_type != null) {
     for (constraint <- model_attribute_type.constraints) {
@@ -78,14 +81,14 @@ abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
   }
 }
 
-class PStringType(aModelAttrType: SMAttributeType) extends PObjectType {
+class PStringType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) {
   override def objectTypeName = "String"
 
   def this() = this(null)
 }
 object PStringType extends PStringType
 
-class PTokenType(aModelAttrType: SMAttributeType) extends PObjectType {
+class PTokenType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) {
   override def objectTypeName = "String"
 
   def this() = this(null)

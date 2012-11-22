@@ -90,7 +90,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 21, 2012
+ * @version Nov. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -473,7 +473,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     op
   }
 
-  override protected def set_Annotation_Pf(key: String, value: String) = {
+  override protected def update_Field(key: String, value: String) = {
     key match {
       case "tableName"   => tableName = value; true
       case _ => false
@@ -1190,12 +1190,13 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       attr.term_en = a
     }
     for (a <- _dsl_text(src.title)) {
-//      attr.title = a XXX
-      attr.caption = a
+      attr.title = a
     }
     for (a <- _dsl_text(src.subtitle)) {
-//      attr.subtitle = a XXX
-      attr.brief = a
+      attr.subtitle = a
+    }
+    for (a <- _dsl_text(src.label)) {
+      attr.label = a
     }
     for (a <- _dsl_text(src.caption)) {
       attr.caption = a

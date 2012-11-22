@@ -18,13 +18,14 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov. 21, 2012
+ * @version Nov. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
   extends GEntity(pContext) with SimpleModelerConstants {
   type DataSource_TYPE = GDataSource
   type AttributeTYPE <: PAttribute
+  type ClassDefinition_TYPE = GenericClassDefinition
 
   override def is_Text_Output = true
 
@@ -97,10 +98,22 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   var uriName = ""
   // Class Name base (TermName)
   var classNameBase = ""
-  var modelPackage: Option[SMPackage] = None // not used
+  /**
+   * Used by PEntityContext#applicationName
+   */
+  var modelPackage: Option[SMPackage] = None
+  /**
+   * Used by PEntityContext#applicationName
+   */
   var modelObject: SMObject = SMNullObject
-  var platformPackage: Option[PPackageEntity] = None // not used
-  var sourcePlatformObject: Option[PObjectEntity] = None // not used
+  /**
+   * Used by PEntityContext#applicationName
+   */
+  var platformPackage: Option[PPackageEntity] = None
+  /**
+   * Used by PEntityContext#applicationName
+   */
+  var sourcePlatformObject: Option[PObjectEntity] = None
   /**
    * Holds platform package node which contains this node as child. 
    */
@@ -109,12 +122,25 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   lazy val factoryName = pContext.factoryName(packageName)
   lazy val contextName = pContext.contextName(packageName)
 
+  final def getModelObject = {
+    if (modelObject == SMNullObject) None else modelObject.some
+  }
+
   final def modelEntity: SMEntity = {
     require (modelObject.isInstanceOf[SMEntity], "modelObject should be SMEntity. (%s): %s".format(name, modelObject))
     modelObject.asInstanceOf[SMEntity]    
   }
 
   var isImmutable: Boolean = false
+
+  override protected def write_Content(out: java.io.BufferedWriter) {
+    val klass = class_Definition
+    klass.build()
+    out.append(klass.toText)
+    out.flush
+  }
+
+  protected def class_Definition: ClassDefinition_TYPE = NullClassDefinition
 
   /*
    * Body

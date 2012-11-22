@@ -12,7 +12,8 @@ import org.simplemodeling.dsl.datatype.ext._
  *
  * @since   Sep. 10, 2008
  *  version Sep. 18, 2011
- * @version Oct. 21, 2012
+ *  version Oct. 21, 2012
+ * @version Nov. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) {
@@ -62,12 +63,12 @@ abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) 
    * Used by Atom Feed.
    * 
    */
-  var title: String = ""
+  // var title: String = ""
 
   /**
    * Used by Atom Feed.
    */
-  var subtitle : String = ""
+  // var subtitle : String = ""
 
   /**
    * Used by Atom Feed.
