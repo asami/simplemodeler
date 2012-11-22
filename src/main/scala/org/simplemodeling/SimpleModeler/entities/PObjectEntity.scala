@@ -140,7 +140,9 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     out.flush
   }
 
-  protected def class_Definition: ClassDefinition_TYPE = NullClassDefinition
+  protected def class_Definition: ClassDefinition_TYPE = {
+    throw new UnsupportedOperationException("Please create ClassDefinition or let this Entity be hidden.")
+  }
 
   /*
    * Body
