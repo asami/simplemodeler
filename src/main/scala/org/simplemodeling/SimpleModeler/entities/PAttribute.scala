@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Feb. 19, 2012
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
- * @version Nov. 22, 2012
+ * @version Nov. 23, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -50,8 +50,10 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   final def typeName: String = type_name
   final def objectTypeName: String = type_name_object
   final def elementTypeName: String = element_type_name
-  final def jdoTypeName: String = jdo_type_name
-  final def jdoElementTypeName: String = jdo_element_type_name
+  final def jpaTypeName: String = jpa_type_name
+  final def jpaElementTypeName: String = jpa_element_type_name
+  final def jdoTypeName: String = jdo_type_name // AppEngine
+  final def jdoElementTypeName: String = jdo_element_type_name // AppEngine
   final def xmlDatatypeName: String = attributeType.xmlDatatypeName
   final def kind: SAttributeKind = {
     if (modelAttribute != null) modelAttribute.kind
@@ -253,7 +255,45 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     }
   }
 
-  //
+  /*
+   * JPA
+   */
+  private def jpa_value_or_object_type_name = {
+    if (use_object_over_datatype) {
+      jpa_object_type_name
+    } else {
+      attributeType.getJpaDatatypeName match {
+        case Some(value) => value
+        case None => jpa_object_type_name
+      }
+    }
+  }
+
+  private def jpa_object_type_name = attributeType.jpaObjectTypeName
+  private def jpa_element_type_name = attributeType.jpaObjectTypeName
+  private def jpa_list_type_name = "List<" + jpa_element_type_name + ">"
+
+  private def jpa_type_name: String = {
+    multiplicity match {
+      case m: POne => jpa_value_or_object_type_name
+      case m: PZeroOne => jpa_object_type_name
+      case m: PZeroMore => jpa_list_type_name
+      case m: POneMore => jpa_list_type_name
+    }
+  }
+
+  private def jpa_type_name_object: String = {
+    multiplicity match {
+      case m: POne => jpa_object_type_name
+      case m: PZeroOne => jpa_object_type_name
+      case m: PZeroMore => jpa_list_type_name
+      case m: POneMore => jpa_list_type_name
+    }
+  }
+
+  /*
+   * JDO
+   */
   private def jdo_value_or_object_type_name = {
     if (use_object_over_datatype) {
       jdo_object_type_name

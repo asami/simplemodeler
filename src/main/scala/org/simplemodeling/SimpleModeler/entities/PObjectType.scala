@@ -22,6 +22,14 @@ abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
   def getDatatypeName: Option[String] = None
   def xmlDatatypeName: String = "string"
   /**
+   * For JPA.
+   */
+  def jpaObjectTypeName: String = objectTypeName
+  /**
+   * For JPA.
+   */
+  def getJpaDatatypeName: Option[String] = getDatatypeName
+  /**
    * For Google AppEngine.
    */
   def jdoObjectTypeName: String = objectTypeName

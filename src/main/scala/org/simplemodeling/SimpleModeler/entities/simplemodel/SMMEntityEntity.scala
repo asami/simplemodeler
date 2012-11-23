@@ -90,7 +90,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 22, 2012
+ * @version Nov. 23, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1133,7 +1133,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_attributes(entity: SObject, entities: Map[String, SObject]) {
     for (attr <- attributes) {
-      record_trace("SMMEntityEntity#_build_attributes(%s) = %s".format(name, attr.name))
+      record_trace("SMMEntityEntity#_build_attributes(%s) = %s: %s".format(name, attr.name, attr.attributeType.getName))
       attr.attributeType.idType match {
         case Some(t) => {
 //          entity.attribute_id.attributeType = _dsl_type(t)

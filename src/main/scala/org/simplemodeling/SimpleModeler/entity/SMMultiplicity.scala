@@ -5,8 +5,10 @@ import org.simplemodeling.dsl._
 import org.goldenport.sdoc.SDoc
 
 /*
- * Oct. 12, 2008
- * Jan. 18, 2009
+ * @since   Oct. 12, 2008
+ *  version Jan. 18, 2009
+ * @version Nov. 23, 2012
+ * @author  ASAMI, Tomoharu
  */
 class SMMultiplicity(val dslMultiplicity: SMultiplicity) {
   val kind: SMMultiplicityKind = dslMultiplicity match {
@@ -21,6 +23,16 @@ class SMMultiplicity(val dslMultiplicity: SMultiplicity) {
   final def symbol: String = {
     kind match {
       case m: SMMultiplicityOne => "1"
+      case m: SMMultiplicityZeroOne => "?"
+      case m: SMMultiplicityOneMore => "+"
+      case m: SMMultiplicityZeroMore => "*"
+      case _ => "???"
+    }
+  }
+
+  final def mark: String = {
+    kind match {
+      case m: SMMultiplicityOne => ""
       case m: SMMultiplicityZeroOne => "?"
       case m: SMMultiplicityOneMore => "+"
       case m: SMMultiplicityZeroMore => "*"
