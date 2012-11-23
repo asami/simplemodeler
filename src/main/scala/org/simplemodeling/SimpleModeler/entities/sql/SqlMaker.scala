@@ -36,7 +36,27 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
 
   def select = {
     val tablename = context.sqlTableName(entity)
-    "select %s from %s".format("columns", "table")
+    "select " + _columns + " from " + tablename + _joins
+  }
+
+  private def _columns = {
+    entity.wholeAttributes.map(_column).mkString(", ")
+  }
+
+  private def _column(attr: PAttribute) = {
+    val columnname = context.sqlColumnName(attr)
+    val name = context.asciiName(attr)
+    if (name == columnname) name
+    else columnname + " as " + name
+  }
+
+  private def _joins = {
+    val attrs = entity.wholeAttributesWithoutId.filter(_.isEntityReference)
+    val ts = (1 to attrs.length).map(x => "T" + x)
+    for ((attr, t) <- attrs zip ts) yield {
+      "left outer join " + context.sqlTableName(attr) + " " + t + " on " +
+      "T." + context.sqlColumnName(attr) + "=" + "t." + context.sqlJoinColumnName(attr)
+    }.mkString("\n", " ", "\n")
   }
 
   def selectLiteral = {

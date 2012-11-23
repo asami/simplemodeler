@@ -71,7 +71,7 @@ abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMEleme
    * SQL
    */
   def sqlTableName = dslElement.sqlTableName
-//  def sqlColumnName = dslElement.sqlColumnName
+  def sqlColumnName = dslElement.sqlColumnName
 //  def sqlDataType = dslElement.sqlDataType
 
   protected def new_Node(aName: String): SMElement = {

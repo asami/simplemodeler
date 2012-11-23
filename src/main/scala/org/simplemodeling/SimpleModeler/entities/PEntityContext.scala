@@ -627,7 +627,30 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   def sqlTableName(o: PObjectEntity): String = {
-    pickup_name(o.sqlTableName, o.term_en, o.term_ja, o.term, o.term_en, o.term_ja, o.name)
+    pickup_name(o.sqlTableName, o.term_en, o.term_ja, o.term, o.name_en, o.name_ja, o.name)
+  }
+
+  def sqlColumnName(o: PAttribute): String = {
+    pickup_name(o.sqlColumnName, o.term_en, o.term_ja, o.term, o.name_en, o.name_ja, o.name)
+  }
+
+  def sqlTableName(a: PAttribute): String = {
+    val o = a.attributeType match {
+      case e: PEntityType => e.entity
+      case p: PPowertypeType => p.powertype
+      case s: PStateMachineType => s.statemachine
+    }
+    sqlTableName(o)
+  }
+
+
+  def sqlJoinColumnName(a: PAttribute): String = {
+    val o = a.attributeType match {
+      case e: PEntityType => e.entity
+      case p: PPowertypeType => p.powertype
+      case s: PStateMachineType => s.statemachine
+    }
+    sqlColumnName(o.idAttr)
   }
 
   /*

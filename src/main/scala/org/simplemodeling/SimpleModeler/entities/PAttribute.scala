@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Feb. 19, 2012
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
- * @version Nov. 23, 2012
+ * @version Nov. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -31,7 +31,6 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   var modelAssociation: SMAssociation = null // XXX
   var modelPowertype: SMPowertypeRelationship = null // XXX
   var modelStateMachine: SMStateMachineRelationship = null // XXX
-//  var modelStateMachine: SMStateMachineRelationship = null // XXX
   def modelElement: SMElement = {
     if (modelAttribute != null) modelAttribute
     else if (modelAssociation != null) modelAssociation
@@ -60,6 +59,13 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     else NullAttributeKind
   }
 
+  def name_en = modelElement.name_en
+  def name_ja = modelElement.name_ja
+  def term = modelElement.term
+  def term_en = modelElement.term_en
+  def term_ja = modelElement.term_ja
+  def sqlColumnName: String = modelElement.sqlColumnName
+
   val use_object_over_datatype = true
 
   def idPolicy = {
@@ -74,6 +80,12 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   final def isDataType: Boolean = {
     multiplicity == POne && attributeType.isDataType
+  }
+
+  def isEntityReference = {
+    modelAssociation != null ||
+    (modelPowertype != null && modelPowertype.isEntityReference) ||
+    (modelStateMachine != null && modelStateMachine.isEntityReference)
   }
 
   /*
@@ -109,7 +121,7 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 */
 
   /*
-   *
+   * Atom Publishing
    */
   final def isName: Boolean = {
     if (modelAttribute == null) return false

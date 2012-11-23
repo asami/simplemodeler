@@ -609,7 +609,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     protected def make_trait_document(modelObject: SMObject): SMDomainTrait = {
 //      println("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + modelObject.attributes)
       val docname = make_document_name(modelObject)
-      val pkgname = modelObject.packageName
+      val pkgname = make_Package_Name(modelObject.packageName)
       val mo = SMDomainTrait.createDocument(docname, pkgname, modelObject)
       record_trace("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + mo.attributes)
       findObject(docname, pkgname) match {
@@ -906,7 +906,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     def resolve_base(obj: PObjectEntity) {
       obj.getBaseObjectType match {
         case Some(base) => {
-          base.reference = getObject(base.qualifiedName)
+//          val qname = make_Package_Name(base.qualifiedName)
+          val qname = base.qualifiedName
+          base.reference = getObject(qname)
         }
         case None => {}
       }
@@ -914,7 +916,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     def resolve_traits(obj: PObjectEntity) {
       for (tt <- obj.getTraitObjectTypes) {
-        findObject(tt.qualifiedName) match {
+        val qname = make_Qualified_Name(tt.qualifiedName)
+        findObject(qname) match {
           case Some(s) => tt.reference = s
           // some generator does not use platform trait.
           case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_traits(%s): platform trait not found = %s".format(obj.name, tt.qualifiedName))
@@ -938,25 +941,28 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 //          }
           case powertypeType: PPowertypeType => {
             if (usePowertype) {
-              findPowertype(powertypeType.qualifiedName) match {
+              val qname = make_Qualified_Name(powertypeType.qualifiedName)
+              findPowertype(qname) match {
                 case Some(s) => powertypeType.powertype = s
                 // some generator does not use platform trait.
-                case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_traits(%s): platform powertype not found = %s".format(obj.name, attr.name))
+                case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s): platform powertype '%s' not found = %s".format(obj.name, attr.name, qname))
               }
             }
           }
           case smType: PStateMachineType => {
             if (usePowertype) {
               record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes powertype: " + smType.qualifiedName)
-              findStateMachine(smType.qualifiedName) match {
+              val qname = make_Qualified_Name(smType.qualifiedName)
+              findStateMachine(qname) match {
                 case Some(s) => smType.statemachine = s
                 // some generator does not use platform trait.
-                case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_traits(%s): platform state machine not found = %s".format(obj.name, attr.name))
+                case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s): platform state machine '%s' not found = %s".format(obj.name, attr.name, qname))
               }
             }
           }
           case documentType: PDocumentType => {
-            documentType.document = findDocument(documentType.qualifiedName)
+            val qname = make_Qualified_Name(documentType.qualifiedName)
+            documentType.document = findDocument(qname)
           }
           case valueType: PValueType => {
             if (useValue) {
@@ -972,13 +978,15 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       for (op <- obj.operations) {
         op.in match {
           case Some(docType) => {
-            docType.document = findDocument(docType.qualifiedName)
+            val qname = make_Qualified_Name(docType.qualifiedName)
+            docType.document = findDocument(qname)
           }
           case None => {}
         }
         op.out match {
           case Some(docType) => {
-            docType.document = findDocument(docType.qualifiedName)
+            val qname = make_Qualified_Name(docType.qualifiedName)
+            docType.document = findDocument(qname)
           }
           case None => {}
         }

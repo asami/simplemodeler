@@ -14,7 +14,7 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
  *  version Jul. 25, 2011
  *  version Apr. 11, 2012
  *  version Oct. 30, 2012
- * @version Nov. 23, 2012
+ * @version Nov. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -590,7 +590,7 @@ class PPowertypeType(val name: String, val packageName: String) extends PObjectT
 
   private var _powertype: PPowertypeEntity = _
   def powertype: PPowertypeEntity = {
-    require(_powertype != null)
+    require(_powertype != null, "powertype " + name + " in " + packageName + " should be resolved.")
     _powertype
   }
   def powertype_=(aPowertype: PPowertypeEntity) = _powertype = aPowertype

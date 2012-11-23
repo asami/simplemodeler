@@ -95,7 +95,7 @@ abstract class SElement(aName: String) extends SDescriptable with SHistoriable {
 
   // pull up to SObject?
   var sqlTableName: String = ""
-//  var sqlColumnName: String = ""
+  var sqlColumnName: String = ""
 //  var sqlDataType: String = ""
 
   // XXX planning stuff
