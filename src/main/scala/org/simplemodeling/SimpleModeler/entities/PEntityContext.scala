@@ -399,6 +399,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
 
   final def tabName(modelElement: SMElement): String = {
     val a = pickup_name(
+      modelElement.tabLabel,
       modelElement.label.toText,
       modelElement.title_sdoc.toText,
       modelElement.term_ja,
@@ -423,6 +424,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
 
   final def naviName(modelElement: SMElement): String = {
     val a = pickup_name(
+      modelElement.naviLabel,
       modelElement.label.toText,
       modelElement.term_ja,
       modelElement.term_en,

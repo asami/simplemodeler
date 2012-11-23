@@ -81,7 +81,7 @@ import org.simplemodeling.dsl.requirement.RequirementUsecase
 import org.simplemodeling.dsl.requirement.RequirementTask
 import org.simplemodeling.dsl.SAssociation
 import org.simplemodeling.dsl.domain.GenericDomainEntity
-import org.simplemodeling.SimpleModeler.builder.{NaturalLabel, TableNameLabel}
+import org.simplemodeling.SimpleModeler.builder._
 
 /*
  * @since   Jan. 30, 2009
@@ -110,6 +110,14 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   var packageName: String = ""
   var kind: ElementKind = NoneKind
+  /*
+   * GUI
+   */
+  var naviLabel: String = ""
+  var tabLabel: String = ""
+  /*
+   * SQL
+   */
   var tableName: String = ""
   // to aviod cyclic recursive initialization for base in the NullEntityEntity signleton.
   private var _base: SMMEntityEntity = null
@@ -476,7 +484,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   override protected def update_Field(label: NaturalLabel, value: String) {
     label match {
-      case TableNameLabel   => tableName = value
+      case NaviLabelLabel => naviLabel = value
+      case TabLabelLabel => tabLabel = value
+      case TableNameLabel => tableName = value
       case _ => {}
     }
   }
@@ -1089,6 +1099,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _build_properties(entity: SObject) {
+    entity.naviLabel = naviLabel
+    entity.tabLabel = tabLabel
     entity.sqlTableName = tableName
   }
 

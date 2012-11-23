@@ -68,6 +68,12 @@ abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMEleme
   final def history = dslElement.history
 
   /*
+   * GUI
+   */
+  def naviLabel = dslElement.naviLabel
+  def tabLabel = dslElement.tabLabel
+
+  /*
    * SQL
    */
   def sqlTableName = dslElement.sqlTableName

@@ -295,7 +295,20 @@ case object AnnotationLabel extends NaturalLabel {
   val candidates = List("annotation", "注記")
 }
 
-// SQL
+/*
+ * GUI
+ */
+case object NaviLabelLabel extends NaturalLabel {
+  val candidates = List("navi", "navigation", "ナビ", "ナビゲーション", "ナビ名")
+}
+
+case object TabLabelLabel extends NaturalLabel {
+  val candidates = List("tab", "タブ", "タブ名")
+}
+
+/*
+ * SQL
+ */
 case object TableNameLabel extends NaturalLabel {
   val candidates = List("table name", "table", "テーブル", "表", "テーブル名")
 }

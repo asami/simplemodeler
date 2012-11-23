@@ -93,7 +93,15 @@ abstract class SElement(aName: String) extends SDescriptable with SHistoriable {
     return this;
   }
 
-  // pull up to SObject?
+  /*
+   * GUI
+   */
+  var naviLabel: String = ""
+  var tabLabel: String = ""
+
+  /*
+   * SQL
+   */
   var sqlTableName: String = ""
   var sqlColumnName: String = ""
 //  var sqlDataType: String = ""
