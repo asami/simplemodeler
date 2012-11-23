@@ -42,7 +42,7 @@ libraryDependencies += "org.goldenport" %% "goldenport-record" % "0.2.0"
 
 libraryDependencies += "org.goldenport" % "goldenport-java-lib" % "0.1.1"
 
-libraryDependencies += "org.smartdox" %% "smartdox" % "0.3.1"
+libraryDependencies += "org.smartdox" %% "smartdox" % "0.3.2-SNAPSHOT"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "1.6.1" % "test"
 
