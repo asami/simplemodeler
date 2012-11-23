@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
- * @version Nov. 22, 2012
+ * @version Nov. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -297,7 +297,7 @@ case object AnnotationLabel extends NaturalLabel {
 
 // SQL
 case object TableNameLabel extends NaturalLabel {
-  val candidates = List("table name", "テーブル名")
+  val candidates = List("table name", "table", "テーブル", "表", "テーブル名")
 }
 
 case object ColumnNameLabel extends NaturalLabel {

@@ -18,7 +18,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov. 22, 2012
+ * @version Nov. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -69,15 +69,51 @@ abstract class PObjectEntity(val pContext: PEntityContext)
    * Name in program. Defined in the specification DSL.
    * 
    * "name" is defined in GEntity.
+   *
+   * Setuped in SimpleModel2JavaRealmTransformerBase.
    */
-  var name_en = ""
-  var name_ja = ""
+  def name_en = {
+    (platform_name_en orElse modelPackage.map(_.name_en)) |
+    modelObject.name_en
+  }
+  var platform_name_en: Option[String] = None
+
+  def name_ja = {
+    (platform_name_ja orElse modelPackage.map(_.name_ja)) |
+    modelObject.name_ja
+  }
+  var platform_name_ja: Option[String] = None
+
   /**
    * Name in glossary. Defined in the specification DSL.
    */
-  var term = ""
-  var term_en = ""
-  var term_ja = ""
+  def term = {
+    (platform_term orElse modelPackage.map(_.term)) |
+    modelObject.term
+  }
+  var platform_term: Option[String] = None
+
+  def term_en = {
+    (platform_term_en orElse modelPackage.map(_.term_en)) |
+    modelObject.term_en
+  }
+  var platform_term_en: Option[String] = None
+
+  def term_ja = {
+    (platform_term_ja orElse modelPackage.map(_.term_ja)) |
+    modelObject.term_ja
+  }
+  var platform_term_ja: Option[String] = None
+
+  /*
+   * SQL
+   */
+  def sqlTableName = {
+    (platform_sqlTableName orElse modelPackage.map(_.sqlTableName)) |
+    modelObject.sqlTableName
+  }
+  var platform_sqlTableName: Option[String] = None
+
   /**
    * 
    */
@@ -96,8 +132,10 @@ abstract class PObjectEntity(val pContext: PEntityContext)
    * Use case: URI
    */
   var uriName = ""
+
   // Class Name base (TermName)
   var classNameBase = ""
+
   /**
    * Used by PEntityContext#applicationName
    */

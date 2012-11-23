@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
- * @version Nov. 23, 2012
+ * @version Nov. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -619,11 +619,15 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   def sqlMaker(entity: PEntityEntity): SqlMaker = {
-    new EntitySqlMaker(entity)
+    new EntitySqlMaker(this)(entity)
   }
 
   def sqlMaker(doc: PDocumentEntity): SqlMaker = {
-    new DocumentSqlMaker(doc)
+    new DocumentSqlMaker(this)(doc)
+  }
+
+  def sqlTableName(o: PObjectEntity): String = {
+    pickup_name(o.sqlTableName, o.term_en, o.term_ja, o.term, o.term_en, o.term_ja, o.name)
   }
 
   /*

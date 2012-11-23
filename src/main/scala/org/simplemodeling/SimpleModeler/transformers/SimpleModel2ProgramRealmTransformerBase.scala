@@ -27,7 +27,7 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov. 22, 2012
+ * @version Nov. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -633,9 +633,6 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     private def make_entity_service(serviceName: String, modelPkg: SMPackage) = {
       for (obj <- create_Service(null)) {
         obj.name = serviceName
-        obj.term = modelPkg.term // XXX
-        obj.term_en = modelPkg.term_en // XXX
-        obj.term_ja = modelPkg.term_ja // XXX
         obj.asciiName = target_context.asciiName(modelPkg)
         obj.uriName = target_context.uriName(modelPkg)
         obj.classNameBase = target_context.classNameBase(modelPkg)
@@ -656,9 +653,6 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     protected def build_object_with_name(obj: PObjectEntity, name: String, modelObject: SMObject, basename: Option[(String, String)], mixins: Seq[SMTrait]) = {
       obj.name = name
-      obj.term = modelObject.term
-      obj.term_en = modelObject.term_en
-      obj.term_ja = modelObject.term_ja
       obj.asciiName = target_context.asciiName(modelObject)
       obj.uriName = target_context.uriName(modelObject)
       obj.classNameBase = target_context.classNameBase(modelObject)
@@ -679,9 +673,6 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     private def build_derived_object(modelObject: SMObject, source: PObjectEntity)(obj: PObjectEntity) = {
       obj.modelObject = modelObject
       obj.sourcePlatformObject = Some(source)
-      obj.term = modelObject.term
-      obj.term_en = modelObject.term_en
-      obj.term_ja = modelObject.term_ja
       obj.asciiName = target_context.asciiName(modelObject)
       obj.uriName = target_context.uriName(modelObject)
       obj.classNameBase = target_context.classNameBase(modelObject)

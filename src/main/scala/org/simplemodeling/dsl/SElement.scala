@@ -4,7 +4,8 @@ package org.simplemodeling.dsl
  * derived from ModelElement since Mar. 18, 2007
  *
  * @since   Sep. 21, 2008
- * @version Jul. 19, 2009
+ *  version Jul. 19, 2009
+ * @version Nov. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SElement(aName: String) extends SDescriptable with SHistoriable {
@@ -91,6 +92,11 @@ abstract class SElement(aName: String) extends SDescriptable with SHistoriable {
     term_ja = aTerm;
     return this;
   }
+
+  // pull up to SObject?
+  var sqlTableName: String = ""
+//  var sqlColumnName: String = ""
+//  var sqlDataType: String = ""
 
   // XXX planning stuff
 

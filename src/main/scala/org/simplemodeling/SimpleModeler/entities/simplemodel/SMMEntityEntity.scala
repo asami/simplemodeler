@@ -81,6 +81,7 @@ import org.simplemodeling.dsl.requirement.RequirementUsecase
 import org.simplemodeling.dsl.requirement.RequirementTask
 import org.simplemodeling.dsl.SAssociation
 import org.simplemodeling.dsl.domain.GenericDomainEntity
+import org.simplemodeling.SimpleModeler.builder.{NaturalLabel, TableNameLabel}
 
 /*
  * @since   Jan. 30, 2009
@@ -90,7 +91,7 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 23, 2012
+ * @version Nov. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -473,10 +474,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     op
   }
 
-  override protected def update_Field(key: String, value: String) = {
-    key match {
-      case "tableName"   => tableName = value; true
-      case _ => false
+  override protected def update_Field(label: NaturalLabel, value: String) {
+    label match {
+      case TableNameLabel   => tableName = value
+      case _ => {}
     }
   }
 
@@ -1068,6 +1069,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _build_entity(entity: SObject, entities: Map[String, SObject]): SObject = {
     entity.term = if (UString.isNull(term)) name else term
     _build_specifications(entity)
+    _build_properties(entity)
     _build_base(entities, entity)
     _build_traits(entities, entity)
     _build_powertypes(entities, entity)
@@ -1084,6 +1086,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_specifications(entity: SObject) {
     // TODO
+  }
+
+  private def _build_properties(entity: SObject) {
+    entity.sqlTableName = tableName
   }
 
   private def _build_base(entities: Map[String, SObject], entity: SObject) {

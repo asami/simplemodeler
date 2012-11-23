@@ -5,7 +5,7 @@ import org.simplemodeling.SimpleModeler.builder._
 /*
  * @since   Oct.  5, 2012
  *  version Nov. 13, 2012
- * @version Nov. 22, 2012
+ * @version Nov. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMElement {
@@ -78,9 +78,12 @@ trait SMMElement {
       case DescriptionLabel => description = value
       case ColumnNameLabel => {}
       case SqlDatatypeLabel => {}
-      case _ => {}
+      case l: NaturalLabel => update_Field(l, value)
     }
     update_Field(key, value)
+  }
+
+  protected def update_Field(label: NaturalLabel, value: String) {
   }
 
   protected def update_Field(key: String, value: String) {
