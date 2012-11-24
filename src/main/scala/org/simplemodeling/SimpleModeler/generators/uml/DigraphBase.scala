@@ -305,7 +305,11 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     edge
   }
 
-  // statemachine
+  /*
+   * StateMachine relationship.
+   *
+   * XXX: see addStateMachineRelationship(aSourceId: String, aTargetId: String).
+   */
   final def addStateMachineRelationship(aSourceId: String, aTargetId: String, aRel: SMStateMachineRelationship) {
     addStateMachineRelationship(aSourceId, aTargetId, aRel, false)
   }
@@ -419,6 +423,11 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     edge
   }
 
+  /*
+   * StateMachine relationship.
+   *
+   * XXX: see addStateMachineRelationship(aSourceId: String, aTargetId: String, aRel: SMStateMachineRelationship)
+   */
   final def addStateMachineRelationship(aSourceId: String, aTargetId: String) {
     addStateMachineRelationship(aSourceId, aTargetId, false)
   }
@@ -456,6 +465,9 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     edge
   }
 
+  /*
+   * Document Relationship
+   */
   final def addDocumentRelationship(aSourceId: String, aTargetId: String, aRel: SMDocumentRelationship) {
     addDocumentRelationship(aSourceId, aTargetId, aRel, false)
   }
@@ -492,6 +504,77 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     edge
   }
 
+  /*
+   * Association Class relationship
+   */
+  final def addAssociationClassRelationship(aSourceId: String, targets: Seq[(String, SMAssociation)]) {
+    addAssociationClassRelationship(aSourceId, targets, false)
+  }
+
+  final def addDerivedAssociationClassRelationship(aSourceId: String, targets: Seq[(String, SMAssociation)]) {
+    addAssociationClassRelationship(aSourceId, targets, true)
+  }
+
+  final def addAssociationClassRelationship(aSourceId: String, targets: Seq[(String, SMAssociation)], aDerived: Boolean) {
+    val edges = build_assoc_class_edge(aSourceId, targets)
+    if (aDerived)
+      for ((e, a) <- edges) {
+        e.headlabel = "/" + a.name
+      }
+    else
+      for ((e, a) <- edges) {
+        e.headlabel = a.name
+      }
+  }
+
+  final def addPlainAssociationClassRelationship(aSourceId: String, targets: Seq[(String, SMAssociation)]) {
+    build_assoc_class_edge(aSourceId, targets)
+  }
+
+  final def addSimpleAssociationClassRelationship(aSourceId: String, targets: Seq[(String, SMAssociation)]) {
+    build_assoc_class_edge(aSourceId, targets)
+  }
+
+  private def build_assoc_class_edge(aSourceId: String, targets: Seq[(String, SMAssociation)]): Seq[(GVEdge, SMAssociation)] = {
+    val color = "#fef263" // 黄檗色きはだいろ
+    def makepoint = {
+      val pid = make_id(aSourceId)
+      val point = new GVNode(pid)
+      graph.elements += point
+      point.color = color
+      if (targets.length > 2)
+        point.shape = "diamond"
+      else
+        point.shape = "point"
+      pid
+    }
+    def makesourceline(pid: String) {
+      val edge = new GVEdge(aSourceId, "p", pid, "p")
+      edge.arrowhead = "none"
+      edge.arrowtail = "none"
+      edge.style = "dashed"
+      edge.color = color
+      graph.edges += edge
+    }
+    def maketargetlines(pid: String, targets: Seq[(String, SMAssociation)]) = {
+      for ((tid, assoc) <- targets) yield {
+        val edge = new GVEdge(pid, "p", tid, "p")
+        edge.arrowhead = "none"
+        edge.arrowtail = "none"
+        edge.color = "#fef263" // 黄檗色きはだいろ
+        graph.edges += edge
+        (edge, assoc)
+      }
+    }
+
+    val pid = makepoint
+    makesourceline(pid)
+    maketargetlines(pid, targets)
+  }
+
+  /*
+   * Port relationship
+   */
   final def addPortRelationship(aSourceId: String, aTargetId: String, port: SMPort) {
     addPortRelationship(aSourceId, aTargetId, port, false)
   }
@@ -518,6 +601,9 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     edge
   }
 
+  /*
+   * Usecase role relationship
+   */
   def addUsecaseRoleRelationship(source: String, target: String, role: String) {
     val edge = new GVEdge(source, "p", target, "p")
     edge.arrowhead = "none"
@@ -534,7 +620,9 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     graph.edges += edge
   }
 
-  //
+  /*
+   * Utilities
+   */
   private def make_multiplicity(anAssoc: SMAssociation): String = {
     make_multiplicity(anAssoc.multiplicity)
   }
@@ -630,7 +718,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
       case _: SMDomainResource => "#38a1db" // 露草色 つゆくさいろ
       case _: SMDomainEvent => "#e2041b" // 猩々緋 しょうじょうひ
       case _: SMDomainSummary => "#84a2d4" // 青藤色 あおふじいろ // "#674196" // 菖蒲色 しょうぶいろ
-      case _: SMDomainAssociationEntity => "#c89932" // 山吹茶やまぶきちゃ
+      case _: SMDomainAssociationEntity => "#fef263" // 黄檗色きはだいろ // "#c89932" // 山吹茶やまぶきちゃ
       case _: SMDomainEntity => "#c1e4e9" // 白藍 しらあい
       case _: SMDomainTrait => "#b3ada0" // 利休白茶
       // Domain(implicit)

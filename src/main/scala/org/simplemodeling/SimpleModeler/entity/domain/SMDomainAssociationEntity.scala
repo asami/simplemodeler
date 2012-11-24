@@ -8,7 +8,7 @@ import org.simplemodeling.dsl.domain._
  * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
-class SMDomainAssociationEntity(val dslDomainAssociationEntity: DomainAssociationEntity) extends SMDomainEntity(dslDomainAssociationEntity) {
+class SMDomainAssociationEntity(val dslDomainAssociationEntity: DomainAssociationEntity) extends SMDomainEntity(dslDomainAssociationEntity) with SMAssociationEntity {
   override def kindName: String = "association"
   override def powertypeName: String = null
 }

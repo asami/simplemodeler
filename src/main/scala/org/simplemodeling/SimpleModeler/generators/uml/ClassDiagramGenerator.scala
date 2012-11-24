@@ -17,7 +17,7 @@ import org.goldenport.Strings
  *  version Nov. 20, 2011
  *  version Sep. 18, 2012
  *  version Oct. 23, 2012
- * @version Nov. 18, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -280,15 +280,30 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
           }
         }
 
+        def add_association_class_relationships(aSource: SMAssociationEntity) {
+          val sourceId = get_id(aSource)
+          val targets = aSource.associations.map(x => {
+            (get_id(x.associationType.typeObject), x)
+          })
+          aThema match {
+            case "perspective" => graph.addSimpleAssociationClassRelationship(sourceId, targets)
+            case "hilight"     => graph.addPlainAssociationClassRelationship(sourceId, targets)
+            case "detail"      => graph.addAssociationClassRelationship(sourceId, targets)
+            case _             => graph.addSimpleAssociationClassRelationship(sourceId, targets)
+          }
+        }
+
         add_generalization_relationships(anObject)
         add_trait_relationships(anObject)
         add_powertype_relationships(anObject)
         add_statemachine_relationships(anObject)
         add_role_relationships(anObject)
-        if (anObject.isInstanceOf[SMUsecase]) {
-          add_usecase_association_relationships(anObject)
-        } else {
-          add_association_relationships(anObject)
+        anObject match {
+          case u: SMUsecase => add_usecase_association_relationships(u)
+          case t: SMTask => add_usecase_association_relationships(t)
+          case a: SMAssociationEntity => add_association_class_relationships(a)
+          case p: SMEntityPart => add_association_relationships(anObject)
+          case _ => add_association_relationships(anObject)
         }
         add_usecase_relationships(anObject)
       }
