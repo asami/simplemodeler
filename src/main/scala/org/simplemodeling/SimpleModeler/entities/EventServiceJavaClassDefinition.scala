@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov. 10, 2012
- * @version Nov. 19, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class EventServiceJavaClassDefinition(
@@ -53,6 +53,10 @@ protected %repository% repository;
 
   override protected def package_methods_Summary(summary: SMDomainSummary) {
     package_methods_Entity(summary)
+  }
+
+  override protected def package_methods_AssociationEntity(assoc: SMDomainAssociationEntity) {
+    package_methods_Entity(assoc)
   }
 
   override protected def package_methods_platform_Entity(entity: PEntityEntity) {

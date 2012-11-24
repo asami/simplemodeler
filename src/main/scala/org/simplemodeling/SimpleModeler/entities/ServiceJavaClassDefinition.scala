@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov. 10, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class ServiceJavaClassDefinition(
@@ -60,6 +60,10 @@ protected %repository% repository;
   }
 
   override protected def package_methods_Summary(summary: SMDomainSummary) {
+    package_methods_Entity(summary)
+  }
+
+  override protected def package_methods_AssociationEntity(summary: SMDomainAssociationEntity) {
     package_methods_Entity(summary)
   }
 

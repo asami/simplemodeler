@@ -19,7 +19,7 @@ import org.simplemodeling.dsl.domain._
 /*
  * @since   Sep. 13, 2008
  *  version Apr. 17, 2011
- * @version Nov. 14, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2SpecDocTransformer(val simpleModel: SimpleModelEntity) {
@@ -173,6 +173,11 @@ class SimpleModel2SpecDocTransformer(val simpleModel: SimpleModelEntity) {
 
     def add_summary(aSummary: SMDomainSummary) {
       val summary = add_object(aSummary)
+      summary
+    }
+
+    def add_associationEntity(aAssociationEntity: SMDomainAssociationEntity) {
+      val summary = add_object(aAssociationEntity)
       summary
     }
 

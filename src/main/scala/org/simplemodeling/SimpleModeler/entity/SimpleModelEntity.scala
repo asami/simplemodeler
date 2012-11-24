@@ -29,7 +29,7 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Jan. 30, 2012
  *  version Jun. 17, 2012
  *  version Oct. 16, 2012
- * @version Nov. 21, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) with SimpleModelEntityHelper {
@@ -168,6 +168,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
       case event: DomainEvent => build_domain_event(event)
       case resource: DomainResource => build_domain_resource(resource)
       case summary: DomainSummary => build_domain_summary(summary)
+      case assoc: DomainAssociationEntity => build_domain_association(assoc)
       case role: DomainRole => build_domain_role(role)
       case part: DomainEntityPart => build_domain_entity_part(part)
       case generic: GenericDomainEntity => build_generic_domain_entity(generic)
@@ -289,6 +290,15 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
     build_object(summary, aSummary)
     pkg.addChild(summary)
     build_relation_objects(aSummary)
+  }
+
+  private def build_domain_association(aAssociationEntity: DomainAssociationEntity) {
+    val pkg = build_package(aAssociationEntity)
+    val assoc = new SMDomainAssociationEntity(aAssociationEntity)
+//    println("SMEntity assoc = " + assoc.name)
+    build_object(assoc, aAssociationEntity)
+    pkg.addChild(assoc)
+    build_relation_objects(aAssociationEntity)
   }
 
   private def build_domain_role(aRole: DomainRole) {

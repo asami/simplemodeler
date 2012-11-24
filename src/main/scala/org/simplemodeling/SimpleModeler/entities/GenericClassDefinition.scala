@@ -17,6 +17,7 @@ import org.simplemodeling.SimpleModeler.entity.domain.SMDomainRule
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainService
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainStateMachine
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainSummary
+import org.simplemodeling.SimpleModeler.entity.domain.SMDomainAssociationEntity
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainValue
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainValueId
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainValueName
@@ -46,7 +47,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov. 22, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -480,6 +481,7 @@ abstract class GenericClassDefinition(
         case event: SMDomainEvent         => package_variables_Event(event)
         case role: SMDomainRole           => package_variables_Role(role)
         case summary: SMDomainSummary     => package_variables_Summary(summary)
+        case assoc: SMDomainAssociationEntity     => package_variables_AssociationEntity(assoc)
         case entity: SMDomainEntity       => package_variables_Entity(entity)
         case part: SMDomainEntityPart     => package_variables_Entity_Part(part)
         case id: SMDomainValueId          => package_variables_Id(id)
@@ -522,6 +524,10 @@ abstract class GenericClassDefinition(
 
   protected def package_variables_Summary(summary: SMDomainSummary) {
     package_variables_Entity(summary)
+  }
+
+  protected def package_variables_AssociationEntity(assoc: SMDomainAssociationEntity) {
+    package_variables_Entity(assoc)
   }
 
   protected def package_variables_Entity(entity: SMDomainEntity) {
@@ -899,6 +905,7 @@ abstract class GenericClassDefinition(
         case event: SMDomainEvent         => package_methods_Event(event)
         case role: SMDomainRole           => package_methods_Role(role)
         case summary: SMDomainSummary     => package_methods_Summary(summary)
+        case assoc: SMDomainAssociationEntity     => package_methods_AssociationEntity(assoc)
         case entity: SMDomainEntity       => package_methods_Entity(entity)
         case part: SMDomainEntityPart     => package_methods_Entity_Part(part)
         case id: SMDomainValueId          => package_methods_Id(id)
@@ -941,6 +948,10 @@ abstract class GenericClassDefinition(
 
   protected def package_methods_Summary(summary: SMDomainSummary) {
     package_methods_Entity(summary)
+  }
+
+  protected def package_methods_AssociationEntity(assoc: SMDomainAssociationEntity) {
+    package_methods_Entity(assoc)
   }
 
   protected def package_methods_Entity(entity: SMDomainEntity) {
@@ -1302,10 +1313,16 @@ abstract class GenericClassDefinition(
     }
   }
 
+  protected final def association_entities = {
+    collect_entities_in_module {
+      case x: PEntityEntity if (x.modelObject.isInstanceOf[SMDomainAssociationEntity]) => x
+    }
+  }
+
   protected final def domain_entities = {
     actor_entities ++ role_entities ++
     event_entities ++ resource_entities ++
-    summary_entities
+    summary_entities ++ association_entities
   }
 }
 

@@ -17,7 +17,7 @@ import com.asamioffice.goldenport.text.UString
  * @since   Jan. 15, 2009
  *  version Mar. 27, 2011
  *  version Nov. 20, 2011
- * @version Nov. 19, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
@@ -630,6 +630,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
       case _: SMDomainResource => "#38a1db" // 露草色 つゆくさいろ
       case _: SMDomainEvent => "#e2041b" // 猩々緋 しょうじょうひ
       case _: SMDomainSummary => "#84a2d4" // 青藤色 あおふじいろ // "#674196" // 菖蒲色 しょうぶいろ
+      case _: SMDomainAssociationEntity => "#c89932" // 山吹茶やまぶきちゃ
       case _: SMDomainEntity => "#c1e4e9" // 白藍 しらあい
       case _: SMDomainTrait => "#b3ada0" // 利休白茶
       // Domain(implicit)
@@ -649,6 +650,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     }
   }
 
+/*
   private def get_stereotype_color(anObject: SMObject): String = {
     if (anObject.kindName == "actor") "#f39800" // 金茶 きんちゃ
     else if (anObject.kindName == "role") "#e49e61" // 小麦色 こむぎいろ
@@ -678,6 +680,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
   private def get_stereotype_color(aStateMachine: SMStateMachine): String = {
     "#f5b1aa" // 珊瑚色 さんごいろ
   }
+*/
 
   /*
 http://www.colordic.org/w/

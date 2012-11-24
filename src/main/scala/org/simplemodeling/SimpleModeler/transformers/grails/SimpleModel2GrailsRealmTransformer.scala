@@ -15,7 +15,8 @@ import com.asamioffice.goldenport.text.UJavaString
 
 /*
  * @since   Jan. 25, 2009
- * @version Apr. 17, 2011
+ *  version Apr. 17, 2011
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2GrailsRealmTransformer(val simpleModel: SimpleModelEntity) {
@@ -45,6 +46,7 @@ class SimpleModel2GrailsRealmTransformer(val simpleModel: SimpleModelEntity) {
 	case event: SMDomainEvent => transform_event(event)
 	case role: SMDomainRole => transform_role(role)
 	case summary: SMDomainSummary => transform_summary(summary)
+	case assoc: SMDomainAssociationEntity => transform_associationEntity(assoc)
 	case entity: SMDomainEntity => transform_entity(entity)
 	case id: SMDomainValueId => transform_id(id)
 	case name: SMDomainValueName => transform_name(name)
@@ -85,6 +87,10 @@ class SimpleModel2GrailsRealmTransformer(val simpleModel: SimpleModelEntity) {
 
     private def transform_summary(summary: SMDomainSummary): GRPogoEntity = {
       transform_entity(summary)
+    }
+
+    private def transform_associationEntity(assoc: SMDomainAssociationEntity): GRPogoEntity = {
+      transform_entity(assoc)
     }
 
     private def transform_entity(entity: SMDomainEntity): GRPogoEntity = {

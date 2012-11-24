@@ -53,6 +53,7 @@ import org.simplemodeling.dsl.domain.DomainService
 import org.simplemodeling.dsl.domain.DomainState
 import org.simplemodeling.dsl.domain.DomainStateMachine
 import org.simplemodeling.dsl.domain.DomainSummary
+import org.simplemodeling.dsl.domain.DomainAssociationEntity
 import org.simplemodeling.dsl.domain.DomainValue
 import org.simplemodeling.dsl.domain.DomainValueId
 import org.simplemodeling.dsl.domain.DomainValueName
@@ -91,7 +92,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 24, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -970,6 +971,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
         isMasterSingleton = true
       }
       case SummaryKind  => new DomainSummary(name, packageName) {
+//        override def isObjectScope = true
+        isMasterSingleton = true
+      }
+      case AssociationEntityKind => new DomainAssociationEntity(name, packageName) {
 //        override def isObjectScope = true
         isMasterSingleton = true
       }

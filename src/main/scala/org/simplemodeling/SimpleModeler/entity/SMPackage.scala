@@ -10,7 +10,8 @@ import org.simplemodeling.SimpleModeler.entity.flow._
 
 /*
  * @since   Sep. 15, 2008
- * @version Jul. 13, 2011
+ *  version Jul. 13, 2011
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMPackage(val dslPackage: SPackage) extends SMElement(dslPackage) {
@@ -47,13 +48,18 @@ class SMPackage(val dslPackage: SPackage) extends SMElement(dslPackage) {
     children.filter(_.isInstanceOf[SMDomainSummary]).map(_.asInstanceOf[SMDomainSummary])
   }
 
+  final def domainAssociationEntities: Seq[SMDomainAssociationEntity] = {
+    children.filter(_.isInstanceOf[SMDomainAssociationEntity]).map(_.asInstanceOf[SMDomainAssociationEntity])
+  }
+
   final def domainEntities: Seq[SMDomainEntity] = {
     children.filter(child => child.isInstanceOf[SMDomainEntity] &&
 		    !(child.isInstanceOf[SMDomainActor] ||
 		      child.isInstanceOf[SMDomainRole] ||
 		      child.isInstanceOf[SMDomainResource] ||
 		      child.isInstanceOf[SMDomainEvent] ||
-		      child.isInstanceOf[SMDomainSummary])).map(_.asInstanceOf[SMDomainEntity])
+		      child.isInstanceOf[SMDomainSummary] ||
+		      child.isInstanceOf[SMDomainAssociationEntity])).map(_.asInstanceOf[SMDomainEntity])
   }
 
   final def domainIds: Seq[SMDomainValueId] = {

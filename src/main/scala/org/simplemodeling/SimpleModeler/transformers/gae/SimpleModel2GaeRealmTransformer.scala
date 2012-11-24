@@ -17,7 +17,8 @@ import com.asamioffice.goldenport.text.{UJavaString, UPathString, UString}
 
 /*
  * @since   Mar.  8, 2009
- * @version Apr. 17, 2011
+ *  version Apr. 17, 2011
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2GaeRealmTransformer(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext) {
@@ -69,6 +70,7 @@ class SimpleModel2GaeRealmTransformer(val simpleModel: SimpleModelEntity, val se
         case event: SMDomainEvent => transform_event(event)
         case role: SMDomainRole => transform_role(role)
         case summary: SMDomainSummary => transform_summary(summary)
+        case assoc: SMDomainAssociationEntity => transform_associationEntity(assoc)
         case entity: SMDomainEntity => transform_entity(entity)
         case part: SMDomainEntityPart => transform_entity_part(part)
         case id: SMDomainValueId => transform_id(id)
@@ -173,6 +175,10 @@ class SimpleModel2GaeRealmTransformer(val simpleModel: SimpleModelEntity, val se
 
     private def transform_summary(summary: SMDomainSummary): GaeEntityEntity = {
       transform_entity(summary)
+    }
+
+    private def transform_associationEntity(assoc: SMDomainAssociationEntity): GaeEntityEntity = {
+      transform_entity(assoc)
     }
 
     private def transform_entity(entity: SMDomainEntity): GaeEntityEntity = {

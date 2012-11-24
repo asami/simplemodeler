@@ -5,7 +5,8 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Jul. 15, 2008
- * @version Jul. 16, 2011
+ *  version Jul. 16, 2011
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 case class SimpleModelVisitor {
@@ -16,6 +17,7 @@ case class SimpleModelVisitor {
       case event: SMDomainEvent         => visit_Event(event)
       case role: SMDomainRole           => visit_Role(role)
       case summary: SMDomainSummary     => visit_Summary(summary)
+      case assoc: SMDomainAssociationEntity     => visit_AssociationEntity(assoc)
       case entity: SMDomainEntity       => visit_Entity(entity)
       case part: SMDomainEntityPart     => visit_Entity_Part(part)
       case id: SMDomainValueId          => visit_Id(id)
@@ -54,6 +56,10 @@ case class SimpleModelVisitor {
 
   protected def visit_Summary(summary: SMDomainSummary) {
     visit_Entity(summary)
+  }
+
+  protected def visit_AssociationEntity(assoc: SMDomainAssociationEntity) {
+    visit_Entity(assoc)
   }
 
   protected def visit_Entity(entity: SMDomainEntity) {
