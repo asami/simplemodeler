@@ -5,7 +5,7 @@ package org.simplemodeling.SimpleModeler.entities.simplemodel
  *  version Dec.  8, 2011
  *  version Jan. 24, 2012
  *  version Oct. 15, 2012
- * @version Nov. 24, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 sealed abstract class ElementKind {
@@ -30,12 +30,8 @@ object EventKind extends ElementKind {
 object RoleKind extends ElementKind {
   override def isIdNeeded = true
 }
-object SummaryKind extends ElementKind {
-  override def isIdNeeded = true
-}
-object AssociationEntityKind extends ElementKind {
-  override def isIdNeeded = true
-}
+object SummaryKind extends ElementKind
+object AssociationEntityKind extends ElementKind
 object EntityKind extends ElementKind {
   override def isIdNeeded = true
 }
