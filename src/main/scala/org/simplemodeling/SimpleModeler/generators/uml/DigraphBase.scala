@@ -536,7 +536,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
   }
 
   private def build_assoc_class_edge(aSourceId: String, targets: Seq[(String, SMAssociation)]): Seq[(GVEdge, SMAssociation)] = {
-    val color = "#fef263" // 黄檗色きはだいろ
+    val color = "#d9a62e" // 櫨染はじぞめ "#fef263" // 黄檗色きはだいろ
     def makepoint = {
       val pid = make_id(aSourceId)
       val point = new GVNode(pid)
@@ -561,7 +561,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
         val edge = new GVEdge(pid, "p", tid, "p")
         edge.arrowhead = "none"
         edge.arrowtail = "none"
-        edge.color = "#fef263" // 黄檗色きはだいろ
+        edge.color = color
         graph.edges += edge
         (edge, assoc)
       }
