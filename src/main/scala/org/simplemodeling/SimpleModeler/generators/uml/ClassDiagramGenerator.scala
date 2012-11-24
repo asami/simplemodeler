@@ -103,6 +103,18 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
         counter += 1
         ids.put(anObject, id)
         anObject match {
+          case assoc: SMAssociationEntity => {
+            if (assoc.attributes.isEmpty) {
+              graph.addClassSimple(anObject, id)
+            } else {
+              aThema match {
+                case "perspective" => graph.addClassSimple(anObject, id)
+                case "hilight"     => graph.addClassSimple(anObject, id)
+                case "detail"      => graph.addClassFull(anObject, id)
+                case _             => sys.error("illegal thema: " + aThema)
+              }
+            }
+          }
           case powertype: SMPowertype => {
             aThema match {
               case "perspective" => graph.addPowertypeSimple(powertype, id)
