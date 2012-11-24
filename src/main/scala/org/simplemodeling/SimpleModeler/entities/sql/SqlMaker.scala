@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entities.sql
 
+import scalaz._, Scalaz._
 import com.asamioffice.goldenport.text.UJavaString
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.domain._
@@ -36,27 +37,37 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
 
   def select = {
     val tablename = context.sqlTableName(entity)
-    "select " + _columns + " from " + tablename + _joins
+    "select " + _columns + " from " + tablename + " T " + _joins
   }
 
   private def _columns = {
-    entity.wholeAttributes.map(_column).mkString(", ")
+    entity.wholeAttributes.flatMap(_column).mkString(", ")
   }
 
   private def _column(attr: PAttribute) = {
-    val columnname = context.sqlColumnName(attr)
-    val name = context.asciiName(attr)
-    if (name == columnname) name
-    else columnname + " as " + name
+    if (attr.isSingle) {
+      val columnname = context.sqlColumnName(attr)
+      println("SqlMaker#_column(%s/%s) = %s".format(entity.name, attr.name, attr))
+      val name = context.asciiName(attr)
+      Some("T." + columnname + " as " + name)
+    } else {
+      None
+    }
   }
 
   private def _joins = {
-    val attrs = entity.wholeAttributesWithoutId.filter(_.isEntityReference)
+    val attrs = {
+      entity.wholeAttributesWithoutId.
+      filter(_.isEntityReference).
+      filter(_.isSingle)
+    }
     val ts = (1 to attrs.length).map(x => "T" + x)
-    for ((attr, t) <- attrs zip ts) yield {
+    val a: Seq[String] = for ((attr, t) <- attrs zip ts) yield {
       "left outer join " + context.sqlTableName(attr) + " " + t + " on " +
-      "T." + context.sqlColumnName(attr) + "=" + "t." + context.sqlJoinColumnName(attr)
-    }.mkString("\n", " ", "\n")
+      "T." + context.sqlColumnName(attr) + "=" + t + "." + context.sqlJoinColumnName(attr)
+    }
+//    a.mkString("\n", " ", "\n")
+    a.mkString(" ")
   }
 
   def selectLiteral = {

@@ -251,19 +251,19 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   private def type_name: String = {
     multiplicity match {
-      case m: POne => value_or_object_type_name
-      case m: PZeroOne => object_type_name
-      case m: PZeroMore => list_type_name
-      case m: POneMore => list_type_name
+      case POne => value_or_object_type_name
+      case PZeroOne => object_type_name
+      case PZeroMore => list_type_name
+      case POneMore => list_type_name
     }
   }
 
   private def type_name_object: String = {
     multiplicity match {
-      case m: POne => object_type_name
-      case m: PZeroOne => object_type_name
-      case m: PZeroMore => list_type_name
-      case m: POneMore => list_type_name
+      case POne => object_type_name
+      case PZeroOne => object_type_name
+      case PZeroMore => list_type_name
+      case POneMore => list_type_name
     }
   }
 
@@ -287,19 +287,19 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   private def jpa_type_name: String = {
     multiplicity match {
-      case m: POne => jpa_value_or_object_type_name
-      case m: PZeroOne => jpa_object_type_name
-      case m: PZeroMore => jpa_list_type_name
-      case m: POneMore => jpa_list_type_name
+      case POne => jpa_value_or_object_type_name
+      case PZeroOne => jpa_object_type_name
+      case PZeroMore => jpa_list_type_name
+      case POneMore => jpa_list_type_name
     }
   }
 
   private def jpa_type_name_object: String = {
     multiplicity match {
-      case m: POne => jpa_object_type_name
-      case m: PZeroOne => jpa_object_type_name
-      case m: PZeroMore => jpa_list_type_name
-      case m: POneMore => jpa_list_type_name
+      case POne => jpa_object_type_name
+      case PZeroOne => jpa_object_type_name
+      case PZeroMore => jpa_list_type_name
+      case POneMore => jpa_list_type_name
     }
   }
 
@@ -323,29 +323,29 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   private def jdo_type_name: String = {
     multiplicity match {
-      case m: POne => jdo_value_or_object_type_name
-      case m: PZeroOne => jdo_object_type_name
-      case m: PZeroMore => jdo_list_type_name
-      case m: POneMore => jdo_list_type_name
+      case POne => jdo_value_or_object_type_name
+      case PZeroOne => jdo_object_type_name
+      case PZeroMore => jdo_list_type_name
+      case POneMore => jdo_list_type_name
     }
   }
 
   private def jdo_type_name_object: String = {
     multiplicity match {
-      case m: POne => jdo_object_type_name
-      case m: PZeroOne => jdo_object_type_name
-      case m: PZeroMore => jdo_list_type_name
-      case m: POneMore => jdo_list_type_name
+      case POne => jdo_object_type_name
+      case PZeroOne => jdo_object_type_name
+      case PZeroMore => jdo_list_type_name
+      case POneMore => jdo_list_type_name
     }
   }
 
   //
   final def isHasMany: Boolean = {
     multiplicity match {
-      case m: POne => false
-      case m: PZeroOne => false
-      case m: PZeroMore => true
-      case m: POneMore => true
+      case POne => false
+      case PZeroOne => false
+      case PZeroMore => true
+      case POneMore => true
       case _ => sys.error("???")
     }
   }
@@ -356,10 +356,10 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   final def isSingle = {
     multiplicity match {
-      case m: POne => true
-      case m: PZeroOne => true
-      case m: PZeroMore => false
-      case m: POneMore => false
+      case POne => true
+      case PZeroOne => true
+      case PZeroMore => false
+      case POneMore => false
       case _ => sys.error("???")
     }
   }
@@ -383,5 +383,10 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     Option(modelAttribute) map { m =>
       m.dslAttribute.constraints
     } orZero
+  }
+
+  //
+  override def toString() = {
+    name + multiplicity.mark + "/" + modelElement
   }
 }

@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
  *  version Oct. 26, 2012
- * @version Nov. 18, 2012
+ * @version Nov. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -279,11 +279,11 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
       record_report("「%s」に合成対象のクラス「%s」を生成しました。".format(target.name, name))
       // _create_object registered the created object in global space.
       val part = _create_object(EntityPartKind, source, _build_object)
-      target.narrativeCompositions += name
+      target.narrativeCompositions += term
 //      target.narrativeOwnCompositions += Pair(term, part)
     } else {
       _record_duplicate_define(source, target.name, name)
-      target.narrativeCompositions += name
+      target.narrativeCompositions += term
     }
   }
 
