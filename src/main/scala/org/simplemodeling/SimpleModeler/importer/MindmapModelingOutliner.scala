@@ -16,7 +16,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
  *  version Oct. 21, 2012
- * @version Nov. 18, 2012
+ * @version Nov. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -104,6 +104,14 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def summaryTables: List[GTable[String]] = {
     _structure_node_thema_boi_tables(SummaryLabel)
+  }
+
+  def associationEntities = {
+    structure_node_children(thema, AssociationLabel)
+  }
+
+  def associationEntityTables: List[GTable[String]] = {
+    _structure_node_thema_boi_tables(AssociationLabel)
   }
 
   def powertypes = {

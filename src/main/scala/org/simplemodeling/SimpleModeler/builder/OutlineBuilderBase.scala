@@ -58,6 +58,8 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
       _mmx.roleTables.foreach(create_object_table(RoleKind, _))
       _mmx.summarys.foreach(_create_object(SummaryKind, _, _build_object))
       _mmx.summaryTables.foreach(create_object_table(SummaryKind, _))
+      _mmx.associationEntities.foreach(_create_object(AssociationEntityKind, _, _build_object))
+      _mmx.associationEntityTables.foreach(create_object_table(AssociationEntityKind, _))
       _mmx.powertypes.foreach(_create_powertype)
       _mmx.powertypeTables.foreach(create_object_table(PowertypeKind, _))
       _mmx.statemachines.foreach(_create_statemachine)
