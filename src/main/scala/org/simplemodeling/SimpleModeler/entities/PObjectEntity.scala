@@ -5,6 +5,7 @@ import scala.collection.mutable.ArrayBuffer
 import com.asamioffice.goldenport.text.{JavaTextMaker, UString}
 import org.simplemodeling.SimpleModeler.SimpleModelerConstants
 import org.simplemodeling.SimpleModeler.entity._
+import org.simplemodeling.SimpleModeler.builder.NameLabel
 import org.goldenport.value._
 import org.goldenport.entity.{GEntity, GEntityContext} 
 import org.goldenport.entity.datasource.GDataSource
@@ -18,7 +19,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov. 25, 2012
+ * @version Nov. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -292,7 +293,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     else (b._1 ::: attributes.toList, b._2 + qualifiedName)
   }
 
-  def wholeAttributesWithoutId: List[PAttribute] = {
+    lazy val wholeAttributesWithoutId: List[PAttribute] = {
     wholeAttributes.filter(!_.isId)
   }
 
@@ -325,13 +326,13 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   lazy val isId: Boolean = idAttrOption ? true | false
   lazy val idAttrOption = wholeAttributes.find(_.isId)
   lazy val idAttr = idAttrOption match {
-      case Some(attr) => attr
-      case None => {
-        throw new UnsupportedOperationException("no id [%s]: %s".format(
-          name,
-          wholeAttributes.map(_.name)
-        ))
-      }
+    case Some(attr) => attr
+    case None => {
+      throw new UnsupportedOperationException("no id [%s]: %s".format(
+        name,
+        wholeAttributes.map(_.name)
+      ))
+    }
   }
   def idName = idAttr.name
   def idPolicy = idAttr.idPolicy
@@ -343,17 +344,42 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     }
   }
 
-  def getNameName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
-      if (attr.isName) return Some(attr.name)
+  def getNameAttr: Option[PAttribute] = {
+    for (attr <- wholeAttributesWithoutId) {
+      if (attr.isName) return Some(attr)
     }
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
+      if (NameLabel.isMatch(attr.name) &&
+          (attr.attributeType.isInstanceOf[PTokenType] ||
+           attr.attributeType.isInstanceOf[PStringType])
+        ) {
+        return Some(attr)
+      }
+    }    
+    for (attr <- wholeAttributesWithoutId) {
+      if (attr.attributeType.isInstanceOf[PTokenType]) {
+        return Some(attr)
+      }
+    }
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.attributeType.isInstanceOf[PStringType]) {
-        return Some(attr.name)
+        return Some(attr)
       }
     }
     None
   }
+
+  def nameAttr: PAttribute = getNameAttr match {
+    case Some(attr) => attr
+    case None => {
+      throw new UnsupportedOperationException("no id [%s]: %s".format(
+        name,
+        wholeAttributes.map(_.name)
+      ))
+    }
+  }
+
+  def getNameName: Option[String] = getNameAttr.map(_.name)
 
   //
   def isUser: Boolean = {

@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
- * @version Nov. 24, 2012
+ * @version Nov. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -653,6 +653,19 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
       case s: PStateMachineType => s.statemachine
     }
     sqlColumnName(o.idAttr)
+  }
+
+  def sqlNameColumnName(a: PAttribute): String = {
+    val o = a.attributeType match {
+      case e: PEntityType => e.entity
+      case p: PPowertypeType => p.powertype
+      case s: PStateMachineType => s.statemachine
+    }
+    sqlColumnName(o.nameAttr)
+  }
+
+  def sqlNameAlias(a: PAttribute): String = {
+    asciiName(a) + "__name"
   }
 
   /*

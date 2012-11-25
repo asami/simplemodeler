@@ -8,7 +8,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Nov.  2, 2012
- * @version Nov. 24, 2012
+ * @version Nov. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
@@ -27,6 +27,14 @@ trait SqlMaker {
 }
 
 class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) extends SqlMaker {
+  val joinedAttributes: Seq[(PAttribute, String)] = {
+    val a = entity.wholeAttributesWithoutId.
+    filter(_.isEntityReference).
+    filter(_.isSingle)
+    val b = (1 to a.length).map(x => "T" + x)
+    a zip b
+  }
+
   def ddl = {
     "create"
   }
@@ -44,25 +52,60 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
     entity.wholeAttributes.flatMap(_column).mkString(", ")
   }
 
-  private def _column(attr: PAttribute) = {
-    if (attr.isSingle) {
-      val columnname = context.sqlColumnName(attr)
-      println("SqlMaker#_column(%s/%s) = %s".format(entity.name, attr.name, attr))
-      val name = context.asciiName(attr)
-      Some("T." + columnname + " as " + name)
-    } else {
-      None
+  object EntityReference {
+    def unapply(attr: PAttribute): Option[String] = {
+      for ((a, t) <- joinedAttributes.find(_._1 == attr)) yield {
+        val name = context.sqlNameAlias(a)
+        val column = context.sqlNameColumnName(a)
+        t + "." + column + " as " + name
+      }
     }
   }
 
-  private def _joins = {
-    val attrs = {
-      entity.wholeAttributesWithoutId.
-      filter(_.isEntityReference).
-      filter(_.isSingle)
+  object LabelReference {
+    def unapply(attr: PAttribute): Option[String] = {
+      val name = context.sqlNameAlias(attr)
+      val column = "T." + context.sqlColumnName(attr)
+      val candidates: Option[Seq[PEnumeration]] = attr.attributeType match {
+        case p: PPowertypeType => Option(p.powertype.kinds)
+        case s: PStateMachineType => Option(s.statemachine.states)
+      }
+      for (cs <- candidates) yield {
+        val whens = for (k <- cs) yield {
+          "when %s=%s then %s".format(column, k.sqlValue, k.sqlLabel)
+        }
+        "(case" + whens.mkString(" ") + " else " + column + " end) as " + name
+      }
     }
-    val ts = (1 to attrs.length).map(x => "T" + x)
-    val a: Seq[String] = for ((attr, t) <- attrs zip ts) yield {
+  }
+
+  private def _column(attr: PAttribute): List[String] = {
+    if (attr.isMulti) return Nil
+    val columnname = context.sqlColumnName(attr)
+    println("SqlMaker#_column(%s/%s) = %s".format(entity.name, attr.name, attr))
+    val name = context.asciiName(attr)
+    val c1 = "T." + columnname + " as " + name
+    attr match {
+      case EntityReference(c) => List(c1, c)
+      case LabelReference(c) => List(c1, c)
+      case _ => List(c1)
+    }
+  }
+
+  private def _is_entity_reference(attr: PAttribute) = {
+    
+  }
+
+  private def _is_powertype(attr: PAttribute) = {
+    
+  }
+
+  private def _is_statemachine(attr: PAttribute) = {
+    
+  }
+
+  private def _joins = {
+    val a: Seq[String] = for ((attr, t) <- joinedAttributes) yield {
       "left outer join " + context.sqlTableName(attr) + " " + t + " on " +
       "T." + context.sqlColumnName(attr) + "=" + t + "." + context.sqlJoinColumnName(attr)
     }
