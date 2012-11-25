@@ -1,0 +1,18 @@
+#+title: 属性を2つの表で記述
+
+* Resource
+
+** Person
+
+#+caption: Attribute
+| name | type   |
+|------+--------|
+| one  | string |
+| two  | int    | 
+
+#+caption: Attribute
+| name | multiplicity |
+|------+--------------|
+| one  | ?            |
+| two  | *            | 
+  

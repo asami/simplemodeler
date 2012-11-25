@@ -287,49 +287,89 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   final def powertype(aName: String, aPowertypeType: SMMPowertypeType): SMMPowertype = {
-    val powertype = new SMMEntityEntity(entityContext)
-    powertype.name = aPowertypeType.name
-    powertype.kind = PowertypeKind
-    powertype.term = aPowertypeType.term
-    powertype.packageName = aPowertypeType.packageName
-    powertype.powertypeKinds ++= aPowertypeType.instances.map(SMMPowertypeKind.create)
-    addPrivateObject(powertype)
-    val pt = new SMMPowertype(aName, aPowertypeType)
-    powertypes += pt
-    pt
+    _add_slot(aName, powertypes, "「%s」の区分「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      val powertype = new SMMEntityEntity(entityContext)
+      powertype.name = aPowertypeType.name
+      powertype.kind = PowertypeKind
+      powertype.term = aPowertypeType.term
+      powertype.packageName = aPowertypeType.packageName
+      powertype.powertypeKinds ++= aPowertypeType.instances.map(SMMPowertypeKind.create)
+      addPrivateObject(powertype)
+      new SMMPowertype(aName, aPowertypeType)
+    }
   }
 
   final def powertype(aName: String, entitytype: SMMEntityTypeSet): SMMPowertype = {
-    val ptpkg = entitytype.entityType.get.packageName
-    val ptname = entitytype.entityType.get.name
-    val ptt = new SMMPowertypeType(ptname, ptpkg)
-    val pt = new SMMPowertype(aName, ptt)
-    powertypes += pt
-    pt
+    _add_slot(aName, powertypes, "「%s」の区分「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      val ptpkg = entitytype.entityType.get.packageName
+      val ptname = entitytype.entityType.get.name
+      val ptt = new SMMPowertypeType(ptname, ptpkg)
+      new SMMPowertype(aName, ptt)
+    }
   }
 
 
   final def role(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
-    val roleType = new SMMEntityType(anObject.name, anObject.packageName)
-    roleType.term = anObject.term
-    val role = new SMMAssociation(aName, new SMMEntityTypeSet(roleType.some))
-    roles += role
-    role
+    _add_slot(aName, compositions, "「%s」の役割「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      val roleType = new SMMEntityType(anObject.name, anObject.packageName)
+      roleType.term = anObject.term
+      new SMMAssociation(aName, new SMMEntityTypeSet(roleType.some))
+    }
   }
+
+  /*
+   * Attribute
+   */
+  val attribute_append_message =
+    "「%s」の属性「%s」は追加定義を持っています。型以外の情報が追加されます。"
 
   /**
    * Creates an attribute for Value object.
    */
   final def attribute(aName: String, anObject: SMMEntityEntity): SMMAttribute = {
-    val attrType = anObject.kind match {
-      case IdKind => new SMMValueIdType(anObject.name, anObject.packageName)
-      case _    => new SMMValueType(anObject.name, anObject.packageName)
+    _add_slot(aName, attributes, attribute_append_message) {
+      val attrType = anObject.kind match {
+        case IdKind => new SMMValueIdType(anObject.name, anObject.packageName)
+        case _    => new SMMValueType(anObject.name, anObject.packageName)
+      }
+      val isId = anObject.kind == IdKind
+      attrType.term = anObject.term
+      new SMMAttribute(aName, new SMMAttributeTypeSet(attrType.some), isId)
     }
-    val isId = anObject.kind == IdKind
-    attrType.term = anObject.term
-    val attr = new SMMAttribute(aName, new SMMAttributeTypeSet(attrType.some), isId)
-    attributes += attr
-    attr
+  }
+
+  final def attribute0(aName: String, anObject: SMMEntityEntity): SMMAttribute = {
+    attributes.find(_.name == aName) match {
+      case Some(s) => {
+        record_report("「%s」の属性「%s」は追加定義を持っています。", this.name, aName)
+        s // XXX updates attrtype and isId
+      }
+      case None => {
+        val attrType = anObject.kind match {
+          case IdKind => new SMMValueIdType(anObject.name, anObject.packageName)
+          case _    => new SMMValueType(anObject.name, anObject.packageName)
+        }
+        val isId = anObject.kind == IdKind
+        attrType.term = anObject.term
+        val attr = new SMMAttribute(aName, new SMMAttributeTypeSet(attrType.some), isId)
+        attributes += attr
+        attr
+      }
+    }
+  }
+
+  private def _add_slot[T <: SMMSlot](name: String, elements: ArrayBuffer[T], message: String)(body: => T): T = {
+    elements.find(_.name == name) match {
+      case Some(s) => {
+        record_report(message, this.name, name)
+        s
+      }
+      case None => {
+        val elem = body
+        elements += elem
+        elem
+      }
+    }
   }
 
   final def attribute(aName: String): SMMAttribute = {
@@ -342,9 +382,23 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   final def attribute(aName: String, attrtype: SMMAttributeTypeSet, isId: Boolean = false): SMMAttribute = {
-    val attr = new SMMAttribute(aName, attrtype, isId)
-    attributes += attr
-    attr
+    _add_slot(aName, attributes, attribute_append_message) {
+      new SMMAttribute(aName, attrtype, isId)
+    }
+  }
+
+  final def attribute0(aName: String, attrtype: SMMAttributeTypeSet, isId: Boolean = false): SMMAttribute = {
+    attributes.find(_.name == aName) match {
+      case Some(s) => {
+        record_report("「%s」の属性「%s」は追加定義を持っています。", this.name, aName)
+        s // XXX updates attrtype and isId
+      }
+      case None => {
+        val attr = new SMMAttribute(aName, attrtype, isId)
+        attributes += attr
+        attr
+      }
+    }
   }
 
   /**
@@ -372,9 +426,23 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * @see TableSimpleModelMakerBuilder
    */
   final def association(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
-    val assoc = new SMMAssociation(aName, entityType)
-    associations += assoc
-    assoc
+    _add_slot(aName, associations, "「%s」の関連「%s」は追加定義を持っています。") {
+      new SMMAssociation(aName, entityType)
+    }
+  }
+
+  final def association0(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
+    associations.find(_.name == aName) match {
+      case Some(s) => {
+        record_report("「%s」の関連「%s」は追加定義を持っています。", this.name, aName)
+        s // XXX updates attrtype and isId
+      }
+      case None => {
+        val assoc = new SMMAssociation(aName, entityType)
+        associations += assoc
+        assoc
+      }
+    }
   }
 
   /**
@@ -397,9 +465,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * @see TableSimpleModelMakerBuilder
    */
   final def aggregation(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
-    val assoc = new SMMAssociation(aName, entityType)
-    aggregations += assoc
-    assoc
+    _add_slot(aName, aggregations, "「%s」の属性「%s」は追加定義を持っています。型以外の情報は更新されます。") {
+      new SMMAssociation(aName, entityType)
+    }
   }
 
   final def compositionOwn(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
@@ -423,18 +491,18 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * @see TableSimpleModelMakerBuilder
    */
   final def composition(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
-    val assoc = new SMMAssociation(aName, entityType)
-    compositions += assoc
-    assoc
+    _add_slot(aName, compositions, "「%s」の合成「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      new SMMAssociation(aName, entityType)
+    }
   }
 
   /**
    * Used by TableSimpleModelMakerBuilder.
    */
   final def statemachine(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
-    val sm = new SMMAssociation(aName, entityType)
-    statemachineRelationships += sm
-    sm
+    _add_slot(aName, statemachineRelationships, "「%s」の状態機械「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      new SMMAssociation(aName, entityType)
+    }
   }
 
   /**
@@ -452,25 +520,25 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    */
   final def statemachine(aName: String, aStateMachineType: SMMStateMachineType): SMMStateMachine = {
     record_warning("SMMEntityEntity#statemachine(%s) = %s", this.name, aName)
-    val states = aStateMachineType.states
-    val statemachine = new SMMEntityEntity(entityContext)
-    statemachine.name = aStateMachineType.name
-    statemachine.kind = StateMachineKind
-    statemachine.term = aStateMachineType.term
-    statemachine.packageName = aStateMachineType.packageName
-    statemachine.statemachineStates ++= states.map(SMMStateMachineState.create)
-    addPrivateObject(statemachine)
-    for (state <- states) {
-      val s = new SMMEntityEntity(entityContext)
-      s.name = state._2
-      s.kind = StateMachineKind
-      s.term = state._1
-      s.packageName = aStateMachineType.packageName
-      addPrivateObject(s)
+    _add_slot(aName, statemachines, "「%s」の状態機械「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      val states = aStateMachineType.states
+      val statemachine = new SMMEntityEntity(entityContext)
+      statemachine.name = aStateMachineType.name
+      statemachine.kind = StateMachineKind
+      statemachine.term = aStateMachineType.term
+      statemachine.packageName = aStateMachineType.packageName
+      statemachine.statemachineStates ++= states.map(SMMStateMachineState.create)
+      addPrivateObject(statemachine)
+      for (state <- states) {
+        val s = new SMMEntityEntity(entityContext)
+        s.name = state._2
+        s.kind = StateMachineKind
+        s.term = state._1
+        s.packageName = aStateMachineType.packageName
+        addPrivateObject(s)
+      }
+      new SMMStateMachine(aName, aStateMachineType)
     }
-    val sm = new SMMStateMachine(aName, aStateMachineType)
-    statemachines += sm
-    sm
   }
 
   /**
@@ -478,9 +546,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * uses this method to add a operation.
    */
   final def operation(aName: String, inType: SMMAttributeTypeSet, outType: SMMAttributeTypeSet): SMMOperation = {
-    val op = new SMMOperation(aName, inType, outType)
-    operations += op
-    op
+    _add_slot(aName, operations, "「%s」の操作「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      new SMMOperation(aName, inType, outType)
+    }
   }
 
   override protected def update_Field(label: NaturalLabel, value: String) {
