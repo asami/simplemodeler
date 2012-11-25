@@ -208,11 +208,11 @@ case object LabelLabel extends NaturalLabel {
 }
 
 case object CaptionLabel extends NaturalLabel {
-  val candidates = List("caption")
+  val candidates = List("caption", "キャプション")
 }
 
 case object BriefLabel extends NaturalLabel {
-   val candidates = List("brief")
+   val candidates = List("brief", "摘要")
 }
 // case object SummaryLabel extends NaturalLabel
 

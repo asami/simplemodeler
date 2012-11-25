@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 16, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -163,9 +163,10 @@ class TableSimpleModelMakerBuilder(
         case TermEnLabel => attr.term_en = value
         case TitleLabel => attr.title = value
         case SubtitleLabel => attr.subtitle = value
+        case LabelLabel => attr.label = value
         case CaptionLabel => attr.caption = value
         case BriefLabel => attr.brief = value
-        case SummaryLabel => attr.brief = value
+        case SummaryLabel => attr.summary = value
         case DescriptionLabel => attr.description = value
         case DeriveLabel => {
           attr.deriveExpression = value
@@ -385,9 +386,10 @@ class TableSimpleModelMakerBuilder(
         case TermEnLabel => assoc.term_en = value
         case TitleLabel => assoc.title = value
         case SubtitleLabel => assoc.subtitle = value
+        case LabelLabel => assoc.label = value
         case CaptionLabel => assoc.caption = value
         case BriefLabel => assoc.brief = value
-        case SummaryLabel => assoc.brief = value
+        case SummaryLabel => assoc.summary = value
         case DescriptionLabel => assoc.description = value
         case ColumnNameLabel => assoc.columnName = value
         case SqlDatatypeLabel => {}
