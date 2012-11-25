@@ -16,7 +16,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * @since   Nov. 30, 2011 
  *  version Apr.  8, 2012
  *  version Oct. 21, 2012
- * @version Nov. 24, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -458,7 +458,7 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
   }
 
   private def _is_match(label: NaturalLabel, title: String): Boolean = {
-    label.isMatch(_normalize_title(title))
+    label.startsWith(_normalize_title(title))
   }
 
   private def _isignore(x: Char) = {

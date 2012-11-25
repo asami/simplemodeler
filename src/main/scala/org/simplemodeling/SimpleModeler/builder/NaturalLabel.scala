@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
- * @version Nov. 24, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -45,6 +45,11 @@ sealed abstract trait NaturalLabel {
 //    println("NaturalLabel[%s]#isMatch(%s) = %s".format(this, name, x))
 //    true
 //  })
+
+  def startsWith(name: String) = {
+    val n = name.trim.toLowerCase.replace(" ", "")
+    allCandidates.exists(n.startsWith)
+  }
 
   def find(entries: Seq[(String, String)]): Option[String] = {
     entries.find(x => isMatch(x._1)).map(_._2)
