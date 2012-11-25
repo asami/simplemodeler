@@ -400,7 +400,8 @@ abstract class GenericClassDefinition(
     attribute_variables_constants
     attribute_variables_id
     attribute_variables_plain
-    attribute_variables_aggregate
+    attribute_variables_backreference
+    attribute_variables_participation
     attribute_variables_extension
     attribute_variables_Epilogue
   }
@@ -427,9 +428,13 @@ abstract class GenericClassDefinition(
     }
   }
 
-  protected def attribute_variables_aggregate {
+  /*
+   * Back reference
+   * XXX unused?
+   */
+  protected def attribute_variables_backreference {
     def back_reference(source: SMObject, assoc: SMAssociation) {
-      attribute_variables_aggregate_BackReference(source, assoc)
+      attribute_variables_BackReference(source, assoc)
     }
 
     def is_back_reference(participation: SMParticipation) = {
@@ -453,8 +458,36 @@ abstract class GenericClassDefinition(
     }
   }
 
-  protected def attribute_variables_aggregate_BackReference(source: SMObject, assoc: SMAssociation) {}
+  protected def attribute_variables_BackReference(source: SMObject, assoc: SMAssociation) {}
 
+  /*
+   * Participation
+   */
+  protected def attribute_variables_participation {
+    def is_back_reference(participation: PParticipation) = {
+      participation match {
+        case _: BaseParticipation => false
+        case _: TraitParticipation => false
+        case a: AttributeParticipation => a.attribute.isAssociationClass
+      }
+    }
+
+    for (participation <- pobject.participations) {
+      if (is_back_reference(participation)) {
+        participation match {
+          case a: AttributeParticipation => {
+            attribute_variables_participation_BackReference(a)
+          }
+        }
+      }
+    }
+  }
+
+  protected def attribute_variables_participation_BackReference(a: AttributeParticipation) {}
+
+  /*
+   * Extension
+   */
   protected def attribute_variables_extension {
   }
 

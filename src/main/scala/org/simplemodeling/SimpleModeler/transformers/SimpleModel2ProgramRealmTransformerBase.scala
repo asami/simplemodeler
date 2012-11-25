@@ -914,6 +914,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 //          val qname = make_Package_Name(base.qualifiedName)
           val qname = base.qualifiedName
           base.reference = getObject(qname)
+          base.reference.participations += BaseParticipation(obj)
         }
         case None => {}
       }
@@ -923,7 +924,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       for (tt <- obj.getTraitObjectTypes) {
         val qname = make_Qualified_Name(tt.qualifiedName)
         findObject(qname) match {
-          case Some(s) => tt.reference = s
+          case Some(s) => {
+            tt.reference = s
+            tt.reference.participations += TraitParticipation(obj)
+          }
           // some generator does not use platform trait.
           case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_traits(%s): platform trait not found = %s".format(obj.name, tt.qualifiedName))
         }
@@ -940,6 +944,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           case entityType: PEntityType => {
             val qname = make_Qualified_Name(entityType.qualifiedName)
             entityType.entity = getModelEntity(qname)
+            entityType.entity.participations += AttributeParticipation(obj, attr)
           }
 //          case partType: PEntityPartType => {
 //            partType.part = getPart(partType.qualifiedName)

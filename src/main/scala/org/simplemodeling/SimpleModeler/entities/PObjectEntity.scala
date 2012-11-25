@@ -18,7 +18,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov. 24, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -49,6 +49,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   var serviceName = ""
   private val _attributes = new ArrayBuffer[PAttribute]
   private val _operations = new ArrayBuffer[POperation]
+  val participations = new ArrayBuffer[PParticipation]
 
   def attributes: Seq[PAttribute] = _attributes
   def operations: Seq[POperation] = _operations

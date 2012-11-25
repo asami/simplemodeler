@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Feb. 19, 2012
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
- * @version Nov. 24, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -44,6 +44,9 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     else if (modelPowertype != null) modelPowertype.some
     else if (modelStateMachine != null) modelStateMachine.some
     else None
+  }
+  def getModelAssociation: Option[SMAssociation] = {
+    Option(modelAssociation)
   }
 
   final def typeName: String = type_name
@@ -87,6 +90,8 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     (modelPowertype != null && modelPowertype.isEntityReference) ||
     (modelStateMachine != null && modelStateMachine.isEntityReference)
   }
+
+  def isAssociationClass = getModelAssociation.map(_.isAssociationClass) | false
 
   /*
    * attributes for GUI
