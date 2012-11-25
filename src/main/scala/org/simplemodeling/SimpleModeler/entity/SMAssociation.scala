@@ -10,7 +10,7 @@ import org.goldenport.sdoc.inline.SHelpRef
 /*
  * @since   Sep. 17, 2008
  *  version Nov.  9, 2009
- * @version Nov.  6, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMAssociation(val dslAssociation: SAssociation) extends SMElement(dslAssociation) {
@@ -18,12 +18,14 @@ class SMAssociation(val dslAssociation: SAssociation) extends SMElement(dslAssoc
   val associationType = new SMAssociationType(dslAssociation.entity)
   val multiplicity = new SMMultiplicity(dslAssociation.multiplicity)
 
+  def isAssociationClass = dslAssociation.isAssociationClass
   final def isAggregation = {
 //    record_trace("dslAssociation.kind = " + dslAssociation.kind)
     dslAssociation.kind == AggregationAssociationKind
   }
-  final def isComposition = dslAssociation.kind == CompositionAssociationKind
-
+  final def isComposition = {
+    dslAssociation.kind == CompositionAssociationKind
+  }
   final def isPersistent = dslAssociation.isPersistent
   final def isBinary = dslAssociation.isBinary
   final def isQueryReference = dslAssociation.isQueryReference

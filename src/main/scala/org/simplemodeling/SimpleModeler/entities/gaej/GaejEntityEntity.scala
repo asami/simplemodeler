@@ -17,7 +17,8 @@ import com.asamioffice.goldenport.text.UString.notNull
 /*
  * @since   Apr. 10, 2009
  *  version Dec. 18, 2010
- * @version Dec. 15, 2011
+ *  version Dec. 15, 2011
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class GaejEntityEntity(aContext: GaejEntityContext) extends GaejEntityObjectEntity(aContext) {
@@ -237,6 +238,7 @@ class GaejEntityEntity(aContext: GaejEntityContext) extends GaejEntityObjectEnti
 
         def is_back_reference(participation: SMParticipation) = {
           participation.roleType match {
+            case AssociationClassParticipationRole => true
             case CompositionParticipationRole => true
             case AggregationParticipationRole => true
             case AssociationParticipationRole => {

@@ -26,6 +26,7 @@ import org.simplemodeling.SimpleModeler.entity.AssociationParticipationRole
 import org.simplemodeling.SimpleModeler.entity.AttributeParticipationRole
 import org.simplemodeling.SimpleModeler.entity.CompositionParticipationRole
 import org.simplemodeling.SimpleModeler.entity.StateMachineParticipationRole
+import org.simplemodeling.SimpleModeler.entity.AssociationClassParticipationRole
 import org.simplemodeling.SimpleModeler.entity.SMAttribute
 import org.simplemodeling.SimpleModeler.entity.SMAssociation
 import org.simplemodeling.SimpleModeler.entity.SMPowertypeRelationship
@@ -433,6 +434,7 @@ abstract class GenericClassDefinition(
 
     def is_back_reference(participation: SMParticipation) = {
       participation.roleType match {
+        case AssociationClassParticipationRole => true
         case CompositionParticipationRole => true
         case AggregationParticipationRole => true
         case AssociationParticipationRole => {

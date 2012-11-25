@@ -1052,6 +1052,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case Some(tr: DomainTrait) => _build_trait(tr, entities)
       case Some(entity: BusinessEntity) => _build_entity(entity, entities)
       case Some(event: DomainEvent) => _build_event(event, entities)
+      case Some(assoc: DomainAssociationEntity) => _build_associationentity(assoc, entities)
       case Some(entity: DomainEntity) => _build_entity(entity, entities)
       case Some(value: DomainValue) => _build_value(value)
       case Some(power: DomainPowertype) => _build_powertype(power, entities)
@@ -1079,6 +1080,37 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     primaryActors.foreach(_describe_association(entities, event.primary_actor.apply, _))
     secondaryActors.foreach(_describe_association(entities, event.secondary_actor.apply, _))
     event
+  }
+
+  private def _build_associationentity(entity: SObject, entities: Map[String, SObject]): SObject = {
+    entity.term = if (UString.isNull(term)) name else term
+    _build_specifications(entity)
+    _build_properties(entity)
+    _build_base(entities, entity)
+    _build_traits(entities, entity)
+    _build_powertypes(entities, entity)
+    _build_statemachines(entities, entity)
+    _build_roles(entities, entity)
+    _build_attributes(entity, entities)
+    _build_associations_in_associationentity(entity, entities)
+    if (aggregations.nonEmpty) {
+      record_warning("関連クラス「%s」は集約を持つことができません。集約「%s」は無視します。", this.name, aggregations.map(_.name).mkString(" ,"))
+    }
+    if (compositions.nonEmpty) {
+      record_warning("関連クラス「%s」は合成を持つことができません。合成「%s」は無視します。", this.name, aggregations.map(_.name).mkString(" ,"))
+    }
+    _build_statemachineStates(entity) // XXX
+    _build_operations(entity, entities)
+    entity
+  }
+
+  private def _build_associations_in_associationentity(entity: SObject, entities: Map[String, SObject]) {
+    for (assoc <- associations) {
+      doe_w(_entity_ref(assoc.associationType.getName, entities)) {
+        record_trace("SMMEntityEntity#_build_associations_in_associationentity: " + assoc.name)
+        entity.association(assoc.name, _, _dsl_multiplicity(assoc.multiplicity)).withAssociationClass(true)
+      }
+    }
   }
 
   private def _build_entity(entity: SObject, entities: Map[String, SObject]): SObject = {

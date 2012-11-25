@@ -7,7 +7,7 @@ import org.goldenport.sdoc.inline._
 /*
  * @since   Oct. 23, 2008
  *  version Mar. 21, 2011
- * @version Nov. 15, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMParticipation(val dslParticipation: SParticipation) extends SMElement(dslParticipation) {
@@ -53,7 +53,7 @@ class SMParticipation(val dslParticipation: SParticipation) extends SMElement(ds
   }
 }
 
-abstract class SMParticipationRole {
+sealed trait SMParticipationRole {
   def label: SDoc
 }
 
@@ -87,6 +87,10 @@ object AggregationParticipationRole extends SMParticipationRole {
 
 object CompositionParticipationRole extends SMParticipationRole {
   def label = SText("合成")
+}
+
+object AssociationClassParticipationRole extends SMParticipationRole {
+  def label = SText("関連クラス")
 }
 
 object StateMachineParticipationRole extends SMParticipationRole {

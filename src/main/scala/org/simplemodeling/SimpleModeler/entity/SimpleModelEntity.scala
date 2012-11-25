@@ -1208,12 +1208,16 @@ record_trace("build_powertype_object = " + aPowertype)
           case Some(target) => {
             assocType.typeObject = target
             val participation = make_participation
-            participation.roleType = if (anAssoc.isComposition) {
-              CompositionParticipationRole
-            } else if (anAssoc.isAggregation) {
-              AggregationParticipationRole
-            } else {
-              AssociationParticipationRole
+            participation.roleType = {
+              if (anAssoc.isAssociationClass) {
+                AssociationClassParticipationRole
+              } else if (anAssoc.isComposition) {
+                CompositionParticipationRole
+              } else if (anAssoc.isAggregation) {
+                AggregationParticipationRole
+              } else {
+                AssociationParticipationRole
+              }
             }
             participation.roleName = anAssoc.name
             participation.associationOption = Some(anAssoc)

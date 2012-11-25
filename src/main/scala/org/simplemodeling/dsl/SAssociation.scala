@@ -5,7 +5,8 @@ import org.simplemodeling.dsl.SAssociationStereotype._
 
 /*
  * @since   Sep. 11, 2008
- * @version Nov. 11, 2009
+ *  version Nov. 11, 2009
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SAssociation(aName: String) extends SRelationship(aName) {
@@ -18,6 +19,7 @@ class SAssociation(aName: String) extends SRelationship(aName) {
   var primaryActor: Boolean = false
   var secondaryActor: Boolean = false
   var service: SService = NullService
+  var isAssociationClass: Boolean = false
   var isPersistent: Boolean = true
   var isBinary: Boolean = false
   var isQueryReference: Boolean = false
@@ -173,7 +175,6 @@ class SAssociation(aName: String) extends SRelationship(aName) {
     this
   }
 
-
   final def setBackReferenceName(aName: String): SAssociation = {
     backReferenceNameOption = Some(aName)
     this
@@ -185,6 +186,11 @@ class SAssociation(aName: String) extends SRelationship(aName) {
   }
 
   //
+  def withAssociationClass(b: Boolean): SAssociation = {
+    isAssociationClass = b
+    this
+  }
+
   final def withPersistent(aFlag: Boolean): SAssociation = {
     isPersistent = aFlag
     this
