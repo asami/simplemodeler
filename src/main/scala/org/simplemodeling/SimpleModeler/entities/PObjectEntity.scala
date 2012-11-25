@@ -231,6 +231,16 @@ abstract class PObjectEntity(val pContext: PEntityContext)
    */
 //  def hasInheritance: Boolean = _baseObject != null || _mixinTraits.nonEmpty
 
+  /**
+   * Used by JavaClassDefinition
+   * to decide whether or not to add attributes
+   * derviced from entity reference participation.
+   */
+  def isEntity: Boolean = false
+
+  /**
+   * Used to decide creating event service.
+   */
   def isEvent: Boolean = modelObject.isEvent
 
   // 

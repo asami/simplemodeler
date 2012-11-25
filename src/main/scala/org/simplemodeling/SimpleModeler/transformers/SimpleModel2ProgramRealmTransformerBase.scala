@@ -961,7 +961,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           }
           case smType: PStateMachineType => {
             if (usePowertype) {
-              record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes powertype: " + smType.qualifiedName)
+              record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes statemachine: " + smType.qualifiedName)
               val qname = make_Qualified_Name(smType.qualifiedName)
               findStateMachine(qname) match {
                 case Some(s) => smType.statemachine = s

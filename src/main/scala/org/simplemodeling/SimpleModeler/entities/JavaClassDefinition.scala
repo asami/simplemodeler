@@ -288,7 +288,9 @@ class JavaClassDefinition(
    * Attributes
    */
   override protected def attribute_variables_participation_BackReference(a: AttributeParticipation) {
-    println("JavaClassDefinition#attribute_variables_participation_BackReference")
+    if (a.source.isEntity) {
+      println("JavaClassDefinition#attribute_variables_participation_BackReference(%s) = %s".format(name, a))
+    }
   }
 
   /*

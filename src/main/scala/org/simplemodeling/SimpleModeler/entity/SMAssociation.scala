@@ -57,4 +57,8 @@ class SMAssociation(val dslAssociation: SAssociation) extends SMElement(dslAssoc
   private def multiplicity_literal: SDoc = {
     SIAnchor(SText(multiplicity.text)) unresolvedRef_is SHelpRef("multiplicity", multiplicity.symbol)
   }
+
+  override def toString() = {
+    "SMAssociation(%s)".format(name)
+  }
 }

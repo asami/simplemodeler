@@ -17,10 +17,12 @@ import org.simplemodeling.SimpleModeler.entities.PUtil._
 /*
  * @since   Apr. 23, 2011
  *  version Aug. 20, 2011
- * @version May.  5, 2012
+ *  version May.  5, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 trait PEntityEntity extends PEntityObjectEntity {
+  override def isEntity = true
   // modelEntity is declared in PObjectEntity.
 //  def modelEntity: SMEntity = modelObject.asInstanceOf[SMEntity]
 //  def modelEntity: SMEntity

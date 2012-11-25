@@ -8,7 +8,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Aug. 15, 2011
- * @version Aug. 20, 2011
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class Java6DocumentEntity(val java6Context: Java6EntityContext) extends JavaObjectEntityBase(java6Context) with PDocumentEntity {
@@ -18,4 +18,8 @@ class Java6DocumentEntity(val java6Context: Java6EntityContext) extends JavaObje
     out.append(klass.toText)
     out.flush
   }  
+
+  override def toString() = {
+    "Java6DocumentEntity(%s)".format(name)
+  }
 }
