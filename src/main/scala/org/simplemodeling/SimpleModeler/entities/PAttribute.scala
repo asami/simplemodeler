@@ -93,6 +93,8 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   def isAssociationClass = getModelAssociation.map(_.isAssociationClass) | false
 
+  def getProperty(key: String) = modelElement.getProperty(key)
+
   /*
    * attributes for GUI
    * 

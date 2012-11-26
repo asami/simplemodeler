@@ -92,7 +92,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 25, 2012
+ * @version Nov. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -151,6 +151,17 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val secondaryActors = new ArrayBuffer[SMMAssociation]
   val supportingActors = new ArrayBuffer[SMMAssociation]
   val scenarioSteps = new ArrayBuffer[SMMAssociation]
+
+  def isAttribute(name: String) = attributes.exists(_.name == name)
+  def isAssociation(name: String) = associations.exists(_.name == name)
+  def isAggregation(name: String) = aggregations.exists(_.name == name)
+  def isComposition(name: String) = compositions.exists(_.name == name)
+  def isStateMachine(name: String) = {
+    statemachineRelationships.exists(_.name == name) ||
+    statemachines.exists(_.name == name)
+  }
+  def isPowertype(name: String) = powertypes.exists(_.name == name)
+  def isOperation(name: String) = operations.exists(_.name == name)
 
   /*
    * TableSimpleModelMakerBuilder registers kinds and states.

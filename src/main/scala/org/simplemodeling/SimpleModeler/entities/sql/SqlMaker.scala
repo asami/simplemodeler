@@ -69,6 +69,7 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
       val candidates: Option[Seq[PEnumeration]] = attr.attributeType match {
         case p: PPowertypeType => Option(p.powertype.kinds)
         case s: PStateMachineType => Option(s.statemachine.states)
+        case _ => None
       }
       for (cs <- candidates) yield {
         val whens = for (k <- cs) yield {

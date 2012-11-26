@@ -1,11 +1,12 @@
 package org.simplemodeling.SimpleModeler.entities.simplemodel
 
+import org.simplemodeling.dsl.util.PropertyRecord
 import org.simplemodeling.SimpleModeler.builder._
 
 /*
  * @since   Oct.  5, 2012
  *  version Nov. 13, 2012
- * @version Nov. 24, 2012
+ * @version Nov. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMElement {
@@ -21,6 +22,11 @@ trait SMMElement {
   var brief: String = ""
   var summary: String = ""
   var description: String = ""
+  /**
+   * The properties allows same key entries.
+   * First entry is available.
+   */
+  var properties: Seq[PropertyRecord] = Nil
 
   /**
    * Used by SimpleModelMakerEntity#build#resolve_annotations
@@ -52,12 +58,14 @@ trait SMMElement {
   protected def set_Annotation_Pf(key: String, value: String): Boolean = false
 */
 
-  def update(entry: Seq[(String, String)]) {
+  def update(entry: Seq[PropertyRecord]) {
+    properties = entry ++ properties
     entry.foreach(updateField)
   }
 
-  def updateField(field: (String, String)) {
-    val (key, value) = field
+  def updateField(field: PropertyRecord) {
+    val key = field.key
+    val value = field.value.get // XXX
     NaturalLabel(key) match {
       case NameLabel => {}
       case TypeLabel => {}

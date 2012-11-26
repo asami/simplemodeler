@@ -2,6 +2,7 @@ package org.simplemodeling.SimpleModeler.builder
 
 import scalaz._
 import Scalaz._
+import org.simplemodeling.dsl.util.PropertyRecord
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
 import org.apache.commons.lang3.StringUtils.isNotBlank
 
@@ -9,7 +10,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
- * @version Nov. 25, 2012
+ * @version Nov. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -59,8 +60,12 @@ sealed abstract trait NaturalLabel {
    * In case of blank data, result is 'not find'.
    * Data is trimed.
    */
-  def findData(entries: Seq[(String, String)]): Option[String] = {
+  def findData0(entries: Seq[(String, String)]): Option[String] = {
     entries.find(x => isMatch(x._1)).map(_._2.trim).filter(isNotBlank)
+  }
+
+  def findData(entries: Seq[PropertyRecord]): Option[String] = {
+    NaturalLabel.findData(this, entries)
   }
 }
 
@@ -328,6 +333,10 @@ case object SqlDatatypeLabel extends NaturalLabel {
   
 }
 //
+case object UnknownNaturalLabel extends NaturalLabel {
+  val candidates = Nil
+}
+
 case object NullNaturalLabel extends NaturalLabel {
   val candidates = Nil
 }
@@ -426,7 +435,11 @@ object NaturalLabel {
     _find_candidate(cs, entry)
   }
 
-  def getObjectKind(entry: Seq[(String, String)]): Option[ElementKind] = {
+  def getObjectKind(entry: Seq[PropertyRecord]): Option[ElementKind] = {
+    getObjectKind0(entry.map(_.toTuple))
+  }
+
+  def getObjectKind0(entry: Seq[(String, String)]): Option[ElementKind] = {
     val cs = Stream(KindLabel)
     cs.flatMap(c => {
       entry.find(kv => {
@@ -443,21 +456,57 @@ object NaturalLabel {
     })
   }
 
-  def getObjectName(entry: Seq[(String, String)]): Option[String] = {
+  def getObjectName(entry: Seq[PropertyRecord]): Option[String] = {
+    getObjectName0(entry.map(_.toTuple))
+  }
+
+  def getObjectName0(entry: Seq[(String, String)]): Option[String] = {
     val cs = Stream(NameLabel, NameJaLabel, NameEnLabel, TermLabel, TermJaLabel, TermEnLabel, ColumnNameLabel, TitleLabel, LabelLabel, CaptionLabel)
     _find_candidate(cs, entry)
   }
 
-  def getSlotName(entry: Seq[(String, String)]): Option[String] = {
-    val cs = Stream(NameLabel, NameJaLabel, NameEnLabel, TermLabel, TermJaLabel, TermEnLabel, ColumnNameLabel, TypeLabel, TitleLabel, LabelLabel, CaptionLabel)
-    _find_candidate(cs, entry)
+  private val _slot_candidates = Stream(NameLabel, NameJaLabel, NameEnLabel, TermLabel, TermJaLabel, TermEnLabel, ColumnNameLabel, TypeLabel, TitleLabel, LabelLabel, CaptionLabel)
+
+  def getSlotName(entry: Seq[PropertyRecord]): Option[String] = {
+    _find_candidate_property_record(_slot_candidates, entry)
   }
 
-  def getEntityTypeName(entry: Seq[(String, String)]): Option[String] = {
+  def getSlotName0(entry: Seq[(String, String)]): Option[String] = {
+    _find_candidate(_slot_candidates, entry)
+  }
+
+  def getEntityTypeName(entry: Seq[PropertyRecord]): Option[String] = {
+    val cs = Stream(TypeLabel, NameLabel, TermLabel)
+    val r = _find_candidate_property_record(cs, entry)
+//    println("NameEnLabel#getEntityTypeName: " + entry + " => " + r)
+    r
+  }
+
+  def getEntityTypeName0(entry: Seq[(String, String)]): Option[String] = {
     val cs = Stream(TypeLabel, NameLabel, TermLabel)
     _find_candidate(cs, entry)
   }
 
+  /**
+   * XXX multiple dsl files would cause empty property collision.
+   */
+  private def _find_candidate_property_record(cs: Stream[NaturalLabel], entry: Seq[PropertyRecord]): Option[String] = {
+    cs.flatMap(findData(_, entry)).headOption
+  }
+
+  def findData(l: NaturalLabel, entry: Seq[PropertyRecord]): Option[String] = {
+    entry.find(kv => {
+      l.isMatch(kv.key) && (kv.value.map(isNotBlank) | false)
+    }).headOption.flatMap(_.value match {
+      case Some("") => None
+      case Some(s) => Some(s)
+      case None => None
+    })
+  }
+
+  /*
+   * deprecated
+   */
   private def _find_candidate(cs: Stream[NaturalLabel], entry: Seq[(String, String)]): Option[String] = {
     cs.flatMap(c => {
       entry.find(kv => {
