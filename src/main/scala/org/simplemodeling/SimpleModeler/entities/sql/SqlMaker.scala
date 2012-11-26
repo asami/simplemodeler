@@ -8,7 +8,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Nov.  2, 2012
- * @version Nov. 26, 2012
+ * @version Nov. 27, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
@@ -57,7 +57,7 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
       for ((a, t) <- joinedAttributes.find(_._1 == attr)) yield {
         val name = context.sqlNameAlias(a)
         val column = context.sqlNameColumnName(a)
-        t + "." + column + " as " + name
+        _column_as(t + "." + column, name)
       }
     }
   }
@@ -85,12 +85,17 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
     val columnname = context.sqlColumnName(attr)
     println("SqlMaker#_column(%s/%s) = %s".format(entity.name, attr.name, attr))
     val name = context.asciiName(attr)
-    val c1 = "T." + columnname + " as " + name
+    val c1 = _column_as("T." + columnname, name)
     attr match {
       case EntityReference(c) => List(c1, c)
       case LabelReference(c) => List(c1, c)
       case _ => List(c1)
     }
+  }
+
+  protected def _column_as(column: String, alias: String): String = {
+    // 'coalesce' is workaround for MySQL Java Driver
+    "coalesce(%s) as %s".format(column, alias)
   }
 
   private def _is_entity_reference(attr: PAttribute) = {

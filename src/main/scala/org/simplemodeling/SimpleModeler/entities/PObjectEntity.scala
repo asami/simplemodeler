@@ -19,7 +19,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov. 26, 2012
+ * @version Nov. 27, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -355,7 +355,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
         ) {
         return Some(attr)
       }
-    }    
+    }
     for (attr <- wholeAttributesWithoutId) {
       if (attr.attributeType.isInstanceOf[PTokenType]) {
         return Some(attr)
