@@ -75,7 +75,7 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
         val whens = for (k <- cs) yield {
           "when %s=%s then %s".format(column, k.sqlValue, k.sqlLabel)
         }
-        "(case" + whens.mkString(" ") + " else " + column + " end) as " + name
+        "(case " + whens.mkString(" ") + " else " + column + " end) as " + name
       }
     }
   }

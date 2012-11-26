@@ -19,6 +19,7 @@ object SMMStateMachineState {
   def create(entry: Seq[PropertyRecord]): SMMStateMachineState = {
     val name = NaturalLabel.getSlotName(entry) | "Unkonwn"
     val value = ValueLabel.findData(entry)
+    println("SMMStateMachineState#create(%s) = %s".format(name, value))
     val k = new SMMStateMachineState(name, value)
     k.update(entry)
     k

@@ -59,6 +59,7 @@ import org.simplemodeling.dsl.domain.DomainValueId
 import org.simplemodeling.dsl.domain.DomainValueName
 import org.simplemodeling.dsl.One
 import org.simplemodeling.dsl.OneMore
+import org.simplemodeling.dsl.SElement
 import org.simplemodeling.dsl.SAttribute
 import org.simplemodeling.dsl.SAttributeType
 import org.simplemodeling.dsl.SOperation
@@ -1211,13 +1212,35 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _build_specifications(entity: SObject) {
+    _build_specifications(entity, this)
+    // TODO
+  }
+
+  private def _build_specifications(target: SElement, source: SMMElement) {
     // TODO
   }
 
   private def _build_properties(entity: SObject) {
+    _build_properties(entity, this)
     entity.naviLabel = naviLabel
     entity.tabLabel = tabLabel
     entity.sqlTableName = tableName
+  }
+
+  private def _build_properties(target: SElement, source: SMMElement) {
+    target.name_ja = source.name_ja
+    target.name_en = source.name_en
+    target.term = source.term
+    target.term_ja = source.term_ja
+    target.term_en = source.term_en
+    target.label = source.label
+    target.title = source.title
+    target.subtitle = source.subtitle
+    target.caption = source.caption
+    target.brief = source.brief
+    target.summary = source.summary
+    target.description = source.description
+    target.properties = source.properties
   }
 
   private def _build_base(entities: Map[String, SObject], entity: SObject) {
@@ -1578,7 +1601,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_value(value: DomainValue): DomainValue = {
     value.term = name
-//    _build_specifications(value)
+    _build_specifications(value)
+    _build_properties(value)
 //    _build_base(value)
 //    _build_powertypes(value)
 //    _build_roles(value)
@@ -1588,6 +1612,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_document(doc: DomainDocument, entities: Map[String, SObject]): DomainDocument = {
     _build_specifications(doc)
+    _build_properties(doc)
     _build_base(entities, doc)
     _build_traits(entities, doc)
     _build_attributes(doc, entities)
@@ -1599,6 +1624,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_powertype(power: DomainPowertype, entities: Map[String, SObject]): DomainPowertype = {
     _build_specifications(power)
+    _build_properties(power)
     _build_base(entities, power)
     _build_traits(entities, power)
     _build_powertypeKinds(power)
@@ -1612,12 +1638,15 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _build_powertypeKinds(entity: DomainPowertype) {
     for (kind <- powertypeKinds) {
       val k = new SPowertypeKind(kind.name, kind.value)
+      _build_specifications(k, kind)
+      _build_properties(k, kind)
       entity.kind(k)
     }
   }
 
   private def _build_statemachine(sm: DomainStateMachine, entities: Map[String, SObject]): DomainStateMachine = {
     _build_specifications(sm)
+    _build_properties(sm)
     _build_base(entities, sm)
     _build_traits(entities, sm)
     _build_statemachineStates(sm)
@@ -1630,7 +1659,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_statemachineStates(entity: DomainStateMachine) {
     for (state <- statemachineStates) {
-      val s = new DomainState(state.name)
+      val s = new DomainState(state.name, state.value)
+      _build_specifications(s, state)
+      _build_properties(s, state)
+      println("SMMEntityEntity#_build_statemachineStates: %s, %s, %s".format(s.name, s.value, s.label))
       entity.state(s)
     }
   }

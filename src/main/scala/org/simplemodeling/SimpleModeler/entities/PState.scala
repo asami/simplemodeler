@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import org.apache.commons.lang3.StringUtils
 import scalaz._, Scalaz._
 import org.goldenport.entity._
 import org.simplemodeling.dsl.SPowertypeKind
@@ -14,6 +15,8 @@ case class PState(name: String, value: Either[String, Int], label: String, model
 
 object PState {
   def create(s: SMState) = {
-    new PState(s.name, s.name.left, s.name, s)
+    val a = s.label.toText
+    val b = if (StringUtils.isNotBlank(a)) a else s.name
+    new PState(s.name, s.value, b, s)
   }
 }

@@ -4,11 +4,12 @@ import org.simplemodeling.dsl._
 
 /*
  * @since   Dec. 20, 2008
- * @version Nov. 13, 2010
+ *  version Nov. 13, 2010
+ * @version Nov. 26, 2012
  * @author  ASAMI, Tomoharu
  */
-class DomainState(aName: String) extends SState(aName) {
-  def this() = this(null)
+class DomainState(aName: String, aValue: Option[String]) extends SState(aName, aValue) {
+  def this() = this(null, None)
 
   def transition(event: => DomainEvent, state: => DomainState): STransition = {
     transit_event(event, state)

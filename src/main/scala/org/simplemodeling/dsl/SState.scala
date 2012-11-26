@@ -3,11 +3,12 @@ package org.simplemodeling.dsl
 import scala.collection.mutable.{ArrayBuffer, LinkedHashMap}
 
 /*
- * Dec. 20, 2008
- * Mar. 18, 2009
- * ASAMI, Tomoharu
+ * @since   Dec. 20, 2008
+ *  version Mar. 18, 2009
+ * @version Nov. 26, 2012
+ * @author  ASAMI, Tomoharu
  */
-abstract class SState(aName: String) extends SElement(aName) {
+abstract class SState(aName: String, val value: Option[String]) extends SElement(aName) {
   type Descriptable_TYPE = SState
   type Historiable_TYPE = SState
   val transitions = new ArrayBuffer[STransition]
@@ -44,4 +45,4 @@ abstract class SState(aName: String) extends SElement(aName) {
   }
 }
 
-object NullState extends SState(null)
+object NullState extends SState(null, None)

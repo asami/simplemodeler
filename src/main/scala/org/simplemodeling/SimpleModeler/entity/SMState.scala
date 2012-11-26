@@ -1,5 +1,7 @@
 package org.simplemodeling.SimpleModeler.entity
 
+import org.apache.commons.lang3.StringUtils
+import scalaz._, Scalaz._
 import scala.collection.mutable.{ArrayBuffer, LinkedHashMap}
 import org.simplemodeling.dsl._
 import org.goldenport.value._
@@ -9,8 +11,10 @@ import org.goldenport.sdoc.inline.SElementRef
 import org.goldenport.sdoc.inline.SHelpRef
 
 /*
- * Dec. 24, 2008
- * Mar. 19, 2009
+ * @since   Dec. 24, 2008
+ *  version Mar. 19, 2009
+ * @version Nov. 26, 2012
+ * @author  ASAMI, Tomoharu
  * ASAMI, Tomoharu
  */
 class SMState(val dslState: SState, ownerStateMachine: SMStateMachine) extends SMElement(dslState) {
@@ -23,6 +27,17 @@ class SMState(val dslState: SState, ownerStateMachine: SMStateMachine) extends S
     val state = new SMState(refinedDslSubState, ownerStateMachine)
     ownerStateMachine.wholeStateMap += (qName -> state)
     subStateMap += (name -> state) // owner composition state
+  }
+
+  val value: Either[String, Int] = {
+    val v = dslState.value | name
+    val r = if (StringUtils.isBlank(v)) {
+      name.left
+    } else {
+      v.parseInt.fold(_ => name.left, _.right)
+    }
+    println("SMState: " + dslState + "/" + r)
+    r
   }
 
   override protected def qualified_Name = {

@@ -19,6 +19,7 @@ object SMMPowertypeKind {
   def create(entry: Seq[PropertyRecord]): SMMPowertypeKind = {
     val name = NaturalLabel.getSlotName(entry) | "Unkonwn"
     val value = ValueLabel.findData(entry)
+    println("SMMPowertypeKind#create(%s) = %s".format(name, value))
     val k = new SMMPowertypeKind(name, value)
     k.update(entry)
     k
