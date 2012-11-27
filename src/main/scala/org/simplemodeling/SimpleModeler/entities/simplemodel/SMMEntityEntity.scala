@@ -93,7 +93,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 26, 2012
+ * @version Nov. 27, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1443,27 +1443,36 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_associations(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- associations) {
-      doe_w(_entity_ref(assoc.associationType.getName, entities)) {
+      doe_w(_entity_ref(assoc.associationType.getName, entities)) { x =>
         record_trace("SMMEntityEntity#_build_associations: " + assoc.name)
-        entity.association(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
+        val a = entity.association(assoc.name, x, _dsl_multiplicity(assoc.multiplicity))
+        _build_specifications(a, assoc)
+        _build_properties(a, assoc)
+        a
       }
     }
   }
 
   private def _build_aggregations(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- aggregations) {
-      doe_w(_entity_ref(assoc.associationType.getName, entities)) {
+      doe_w(_entity_ref(assoc.associationType.getName, entities)) { x =>
         record_trace("SMMEntityEntity#_build_aggregations: " + assoc.name)
-        entity.aggregation(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
+        val a = entity.aggregation(assoc.name, x, _dsl_multiplicity(assoc.multiplicity))
+        _build_specifications(a, assoc)
+        _build_properties(a, assoc)
+        a
       }
     }
   }
 
   private def _build_compositions(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- compositions) {
-      doe_w(_entity_ref(assoc.associationType.getName, entities)) {
+      doe_w(_entity_ref(assoc.associationType.getName, entities)) { x =>
         record_trace("SMMEntityEntity#_build_compositions: " + assoc.name)
-        entity.composition(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
+        val a = entity.composition(assoc.name, x, _dsl_multiplicity(assoc.multiplicity))
+        _build_specifications(a, assoc)
+        _build_properties(a, assoc)
+        a
       }
     }
   }

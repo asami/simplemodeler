@@ -362,6 +362,13 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   /**
+   * Use to enname entity reference column field to destinguish joined column.
+   */
+  def labelNameWithId(attr: PAttribute): String = {
+    labelName(attr.modelElement) + "ID"
+  }
+
+  /**
    * Generic title string.
    */
   final def titleName(anObject: PObjectEntity): String = {
