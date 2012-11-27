@@ -17,7 +17,7 @@ import com.asamioffice.goldenport.text.UString
  * @since   Jan. 15, 2009
  *  version Mar. 27, 2011
  *  version Nov. 20, 2011
- * @version Nov. 25, 2012
+ * @version Nov. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
@@ -519,11 +519,11 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
     val edges = build_assoc_class_edge(aSourceId, targets)
     if (aDerived)
       for ((e, a) <- edges) {
-        e.headlabel = "/" + a.name
+        e.headlabel = "/" + a.name + make_multiplicity(a)
       }
     else
       for ((e, a) <- edges) {
-        e.headlabel = a.name
+        e.headlabel = a.name + make_multiplicity(a)
       }
   }
 
