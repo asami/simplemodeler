@@ -48,7 +48,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov. 25, 2012
+ * @version Nov. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -99,6 +99,7 @@ abstract class GenericClassDefinition(
   val baseObject: Option[PObjectReferenceType] = pobject.getBaseObjectType
   def hasBaseObject = baseObject.isDefined
   val mixinTraits: List[PObjectReferenceType] = pobject.getTraitObjects
+  val associationClassAttributes: List[PAttribute] = pobject.associationEntityAttributes
   def isRootObject = baseObject.isEmpty
   val modelEntityOption: Option[SMEntity] = modelObject match {
     case entity: SMEntity => Some(entity)
@@ -134,8 +135,12 @@ abstract class GenericClassDefinition(
     }
     _ordering(a)
   }
+  lazy val associationClassAttributeDefinitions: List[ATTR_DEF] = {
+    val a = associationClassAttributes.map(attribute)
+    _ordering(a)
+  }
   lazy val implementsAttributeDefinitions: List[ATTR_DEF] = {
-    val a = attributeDefinitions ::: traitsAttributeDefinitions
+    val a = attributeDefinitions ::: associationClassAttributeDefinitions ::: traitsAttributeDefinitions
     _ordering(_cleansing(a))
   }
   lazy val wholeAttributeDefinitions: List[ATTR_DEF] = {

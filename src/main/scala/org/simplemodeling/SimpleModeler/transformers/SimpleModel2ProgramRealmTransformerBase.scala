@@ -27,7 +27,7 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov. 25, 2012
+ * @version Nov. 29, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -607,7 +607,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         val basename = modelObject.getBaseObject.map(make_document_name)
         val qname = basename.map((_, modelObject.packageName))
         val mixins = modelObject.traits.map(x => make_trait_document(x.mixinTrait))
-        build_object_with_name(obj, docName, modelObject, qname, mixins)
+        build_entity_document(obj, docName, modelObject, qname, mixins)
       }
     }
 
@@ -674,7 +674,30 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       store_object(obj)
     }
 
+    /**
+     * Build for document drived from entity.
+     */
+    protected def build_entity_document(obj: PObjectEntity, name: String, modelObject: SMObject, basename: Option[(String, String)], mixins: Seq[SMTrait]) = {
+      obj.name = name
+      obj.asciiName = target_context.asciiName(modelObject)
+      obj.uriName = target_context.uriName(modelObject)
+      obj.classNameBase = target_context.classNameBase(modelObject)
+      obj.setKindedPackageName(make_Package_Name(modelObject))
+      obj.xmlNamespace = modelObject.xmlNamespace
+      obj.modelObject = modelObject
+      for ((n, p) <- basename) {
+        obj.setKindedBaseObjectType(n, p)
+      }
+      for (tr <- mixins) {
+        obj.addKindedTraitObjectType(make_class_name(tr), make_Package_Name(tr.packageName))
+      }
+      build_properties_entity_document(obj, modelObject)
+      store_object(obj)
+    }
 
+    /**
+     * Used for service and rule.
+     */
     private def build_derived_object(modelObject: SMObject, source: PObjectEntity)(obj: PObjectEntity) = {
       obj.modelObject = modelObject
       obj.sourcePlatformObject = Some(source)
@@ -709,6 +732,14 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       anObject.operations.foreach(build_operation(obj, _))
     }
 
+    private def build_properties_entity_document(obj: PObjectEntity, anObject: SMObject) {
+      anObject.powertypes.foreach(build_powertype(obj, _))
+      anObject.stateMachines.foreach(build_statemachine(obj, _))
+      anObject.attributes.foreach(build_attribute(obj, _))
+      anObject.associations.foreach(build_association_entity_document(obj, _))
+      anObject.operations.foreach(build_operation(obj, _))
+    }
+
     private def build_attribute(aObj: PObjectEntity, anAttr: SMAttribute) {
       val attr = make_attribute(anAttr.name, object_type(anAttr))
       build_attribute(attr, anAttr)
@@ -720,6 +751,13 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     private def build_association(aObj: PObjectEntity, anAssoc: SMAssociation) {
       val attr = make_attribute(anAssoc.name, object_type(anAssoc))
+      aObj.addAttribute(attr)
+      attr.multiplicity = get_multiplicity(anAssoc.multiplicity)
+      attr.modelAssociation = anAssoc
+    }
+
+    private def build_association_entity_document(aObj: PObjectEntity, anAssoc: SMAssociation) {
+      val attr = make_attribute(anAssoc.name, object_type_entity_document(anAssoc))
       aObj.addAttribute(attr)
       attr.multiplicity = get_multiplicity(anAssoc.multiplicity)
       attr.modelAssociation = anAssoc
@@ -813,6 +851,18 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       val name = make_object_name(assocType.name)
       // PEntityType serves PEntityPartType
       new PEntityType(name, make_Package_Name(assocType.packageName))
+    }
+
+    /**
+     * In old implementation, DocumentJavaClassAttributeDefinition handles
+     * PEntityType specially to convert document reference instead of entity reference.
+     * This method override this special handling to convert document reference
+     * in platform object conversion.
+     */
+    private def object_type_entity_document(anAssoc: SMAssociation): PObjectType = {
+      val assocType = anAssoc.associationType
+      val name = make_entity_document_name(assocType.typeObject)
+      new PDocumentType(name, make_Package_Name(assocType.packageName))
     }
 
     private def object_type(aPowertype: SMPowertypeRelationship): PObjectType = {
@@ -973,6 +1023,11 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           case documentType: PDocumentType => {
             val qname = make_Qualified_Name(documentType.qualifiedName)
             documentType.document = findDocument(qname)
+            if (attr.modelAssociation != null) { // entity document
+              for (d <- documentType.document) {
+                d.participations += AttributeParticipation(obj, attr)
+              }
+            }
           }
           case valueType: PValueType => {
             if (useValue) {

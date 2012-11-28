@@ -19,7 +19,7 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov. 27, 2012
+ * @version Nov. 29, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -66,6 +66,72 @@ abstract class PObjectEntity(val pContext: PEntityContext)
         record_warning("「%s」で操作「%s」の重複があります。", name, oper.name)
     } else _operations += oper
   }
+
+  lazy val associationEntityAttributes: List[PAttribute] = {
+    participations.toList.collect({
+      case a: AttributeParticipation if a.attribute.isAssociationClass => a
+    }).flatMap(_to_attr)
+  }
+
+  private def _to_attr(a: AttributeParticipation): List[PAttribute] = {
+//    println("PObjectEntity#AttributeParticipation(%s) = %s".format(name, a))
+    val b = _another_association(a.source, a.attribute) match {
+      case Some(x) => x.attributeType match {
+        case e: PEntityType => {
+          _entity_type_attribute(e.entity)
+        }
+        case d: PDocumentType => {
+          _document_type_attribute(d.document.get) // XXX
+        }
+      }
+      case None => a.source match {
+        case e: PEntityEntity => {
+          _entity_type_attribute(e)
+        }
+        case d: PDocumentEntity => {
+          _document_type_attribute(d)
+        }
+      }
+    }
+/*
+    val b = _direct_entity(a) match {
+      case Some(x) => x
+      case _ => a.source
+    }
+    val n = b.name
+    val t = new PEntityType(b.name, b.packageName)
+    t.entity = b.asInstanceOf[PEntityEntity]
+    val c = new PAttribute(n, t) multiplicity_is PZeroMore // XXX
+    List(c)
+*/
+    List(b)
+  }
+
+  private def _another_association(s: PObjectEntity, a: PAttribute): Option[PAttribute] = {
+    val attrs = s.attributes
+    if (attrs.length != 2) None
+    else attrs.filter(_ != a).headOption
+  }
+
+  private def _entity_type_attribute(e: PEntityEntity): PAttribute = {
+    val t = new PEntityType(e.name, e.packageName)
+    t.entity = e
+    new PAttribute(e.name, t) multiplicity_is PZeroMore // XXX
+  }
+
+  private def _document_type_attribute(d: PDocumentEntity): PAttribute = {
+    val t = new PDocumentType(d.name, d.packageName)
+    t.document = d.some
+    new PAttribute(d.modelObject.name, t) multiplicity_is PZeroMore // XXX
+  }
+/*
+  private def _direct_entity(a: AttributeParticipation): Option[PObjectEntity] = {
+    _another_association(a.source, a.attribute).map(_.attributeType).collect {
+      case e: PEntityType => e.entity
+      case d: PDocumentType => d.document
+    }
+  }
+*/
 
   /**
    * Name in program. Defined in the specification DSL.
