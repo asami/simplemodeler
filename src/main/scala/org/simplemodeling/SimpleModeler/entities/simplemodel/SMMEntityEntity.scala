@@ -93,7 +93,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 27, 2012
+ * @version Nov. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -551,6 +551,16 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       }
       new SMMStateMachine(aName, aStateMachineType)
     }
+  }
+
+  /**
+   * SimpleModelDslBuilder uses this method to add a state.
+   * TableSimpleModelMakerBuilder add state using own add_state method.
+   */
+  def state(name: String): SMMStateMachineState = {
+    val s = new SMMStateMachineState(name, None)
+    statemachineStates += s
+    s
   }
 
   /**

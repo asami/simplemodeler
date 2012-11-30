@@ -18,7 +18,7 @@ import org.goldenport.recorder.Recordable
  *  version Feb.  8, 2012
  *  version Sep. 29, 2012
  *  version Oct. 21, 2012
- * @version Nov. 15, 2012
+ * @version Nov. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -210,8 +210,9 @@ class SimpleModelDslBuilder(
       entity.association(name, target) multiplicity_is multiplicity
     }
     for (term <- entity.narrativeStateTransitions) {
-      val (name, target, multiplicity) = get_association_by_term(term)
-      entity.association(name, target) multiplicity_is multiplicity // XXX association for state transition
+//      val (name, target, multiplicity) = get_association_by_term(term)
+      val name = get_name_by_term(term)
+      entity.state(name)
     }
     for (term <- entity.narrativeStateMachines) {
       val (name, target) = get_statemachine_by_term(term)

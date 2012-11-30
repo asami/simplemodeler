@@ -17,7 +17,7 @@ import org.goldenport.Strings
  *  version Nov. 20, 2011
  *  version Sep. 18, 2012
  *  version Oct. 23, 2012
- * @version Nov. 25, 2012
+ * @version Nov. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -120,6 +120,14 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
               case "perspective" => graph.addPowertypeSimple(powertype, id)
               case "hilight"     => graph.addPowertypeSimple(powertype, id)
               case "detail"      => graph.addPowertypeFull(powertype, id)
+              case _             => sys.error("illegal thema: " + aThema)
+            }
+          }
+          case sm: SMStateMachine => {
+            aThema match {
+              case "perspective" => graph.addStateMachineSimple(sm, id)
+              case "hilight"     => graph.addStateMachineSimple(sm, id)
+              case "detail"      => graph.addStateMachineFull(sm, id)
               case _             => sys.error("illegal thema: " + aThema)
             }
           }
