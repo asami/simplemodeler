@@ -19,7 +19,8 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov. 29, 2012
+ *  version Nov. 29, 2012
+ * @version Dec.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -81,7 +82,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
           _entity_type_attribute(e.entity)
         }
         case d: PDocumentType => {
-          _document_type_attribute(d.document.get) // XXX
+          _document_type_attribute(d.document)
         }
       }
       case None => a.source match {
@@ -121,7 +122,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
 
   private def _document_type_attribute(d: PDocumentEntity): PAttribute = {
     val t = new PDocumentType(d.name, d.packageName)
-    t.document = d.some
+    t.document = d
     new PAttribute(d.modelObject.name, t) multiplicity_is PZeroMore // XXX
   }
 /*

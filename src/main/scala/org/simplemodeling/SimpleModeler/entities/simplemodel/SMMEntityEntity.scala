@@ -93,7 +93,8 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 30, 2012
+ *  version Nov. 30, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1243,6 +1244,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     target.term = source.term
     target.term_ja = source.term_ja
     target.term_en = source.term_en
+    target.xmlName = source.xmlName
     target.label = source.label
     target.title = source.title
     target.subtitle = source.subtitle

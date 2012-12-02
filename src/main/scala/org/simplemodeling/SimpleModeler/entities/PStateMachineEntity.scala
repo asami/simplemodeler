@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.entity._
 
 /*
  * @since   Nov. 14, 2012
- * @version Nov. 26, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 trait PStateMachineEntity extends PObjectEntity {
@@ -18,6 +18,8 @@ trait PStateMachineEntity extends PObjectEntity {
     case Some(state) => state.name
     case _ => "null"
   }
+
+  def isKnowledge: Boolean = false // modelStateMachine.isKnowledge
 
   /*
    * Obsolated

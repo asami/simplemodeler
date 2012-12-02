@@ -13,13 +13,14 @@ import org.simplemodeling.dsl.datatype.ext._
 /**
  * @since   Mar. 31, 2012
  *  version Mar. 31, 2012
- * @version Apr.  8, 2012
+ *  version Apr.  8, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 class ExtjsDocumentJavaClassDefinition(
   pContext: PEntityContext,     
   aspects: Seq[JavaAspect],
-  pobject: PObjectEntity
+  pobject: PDocumentEntity
 ) extends DocumentJavaClassDefinition(pContext, aspects, pobject) {
   useDocument = false
   customImplementNames = List("IGADocument") // Parcelable

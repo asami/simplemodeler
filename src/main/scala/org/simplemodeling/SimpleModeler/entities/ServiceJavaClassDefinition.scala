@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov. 10, 2012
- * @version Nov. 25, 2012
+ * @version Dec.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 class ServiceJavaClassDefinition(
@@ -43,6 +43,14 @@ protected %repository% repository;
          "%repository%" -> entityServiceName))
   }
 
+  override protected def package_methods_platform_Entity(entity: PEntityEntity) {
+  }
+
+/*
+  override protected def package_methods_AssociationEntity(summary: SMDomainAssociationEntity) {
+    package_methods_Entity(summary)
+  }
+
   override protected def package_methods_Actor(actor: SMDomainActor) {
     package_methods_Entity(actor)
   }
@@ -61,13 +69,6 @@ protected %repository% repository;
 
   override protected def package_methods_Summary(summary: SMDomainSummary) {
     package_methods_Entity(summary)
-  }
-
-  override protected def package_methods_AssociationEntity(summary: SMDomainAssociationEntity) {
-    package_methods_Entity(summary)
-  }
-
-  override protected def package_methods_platform_Entity(entity: PEntityEntity) {
   }
 
   // XXX platform object
@@ -101,4 +102,5 @@ protected %repository% repository;
   // XXX platform object
   override protected def package_methods_Service(service: SMDomainService) {
   }
+*/
 }

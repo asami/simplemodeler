@@ -1,15 +1,18 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import com.asamioffice.goldenport.text.UJavaString
+
 /*
  * @since   Jul.  6, 2011
  *  version Dec. 13, 2011
- * @version Nov. 21, 2012
+ *  version Nov. 21, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 class DocumentJavaClassDefinition(
   pContext: PEntityContext,     
   aspects: Seq[JavaAspect],
-  pobject: PObjectEntity
+  pobject: PDocumentEntity
 ) extends JavaClassDefinition(pContext, aspects, pobject) with SqlHelper {
   useDocument = false
   isImmutable = true
@@ -36,8 +39,21 @@ class DocumentJavaClassDefinition(
   }
 
   override protected def object_auxiliary {
+    jm_public_method("String relaxngSchema()") {
+      jm_return(relanx_schema_literal(pobject))
+    }
     jm_public_method("String sqlSelect()") {
       jm_return(sql_select_literal(pobject))
     }
+  }
+
+  protected def relanx_schema_literal(doc: PDocumentEntity) = {
+    val a = relaxng.PRelaxngMaker(pContext, doc).schema
+    UJavaString.stringLiteral(a.toString)
+  }
+
+  protected def relanx_element_literal(doc: PDocumentEntity) = {
+    val a = relaxng.PRelaxngMaker(pContext, doc).element
+    UJavaString.stringLiteral(a.toString)
   }
 }

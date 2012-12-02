@@ -14,7 +14,8 @@ import com.asamioffice.goldenport.text.UPathString
  *  version Feb.  7, 2012
  *  version Apr.  8, 2012
  *  version Oct. 16, 2012
- * @version Nov. 25, 2012
+ *  version Nov. 25, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -101,6 +102,10 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
         "http://" + packageName.split("\\.").reverse.mkString(".") + "/"
       }
     }
+  }
+
+  def xmlElementName = {
+    dslObject.getXmlElementName getOrElse name
   }
 
   def baseObjectName = {

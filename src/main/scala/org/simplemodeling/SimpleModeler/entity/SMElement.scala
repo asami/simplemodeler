@@ -14,7 +14,8 @@ import org.simplemodeling.SimpleModeler.sdoc.SMObjectRef
  * @since   Sep. 15, 2008
  *  version Dec. 18, 2010
  *  version Feb. 22, 2012
- * @version Nov. 26, 2012
+ *  version Nov. 26, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMElement] {
@@ -66,6 +67,11 @@ abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMEleme
   final def description = dslElement.description
   final def note = dslElement.note
   final def history = dslElement.history
+
+  /*
+   * XML
+   */
+  def xmlName = dslElement.xmlName
 
   /*
    * GUI

@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov.  2, 2012
- * @version Nov. 25, 2012
+ * @version Dec.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 class RepositoryServiceJavaClassDefinition(
@@ -33,30 +33,6 @@ protected %context% context;
 @Inject
 protected %repository% repository;
 """, Map("%context%" -> contextName, "%repository%" -> repositoryName))
-  }
-
-  override protected def package_methods_Actor(actor: SMDomainActor) {
-    package_methods_Entity(actor)
-  }
-
-  override protected def package_methods_Resource(resource: SMDomainResource) {
-    package_methods_Entity(resource)
-  }
-
-  override protected def package_methods_Event(event: SMDomainEvent) {
-    package_methods_Entity(event)
-  }
-
-  override protected def package_methods_Role(role: SMDomainRole) {
-    package_methods_Entity(role)
-  }
-
-  override protected def package_methods_Summary(summary: SMDomainSummary) {
-    package_methods_Entity(summary)
-  }
-
-  override protected def package_methods_AssociationEntity(assoc: SMDomainAssociationEntity) {
-    package_methods_Entity(assoc)
   }
 
   override protected def package_methods_platform_Entity(entity: PEntityEntity) {
@@ -158,6 +134,31 @@ protected %repository% repository;
     }
   }
 
+/*
+  override protected def package_methods_Actor(actor: SMDomainActor) {
+    package_methods_Entity(actor)
+  }
+
+  override protected def package_methods_Resource(resource: SMDomainResource) {
+    package_methods_Entity(resource)
+  }
+
+  override protected def package_methods_Event(event: SMDomainEvent) {
+    package_methods_Entity(event)
+  }
+
+  override protected def package_methods_Role(role: SMDomainRole) {
+    package_methods_Entity(role)
+  }
+
+  override protected def package_methods_Summary(summary: SMDomainSummary) {
+    package_methods_Entity(summary)
+  }
+
+  override protected def package_methods_AssociationEntity(assoc: SMDomainAssociationEntity) {
+    package_methods_Entity(assoc)
+  }
+
   // XXX platform object
   override protected def package_methods_Entity_Part(part: SMDomainEntityPart) {
   }
@@ -189,4 +190,5 @@ protected %repository% repository;
   // XXX platform object
   override protected def package_methods_Service(service: SMDomainService) {
   }
+*/
 }

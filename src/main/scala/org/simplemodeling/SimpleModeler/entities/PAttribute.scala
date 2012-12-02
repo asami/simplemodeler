@@ -15,7 +15,8 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Feb. 19, 2012
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
- * @version Nov. 26, 2012
+ *  version Nov. 26, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -67,6 +68,7 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   def term = modelElement.term
   def term_en = modelElement.term_en
   def term_ja = modelElement.term_ja
+  def xmlName = modelElement.xmlName
   def sqlColumnName: String = modelElement.sqlColumnName
 
   val use_object_over_datatype = true

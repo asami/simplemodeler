@@ -6,7 +6,8 @@ import org.simplemodeling.SimpleModeler.builder._
 /*
  * @since   Oct.  5, 2012
  *  version Nov. 13, 2012
- * @version Nov. 26, 2012
+ *  version Nov. 26, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMElement {
@@ -15,6 +16,7 @@ trait SMMElement {
   var term: String = ""
   var term_ja: String = ""
   var term_en: String = ""
+  var xmlName: String = ""
   var label: String = ""
   var title: String = ""
   var subtitle: String = ""

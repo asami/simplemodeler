@@ -27,7 +27,8 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov. 29, 2012
+ *  version Nov. 29, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -1022,9 +1023,12 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           }
           case documentType: PDocumentType => {
             val qname = make_Qualified_Name(documentType.qualifiedName)
-            documentType.document = findDocument(qname)
+            findDocument(qname) match {
+              case Some(s) => documentType.document = s
+              case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s): platform document '%s' not found = %s".format(obj.name, attr.name, qname))
+            }
             if (attr.modelAssociation != null) { // entity document
-              for (d <- documentType.document) {
+              for (d <- Option(documentType.document)) {
                 d.participations += AttributeParticipation(obj, attr)
               }
             }
@@ -1044,14 +1048,20 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         op.in match {
           case Some(docType) => {
             val qname = make_Qualified_Name(docType.qualifiedName)
-            docType.document = findDocument(qname)
+            findDocument(qname) match {
+              case Some(s) => docType.document = s
+              case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s): platform operation input document '%s' not found = %s".format(obj.name, op.name, qname))
+            }
           }
           case None => {}
         }
         op.out match {
           case Some(docType) => {
             val qname = make_Qualified_Name(docType.qualifiedName)
-            docType.document = findDocument(qname)
+            findDocument(qname) match {
+              case Some(s) => docType.document = s
+              case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s): platform document output document '%s' not found = %s".format(obj.name, op.name, qname))
+            }
           }
           case None => {}
         }
