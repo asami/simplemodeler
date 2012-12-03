@@ -25,7 +25,7 @@ import org.goldenport.exporter.FirstLeafOrZipResultExporterClass
  *  version Sep. 25, 2012
  *  version Oct. 31, 2012
  *  version Nov. 30, 2012
- * @version Dec.  2, 2012
+ * @version Dec.  3, 2012
  * @auther  ASAMI, Tomoharu
  */
 class SimpleModeler(args: Array[String]) {
@@ -70,7 +70,7 @@ class AppMain extends xsbti.AppMain {
     new xsbti.Exit {
       val code = 0
     }
-  }    
+  }
 }
 
 object Main {
@@ -80,11 +80,10 @@ object Main {
   }
 }
 
-// TODO: append custom service feature
 class SimpleModelerDescriptor extends GApplicationDescriptor {
   name = "SimpleModeler"
   version = "0.4.0-RC5-SNAPSHOT"
-  version_build = "20121202"
+  version_build = "20121203"
   copyright_years = "2008-2012"
   copyright_owner = "ASAMI, Tomoharu"
   command_name = "sm"

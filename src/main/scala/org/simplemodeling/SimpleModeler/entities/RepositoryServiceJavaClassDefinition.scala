@@ -1,12 +1,13 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import com.asamioffice.goldenport.text.UJavaString
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.domain._
 import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov.  2, 2012
- * @version Dec.  1, 2012
+ * @version Dec.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class RepositoryServiceJavaClassDefinition(
@@ -134,61 +135,29 @@ protected %repository% repository;
     }
   }
 
+  override protected def object_auxiliary {
+    jm_public_method("String wadlDescription()") {
+      jm_return(wadl_description_literal(pobject))
+    }
+  }
+
+  private def wadl_description_literal(pobject: PObjectEntity): String = {
+    val entities = pContext.collectPlatform { // XXX package local
+      case x: PEntityEntity => x.documentEntity
+    }.flatten
+    val services = pContext.collectPlatform {  // XXX package local
+      case s: PServiceEntity => s
+    }
+    val a = wadl.WadlMaker(entities, services)(pContext).application
+    UJavaString.stringLiteral(a.toString)
+  }
+
 /*
-  override protected def package_methods_Actor(actor: SMDomainActor) {
-    package_methods_Entity(actor)
-  }
-
-  override protected def package_methods_Resource(resource: SMDomainResource) {
-    package_methods_Entity(resource)
-  }
-
-  override protected def package_methods_Event(event: SMDomainEvent) {
-    package_methods_Entity(event)
-  }
-
-  override protected def package_methods_Role(role: SMDomainRole) {
-    package_methods_Entity(role)
-  }
-
-  override protected def package_methods_Summary(summary: SMDomainSummary) {
-    package_methods_Entity(summary)
-  }
-
-  override protected def package_methods_AssociationEntity(assoc: SMDomainAssociationEntity) {
-    package_methods_Entity(assoc)
-  }
-
-  // XXX platform object
-  override protected def package_methods_Entity_Part(part: SMDomainEntityPart) {
-  }
-
-  // XXX platform object
-  override protected def package_methods_Powertype(powertype: SMDomainPowertype) {
-  }
-
-  // XXX platform object
-  override protected def package_methods_Id(id: SMDomainValueId) {
-  }
-
-  // XXX platform object
-  override protected def package_methods_Name(name: SMDomainValueName) {
-  }
-
-  // XXX platform object
-  override protected def package_methods_Value(value: SMDomainValue) {
-  }
-
-  // XXX platform object
-  override protected def package_methods_Document(document: SMDomainDocument) {
-  }
-
-  // XXX platform object
-  override protected def package_methods_Rule(rule: SMDomainRule) {
-  }
-
-  // XXX platform object
-  override protected def package_methods_Service(service: SMDomainService) {
+  **
+   * Used by RepositoryServiceJavaClassDefinition#wadl_description_literal.
+   *
+  protected def make_document_type(doc: PDocumentEntity): PDocumentEntity = {
+    
   }
 */
 }

@@ -28,7 +28,7 @@ import org.goldenport.recorder.Recordable
  *  version May.  6, 2012
  *  version Jun. 17, 2012
  *  version Nov. 29, 2012
- * @version Dec.  2, 2012
+ * @version Dec.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -599,16 +599,17 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       }
       if (useEntityDocument) {
         obj.documentName = make_entity_document_name(anObject)
-        make_entity_document(obj.documentName, anObject)
+        obj.documentEntity = make_entity_document(obj.documentName, anObject)
       }
     }
 
-    protected def make_entity_document(docName: String, modelObject: SMObject) = {
-      for (obj <- create_Document(null)) {
+    protected def make_entity_document(docName: String, modelObject: SMObject): Option[PDocumentEntity] = {
+      for (obj <- create_Document(null)) yield {
         val basename = modelObject.getBaseObject.map(make_document_name)
         val qname = basename.map((_, modelObject.packageName))
         val mixins = modelObject.traits.map(x => make_trait_document(x.mixinTrait))
         build_entity_document(obj, docName, modelObject, qname, mixins)
+        obj.asInstanceOf[PDocumentEntity]
       }
     }
 

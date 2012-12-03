@@ -20,7 +20,7 @@ import org.simplemodeling.dsl._
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
- * @version Dec.  1, 2012
+ * @version Dec.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -46,9 +46,16 @@ abstract class PObjectEntity(val pContext: PEntityContext)
    */
   var documentName = ""
   /**
+   * Sets in SimpleModel2ProgramRealmTransformerBase#build_entity.
+   * Used by RepositoryServiceJavaClassDefinition#wadl_description_literal
+   * to generate document description in wadl.
+   */
+  var documentEntity: Option[PDocumentEntity] = None
+  /**
    * Used when this object is package.
    */
   var serviceName = ""
+  var serviceEntity: Option[PServiceEntity] = None
   private val _attributes = new ArrayBuffer[PAttribute]
   private val _operations = new ArrayBuffer[POperation]
   val participations = new ArrayBuffer[PParticipation]

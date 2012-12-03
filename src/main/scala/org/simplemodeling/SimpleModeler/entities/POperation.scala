@@ -7,9 +7,11 @@ import org.simplemodeling.SimpleModeler.entity.SMOperation
  * 
  * @since   Apr. 23, 2009
  *  version Apr. 23, 2011
- * @version Nov. 12, 2012
+ *  version Nov. 12, 2012
+ * @version Dec.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class POperation(val name: String, val in: Option[PDocumentType], val out: Option[PDocumentType]) {
   var model: SMOperation = null
+  def uriName = model.uriName
 }

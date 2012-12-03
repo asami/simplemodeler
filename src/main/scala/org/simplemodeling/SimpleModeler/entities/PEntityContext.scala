@@ -16,7 +16,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
  *  version Nov. 27, 2012
- * @version Dec.  2, 2012
+ * @version Dec.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -399,6 +399,10 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
    */
   def xmlName(attr: PAttribute): String = {
     xmlName(attr.modelElement)
+  }
+
+  def xmlName(obj: PObjectEntity): String = {
+    xmlName(obj.modelObject)
   }
 
   def xmlName(modelElement: SMElement): String = {
