@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov.  2, 2012
- * @version Dec.  3, 2012
+ * @version Dec.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 class RepositoryServiceJavaClassDefinition(
@@ -17,6 +17,22 @@ class RepositoryServiceJavaClassDefinition(
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
   useDocument = false
 
+  /*
+   * public methods
+   */
+  def wadlElement = {
+    val entities = pContext.collectPlatform { // XXX package local
+      case x: PEntityEntity => x.documentEntity
+    }.flatten
+    val services = pContext.collectPlatform {  // XXX package local
+      case s: PServiceEntity => s
+    }
+    wadl.WadlMaker(entities, services)(pContext).application
+  }
+
+  /*
+   * Java Source
+   */
   override protected def head_imports_Extension {
     jm_import("org.simplemodeling.SimpleModeler.runtime.*")
     jm_import("org.simplemodeling.SimpleModeler.runtime.Request.*")
@@ -142,13 +158,7 @@ protected %repository% repository;
   }
 
   private def wadl_description_literal(pobject: PObjectEntity): String = {
-    val entities = pContext.collectPlatform { // XXX package local
-      case x: PEntityEntity => x.documentEntity
-    }.flatten
-    val services = pContext.collectPlatform {  // XXX package local
-      case s: PServiceEntity => s
-    }
-    val a = wadl.WadlMaker(entities, services)(pContext).application
+    val a = wadlElement
     UJavaString.stringLiteral(a.toString)
   }
 

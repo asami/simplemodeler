@@ -12,12 +12,18 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Nov.  2, 2012
- * @version Nov.  2, 2012
+ * @version Dec.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 class Java6RepositoryServiceEntity(aContext: Java6EntityContext) extends JavaObjectEntityBase(aContext) with PServiceEntity {
+  val klass = new RepositoryServiceJavaClassDefinition(aContext, Nil, Java6RepositoryServiceEntity.this)
+
+  def wadlElement = klass.wadlElement
+
+  /*
+   * Java Source
+   */
   override protected def write_Content(out: BufferedWriter) {
-    val klass = new RepositoryServiceJavaClassDefinition(aContext, Nil, Java6RepositoryServiceEntity.this)
     klass.build()
     out.append(klass.toText)
     out.flush
