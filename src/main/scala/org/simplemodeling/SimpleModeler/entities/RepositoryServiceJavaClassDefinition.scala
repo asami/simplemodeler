@@ -17,17 +17,22 @@ class RepositoryServiceJavaClassDefinition(
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
   useDocument = false
 
+  lazy val entities = pContext.collectPlatform { // XXX package local
+    case x: PEntityEntity => x.documentEntity
+  }.flatten
+  lazy val services = pContext.collectPlatform {  // XXX package local
+    case s: PServiceEntity => s
+  }
+
   /*
    * public methods
    */
   def wadlElement = {
-    val entities = pContext.collectPlatform { // XXX package local
-      case x: PEntityEntity => x.documentEntity
-    }.flatten
-    val services = pContext.collectPlatform {  // XXX package local
-      case s: PServiceEntity => s
-    }
     wadl.WadlMaker(entities, services)(pContext).application
+  }
+
+  def wadlSpec = {
+    wadl.WadlMaker(entities, services)(pContext).spec
   }
 
   /*

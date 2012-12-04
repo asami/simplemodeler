@@ -8,8 +8,8 @@ import org.simplemodeling.SimpleModeler.entity.domain._
 import org.simplemodeling.SimpleModeler.entities._
 
 /*
- * @version Dec.  2, 2012
- * @version Dec.  2, 2012
+ * @version Dec.  4, 2012
+ * @version Dec.  4, 2012
  * @author  ASAMI, Tomoharu
  */
 case class PRelaxngMaker(context: PEntityContext, doc: PDocumentEntity) {
@@ -22,7 +22,7 @@ case class PRelaxngMaker(context: PEntityContext, doc: PDocumentEntity) {
   }
 
   def attributes = {
-    val b = for (a <- doc.attributes) yield {
+    val b = for (a <- doc.wholeAttributes) yield {
       a.attributeType match {
         case v: PValueType => valueRef(a, v.value).some
         case d: PDocumentType => documentRef(a, d.document).some

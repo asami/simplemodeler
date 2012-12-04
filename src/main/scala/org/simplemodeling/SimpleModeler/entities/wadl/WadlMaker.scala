@@ -2,6 +2,7 @@ package org.simplemodeling.SimpleModeler.entities.wadl
 
 import scalaz._, Scalaz._
 import scala.xml.Elem
+import org.smartdox._
 import com.asamioffice.goldenport.text.UJavaString
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.domain._
@@ -10,10 +11,13 @@ import org.simplemodeling.SimpleModeler.entities.relaxng._
 
 /*
  * @since   Dec.  2, 2012
- * @version Dec.  3, 2012
+ * @version Dec.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 case class WadlMaker(entities: Seq[PDocumentEntity], services: Seq[PServiceEntity])(implicit context: PEntityContext) {
+  val entityMakers = entities.map(EntityMethodMaker(_))
+  val serviceMakers = services.map(ServiceMethodMaker(_))
+
   def application = {
     <application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://wadl.dev.java.net/2009/02 wadl.xsd"
@@ -27,18 +31,20 @@ case class WadlMaker(entities: Seq[PDocumentEntity], services: Seq[PServiceEntit
   def grammars = <grammars>{schemas}</grammars>
 
   def schemas = {
-    val a = entities.flatMap(EntityMethodMaker(_).schemas)
-    val b = services.flatMap(ServiceMethodMaker(_).schemas)
+    val a = entityMakers.flatMap(_.schemas)
+    val b = serviceMakers.flatMap(_.schemas)
     a ++ b // unify
   }
 
   def resources = <resources>{resourceElements}</resources>
 
-  def resourceElements = {
-    val a = entities.flatMap(EntityMethodMaker(_).resources)
-    val b = services.map(ServiceMethodMaker(_).resources)
+  def resourceElements: Seq[Elem] = {
+    val a = entityMakers.flatMap(_.resources)
+    val b = serviceMakers.flatMap(_.resources)
     a ++ b
   }
+
+  def spec = SpecMaker(this, entityMakers, serviceMakers).spec
 }
 
 abstract class MethodMaker(val context: PEntityContext) {
@@ -72,7 +78,7 @@ case class EntityMethodMaker(entity: PDocumentEntity)(implicit context: PEntityC
   def schemaName = "rng:" + context.xmlName(entity)
 
   def schemas: List[Elem] = {
-    entity.documentEntity.orEmpty[List].map(doc2rng_element)
+    doc2rng_element(entity).pure[List]
   }
 
   def resources: List[Elem] = {

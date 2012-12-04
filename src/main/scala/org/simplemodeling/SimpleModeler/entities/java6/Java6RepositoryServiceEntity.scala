@@ -19,6 +19,7 @@ class Java6RepositoryServiceEntity(aContext: Java6EntityContext) extends JavaObj
   val klass = new RepositoryServiceJavaClassDefinition(aContext, Nil, Java6RepositoryServiceEntity.this)
 
   def wadlElement = klass.wadlElement
+  def wadlSpec = klass.wadlSpec
 
   /*
    * Java Source
