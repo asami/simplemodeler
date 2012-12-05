@@ -15,7 +15,7 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
  *  version Apr. 11, 2012
  *  version Oct. 30, 2012
  *  version Nov. 24, 2012
- * @version Dec.  2, 2012
+ * @version Dec.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -94,6 +94,10 @@ abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
 
   def apply[T](f: Function1[PObjectType, T]): T = {
     f(this)
+  }
+
+  override def toString() = {
+    "PObjectType(" + objectTypeName + ")"
   }
 }
 

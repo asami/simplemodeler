@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov.  2, 2012
- * @version Dec.  4, 2012
+ * @version Dec.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 class RepositoryServiceJavaClassDefinition(
@@ -18,7 +18,7 @@ class RepositoryServiceJavaClassDefinition(
   useDocument = false
 
   lazy val entities = pContext.collectPlatform { // XXX package local
-    case x: PEntityEntity => x.documentEntity
+    case x: PEntityEntity if x.isId => x.documentEntity
   }.flatten
   lazy val services = pContext.collectPlatform {  // XXX package local
     case s: PServiceEntity => s

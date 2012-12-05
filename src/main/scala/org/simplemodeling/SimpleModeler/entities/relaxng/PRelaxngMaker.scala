@@ -8,8 +8,8 @@ import org.simplemodeling.SimpleModeler.entity.domain._
 import org.simplemodeling.SimpleModeler.entities._
 
 /*
- * @version Dec.  4, 2012
- * @version Dec.  4, 2012
+ * @since   Dec.  2, 2012
+ * @version Dec.  5, 2012
  * @author  ASAMI, Tomoharu
  */
 case class PRelaxngMaker(context: PEntityContext, doc: PDocumentEntity) {
@@ -25,10 +25,14 @@ case class PRelaxngMaker(context: PEntityContext, doc: PDocumentEntity) {
     val b = for (a <- doc.wholeAttributes) yield {
       a.attributeType match {
         case v: PValueType => valueRef(a, v.value).some
-        case d: PDocumentType => documentRef(a, d.document).some
+        case d: PDocumentType => documentRef(a, d.document)
         case d: PDataType => datatypeRef(a, d).some
         case p: PPowertypeType => powertypeRef(a, p.powertype).some
         case sm: PStateMachineType => statemachineRef(a, sm.statemachine).some
+        case x => {
+          context.record_warning("Illega object in document(%s) = %s".format(doc.name, x))
+          none
+        }
       }
     }
     b.flatten
@@ -39,7 +43,9 @@ case class PRelaxngMaker(context: PEntityContext, doc: PDocumentEntity) {
   }
   
   def documentRef(attr: PAttribute, doc: PDocumentEntity) = {
-    ref(attr)(PRelaxngMaker(context, doc).element)
+    // ref(attr)(PRelaxngMaker(context, doc).element)
+    // TODO reference to document
+    none
   }
 
   def datatypeRef(attr: PAttribute, dt: PDataType) = {
