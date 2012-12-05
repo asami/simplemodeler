@@ -1,6 +1,7 @@
 package org.simplemodeling.SimpleModeler.entities.wadl
 
 import scalaz._, Scalaz._
+import java.util.UUID
 import scala.xml.Elem
 import org.smartdox._
 import Doxes._
@@ -20,6 +21,8 @@ case class SpecMaker(
   entities: Seq[EntityMethodMaker],
   services: Seq[ServiceMethodMaker]
 )(implicit context: PEntityContext) {
+  private var _section_depth = 1
+
   def spec = {
     Document(head, body)
   }
@@ -36,23 +39,30 @@ case class SpecMaker(
   }
 
   def wadl_section = {
-    Section(
-      List(Text("WADL")),
+    section("WADL") {
       List(
         dox_program(wadl.application)
       )
-    )
+    }
   }
 
   def resource_section = {
-    Section(
-      dox_text("リソース"), // XXX
-      entities.flatMap(EntityResourceSpecMaker(_).spec).toList
-    )
+    section("リソース") {
+      entities.flatMap(EntityResourceSpecMaker(this, _).spec).toList
+    }
+  }
+
+  //
+  def section(title: String)(body: => List[Dox]): Section = {
+    val d = _section_depth
+    _section_depth += 1
+    val r = dox_section(d, title, body)
+    _section_depth -= 1
+    r
   }
 }
 
-case class EntityResourceSpecMaker(maker: EntityMethodMaker) {
+case class EntityResourceSpecMaker(context: SpecMaker, maker: EntityMethodMaker) {
   val entity = maker.entity
   def spec = {
     List(
@@ -62,8 +72,7 @@ case class EntityResourceSpecMaker(maker: EntityMethodMaker) {
   }
 
   def factory: Option[Dox] = {
-    Section(
-      factory_name,
+    context.section(factory_name) {
       List(
         factory_sheet,
         factory_path,
@@ -73,27 +82,28 @@ case class EntityResourceSpecMaker(maker: EntityMethodMaker) {
         factory_put,
         factory_delete
       ).flatten
-    ).some
+    }.some
   }
 
-  def factory_name = {
-    List(Text(entity.name))
-  }
+  def factory_name = entity.name
 
   def factory_sheet: Option[Dox] = {
-    dox_table(
+    dox_table_tuple(
       ("項目", "値"),
       List(
-        ("パス", "???"))).some
+        ("パス", "???")),
+      "諸元",
+      idgen).some
   }
+
+  def idgen = UUID.randomUUID.toString
 
   def factory_path: Option[Dox] = None
 
   def factory_description: Option[Dox] = {
-    dox_section(
-      "説明",
+    context.section("説明") {
       List()
-    ).some
+    }.some
   }
 
   def factory_get: Option[Dox] = {
@@ -101,14 +111,13 @@ case class EntityResourceSpecMaker(maker: EntityMethodMaker) {
   }
 
   def factory_post: Option[Dox] = {
-    dox_section(
-      "POST",
+    context.section("POST") {
       List(
         factory_post_sheet,
         factory_post_resource,
         factory_post_schema
       ).flatten
-    ).some
+    }.some
   }
 
   def factory_post_sheet: Option[Dox] = {
@@ -117,18 +126,16 @@ case class EntityResourceSpecMaker(maker: EntityMethodMaker) {
 
   def factory_post_resource: Option[Dox] = {
     val resources = maker.resources
-    dox_section(
-      "Resource",
+    context.section("Resource") {
       resources.map(dox_program)
-    ).some
+    }.some
   }
 
   def factory_post_schema: Option[Dox] = {
     val schemas = maker.schemas
-    dox_section(
-      "Schema",
+    context.section("Schema") {
       schemas.map(dox_program)
-    ).some
+    }.some
   }
 
   def factory_put: Option[Dox] = {
@@ -143,8 +150,7 @@ case class EntityResourceSpecMaker(maker: EntityMethodMaker) {
    * Instance
    */
   def instance: Option[Dox] = {
-    Section(
-      factory_name,
+    context.section(instance_name) {
       List(
         instance_sheet,
         instance_path,
@@ -154,10 +160,10 @@ case class EntityResourceSpecMaker(maker: EntityMethodMaker) {
         instance_put,
         instance_delete
       ).flatten
-    ).some
+    }.some
   }
 
-  def instance_name = dox_text(entity.name)
+  def instance_name = entity.name
 
   def instance_sheet: Option[Dox] = {
     none
