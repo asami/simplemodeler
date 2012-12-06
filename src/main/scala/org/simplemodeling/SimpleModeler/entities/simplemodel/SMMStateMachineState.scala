@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.builder._
 
 /*
  * @since   Nov. 13, 2012
- * @version Nov. 26, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMMStateMachineState(val name: String, val value: Option[String]) extends SMMElement {
@@ -19,7 +19,7 @@ object SMMStateMachineState {
   def create(entry: Seq[PropertyRecord]): SMMStateMachineState = {
     val name = NaturalLabel.getSlotName(entry) | "Unkonwn"
     val value = ValueLabel.findData(entry)
-    println("SMMStateMachineState#create(%s) = %s".format(name, value))
+//    println("SMMStateMachineState#create(%s) = %s".format(name, value))
     val k = new SMMStateMachineState(name, value)
     k.update(entry)
     k

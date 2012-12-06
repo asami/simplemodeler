@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Dec.  2, 2012
- * @version Dec.  5, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 case class PRelaxngMaker(context: PEntityContext, doc: PDocumentEntity) {
@@ -29,6 +29,7 @@ case class PRelaxngMaker(context: PEntityContext, doc: PDocumentEntity) {
         case d: PDataType => datatypeRef(a, d).some
         case p: PPowertypeType => powertypeRef(a, p.powertype).some
         case sm: PStateMachineType => statemachineRef(a, sm.statemachine).some
+        case e: PEntityType => documentRef(a, e.entity.documentEntity.get)
         case x => {
           context.record_warning("Illega object in document(%s) = %s".format(doc.name, x))
           none
@@ -87,9 +88,9 @@ case class PRelaxngMaker(context: PEntityContext, doc: PDocumentEntity) {
   def refAttributeOrElement(attr: PAttribute)(elem: => Elem): Elem = {
     val name = context.xmlName(attr)
     if (isXmlAttribute(attr)) {
-      <attribute name={name}>{ref(attr)(elem)}</attribute>
+      <rng:attribute name={name}>{ref(attr)(elem)}</rng:attribute>
     } else {
-      <element name={name}>{ref(attr)(elem)}</element>
+      <rng:element name={name}>{ref(attr)(elem)}</rng:element>
     }
   }
 

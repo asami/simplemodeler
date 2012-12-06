@@ -82,7 +82,7 @@ object Main {
 
 class SimpleModelerDescriptor extends GApplicationDescriptor {
   name = "SimpleModeler"
-  version = "0.4.0-RC5-SNAPSHOT"
+  version = "0.4.0-RC5"
   version_build = "20121206"
   copyright_years = "2008-2012"
   copyright_owner = "ASAMI, Tomoharu"

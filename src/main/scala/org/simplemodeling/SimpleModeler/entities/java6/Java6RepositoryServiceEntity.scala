@@ -16,7 +16,7 @@ import org.simplemodeling.SimpleModeler.entities._
  * @author  ASAMI, Tomoharu
  */
 class Java6RepositoryServiceEntity(aContext: Java6EntityContext) extends JavaObjectEntityBase(aContext) with PRepositoryServiceEntity {
-  val klass = new RepositoryServiceJavaClassDefinition(aContext, Nil, Java6RepositoryServiceEntity.this)
+  lazy val klass = new RepositoryServiceJavaClassDefinition(aContext, Nil, Java6RepositoryServiceEntity.this)
 
   def wadlElement = klass.wadlElement("", "")
   def wadlSpec(

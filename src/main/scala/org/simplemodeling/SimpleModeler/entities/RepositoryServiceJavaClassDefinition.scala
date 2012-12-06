@@ -17,7 +17,7 @@ class RepositoryServiceJavaClassDefinition(
   pobject: PObjectEntity
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
   useDocument = false
-
+//  println("RepositoryServiceJavaClassDefinition = " + pobject + "/" + pobject.packageName)
   lazy val entities = pContext.collectPlatform { // XXX package local
     case x: PEntityEntity if x.isId => x.documentEntity
   }.flatten

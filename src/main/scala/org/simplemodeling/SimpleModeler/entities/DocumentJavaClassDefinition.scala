@@ -6,7 +6,7 @@ import com.asamioffice.goldenport.text.UJavaString
  * @since   Jul.  6, 2011
  *  version Dec. 13, 2011
  *  version Nov. 21, 2012
- * @version Dec.  2, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class DocumentJavaClassDefinition(
@@ -42,8 +42,17 @@ class DocumentJavaClassDefinition(
     jm_public_method("String relaxngSchema()") {
       jm_return(relanx_schema_literal(pobject))
     }
+    jm_public_method("String sqlCreate()") {
+      jm_return(sql_create_literal(pobject))
+    }
     jm_public_method("String sqlSelect()") {
       jm_return(sql_select_literal(pobject))
+    }
+    jm_public_method("String sqlUpdate()") {
+      jm_return(sql_update_literal(pobject))
+    }
+    jm_public_method("String sqlDelete()") {
+      jm_return(sql_delete_literal(pobject))
     }
   }
 

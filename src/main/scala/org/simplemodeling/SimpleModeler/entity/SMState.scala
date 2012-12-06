@@ -13,7 +13,8 @@ import org.goldenport.sdoc.inline.SHelpRef
 /*
  * @since   Dec. 24, 2008
  *  version Mar. 19, 2009
- * @version Nov. 26, 2012
+ *  version Nov. 26, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  * ASAMI, Tomoharu
  */
@@ -36,7 +37,7 @@ class SMState(val dslState: SState, ownerStateMachine: SMStateMachine) extends S
     } else {
       v.parseInt.fold(_ => name.left, _.right)
     }
-    println("SMState: " + dslState + "/" + r)
+//    println("SMState: " + dslState + "/" + r)
     r
   }
 

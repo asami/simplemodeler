@@ -94,7 +94,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
- * @version Dec.  2, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1551,7 +1551,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     entities.get(name) match {
       case Some(p: DomainStateMachine) => p.right
       case Some(x) => "%sは状態機械ではありません。(参照元: %s)".format(x.name, this.name).left
-      case None => println(entities);Left("状態機械%sはみつかりません。(参照元: %s)".format(name, this.name))
+      case None => Left("状態機械%sはみつかりません。(参照元: %s)".format(name, this.name))
 
     }
   }
@@ -1683,7 +1683,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       val s = new DomainState(state.name, state.value)
       _build_specifications(s, state)
       _build_properties(s, state)
-      println("SMMEntityEntity#_build_statemachineStates: %s, %s, %s".format(s.name, s.value, s.label))
+//      println("SMMEntityEntity#_build_statemachineStates: %s, %s, %s".format(s.name, s.value, s.label))
       entity.state(s)
     }
   }

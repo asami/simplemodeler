@@ -8,14 +8,14 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Nov.  2, 2012
- * @version Nov. 27, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
   def context: PEntityContext
 
-  def ddl: String
-  def ddlLiteral: String
+  def create: String
+  def createLiteral: String
   def select: String
   def selectLiteral: String
   def update: String
@@ -35,12 +35,12 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
     a zip b
   }
 
-  def ddl = {
+  def create = {
     "create"
   }
 
-  def ddlLiteral = {
-    UJavaString.stringLiteral(ddl)
+  def createLiteral = {
+    UJavaString.stringLiteral(create)
   }
 
   def select = {
@@ -149,12 +149,12 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
 }
 
 class DocumentSqlMaker(val context: PEntityContext)(val document: PDocumentEntity) extends SqlMaker {
-  def ddl = {
+  def create = {
     "create"
   }
 
-  def ddlLiteral = {
-    UJavaString.stringLiteral(ddl)
+  def createLiteral = {
+    UJavaString.stringLiteral(create)
   }
 
   def select = {
