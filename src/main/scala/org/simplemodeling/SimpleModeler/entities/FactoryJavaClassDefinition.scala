@@ -9,7 +9,8 @@ import scala.collection.mutable.ArrayBuffer
 /*
  * @since   Jul. 13, 2011
  *  version Aug. 26, 2011
- * @version Dec. 13, 2011
+ *  version Dec. 13, 2011
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class FactoryJavaClassDefinition(
@@ -74,6 +75,10 @@ private Injector injector;
 
   override protected def package_methods_Summary(summary: SMDomainSummary) {
     package_methods_Entity(summary)
+  }
+
+  override protected def package_methods_AssociationEntity(assoc: SMDomainAssociationEntity) {
+    package_methods_Entity(assoc)
   }
 
   override protected def package_methods_Entity(entity: SMDomainEntity) {

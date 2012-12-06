@@ -1,0 +1,21 @@
+#+title: Association Entity
+
+* Association
+
+** Typical
+
+NxN association.
+
+#+caption: Association
+| name   | type   | multiplicity | description                    |
+|--------+--------+--------------+--------------------------------|
+| person | Person | *            | multiple association to Person |
+| circle | Circle | *            | multiple association to Circle |
+
+* Actor
+
+** Person
+
+* Resource
+
+** Circle

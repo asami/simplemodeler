@@ -11,7 +11,7 @@ import java.util.TimeZone
  * Java Class Operation Definition
  * 
  * @since   Nov. 12, 2012
- * @version Nov. 12, 2012
+ * @version Dec.  1, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassOperationDefinition(
@@ -24,7 +24,7 @@ class JavaClassOperationDefinition(
   jm_open(jmaker, aspects)
 
   private def _dt2docname(t: PDocumentType): String = {
-    t.document.fold(_.name, "UnknownDocument-" + t.name)
+    Option(t.document).fold(_.name, "UnknownDocument-" + t.name)
   }
 
   val methodname = op.name

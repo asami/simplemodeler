@@ -6,7 +6,7 @@ import org.goldenport.sdoc.inline._
 
 /*
  * @since   Nov. 14, 2012
- * @version Nov. 15, 2012
+ * @version Nov. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -18,4 +18,6 @@ class SMStateMachineRelationship(val dslStateMachineRelationship: SStateMachineR
    * Used by SimpleModelEntity#resolve_stateMachines.
    */
   def statemachine: SMStateMachine = relationshipType.typeObject.asInstanceOf[SMStateMachine]
+
+  def isEntityReference = false
 }

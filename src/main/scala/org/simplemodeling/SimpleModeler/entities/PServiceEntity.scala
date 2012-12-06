@@ -10,7 +10,8 @@ import com.asamioffice.goldenport.text.{AppendableTextBuilder, TextBuilder, UStr
 // derived from GaejServiceEntity since Apr. 23, 2009.
 /*
  * @since   Apr. 23, 2011
- * @version Aug. 20, 2011
+ *  version Aug. 20, 2011
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 trait PServiceEntity extends PObjectEntity {
@@ -80,3 +81,6 @@ public class %serviceName% {
     }
   }
 }
+
+trait PRepositoryServiceEntity extends PServiceEntity
+trait PEventServiceEntity extends PServiceEntity

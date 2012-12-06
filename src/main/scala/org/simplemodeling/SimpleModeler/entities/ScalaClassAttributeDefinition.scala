@@ -11,7 +11,7 @@ import org.simplemodeling.dsl._
  * @since   Aug. 19, 2011
  *  version Feb. 20, 2012
  *  version May.  6, 2012
- * @version Nov. 20, 2012
+ * @version Nov. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassAttributeDefinition(
@@ -23,7 +23,7 @@ class ScalaClassAttributeDefinition(
   sm_open(smaker, aspects)
 
   override protected def head_imports_Extension {
-    sm_import("org.json.*")
+//    sm_import("org.json.*")
   }
 
   override def constant_property {

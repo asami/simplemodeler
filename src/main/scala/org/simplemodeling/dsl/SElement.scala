@@ -1,10 +1,14 @@
 package org.simplemodeling.dsl
 
+import util.PropertyRecord
+
 /*
  * derived from ModelElement since Mar. 18, 2007
  *
  * @since   Sep. 21, 2008
- * @version Jul. 19, 2009
+ *  version Jul. 19, 2009
+ *  version Nov. 26, 2012
+ * @version Dec.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SElement(aName: String) extends SDescriptable with SHistoriable {
@@ -91,6 +95,27 @@ abstract class SElement(aName: String) extends SDescriptable with SHistoriable {
     term_ja = aTerm;
     return this;
   }
+
+  var properties: Seq[PropertyRecord] = Nil
+
+  /*
+   * XML
+   */
+  var uriName: String = ""
+  var xmlName: String = ""
+
+  /*
+   * GUI
+   */
+  var naviLabel: String = ""
+  var tabLabel: String = ""
+
+  /*
+   * SQL
+   */
+  var sqlTableName: String = ""
+  var sqlColumnName: String = ""
+//  var sqlDataType: String = ""
 
   // XXX planning stuff
 

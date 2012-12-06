@@ -12,7 +12,7 @@ import java.util.TimeZone
  *  version Aug. 19, 2011
  *  version Feb. 19, 2012
  *  version May.  6, 2012
- * @version Nov. 16, 2012
+ * @version Nov. 23, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -185,11 +185,13 @@ abstract class GenericClassAttributeDefinition(
   }
 
   final protected def persistent_type() = {
-    attr.jdoTypeName
+//    attr.jdoTypeName
+    attr.jpaTypeName
   }
 
   final protected def persistent_element_type() = {
-    attr.jdoElementTypeName
+//    attr.jdoElementTypeName
+    attr.jpaElementTypeName
   }
 
   final protected def java_doc_type() = {

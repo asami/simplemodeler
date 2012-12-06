@@ -13,11 +13,13 @@ import org.simplemodeling.SimpleModeler.entities.gaej.GaejUtil._
  * @since   Apr. 23, 2011
  *  version Aug. 20, 2011
  *  version Apr.  8, 2012
- * @version Nov. 18, 2012
+ * @version Nov. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 trait PPowertypeEntity extends PObjectEntity {
   var modelPowertype: SMPowertype = null
+
+  def kinds = modelPowertype.kinds.map(PPowertypeKind.create)
 
   private def first_kind = modelPowertype.kinds.firstOption match {
     case Some(kind) => kind.name

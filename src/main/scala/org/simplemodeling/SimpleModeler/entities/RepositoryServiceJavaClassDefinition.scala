@@ -1,12 +1,14 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import scalaz._, Scalaz._
+import com.asamioffice.goldenport.text.UJavaString
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.domain._
 import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov.  2, 2012
- * @version Nov. 19, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class RepositoryServiceJavaClassDefinition(
@@ -15,7 +17,33 @@ class RepositoryServiceJavaClassDefinition(
   pobject: PObjectEntity
 ) extends JavaClassDefinition(pContext, aspects, pobject) {
   useDocument = false
+//  println("RepositoryServiceJavaClassDefinition = " + pobject + "/" + pobject.packageName)
+  lazy val entities = pContext.collectPlatform { // XXX package local
+    case x: PEntityEntity if x.isId => x.documentEntity
+  }.flatten
+  lazy val events = pContext.collectPlatform { // XXX package local
+    case x: PEntityEntity if x.isEvent => x
+  }
+  lazy val services = pContext.collectPlatform {  // XXX package local
+    case _: PRepositoryServiceEntity => None
+    case _: PEventServiceEntity => None
+    case s: PServiceEntity => s.some
+  }.flatten
 
+  /*
+   * public methods
+   */
+  def wadlElement(title: String, subtitle: String, author: String = null, date: String = null) = { // XXX events, services
+    wadl.WadlMaker(title, subtitle, entities, events, services, author, date)(pContext).application
+  }
+
+  def wadlSpec(title: String, subtitle: String, author: String = null, date: String = null) = { // XXX events, services
+    wadl.WadlMaker(title, subtitle, entities, events, services, author, date)(pContext).spec
+  }
+
+  /*
+   * Java Source
+   */
   override protected def head_imports_Extension {
     jm_import("org.simplemodeling.SimpleModeler.runtime.*")
     jm_import("org.simplemodeling.SimpleModeler.runtime.Request.*")
@@ -33,26 +61,6 @@ protected %context% context;
 @Inject
 protected %repository% repository;
 """, Map("%context%" -> contextName, "%repository%" -> repositoryName))
-  }
-
-  override protected def package_methods_Actor(actor: SMDomainActor) {
-    package_methods_Entity(actor)
-  }
-
-  override protected def package_methods_Resource(resource: SMDomainResource) {
-    package_methods_Entity(resource)
-  }
-
-  override protected def package_methods_Event(event: SMDomainEvent) {
-    package_methods_Entity(event)
-  }
-
-  override protected def package_methods_Role(role: SMDomainRole) {
-    package_methods_Entity(role)
-  }
-
-  override protected def package_methods_Summary(summary: SMDomainSummary) {
-    package_methods_Entity(summary)
   }
 
   override protected def package_methods_platform_Entity(entity: PEntityEntity) {
@@ -154,35 +162,23 @@ protected %repository% repository;
     }
   }
 
-  // XXX platform object
-  override protected def package_methods_Entity_Part(part: SMDomainEntityPart) {
+  override protected def object_auxiliary {
+    jm_public_method("String wadlDescription()") {
+      jm_return(wadl_description_literal(pobject))
+    }
   }
 
-  // XXX platform object
-  override protected def package_methods_Powertype(powertype: SMDomainPowertype) {
+  private def wadl_description_literal(pobject: PObjectEntity): String = {
+    val a = wadlElement("", "")
+    UJavaString.stringLiteral(a.toString)
   }
 
-  // XXX platform object
-  override protected def package_methods_Id(id: SMDomainValueId) {
+/*
+  **
+   * Used by RepositoryServiceJavaClassDefinition#wadl_description_literal.
+   *
+  protected def make_document_type(doc: PDocumentEntity): PDocumentEntity = {
+    
   }
-
-  // XXX platform object
-  override protected def package_methods_Name(name: SMDomainValueName) {
-  }
-
-  // XXX platform object
-  override protected def package_methods_Value(value: SMDomainValue) {
-  }
-
-  // XXX platform object
-  override protected def package_methods_Document(document: SMDomainDocument) {
-  }
-
-  // XXX platform object
-  override protected def package_methods_Rule(rule: SMDomainRule) {
-  }
-
-  // XXX platform object
-  override protected def package_methods_Service(service: SMDomainService) {
-  }
+*/
 }

@@ -12,7 +12,9 @@ import org.simplemodeling.dsl.datatype.ext._
  *
  * @since   Sep. 10, 2008
  *  version Sep. 18, 2011
- * @version Oct. 21, 2012
+ *  version Oct. 21, 2012
+ *  version Nov. 22, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) {
@@ -62,12 +64,12 @@ abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) 
    * Used by Atom Feed.
    * 
    */
-  var title: String = ""
+  // var title: String = ""
 
   /**
    * Used by Atom Feed.
    */
-  var subtitle : String = ""
+  // var subtitle : String = ""
 
   /**
    * Used by Atom Feed.
@@ -132,6 +134,7 @@ abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) 
   var isMasterSingleton = true
 
   var xmlNamespace: String = null
+  var xmlElementName: String = null
   var baseObject: SObject = NullObject
   val mixinTrait = new STraitSet
 
@@ -198,10 +201,8 @@ abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) 
     association.create(aName, anEntity, aMultiplicity) composition_is true
   }
 
-  def getXmlNamespace: Option[String] = xmlNamespace match {
-    case null => None
-    case _ => Some(xmlNamespace)
-  }
+  def getXmlNamespace: Option[String] = Option(xmlNamespace)
+  def getXmlElementName: Option[String] = Option(xmlElementName)
   def getTraits = mixinTrait.traits
   def getPowertypes = powertype.powertypes
   def getAttributes = attribute.attributes

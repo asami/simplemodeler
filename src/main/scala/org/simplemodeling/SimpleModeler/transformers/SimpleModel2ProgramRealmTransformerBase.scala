@@ -27,7 +27,8 @@ import org.goldenport.recorder.Recordable
  * @since   Apr.  7, 2012
  *  version May.  6, 2012
  *  version Jun. 17, 2012
- * @version Nov. 21, 2012
+ *  version Nov. 29, 2012
+ * @version Dec.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -75,6 +76,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     if (isMakeProject) {
       make_Project()
     }
+    _remove_unused_entities
     simpleModel.close()
     target_realm ensuring(_.isOpened)
   }
@@ -92,12 +94,20 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
   protected def make_Project() {
   }
 
-  protected def make_PackageName(obj: SMObject): String = {
-    obj.packageName
+  protected def make_Package_Name(obj: SMObject): String = {
+    make_Package_Name(obj.packageName)
   }
 
-  protected def make_PackageName(pkg: SMPackage): String = {
-    pkg.qualifiedName
+  protected def make_Package_Name(pkg: SMPackage): String = {
+    make_Package_Name(pkg.qualifiedName)
+  }
+
+  protected def make_Package_Name(qname: String): String = {
+    qname
+  }
+
+  protected def make_Qualified_Name(qname: String): String = {
+    qname
   }
 
   abstract class BuilderBase extends GTreeVisitor[SMElement] { 
@@ -108,6 +118,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     type DomainEventTYPE = PEntityObjectEntity
     type DomainRoleTYPE = PEntityObjectEntity
     type DomainSummaryTYPE = PEntityObjectEntity
+    type DomainAssociationEntityTYPE = PEntityObjectEntity
     type DomainEntityTYPE = PEntityObjectEntity
     type DomainEntityPartTYPE = PEntityPartEntity
     type DomainValueIdTYPE = PValueEntity
@@ -132,6 +143,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         case event: SMDomainEvent => transform_Event(event)
         case role: SMDomainRole => transform_Role(role)
         case summary: SMDomainSummary => transform_Summary(summary)
+        case assoc: SMDomainAssociationEntity => transform_AssociationEntity(assoc)
         case entity: SMDomainEntity => transform_Entity(entity)
         case part: SMDomainEntityPart => transform_Entity_Part(part)
         case id: SMDomainValueId => transform_Id(id)
@@ -176,9 +188,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Actors(entity: SMDomainActor, po: DomainActorTYPE): List[PObjectEntity] = {
-      make_Entities(entity, po)
-    }
+    protected def make_Actors(entity: SMDomainActor, po: DomainActorTYPE): List[PObjectEntity] = Nil
 
     protected def transform_Resource(resource: SMDomainResource): DomainResourceTYPE = {
       val obj = create_Resource(resource)
@@ -191,9 +201,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Resources(entity: SMDomainResource, po: DomainResourceTYPE): List[PObjectEntity] = {
-      make_Entities(entity, po)
-    }
+    protected def make_Resources(entity: SMDomainResource, po: DomainResourceTYPE): List[PObjectEntity] = Nil
 
     protected def transform_Event(event: SMDomainEvent): DomainEventTYPE = {
       val obj = create_Event(event)
@@ -206,9 +214,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Events(entity: SMDomainEvent, po: DomainEventTYPE): List[PObjectEntity] = {
-      make_Entities(entity, po)
-    }
+    protected def make_Events(entity: SMDomainEvent, po: DomainEventTYPE): List[PObjectEntity] = Nil
 
     protected def transform_Role(role: SMDomainRole): DomainRoleTYPE = {
       val obj = create_Role(role)
@@ -221,9 +227,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(role)
     }
 
-    protected def make_Roles(entity: SMDomainRole, po: DomainRoleTYPE): List[PObjectEntity] = {
-      make_Entities(entity, po)
-    }
+    protected def make_Roles(entity: SMDomainRole, po: DomainRoleTYPE): List[PObjectEntity] = Nil
 
     protected def transform_Summary(summary: SMDomainSummary): DomainSummaryTYPE = {
       val obj = create_Summary(summary)
@@ -236,9 +240,20 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Summarys(entity: SMDomainSummary, po: DomainSummaryTYPE): List[PObjectEntity] = {
-      make_Entities(entity, po)
+    protected def make_Summarys(entity: SMDomainSummary, po: DomainSummaryTYPE): List[PObjectEntity] = Nil
+
+    protected def transform_AssociationEntity(assoc: SMDomainAssociationEntity): DomainAssociationEntityTYPE = {
+      val obj = create_AssociationEntity(assoc)
+      build_entity(obj, assoc)
+      make_AssociationEntities(assoc, obj).foreach(build_derived_object(assoc, obj))
+      obj
     }
+
+    protected def create_AssociationEntity(entity: SMDomainAssociationEntity): DomainAssociationEntityTYPE = {
+      create_Entity(entity)
+    }
+
+    protected def make_AssociationEntities(entity: SMDomainAssociationEntity, po: DomainAssociationEntityTYPE): List[PObjectEntity] = Nil
 
     protected def transform_Entity(entity: SMDomainEntity): DomainEntityTYPE = {
       val obj = create_Entity(entity)
@@ -274,9 +289,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       }
     }
 
-    protected def create_Powertype(entity: SMDomainPowertype): Option[DomainPowertypeTYPE] = {
-      throw new UnsupportedOperationException
-    }
+    protected def create_Powertype(entity: SMDomainPowertype): Option[DomainPowertypeTYPE] = None
 
     protected def make_Powertypes(entity: SMDomainPowertype, po: DomainPowertypeTYPE): List[PObjectEntity] = Nil
 
@@ -288,9 +301,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       }
     }
 
-    protected def create_StateMachine(entity: SMDomainStateMachine): Option[DomainStateMachineTYPE] = {
-      throw new UnsupportedOperationException
-    }
+    protected def create_StateMachine(entity: SMDomainStateMachine): Option[DomainStateMachineTYPE] = None
 
     protected def make_StateMachines(entity: SMDomainStateMachine, po: DomainStateMachineTYPE): List[PObjectEntity] = Nil
 
@@ -588,23 +599,24 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       }
       if (useEntityDocument) {
         obj.documentName = make_entity_document_name(anObject)
-        make_entity_document(obj.documentName, anObject)
+        obj.documentEntity = make_entity_document(obj.documentName, anObject)
       }
     }
 
-    protected def make_entity_document(docName: String, modelObject: SMObject) = {
-      for (obj <- create_Document(null)) {
+    protected def make_entity_document(docName: String, modelObject: SMObject): Option[PDocumentEntity] = {
+      for (obj <- create_Document(null)) yield {
         val basename = modelObject.getBaseObject.map(make_document_name)
         val qname = basename.map((_, modelObject.packageName))
         val mixins = modelObject.traits.map(x => make_trait_document(x.mixinTrait))
-        build_object_with_name(obj, docName, modelObject, qname, mixins)
+        build_entity_document(obj, docName, modelObject, qname, mixins)
+        obj.asInstanceOf[PDocumentEntity]
       }
     }
 
     protected def make_trait_document(modelObject: SMObject): SMDomainTrait = {
 //      println("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + modelObject.attributes)
       val docname = make_document_name(modelObject)
-      val pkgname = modelObject.packageName
+      val pkgname = make_Package_Name(modelObject.packageName)
       val mo = SMDomainTrait.createDocument(docname, pkgname, modelObject)
       record_trace("SimpleModel2ProgramRealmTransformerBase#make_trait_document: " + mo.attributes)
       findObject(docname, pkgname) match {
@@ -628,13 +640,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     private def make_entity_service(serviceName: String, modelPkg: SMPackage) = {
       for (obj <- create_Service(null)) {
         obj.name = serviceName
-        obj.term = modelPkg.term // XXX
-        obj.term_en = modelPkg.term_en // XXX
-        obj.term_ja = modelPkg.term_ja // XXX
         obj.asciiName = target_context.asciiName(modelPkg)
         obj.uriName = target_context.uriName(modelPkg)
         obj.classNameBase = target_context.classNameBase(modelPkg)
-        obj.setKindedPackageName(make_PackageName(modelPkg))
+        obj.setKindedPackageName(make_Package_Name(modelPkg))
         obj.xmlNamespace = modelPkg.xmlNamespace
         obj.modelPackage = Some(modelPkg)
         // XXX
@@ -644,43 +653,60 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     protected def build_object(obj: PObjectEntity, modelObject: SMObject) = {
       val basename = modelObject.getBaseObject.map(make_class_name)
-      val qname = basename.map((_, modelObject.packageName))
+      val qname = basename.map((_, make_Package_Name(modelObject.packageName)))
       val mixins = modelObject.traits.map(_.mixinTrait)
       build_object_with_name(obj, make_object_name(modelObject.name), modelObject, qname, mixins)
     }
 
     protected def build_object_with_name(obj: PObjectEntity, name: String, modelObject: SMObject, basename: Option[(String, String)], mixins: Seq[SMTrait]) = {
       obj.name = name
-      obj.term = modelObject.term
-      obj.term_en = modelObject.term_en
-      obj.term_ja = modelObject.term_ja
       obj.asciiName = target_context.asciiName(modelObject)
       obj.uriName = target_context.uriName(modelObject)
       obj.classNameBase = target_context.classNameBase(modelObject)
-      obj.setKindedPackageName(make_PackageName(modelObject))
+      obj.setKindedPackageName(make_Package_Name(modelObject))
       obj.xmlNamespace = modelObject.xmlNamespace
       obj.modelObject = modelObject
       for ((n, p) <- basename) {
         obj.setKindedBaseObjectType(n, p)
       }
       for (tr <- mixins) {
-        obj.addKindedTraitObjectType(make_class_name(tr), tr.packageName)
+        obj.addKindedTraitObjectType(make_class_name(tr), make_Package_Name(tr.packageName))
       }
       build_properties(obj, modelObject)
       store_object(obj)
     }
 
-
-    private def build_derived_object(modelObject: SMObject, source: PObjectEntity)(obj: PObjectEntity) = {
-      obj.modelObject = modelObject
-      obj.sourcePlatformObject = Some(source)
-      obj.term = modelObject.term
-      obj.term_en = modelObject.term_en
-      obj.term_ja = modelObject.term_ja
+    /**
+     * Build for document drived from entity.
+     */
+    protected def build_entity_document(obj: PObjectEntity, name: String, modelObject: SMObject, basename: Option[(String, String)], mixins: Seq[SMTrait]) = {
+      obj.name = name
       obj.asciiName = target_context.asciiName(modelObject)
       obj.uriName = target_context.uriName(modelObject)
       obj.classNameBase = target_context.classNameBase(modelObject)
-      obj.setKindedPackageName(make_PackageName(modelObject))
+      obj.setKindedPackageName(make_Package_Name(modelObject))
+      obj.xmlNamespace = modelObject.xmlNamespace
+      obj.modelObject = modelObject
+      for ((n, p) <- basename) {
+        obj.setKindedBaseObjectType(n, p)
+      }
+      for (tr <- mixins) {
+        obj.addKindedTraitObjectType(make_class_name(tr), make_Package_Name(tr.packageName))
+      }
+      build_properties_entity_document(obj, modelObject)
+      store_object(obj)
+    }
+
+    /**
+     * Used for service and rule.
+     */
+    private def build_derived_object(modelObject: SMObject, source: PObjectEntity)(obj: PObjectEntity) = {
+      obj.modelObject = modelObject
+      obj.sourcePlatformObject = Some(source)
+      obj.asciiName = target_context.asciiName(modelObject)
+      obj.uriName = target_context.uriName(modelObject)
+      obj.classNameBase = target_context.classNameBase(modelObject)
+      obj.setKindedPackageName(make_Package_Name(modelObject))
       obj.xmlNamespace = modelObject.xmlNamespace
       obj.modelObject = modelObject
 /* XXX
@@ -708,6 +734,14 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       anObject.operations.foreach(build_operation(obj, _))
     }
 
+    private def build_properties_entity_document(obj: PObjectEntity, anObject: SMObject) {
+      anObject.powertypes.foreach(build_powertype(obj, _))
+      anObject.stateMachines.foreach(build_statemachine(obj, _))
+      anObject.attributes.foreach(build_attribute(obj, _))
+      anObject.associations.foreach(build_association_entity_document(obj, _))
+      anObject.operations.foreach(build_operation(obj, _))
+    }
+
     private def build_attribute(aObj: PObjectEntity, anAttr: SMAttribute) {
       val attr = make_attribute(anAttr.name, object_type(anAttr))
       build_attribute(attr, anAttr)
@@ -719,6 +753,13 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     private def build_association(aObj: PObjectEntity, anAssoc: SMAssociation) {
       val attr = make_attribute(anAssoc.name, object_type(anAssoc))
+      aObj.addAttribute(attr)
+      attr.multiplicity = get_multiplicity(anAssoc.multiplicity)
+      attr.modelAssociation = anAssoc
+    }
+
+    private def build_association_entity_document(aObj: PObjectEntity, anAssoc: SMAssociation) {
+      val attr = make_attribute(anAssoc.name, object_type_entity_document(anAssoc))
       aObj.addAttribute(attr)
       attr.multiplicity = get_multiplicity(anAssoc.multiplicity)
       attr.modelAssociation = anAssoc
@@ -811,7 +852,19 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       val assocType = anAssoc.associationType
       val name = make_object_name(assocType.name)
       // PEntityType serves PEntityPartType
-      new PEntityType(name, assocType.packageName)
+      new PEntityType(name, make_Package_Name(assocType.packageName))
+    }
+
+    /**
+     * In old implementation, DocumentJavaClassAttributeDefinition handles
+     * PEntityType specially to convert document reference instead of entity reference.
+     * This method override this special handling to convert document reference
+     * in platform object conversion.
+     */
+    private def object_type_entity_document(anAssoc: SMAssociation): PObjectType = {
+      val assocType = anAssoc.associationType
+      val name = make_entity_document_name(assocType.typeObject)
+      new PDocumentType(name, make_Package_Name(assocType.packageName))
     }
 
     private def object_type(aPowertype: SMPowertypeRelationship): PObjectType = {
@@ -819,7 +872,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       record_trace("SimpleModel2ProgramRealmTransformerBase#object_type: powertype = " + powertype.name)
       val name = make_object_name(powertype.name)
       record_trace("SimpleModel2ProgramRealmTransformerBase#object_type: powertype name = " + name)
-      val objectType = new PPowertypeType(name, powertype.packageName)
+      val objectType = new PPowertypeType(name, make_Package_Name(powertype.packageName))
       objectType
     }
 
@@ -828,7 +881,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       record_trace("SimpleModel2ProgramRealmTransformerBase#object_type: statemachine = " + statemachine.name)
       val name = make_object_name(statemachine.name)
       record_trace("SimpleModel2ProgramRealmTransformerBase#object_type: statemachine name = " + name)
-      val objectType = new PStateMachineType(name, statemachine.packageName)
+      val objectType = new PStateMachineType(name, make_Package_Name(statemachine.packageName))
       objectType
     }
 
@@ -910,7 +963,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     def resolve_base(obj: PObjectEntity) {
       obj.getBaseObjectType match {
         case Some(base) => {
-          base.reference = getObject(base.qualifiedName)
+//          val qname = make_Package_Name(base.qualifiedName)
+          val qname = base.qualifiedName
+          base.reference = getObject(qname)
+          base.reference.participations += BaseParticipation(obj)
         }
         case None => {}
       }
@@ -918,7 +974,15 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
     def resolve_traits(obj: PObjectEntity) {
       for (tt <- obj.getTraitObjectTypes) {
-        tt.reference = getObject(tt.qualifiedName)
+        val qname = make_Qualified_Name(tt.qualifiedName)
+        findObject(qname) match {
+          case Some(s) => {
+            tt.reference = s
+            tt.reference.participations += TraitParticipation(obj)
+          }
+          // some generator does not use platform trait.
+          case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_traits(%s): platform trait not found = %s".format(obj.name, tt.qualifiedName))
+        }
       }
     }
 
@@ -930,24 +994,45 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s) = %s / %s".format(obj.name, attr.name, attr.getModelElement))
         attr.attributeType match {
           case entityType: PEntityType => {
-            entityType.entity = getModelEntity(entityType.qualifiedName)
+            val qname = make_Qualified_Name(entityType.qualifiedName)
+            entityType.entity = getModelEntity(qname)
+            entityType.entity.participations += AttributeParticipation(obj, attr)
           }
 //          case partType: PEntityPartType => {
 //            partType.part = getPart(partType.qualifiedName)
 //          }
           case powertypeType: PPowertypeType => {
             if (usePowertype) {
-              powertypeType.powertype = getPowertype(powertypeType.qualifiedName)
+              val qname = make_Qualified_Name(powertypeType.qualifiedName)
+              findPowertype(qname) match {
+                case Some(s) => powertypeType.powertype = s
+                // some generator does not use platform trait.
+                case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s): platform powertype '%s' not found = %s".format(obj.name, attr.name, qname))
+              }
             }
           }
           case smType: PStateMachineType => {
             if (usePowertype) {
-              record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes powertype: " + smType.qualifiedName)
-              smType.statemachine = getStateMachine(smType.qualifiedName)
+              record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes statemachine: " + smType.qualifiedName)
+              val qname = make_Qualified_Name(smType.qualifiedName)
+              findStateMachine(qname) match {
+                case Some(s) => smType.statemachine = s
+                // some generator does not use platform trait.
+                case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s): platform state machine '%s' not found = %s".format(obj.name, attr.name, qname))
+              }
             }
           }
           case documentType: PDocumentType => {
-            documentType.document = findDocument(documentType.qualifiedName)
+            val qname = make_Qualified_Name(documentType.qualifiedName)
+            findDocument(qname) match {
+              case Some(s) => documentType.document = s
+              case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s): platform document '%s' not found = %s".format(obj.name, attr.name, qname))
+            }
+            if (attr.modelAssociation != null) { // entity document
+              for (d <- Option(documentType.document)) {
+                d.participations += AttributeParticipation(obj, attr)
+              }
+            }
           }
           case valueType: PValueType => {
             if (useValue) {
@@ -963,13 +1048,21 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       for (op <- obj.operations) {
         op.in match {
           case Some(docType) => {
-            docType.document = findDocument(docType.qualifiedName)
+            val qname = make_Qualified_Name(docType.qualifiedName)
+            findDocument(qname) match {
+              case Some(s) => docType.document = s
+              case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s): platform operation input document '%s' not found = %s".format(obj.name, op.name, qname))
+            }
           }
           case None => {}
         }
         op.out match {
           case Some(docType) => {
-            docType.document = findDocument(docType.qualifiedName)
+            val qname = make_Qualified_Name(docType.qualifiedName)
+            findDocument(qname) match {
+              case Some(s) => docType.document = s
+              case None => record_trace("SimpleModel2ProgramRealmTransformerBase#resolve_attributes(%s): platform document output document '%s' not found = %s".format(obj.name, op.name, qname))
+            }
           }
           case None => {}
         }
@@ -1071,5 +1164,18 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     (qname.split("[.]").toList.reverse match {
       case (x :: xs) => x :: kind :: xs
     }).reverse.mkString(".")
+  }
+
+  private def _remove_unused_entities {
+    _remove_unused_entities(target_realm.root)
+  }
+
+  private def _remove_unused_entities(node: GTreeContainerEntityNode) {
+    val cs = node.children.toList
+    for (c <- cs) {
+      if (c.content == null) _remove_unused_entities(c)
+      else if (c.content.isCommitable) _remove_unused_entities(c)
+      else node.removeChild(c)
+    }
   }
 }

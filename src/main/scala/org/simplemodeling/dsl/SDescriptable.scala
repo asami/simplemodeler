@@ -4,12 +4,16 @@ import org.goldenport.sdoc._
 
 /*
  * @since   Sep. 15, 2008
- * @version Aug.  8, 2009
+ *  version Aug.  8, 2009
+ * @version Nov. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SDescriptable {
   type Descriptable_TYPE
   val resume = new SSummary
+  var title: SDoc = SEmpty
+  var subtitle: SDoc = SEmpty
+  var label: SDoc = SEmpty
   private var _description: SDoc = SEmpty
   private var _note: SDoc = SEmpty
 

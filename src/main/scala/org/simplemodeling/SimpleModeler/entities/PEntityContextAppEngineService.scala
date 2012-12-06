@@ -13,7 +13,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  * derived from GaejEntityContext since Apr. 11, 2009
  * 
  * @since   Nov.  2, 2012
- * @version Nov.  2, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 /*
@@ -60,6 +60,7 @@ trait PEntityContextAppEngineService {
 
   // added
   final def repositoryName(aPackageName: String): String = {
+    require (aPackageName != "", "aPackageName should not be null.")
     val domainName = {
       if (aPackageName == "") ""
       else UJavaString.qname2simpleName(aPackageName)

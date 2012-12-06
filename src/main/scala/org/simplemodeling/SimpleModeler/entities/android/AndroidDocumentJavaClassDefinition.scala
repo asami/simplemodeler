@@ -13,13 +13,14 @@ import org.simplemodeling.dsl.datatype.ext._
 /*
  * @since   Jul. 23, 2011
  *  version Oct. 25, 2011
- * @version Apr.  8, 2012
+ *  version Apr.  8, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 class AndroidDocumentJavaClassDefinition(
   pContext: PEntityContext,     
   aspects: Seq[JavaAspect],
-  pobject: PObjectEntity
+  pobject: PDocumentEntity
 ) extends DocumentJavaClassDefinition(pContext, aspects, pobject) {
   useDocument = false
   customImplementNames = List("IGADocument") // Parcelable

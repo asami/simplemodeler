@@ -1,10 +1,13 @@
 package org.simplemodeling.SimpleModeler.entities.simplemodel
 
+import org.simplemodeling.dsl.util.PropertyRecord
 import org.simplemodeling.SimpleModeler.builder._
 
 /*
- * @version Nov. 13, 2012
- * @version Nov. 13, 2012
+ * @since   Oct.  5, 2012
+ *  version Nov. 13, 2012
+ *  version Nov. 26, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMElement {
@@ -13,13 +16,28 @@ trait SMMElement {
   var term: String = ""
   var term_ja: String = ""
   var term_en: String = ""
+  var xmlName: String = ""
+  var label: String = ""
   var title: String = ""
   var subtitle: String = ""
   var caption: String = ""
   var brief: String = ""
   var summary: String = ""
   var description: String = ""
+  /**
+   * The properties allows same key entries.
+   * First entry is available.
+   */
+  var properties: Seq[PropertyRecord] = Nil
 
+  /**
+   * Used by SimpleModelMakerEntity#build#resolve_annotations
+   */
+  final def annotation(aKey: String, aValue: String) {
+    sys.error("already not supported.")
+  }
+
+/*
   final def annotation(aKey: String, aValue: String) {
     if (true) {
       
@@ -28,6 +46,9 @@ trait SMMElement {
       case "name_en"     => name_en = aValue
       case "name_ja"     => name_ja = aValue
       case "term"        => term = aValue
+      case "label"       => label = aValue
+      case "title"       => title = aValue
+      case "caption"     => caption = aValue
       case "caption"     => caption = aValue
       case "brief"       => brief = aValue
       case "summary"     => summary = aValue
@@ -37,13 +58,16 @@ trait SMMElement {
   }
 
   protected def set_Annotation_Pf(key: String, value: String): Boolean = false
+*/
 
-  def update(entry: Seq[(String, String)]) {
+  def update(entry: Seq[PropertyRecord]) {
+    properties = entry ++ properties
     entry.foreach(updateField)
   }
 
-  def updateField(field: (String, String)) {
-    val (key, value) = field
+  def updateField(field: PropertyRecord) {
+    val key = field.key
+    val value = field.value.get // XXX
     NaturalLabel(key) match {
       case NameLabel => {}
       case TypeLabel => {}
@@ -57,13 +81,21 @@ trait SMMElement {
       case TermEnLabel => term_en = value
       case TitleLabel => title = value
       case SubtitleLabel => subtitle = value
+      case LabelLabel => label = value
       case CaptionLabel => caption = value
       case BriefLabel => brief = value
       case SummaryLabel => brief = value
       case DescriptionLabel => description = value
       case ColumnNameLabel => {}
       case SqlDatatypeLabel => {}
-      case _ => {}
+      case l: NaturalLabel => update_Field(l, value)
     }
+    update_Field(key, value)
+  }
+
+  protected def update_Field(label: NaturalLabel, value: String) {
+  }
+
+  protected def update_Field(key: String, value: String) {
   }
 }

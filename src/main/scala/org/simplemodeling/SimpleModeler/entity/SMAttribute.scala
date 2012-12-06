@@ -14,7 +14,7 @@ import org.simplemodeling.SimpleModeler.entity.domain.SMDomainValueName
  *  version Dec. 15, 2011
  *  version Apr. 11, 2012
  *  version Oct. 30, 2012
- * @version Nov.  9, 2012
+ * @version Nov. 23, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMAttribute(val dslAttribute: SAttribute) extends SMElement(dslAttribute) {
@@ -74,5 +74,9 @@ class SMAttribute(val dslAttribute: SAttribute) extends SMElement(dslAttribute) 
 
   private def multiplicity_literal: SDoc = {
     SIAnchor(SText(multiplicity.text)) unresolvedRef_is SHelpRef("multiplicity", multiplicity.symbol)
+  }
+
+  override def toString() = {
+    name + ":" + attributeType.name + multiplicity.mark
   }
 }

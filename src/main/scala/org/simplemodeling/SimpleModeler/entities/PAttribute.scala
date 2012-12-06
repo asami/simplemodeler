@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import org.apache.commons.lang3.StringUtils
 import scalaz._
 import Scalaz._
 import scala.collection.mutable.{Buffer, ArrayBuffer}
@@ -14,7 +15,8 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Feb. 19, 2012
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
- * @version Nov. 14, 2012
+ *  version Nov. 26, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -30,7 +32,6 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   var modelAssociation: SMAssociation = null // XXX
   var modelPowertype: SMPowertypeRelationship = null // XXX
   var modelStateMachine: SMStateMachineRelationship = null // XXX
-//  var modelStateMachine: SMStateMachineRelationship = null // XXX
   def modelElement: SMElement = {
     if (modelAttribute != null) modelAttribute
     else if (modelAssociation != null) modelAssociation
@@ -45,17 +46,30 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     else if (modelStateMachine != null) modelStateMachine.some
     else None
   }
+  def getModelAssociation: Option[SMAssociation] = {
+    Option(modelAssociation)
+  }
 
   final def typeName: String = type_name
   final def objectTypeName: String = type_name_object
   final def elementTypeName: String = element_type_name
-  final def jdoTypeName: String = jdo_type_name
-  final def jdoElementTypeName: String = jdo_element_type_name
+  final def jpaTypeName: String = jpa_type_name
+  final def jpaElementTypeName: String = jpa_element_type_name
+  final def jdoTypeName: String = jdo_type_name // AppEngine
+  final def jdoElementTypeName: String = jdo_element_type_name // AppEngine
   final def xmlDatatypeName: String = attributeType.xmlDatatypeName
   final def kind: SAttributeKind = {
     if (modelAttribute != null) modelAttribute.kind
     else NullAttributeKind
   }
+
+  def name_en = modelElement.name_en
+  def name_ja = modelElement.name_ja
+  def term = modelElement.term
+  def term_en = modelElement.term_en
+  def term_ja = modelElement.term_ja
+  def xmlName = modelElement.xmlName
+  def sqlColumnName: String = modelElement.sqlColumnName
 
   val use_object_over_datatype = true
 
@@ -73,6 +87,51 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     multiplicity == POne && attributeType.isDataType
   }
 
+  def isEntityReference = {
+    modelAssociation != null ||
+    (modelPowertype != null && modelPowertype.isEntityReference) ||
+    (modelStateMachine != null && modelStateMachine.isEntityReference)
+  }
+
+  def isAssociationClass = getModelAssociation.map(_.isAssociationClass) | false
+
+  def getProperty(key: String) = modelElement.getProperty(key)
+
+  /*
+   * attributes for GUI
+   * 
+  final def name_en = dslElement.name_en
+  final def name_ja = dslElement.name_ja
+  final def term = dslElement.term
+  final def term_en = dslElement.term_en
+  final def term_ja = dslElement.term_ja
+  // XXX another name stuff
+  final def caption = dslElement.caption
+  final def brief = dslElement.brief
+  final def summary = dslElement.summary
+  final def resume = dslElement.resume
+  final def description = dslElement.description
+  final def note = dslElement.note
+  final def history = dslElement.history
+   */
+/* use PEntityContext#labelName
+  def labelString: String = {
+    // TODO locale
+    getModelElement.flatMap(x => {
+      _get_label(
+        x.label.toText, x.title_sdoc.toText, x.term_ja, x.term_en, x.term,
+        x.name_ja, x.name_en)
+    }) | name
+  }
+
+  private def _get_label(candidates: String*): Option[String] = {
+    candidates.find(StringUtils.isNotBlank)
+  }
+*/
+
+  /*
+   * Atom Publishing
+   */
   final def isName: Boolean = {
     if (modelAttribute == null) return false
     else modelAttribute.isName
@@ -201,23 +260,61 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   private def type_name: String = {
     multiplicity match {
-      case m: POne => value_or_object_type_name
-      case m: PZeroOne => object_type_name
-      case m: PZeroMore => list_type_name
-      case m: POneMore => list_type_name
+      case POne => value_or_object_type_name
+      case PZeroOne => object_type_name
+      case PZeroMore => list_type_name
+      case POneMore => list_type_name
     }
   }
 
   private def type_name_object: String = {
     multiplicity match {
-      case m: POne => object_type_name
-      case m: PZeroOne => object_type_name
-      case m: PZeroMore => list_type_name
-      case m: POneMore => list_type_name
+      case POne => object_type_name
+      case PZeroOne => object_type_name
+      case PZeroMore => list_type_name
+      case POneMore => list_type_name
     }
   }
 
-  //
+  /*
+   * JPA
+   */
+  private def jpa_value_or_object_type_name = {
+    if (use_object_over_datatype) {
+      jpa_object_type_name
+    } else {
+      attributeType.getJpaDatatypeName match {
+        case Some(value) => value
+        case None => jpa_object_type_name
+      }
+    }
+  }
+
+  private def jpa_object_type_name = attributeType.jpaObjectTypeName
+  private def jpa_element_type_name = attributeType.jpaObjectTypeName
+  private def jpa_list_type_name = "List<" + jpa_element_type_name + ">"
+
+  private def jpa_type_name: String = {
+    multiplicity match {
+      case POne => jpa_value_or_object_type_name
+      case PZeroOne => jpa_object_type_name
+      case PZeroMore => jpa_list_type_name
+      case POneMore => jpa_list_type_name
+    }
+  }
+
+  private def jpa_type_name_object: String = {
+    multiplicity match {
+      case POne => jpa_object_type_name
+      case PZeroOne => jpa_object_type_name
+      case PZeroMore => jpa_list_type_name
+      case POneMore => jpa_list_type_name
+    }
+  }
+
+  /*
+   * JDO
+   */
   private def jdo_value_or_object_type_name = {
     if (use_object_over_datatype) {
       jdo_object_type_name
@@ -235,29 +332,29 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   private def jdo_type_name: String = {
     multiplicity match {
-      case m: POne => jdo_value_or_object_type_name
-      case m: PZeroOne => jdo_object_type_name
-      case m: PZeroMore => jdo_list_type_name
-      case m: POneMore => jdo_list_type_name
+      case POne => jdo_value_or_object_type_name
+      case PZeroOne => jdo_object_type_name
+      case PZeroMore => jdo_list_type_name
+      case POneMore => jdo_list_type_name
     }
   }
 
   private def jdo_type_name_object: String = {
     multiplicity match {
-      case m: POne => jdo_object_type_name
-      case m: PZeroOne => jdo_object_type_name
-      case m: PZeroMore => jdo_list_type_name
-      case m: POneMore => jdo_list_type_name
+      case POne => jdo_object_type_name
+      case PZeroOne => jdo_object_type_name
+      case PZeroMore => jdo_list_type_name
+      case POneMore => jdo_list_type_name
     }
   }
 
   //
   final def isHasMany: Boolean = {
     multiplicity match {
-      case m: POne => false
-      case m: PZeroOne => false
-      case m: PZeroMore => true
-      case m: POneMore => true
+      case POne => false
+      case PZeroOne => false
+      case PZeroMore => true
+      case POneMore => true
       case _ => sys.error("???")
     }
   }
@@ -268,10 +365,10 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   final def isSingle = {
     multiplicity match {
-      case m: POne => true
-      case m: PZeroOne => true
-      case m: PZeroMore => false
-      case m: POneMore => false
+      case POne => true
+      case PZeroOne => true
+      case PZeroMore => false
+      case POneMore => false
       case _ => sys.error("???")
     }
   }
@@ -295,5 +392,10 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     Option(modelAttribute) map { m =>
       m.dslAttribute.constraints
     } orZero
+  }
+
+  //
+  override def toString() = {
+    name + multiplicity.mark + "/" + modelElement
   }
 }

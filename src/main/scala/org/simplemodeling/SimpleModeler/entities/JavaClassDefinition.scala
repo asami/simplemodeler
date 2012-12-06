@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
  *  version Oct. 30, 2012
- * @version Nov. 12, 2012
+ * @version Nov. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -285,7 +285,18 @@ class JavaClassDefinition(
 */
 
   /*
-   * operation
+   * Attributes
+   */
+/*
+  override protected def attribute_variables_participation_BackReference(a: AttributeParticipation) {
+    if (a.source.isEntity) {
+      println("JavaClassDefinition#attribute_variables_participation_BackReference(%s) = %s".format(name, a))
+    }
+  }
+*/
+
+  /*
+   * operations
    */
 
   /*

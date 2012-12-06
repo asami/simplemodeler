@@ -4,7 +4,7 @@ name := "simplemodeler"
 
 organization := "org.simplemodeling"
 
-version := "0.4.0-RC4"
+version := "0.4.0-RC5"
 
 // scalaVersion := "2.9.2"
 
@@ -34,15 +34,15 @@ libraryDependencies += "de.odysseus.juel" % "juel-spi" % "2.2.5"
 
 libraryDependencies += "de.odysseus.juel" % "juel-impl" % "2.2.5"
 
-libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.7"
+libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.8"
 
-libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.2.0"
+// libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.2.0"
 
-libraryDependencies += "org.goldenport" %% "goldenport-record" % "0.2.0"
+// libraryDependencies += "org.goldenport" %% "goldenport-record" % "0.2.0"
 
-libraryDependencies += "org.goldenport" % "goldenport-java-lib" % "0.1.1"
+// libraryDependencies += "org.goldenport" % "goldenport-java-lib" % "0.1.1"
 
-libraryDependencies += "org.smartdox" %% "smartdox" % "0.3.1"
+// libraryDependencies += "org.smartdox" %% "smartdox" % "0.3.2"
 
 libraryDependencies += "org.scalatest" %% "scalatest" % "1.6.1" % "test"
 

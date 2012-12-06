@@ -6,9 +6,8 @@ import org.goldenport.sdoc._
 /*
  * @since   Dec. 20, 2008
  *  version Oct. 25, 2009
- *  version Sep. 19, 2011 
- *  version Sep. 19, 2011 
- * @version Sep. 19, 2011 
+ *  version Sep. 19, 2011
+ * @version Nov. 23, 2012
  * @author  ASAMI, Tomoharu
  */
 class SPowertype(name: String, pkgname: String) extends SObject(name, pkgname) {

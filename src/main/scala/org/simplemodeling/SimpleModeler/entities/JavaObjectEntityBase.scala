@@ -18,7 +18,7 @@ import com.asamioffice.goldenport.text.UString.notNull
  *  version Dec. 15, 2011
  *  version May.  5, 2012
  *  version Oct. 26, 2012
- * @version Nov.  1, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class JavaObjectEntityBase(val javaContext: JavaEntityContextBase)
@@ -170,12 +170,13 @@ abstract class JavaObjectEntityBase(val javaContext: JavaEntityContextBase)
 
       def is_back_reference(participation: SMParticipation) = {
         participation.roleType match {
-        case CompositionParticipationRole => true
-        case AggregationParticipationRole => true
-        case AssociationParticipationRole => {
-          participation.association.isBinary ||
-          participation.association.isQueryReference
-        }
+          case AssociationClassParticipationRole => true
+          case CompositionParticipationRole => true
+          case AggregationParticipationRole => true
+          case AssociationParticipationRole => {
+            participation.association.isBinary ||
+            participation.association.isQueryReference
+          }
         }
       }
 

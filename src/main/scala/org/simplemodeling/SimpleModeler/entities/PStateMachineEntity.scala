@@ -1,26 +1,29 @@
 package org.simplemodeling.SimpleModeler.entities
 
 import java.io._
-import scala.collection.mutable.ArrayBuffer
 import org.goldenport.entity._
-import org.goldenport.entity.datasource.GDataSource
-import org.goldenport.entity.datasource.GContentDataSource
 import org.simplemodeling.SimpleModeler.entity._
-import org.simplemodeling.SimpleModeler.entities.gaej.GaejUtil._
 
 /*
  * @since   Nov. 14, 2012
- * @version Nov. 14, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 trait PStateMachineEntity extends PObjectEntity {
   var modelStateMachine: SMStateMachine = null
+
+  lazy val states = modelStateMachine.states.map(PState.create)
 
   private def first_state = modelStateMachine.states.firstOption match {
     case Some(state) => state.name
     case _ => "null"
   }
 
+  def isKnowledge: Boolean = false // modelStateMachine.isKnowledge
+
+  /*
+   * Obsolated
+   */
   override protected def write_Content(out: BufferedWriter) {
     // println("is_editable = " + is_editable)
       out.append(new EnumStateMachineCode(pContext).code())

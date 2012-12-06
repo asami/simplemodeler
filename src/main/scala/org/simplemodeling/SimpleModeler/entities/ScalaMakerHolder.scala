@@ -7,7 +7,7 @@ import com.asamioffice.goldenport.text.UJavaString
  * @since   Aug. 19, 2011
  *  version Aug. 21, 2011
  *  version May.  3, 2012
- * @version Nov. 21, 2012
+ * @version Nov. 23, 2012
  * @author  ASAMI, Tomoharu
  */
 trait ScalaMakerHolder {
@@ -151,7 +151,7 @@ trait ScalaMakerHolder {
         }
         sm_pln
         sm_indent_down
-        sm_pln(")")
+        sm_p(")")
       }
     }
   }
@@ -250,6 +250,19 @@ trait ScalaMakerHolder {
     _maker.endImportSection()
   }
 
+  /*
+   * variable settings.
+   */
+  protected final def sm_val_string(varname: String, value: String) {
+    _maker.p("val ")
+    _maker.p(varname)
+    _maker.p(" = ")
+    _maker.pln(sm_string_literal(value))
+  }
+
+  /*
+   * old java style variable settings.
+   */
   protected final def sm_private_instance_variable(attr: PAttribute, typename: String = null, varname: String = null) {
     val tname = if (typename == null) attr.typeName else typename;
     val vname = if (varname == null) attr.name else varname;
@@ -463,11 +476,13 @@ trait ScalaMakerHolder {
     }
   }
 
+/*
   // constructor
   protected final def sm_public_constructor(signature: String, params: AnyRef*)(body: => Unit) {
     _maker.publicConstructor(signature, params: _*)(body)
   }
-  
+*/  
+
   // DI
   protected final def sm_inject {
     _maker.makeAnnotation("@Inject")

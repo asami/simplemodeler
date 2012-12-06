@@ -11,9 +11,10 @@ import org.simplemodeling.SimpleModeler.entity._
 
 /*
  * @since   Jun. 13, 2011
- * @version Aug. 20, 2011
+ *  version Aug. 20, 2011
+ * @version Nov. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 trait PPackageEntity extends PObjectEntity {
-  override def is_Commitable = false
+  commitMode = NoCommit
 }

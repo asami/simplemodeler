@@ -5,6 +5,7 @@ import scala.collection.mutable.ArrayBuffer
 import com.asamioffice.goldenport.text.{JavaTextMaker, UString}
 import org.simplemodeling.SimpleModeler.SimpleModelerConstants
 import org.simplemodeling.SimpleModeler.entity._
+import org.simplemodeling.SimpleModeler.builder.NameLabel
 import org.goldenport.value._
 import org.goldenport.entity.{GEntity, GEntityContext} 
 import org.goldenport.entity.datasource.GDataSource
@@ -18,13 +19,15 @@ import org.simplemodeling.dsl._
  *  version May.  5, 2012
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
- * @version Nov. 21, 2012
+ *  version Nov. 29, 2012
+ * @version Dec.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
   extends GEntity(pContext) with SimpleModelerConstants {
   type DataSource_TYPE = GDataSource
   type AttributeTYPE <: PAttribute
+  type ClassDefinition_TYPE = GenericClassDefinition
 
   override def is_Text_Output = true
 
@@ -43,11 +46,19 @@ abstract class PObjectEntity(val pContext: PEntityContext)
    */
   var documentName = ""
   /**
+   * Sets in SimpleModel2ProgramRealmTransformerBase#build_entity.
+   * Used by RepositoryServiceJavaClassDefinition#wadl_description_literal
+   * to generate document description in wadl.
+   */
+  var documentEntity: Option[PDocumentEntity] = None
+  /**
    * Used when this object is package.
    */
   var serviceName = ""
+  var serviceEntity: Option[PServiceEntity] = None
   private val _attributes = new ArrayBuffer[PAttribute]
   private val _operations = new ArrayBuffer[POperation]
+  val participations = new ArrayBuffer[PParticipation]
 
   def attributes: Seq[PAttribute] = _attributes
   def operations: Seq[POperation] = _operations
@@ -64,19 +75,121 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     } else _operations += oper
   }
 
+  lazy val associationEntityAttributes: List[PAttribute] = {
+    participations.toList.collect({
+      case a: AttributeParticipation if a.attribute.isAssociationClass => a
+    }).flatMap(_to_attr)
+  }
+
+  private def _to_attr(a: AttributeParticipation): List[PAttribute] = {
+//    println("PObjectEntity#AttributeParticipation(%s) = %s".format(name, a))
+    val b = _another_association(a.source, a.attribute) match {
+      case Some(x) => x.attributeType match {
+        case e: PEntityType => {
+          _entity_type_attribute(e.entity)
+        }
+        case d: PDocumentType => {
+          _document_type_attribute(d.document)
+        }
+      }
+      case None => a.source match {
+        case e: PEntityEntity => {
+          _entity_type_attribute(e)
+        }
+        case d: PDocumentEntity => {
+          _document_type_attribute(d)
+        }
+      }
+    }
+/*
+    val b = _direct_entity(a) match {
+      case Some(x) => x
+      case _ => a.source
+    }
+    val n = b.name
+    val t = new PEntityType(b.name, b.packageName)
+    t.entity = b.asInstanceOf[PEntityEntity]
+    val c = new PAttribute(n, t) multiplicity_is PZeroMore // XXX
+    List(c)
+*/
+    List(b)
+  }
+
+  private def _another_association(s: PObjectEntity, a: PAttribute): Option[PAttribute] = {
+    val attrs = s.attributes
+    if (attrs.length != 2) None
+    else attrs.filter(_ != a).headOption
+  }
+
+  private def _entity_type_attribute(e: PEntityEntity): PAttribute = {
+    val t = new PEntityType(e.name, e.packageName)
+    t.entity = e
+    new PAttribute(e.name, t) multiplicity_is PZeroMore // XXX
+  }
+
+  private def _document_type_attribute(d: PDocumentEntity): PAttribute = {
+    val t = new PDocumentType(d.name, d.packageName)
+    t.document = d
+    new PAttribute(d.modelObject.name, t) multiplicity_is PZeroMore // XXX
+  }
+/*
+  private def _direct_entity(a: AttributeParticipation): Option[PObjectEntity] = {
+    _another_association(a.source, a.attribute).map(_.attributeType).collect {
+      case e: PEntityType => e.entity
+      case d: PDocumentType => d.document
+    }
+  }
+*/
+
   /**
    * Name in program. Defined in the specification DSL.
    * 
    * "name" is defined in GEntity.
+   *
+   * Setuped in SimpleModel2JavaRealmTransformerBase.
    */
-  var name_en = ""
-  var name_ja = ""
+  def name_en = {
+    (platform_name_en orElse modelPackage.map(_.name_en)) |
+    modelObject.name_en
+  }
+  var platform_name_en: Option[String] = None
+
+  def name_ja = {
+    (platform_name_ja orElse modelPackage.map(_.name_ja)) |
+    modelObject.name_ja
+  }
+  var platform_name_ja: Option[String] = None
+
   /**
    * Name in glossary. Defined in the specification DSL.
    */
-  var term = ""
-  var term_en = ""
-  var term_ja = ""
+  def term = {
+    (platform_term orElse modelPackage.map(_.term)) |
+    modelObject.term
+  }
+  var platform_term: Option[String] = None
+
+  def term_en = {
+    (platform_term_en orElse modelPackage.map(_.term_en)) |
+    modelObject.term_en
+  }
+  var platform_term_en: Option[String] = None
+
+  def term_ja = {
+    (platform_term_ja orElse modelPackage.map(_.term_ja)) |
+    modelObject.term_ja
+  }
+  var platform_term_ja: Option[String] = None
+
+  /*
+   * SQL
+   */
+  def sqlTableName = {
+    (platform_sqlTableName orElse modelPackage.map(_.sqlTableName)) |
+    modelObject.sqlTableName
+  }
+  var platform_sqlTableName: Option[String] = None
+
   /**
    * 
    */
@@ -95,12 +208,26 @@ abstract class PObjectEntity(val pContext: PEntityContext)
    * Use case: URI
    */
   var uriName = ""
+
   // Class Name base (TermName)
   var classNameBase = ""
-  var modelPackage: Option[SMPackage] = None // not used
+
+  /**
+   * Used by PEntityContext#applicationName
+   */
+  var modelPackage: Option[SMPackage] = None
+  /**
+   * Used by PEntityContext#applicationName
+   */
   var modelObject: SMObject = SMNullObject
-  var platformPackage: Option[PPackageEntity] = None // not used
-  var sourcePlatformObject: Option[PObjectEntity] = None // not used
+  /**
+   * Used by PEntityContext#applicationName
+   */
+  var platformPackage: Option[PPackageEntity] = None
+  /**
+   * Used by PEntityContext#applicationName
+   */
+  var sourcePlatformObject: Option[PObjectEntity] = None
   /**
    * Holds platform package node which contains this node as child. 
    */
@@ -109,12 +236,27 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   lazy val factoryName = pContext.factoryName(packageName)
   lazy val contextName = pContext.contextName(packageName)
 
+  final def getModelObject = {
+    if (modelObject == SMNullObject) None else modelObject.some
+  }
+
   final def modelEntity: SMEntity = {
     require (modelObject.isInstanceOf[SMEntity], "modelObject should be SMEntity. (%s): %s".format(name, modelObject))
     modelObject.asInstanceOf[SMEntity]    
   }
 
   var isImmutable: Boolean = false
+
+  override protected def write_Content(out: java.io.BufferedWriter) {
+    val klass = class_Definition
+    klass.build()
+    out.append(klass.toText)
+    out.flush
+  }
+
+  protected def class_Definition: ClassDefinition_TYPE = {
+    throw new UnsupportedOperationException("Please create ClassDefinition or let this Entity be hidden.")
+  }
 
   /*
    * Body
@@ -164,6 +306,16 @@ abstract class PObjectEntity(val pContext: PEntityContext)
    */
 //  def hasInheritance: Boolean = _baseObject != null || _mixinTraits.nonEmpty
 
+  /**
+   * Used by JavaClassDefinition
+   * to decide whether or not to add attributes
+   * derviced from entity reference participation.
+   */
+  def isEntity: Boolean = false
+
+  /**
+   * Used to decide creating event service.
+   */
   def isEvent: Boolean = modelObject.isEvent
 
   // 
@@ -215,7 +367,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     else (b._1 ::: attributes.toList, b._2 + qualifiedName)
   }
 
-  def wholeAttributesWithoutId: List[PAttribute] = {
+    lazy val wholeAttributesWithoutId: List[PAttribute] = {
     wholeAttributes.filter(!_.isId)
   }
 
@@ -248,13 +400,13 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   lazy val isId: Boolean = idAttrOption ? true | false
   lazy val idAttrOption = wholeAttributes.find(_.isId)
   lazy val idAttr = idAttrOption match {
-      case Some(attr) => attr
-      case None => {
-        throw new UnsupportedOperationException("no id [%s]: %s".format(
-          name,
-          wholeAttributes.map(_.name)
-        ))
-      }
+    case Some(attr) => attr
+    case None => {
+      throw new UnsupportedOperationException("no id [%s]: %s".format(
+        name,
+        wholeAttributes.map(_.name)
+      ))
+    }
   }
   def idName = idAttr.name
   def idPolicy = idAttr.idPolicy
@@ -266,17 +418,42 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     }
   }
 
-  def getNameName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
-      if (attr.isName) return Some(attr.name)
+  def getNameAttr: Option[PAttribute] = {
+    for (attr <- wholeAttributesWithoutId) {
+      if (attr.isName) return Some(attr)
     }
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
+      if (NameLabel.isMatch(attr.name) &&
+          (attr.attributeType.isInstanceOf[PTokenType] ||
+           attr.attributeType.isInstanceOf[PStringType])
+        ) {
+        return Some(attr)
+      }
+    }
+    for (attr <- wholeAttributesWithoutId) {
+      if (attr.attributeType.isInstanceOf[PTokenType]) {
+        return Some(attr)
+      }
+    }
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.attributeType.isInstanceOf[PStringType]) {
-        return Some(attr.name)
+        return Some(attr)
       }
     }
     None
   }
+
+  def nameAttr: PAttribute = getNameAttr match {
+    case Some(attr) => attr
+    case None => {
+      throw new UnsupportedOperationException("no id [%s]: %s".format(
+        name,
+        wholeAttributes.map(_.name)
+      ))
+    }
+  }
+
+  def getNameName: Option[String] = getNameAttr.map(_.name)
 
   //
   def isUser: Boolean = {

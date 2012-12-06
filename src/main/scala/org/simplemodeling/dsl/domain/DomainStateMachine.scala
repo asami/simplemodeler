@@ -5,14 +5,14 @@ import org.simplemodeling.dsl._
 /*
  * @since   Dec. 20, 2008
  *  version Nov. 13, 2010
- * @version Nov. 14, 2012
+ * @version Nov. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class DomainStateMachine(aName: String, pkgname: String) extends SStateMachine(aName, pkgname) {
   def this() = this(null, null)
 
   def state(aName: String)(theDefinitions: => Unit): DomainState = {
-    val s = new DomainState(aName)
+    val s = new DomainState(aName, None) // XXX
 //    s.objectScope = true
     _current = s
     theDefinitions

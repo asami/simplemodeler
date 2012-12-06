@@ -12,10 +12,10 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Nov. 10, 2012
- * @version Nov. 10, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
-class Java6EventServiceEntity(aContext: Java6EntityContext) extends JavaObjectEntityBase(aContext) with PServiceEntity {
+class Java6EventServiceEntity(aContext: Java6EntityContext) extends JavaObjectEntityBase(aContext) with PEventServiceEntity {
   override protected def write_Content(out: BufferedWriter) {
     val klass = new EventServiceJavaClassDefinition(aContext, Nil, Java6EventServiceEntity.this)
     klass.build()

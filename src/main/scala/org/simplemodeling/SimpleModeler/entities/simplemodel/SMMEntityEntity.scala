@@ -53,11 +53,13 @@ import org.simplemodeling.dsl.domain.DomainService
 import org.simplemodeling.dsl.domain.DomainState
 import org.simplemodeling.dsl.domain.DomainStateMachine
 import org.simplemodeling.dsl.domain.DomainSummary
+import org.simplemodeling.dsl.domain.DomainAssociationEntity
 import org.simplemodeling.dsl.domain.DomainValue
 import org.simplemodeling.dsl.domain.DomainValueId
 import org.simplemodeling.dsl.domain.DomainValueName
 import org.simplemodeling.dsl.One
 import org.simplemodeling.dsl.OneMore
+import org.simplemodeling.dsl.SElement
 import org.simplemodeling.dsl.SAttribute
 import org.simplemodeling.dsl.SAttributeType
 import org.simplemodeling.dsl.SOperation
@@ -81,6 +83,7 @@ import org.simplemodeling.dsl.requirement.RequirementUsecase
 import org.simplemodeling.dsl.requirement.RequirementTask
 import org.simplemodeling.dsl.SAssociation
 import org.simplemodeling.dsl.domain.GenericDomainEntity
+import org.simplemodeling.SimpleModeler.builder._
 
 /*
  * @since   Jan. 30, 2009
@@ -90,7 +93,8 @@ import org.simplemodeling.dsl.domain.GenericDomainEntity
  *  version Jun. 17, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 21, 2012
+ *  version Nov. 30, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -109,6 +113,14 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   var packageName: String = ""
   var kind: ElementKind = NoneKind
+  /*
+   * GUI
+   */
+  var naviLabel: String = ""
+  var tabLabel: String = ""
+  /*
+   * SQL
+   */
   var tableName: String = ""
   // to aviod cyclic recursive initialization for base in the NullEntityEntity signleton.
   private var _base: SMMEntityEntity = null
@@ -141,6 +153,17 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val secondaryActors = new ArrayBuffer[SMMAssociation]
   val supportingActors = new ArrayBuffer[SMMAssociation]
   val scenarioSteps = new ArrayBuffer[SMMAssociation]
+
+  def isAttribute(name: String) = attributes.exists(_.name == name)
+  def isAssociation(name: String) = associations.exists(_.name == name)
+  def isAggregation(name: String) = aggregations.exists(_.name == name)
+  def isComposition(name: String) = compositions.exists(_.name == name)
+  def isStateMachine(name: String) = {
+    statemachineRelationships.exists(_.name == name) ||
+    statemachines.exists(_.name == name)
+  }
+  def isPowertype(name: String) = powertypes.exists(_.name == name)
+  def isOperation(name: String) = operations.exists(_.name == name)
 
   /*
    * TableSimpleModelMakerBuilder registers kinds and states.
@@ -277,49 +300,89 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   final def powertype(aName: String, aPowertypeType: SMMPowertypeType): SMMPowertype = {
-    val powertype = new SMMEntityEntity(entityContext)
-    powertype.name = aPowertypeType.name
-    powertype.kind = PowertypeKind
-    powertype.term = aPowertypeType.term
-    powertype.packageName = aPowertypeType.packageName
-    powertype.powertypeKinds ++= aPowertypeType.instances.map(SMMPowertypeKind.create)
-    addPrivateObject(powertype)
-    val pt = new SMMPowertype(aName, aPowertypeType)
-    powertypes += pt
-    pt
+    _add_slot(aName, powertypes, "「%s」の区分「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      val powertype = new SMMEntityEntity(entityContext)
+      powertype.name = aPowertypeType.name
+      powertype.kind = PowertypeKind
+      powertype.term = aPowertypeType.term
+      powertype.packageName = aPowertypeType.packageName
+      powertype.powertypeKinds ++= aPowertypeType.instances.map(SMMPowertypeKind.create)
+      addPrivateObject(powertype)
+      new SMMPowertype(aName, aPowertypeType)
+    }
   }
 
   final def powertype(aName: String, entitytype: SMMEntityTypeSet): SMMPowertype = {
-    val ptpkg = entitytype.entityType.get.packageName
-    val ptname = entitytype.entityType.get.name
-    val ptt = new SMMPowertypeType(ptname, ptpkg)
-    val pt = new SMMPowertype(aName, ptt)
-    powertypes += pt
-    pt
+    _add_slot(aName, powertypes, "「%s」の区分「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      val ptpkg = entitytype.entityType.get.packageName
+      val ptname = entitytype.entityType.get.name
+      val ptt = new SMMPowertypeType(ptname, ptpkg)
+      new SMMPowertype(aName, ptt)
+    }
   }
 
 
   final def role(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
-    val roleType = new SMMEntityType(anObject.name, anObject.packageName)
-    roleType.term = anObject.term
-    val role = new SMMAssociation(aName, new SMMEntityTypeSet(roleType.some))
-    roles += role
-    role
+    _add_slot(aName, compositions, "「%s」の役割「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      val roleType = new SMMEntityType(anObject.name, anObject.packageName)
+      roleType.term = anObject.term
+      new SMMAssociation(aName, new SMMEntityTypeSet(roleType.some))
+    }
   }
+
+  /*
+   * Attribute
+   */
+  val attribute_append_message =
+    "「%s」の属性「%s」は追加定義を持っています。型以外の情報が追加されます。"
 
   /**
    * Creates an attribute for Value object.
    */
   final def attribute(aName: String, anObject: SMMEntityEntity): SMMAttribute = {
-    val attrType = anObject.kind match {
-      case IdKind => new SMMValueIdType(anObject.name, anObject.packageName)
-      case _    => new SMMValueType(anObject.name, anObject.packageName)
+    _add_slot(aName, attributes, attribute_append_message) {
+      val attrType = anObject.kind match {
+        case IdKind => new SMMValueIdType(anObject.name, anObject.packageName)
+        case _    => new SMMValueType(anObject.name, anObject.packageName)
+      }
+      val isId = anObject.kind == IdKind
+      attrType.term = anObject.term
+      new SMMAttribute(aName, new SMMAttributeTypeSet(attrType.some), isId)
     }
-    val isId = anObject.kind == IdKind
-    attrType.term = anObject.term
-    val attr = new SMMAttribute(aName, new SMMAttributeTypeSet(attrType.some), isId)
-    attributes += attr
-    attr
+  }
+
+  final def attribute0(aName: String, anObject: SMMEntityEntity): SMMAttribute = {
+    attributes.find(_.name == aName) match {
+      case Some(s) => {
+        record_report("「%s」の属性「%s」は追加定義を持っています。", this.name, aName)
+        s // XXX updates attrtype and isId
+      }
+      case None => {
+        val attrType = anObject.kind match {
+          case IdKind => new SMMValueIdType(anObject.name, anObject.packageName)
+          case _    => new SMMValueType(anObject.name, anObject.packageName)
+        }
+        val isId = anObject.kind == IdKind
+        attrType.term = anObject.term
+        val attr = new SMMAttribute(aName, new SMMAttributeTypeSet(attrType.some), isId)
+        attributes += attr
+        attr
+      }
+    }
+  }
+
+  private def _add_slot[T <: SMMSlot](name: String, elements: ArrayBuffer[T], message: String)(body: => T): T = {
+    elements.find(_.name == name) match {
+      case Some(s) => {
+        record_report(message, this.name, name)
+        s
+      }
+      case None => {
+        val elem = body
+        elements += elem
+        elem
+      }
+    }
   }
 
   final def attribute(aName: String): SMMAttribute = {
@@ -332,9 +395,23 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   final def attribute(aName: String, attrtype: SMMAttributeTypeSet, isId: Boolean = false): SMMAttribute = {
-    val attr = new SMMAttribute(aName, attrtype, isId)
-    attributes += attr
-    attr
+    _add_slot(aName, attributes, attribute_append_message) {
+      new SMMAttribute(aName, attrtype, isId)
+    }
+  }
+
+  final def attribute0(aName: String, attrtype: SMMAttributeTypeSet, isId: Boolean = false): SMMAttribute = {
+    attributes.find(_.name == aName) match {
+      case Some(s) => {
+        record_report("「%s」の属性「%s」は追加定義を持っています。", this.name, aName)
+        s // XXX updates attrtype and isId
+      }
+      case None => {
+        val attr = new SMMAttribute(aName, attrtype, isId)
+        attributes += attr
+        attr
+      }
+    }
   }
 
   /**
@@ -362,9 +439,23 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * @see TableSimpleModelMakerBuilder
    */
   final def association(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
-    val assoc = new SMMAssociation(aName, entityType)
-    associations += assoc
-    assoc
+    _add_slot(aName, associations, "「%s」の関連「%s」は追加定義を持っています。") {
+      new SMMAssociation(aName, entityType)
+    }
+  }
+
+  final def association0(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
+    associations.find(_.name == aName) match {
+      case Some(s) => {
+        record_report("「%s」の関連「%s」は追加定義を持っています。", this.name, aName)
+        s // XXX updates attrtype and isId
+      }
+      case None => {
+        val assoc = new SMMAssociation(aName, entityType)
+        associations += assoc
+        assoc
+      }
+    }
   }
 
   /**
@@ -387,9 +478,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * @see TableSimpleModelMakerBuilder
    */
   final def aggregation(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
-    val assoc = new SMMAssociation(aName, entityType)
-    aggregations += assoc
-    assoc
+    _add_slot(aName, aggregations, "「%s」の属性「%s」は追加定義を持っています。型以外の情報は更新されます。") {
+      new SMMAssociation(aName, entityType)
+    }
   }
 
   final def compositionOwn(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
@@ -413,18 +504,18 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * @see TableSimpleModelMakerBuilder
    */
   final def composition(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
-    val assoc = new SMMAssociation(aName, entityType)
-    compositions += assoc
-    assoc
+    _add_slot(aName, compositions, "「%s」の合成「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      new SMMAssociation(aName, entityType)
+    }
   }
 
   /**
    * Used by TableSimpleModelMakerBuilder.
    */
   final def statemachine(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
-    val sm = new SMMAssociation(aName, entityType)
-    statemachineRelationships += sm
-    sm
+    _add_slot(aName, statemachineRelationships, "「%s」の状態機械「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      new SMMAssociation(aName, entityType)
+    }
   }
 
   /**
@@ -442,25 +533,35 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    */
   final def statemachine(aName: String, aStateMachineType: SMMStateMachineType): SMMStateMachine = {
     record_warning("SMMEntityEntity#statemachine(%s) = %s", this.name, aName)
-    val states = aStateMachineType.states
-    val statemachine = new SMMEntityEntity(entityContext)
-    statemachine.name = aStateMachineType.name
-    statemachine.kind = StateMachineKind
-    statemachine.term = aStateMachineType.term
-    statemachine.packageName = aStateMachineType.packageName
-    statemachine.statemachineStates ++= states.map(SMMStateMachineState.create)
-    addPrivateObject(statemachine)
-    for (state <- states) {
-      val s = new SMMEntityEntity(entityContext)
-      s.name = state._2
-      s.kind = StateMachineKind
-      s.term = state._1
-      s.packageName = aStateMachineType.packageName
-      addPrivateObject(s)
+    _add_slot(aName, statemachines, "「%s」の状態機械「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      val states = aStateMachineType.states
+      val statemachine = new SMMEntityEntity(entityContext)
+      statemachine.name = aStateMachineType.name
+      statemachine.kind = StateMachineKind
+      statemachine.term = aStateMachineType.term
+      statemachine.packageName = aStateMachineType.packageName
+      statemachine.statemachineStates ++= states.map(SMMStateMachineState.create)
+      addPrivateObject(statemachine)
+      for (state <- states) {
+        val s = new SMMEntityEntity(entityContext)
+        s.name = state._2
+        s.kind = StateMachineKind
+        s.term = state._1
+        s.packageName = aStateMachineType.packageName
+        addPrivateObject(s)
+      }
+      new SMMStateMachine(aName, aStateMachineType)
     }
-    val sm = new SMMStateMachine(aName, aStateMachineType)
-    statemachines += sm
-    sm
+  }
+
+  /**
+   * SimpleModelDslBuilder uses this method to add a state.
+   * TableSimpleModelMakerBuilder add state using own add_state method.
+   */
+  def state(name: String): SMMStateMachineState = {
+    val s = new SMMStateMachineState(name, None)
+    statemachineStates += s
+    s
   }
 
   /**
@@ -468,15 +569,17 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * uses this method to add a operation.
    */
   final def operation(aName: String, inType: SMMAttributeTypeSet, outType: SMMAttributeTypeSet): SMMOperation = {
-    val op = new SMMOperation(aName, inType, outType)
-    operations += op
-    op
+    _add_slot(aName, operations, "「%s」の操作「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+      new SMMOperation(aName, inType, outType)
+    }
   }
 
-  override protected def set_Annotation_Pf(key: String, value: String) = {
-    key match {
-      case "tableName"   => tableName = value; true
-      case _ => false
+  override protected def update_Field(label: NaturalLabel, value: String) {
+    label match {
+      case NaviLabelLabel => naviLabel = value
+      case TabLabelLabel => tabLabel = value
+      case TableNameLabel => tableName = value
+      case _ => {}
     }
   }
 
@@ -962,6 +1065,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 //        override def isObjectScope = true
         isMasterSingleton = true
       }
+      case AssociationEntityKind => new DomainAssociationEntity(name, packageName) {
+//        override def isObjectScope = true
+        isMasterSingleton = true
+      }
       case EntityKind   => new DomainEntity(name, packageName) {
 //        override def isObjectScope = true
         isMasterSingleton = true
@@ -1036,6 +1143,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case Some(tr: DomainTrait) => _build_trait(tr, entities)
       case Some(entity: BusinessEntity) => _build_entity(entity, entities)
       case Some(event: DomainEvent) => _build_event(event, entities)
+      case Some(assoc: DomainAssociationEntity) => _build_associationentity(assoc, entities)
       case Some(entity: DomainEntity) => _build_entity(entity, entities)
       case Some(value: DomainValue) => _build_value(value)
       case Some(power: DomainPowertype) => _build_powertype(power, entities)
@@ -1065,9 +1173,41 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     event
   }
 
+  private def _build_associationentity(entity: SObject, entities: Map[String, SObject]): SObject = {
+    entity.term = if (UString.isNull(term)) name else term
+    _build_specifications(entity)
+    _build_properties(entity)
+    _build_base(entities, entity)
+    _build_traits(entities, entity)
+    _build_powertypes(entities, entity)
+    _build_statemachines(entities, entity)
+    _build_roles(entities, entity)
+    _build_attributes(entity, entities)
+    _build_associations_in_associationentity(entity, entities)
+    if (aggregations.nonEmpty) {
+      record_warning("関連クラス「%s」は集約を持つことができません。集約「%s」は無視します。", this.name, aggregations.map(_.name).mkString(" ,"))
+    }
+    if (compositions.nonEmpty) {
+      record_warning("関連クラス「%s」は合成を持つことができません。合成「%s」は無視します。", this.name, aggregations.map(_.name).mkString(" ,"))
+    }
+    _build_statemachineStates(entity) // XXX
+    _build_operations(entity, entities)
+    entity
+  }
+
+  private def _build_associations_in_associationentity(entity: SObject, entities: Map[String, SObject]) {
+    for (assoc <- associations) {
+      doe_w(_entity_ref(assoc.associationType.getName, entities)) {
+        record_trace("SMMEntityEntity#_build_associations_in_associationentity: " + assoc.name)
+        entity.association(assoc.name, _, _dsl_multiplicity(assoc.multiplicity)).withAssociationClass(true)
+      }
+    }
+  }
+
   private def _build_entity(entity: SObject, entities: Map[String, SObject]): SObject = {
     entity.term = if (UString.isNull(term)) name else term
     _build_specifications(entity)
+    _build_properties(entity)
     _build_base(entities, entity)
     _build_traits(entities, entity)
     _build_powertypes(entities, entity)
@@ -1083,7 +1223,36 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _build_specifications(entity: SObject) {
+    _build_specifications(entity, this)
     // TODO
+  }
+
+  private def _build_specifications(target: SElement, source: SMMElement) {
+    // TODO
+  }
+
+  private def _build_properties(entity: SObject) {
+    _build_properties(entity, this)
+    entity.naviLabel = naviLabel
+    entity.tabLabel = tabLabel
+    entity.sqlTableName = tableName
+  }
+
+  private def _build_properties(target: SElement, source: SMMElement) {
+    target.name_ja = source.name_ja
+    target.name_en = source.name_en
+    target.term = source.term
+    target.term_ja = source.term_ja
+    target.term_en = source.term_en
+    target.xmlName = source.xmlName
+    target.label = source.label
+    target.title = source.title
+    target.subtitle = source.subtitle
+    target.caption = source.caption
+    target.brief = source.brief
+    target.summary = source.summary
+    target.description = source.description
+    target.properties = source.properties
   }
 
   private def _build_base(entities: Map[String, SObject], entity: SObject) {
@@ -1133,7 +1302,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_attributes(entity: SObject, entities: Map[String, SObject]) {
     for (attr <- attributes) {
-      record_trace("SMMEntityEntity#_build_attributes(%s) = %s".format(name, attr.name))
+      record_trace("SMMEntityEntity#_build_attributes(%s) = %s: %s".format(name, attr.name, attr.attributeType.getName))
       attr.attributeType.idType match {
         case Some(t) => {
 //          entity.attribute_id.attributeType = _dsl_type(t)
@@ -1190,12 +1359,13 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       attr.term_en = a
     }
     for (a <- _dsl_text(src.title)) {
-//      attr.title = a XXX
-      attr.caption = a
+      attr.title = a
     }
     for (a <- _dsl_text(src.subtitle)) {
-//      attr.subtitle = a XXX
-      attr.brief = a
+      attr.subtitle = a
+    }
+    for (a <- _dsl_text(src.label)) {
+      attr.label = a
     }
     for (a <- _dsl_text(src.caption)) {
       attr.caption = a
@@ -1285,27 +1455,36 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_associations(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- associations) {
-      doe_w(_entity_ref(assoc.associationType.getName, entities)) {
+      doe_w(_entity_ref(assoc.associationType.getName, entities)) { x =>
         record_trace("SMMEntityEntity#_build_associations: " + assoc.name)
-        entity.association(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
+        val a = entity.association(assoc.name, x, _dsl_multiplicity(assoc.multiplicity))
+        _build_specifications(a, assoc)
+        _build_properties(a, assoc)
+        a
       }
     }
   }
 
   private def _build_aggregations(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- aggregations) {
-      doe_w(_entity_ref(assoc.associationType.getName, entities)) {
+      doe_w(_entity_ref(assoc.associationType.getName, entities)) { x =>
         record_trace("SMMEntityEntity#_build_aggregations: " + assoc.name)
-        entity.aggregation(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
+        val a = entity.aggregation(assoc.name, x, _dsl_multiplicity(assoc.multiplicity))
+        _build_specifications(a, assoc)
+        _build_properties(a, assoc)
+        a
       }
     }
   }
 
   private def _build_compositions(entity: SObject, entities: Map[String, SObject]) {
     for (assoc <- compositions) {
-      doe_w(_entity_ref(assoc.associationType.getName, entities)) {
+      doe_w(_entity_ref(assoc.associationType.getName, entities)) { x =>
         record_trace("SMMEntityEntity#_build_compositions: " + assoc.name)
-        entity.composition(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
+        val a = entity.composition(assoc.name, x, _dsl_multiplicity(assoc.multiplicity))
+        _build_specifications(a, assoc)
+        _build_properties(a, assoc)
+        a
       }
     }
   }
@@ -1372,7 +1551,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     entities.get(name) match {
       case Some(p: DomainStateMachine) => p.right
       case Some(x) => "%sは状態機械ではありません。(参照元: %s)".format(x.name, this.name).left
-      case None => println(entities);Left("状態機械%sはみつかりません。(参照元: %s)".format(name, this.name))
+      case None => Left("状態機械%sはみつかりません。(参照元: %s)".format(name, this.name))
 
     }
   }
@@ -1443,7 +1622,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_value(value: DomainValue): DomainValue = {
     value.term = name
-//    _build_specifications(value)
+    _build_specifications(value)
+    _build_properties(value)
 //    _build_base(value)
 //    _build_powertypes(value)
 //    _build_roles(value)
@@ -1453,6 +1633,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_document(doc: DomainDocument, entities: Map[String, SObject]): DomainDocument = {
     _build_specifications(doc)
+    _build_properties(doc)
     _build_base(entities, doc)
     _build_traits(entities, doc)
     _build_attributes(doc, entities)
@@ -1464,6 +1645,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_powertype(power: DomainPowertype, entities: Map[String, SObject]): DomainPowertype = {
     _build_specifications(power)
+    _build_properties(power)
     _build_base(entities, power)
     _build_traits(entities, power)
     _build_powertypeKinds(power)
@@ -1477,12 +1659,15 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _build_powertypeKinds(entity: DomainPowertype) {
     for (kind <- powertypeKinds) {
       val k = new SPowertypeKind(kind.name, kind.value)
+      _build_specifications(k, kind)
+      _build_properties(k, kind)
       entity.kind(k)
     }
   }
 
   private def _build_statemachine(sm: DomainStateMachine, entities: Map[String, SObject]): DomainStateMachine = {
     _build_specifications(sm)
+    _build_properties(sm)
     _build_base(entities, sm)
     _build_traits(entities, sm)
     _build_statemachineStates(sm)
@@ -1495,7 +1680,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_statemachineStates(entity: DomainStateMachine) {
     for (state <- statemachineStates) {
-      val s = new DomainState(state.name)
+      val s = new DomainState(state.name, state.value)
+      _build_specifications(s, state)
+      _build_properties(s, state)
+//      println("SMMEntityEntity#_build_statemachineStates: %s, %s, %s".format(s.name, s.value, s.label))
       entity.state(s)
     }
   }

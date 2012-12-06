@@ -12,12 +12,24 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Nov.  2, 2012
- * @version Nov.  2, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
-class Java6RepositoryServiceEntity(aContext: Java6EntityContext) extends JavaObjectEntityBase(aContext) with PServiceEntity {
+class Java6RepositoryServiceEntity(aContext: Java6EntityContext) extends JavaObjectEntityBase(aContext) with PRepositoryServiceEntity {
+  lazy val klass = new RepositoryServiceJavaClassDefinition(aContext, Nil, Java6RepositoryServiceEntity.this)
+
+  def wadlElement = klass.wadlElement("", "")
+  def wadlSpec(
+    title: String, subtitle: String,
+    author: String = null, date: String = null
+  ) = {
+    klass.wadlSpec(title, subtitle, author, date)
+  }
+
+  /*
+   * Java Source
+   */
   override protected def write_Content(out: BufferedWriter) {
-    val klass = new RepositoryServiceJavaClassDefinition(aContext, Nil, Java6RepositoryServiceEntity.this)
     klass.build()
     out.append(klass.toText)
     out.flush

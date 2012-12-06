@@ -17,7 +17,7 @@ import org.goldenport.Strings
  *  version Nov. 20, 2011
  *  version Sep. 18, 2012
  *  version Oct. 23, 2012
- * @version Nov. 18, 2012
+ * @version Nov. 30, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -103,11 +103,31 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
         counter += 1
         ids.put(anObject, id)
         anObject match {
+          case assoc: SMAssociationEntity => {
+            if (assoc.attributes.isEmpty) {
+              graph.addClassSimple(anObject, id)
+            } else {
+              aThema match {
+                case "perspective" => graph.addClassSimple(anObject, id)
+                case "hilight"     => graph.addClassSimple(anObject, id)
+                case "detail"      => graph.addClassFull(anObject, id)
+                case _             => sys.error("illegal thema: " + aThema)
+              }
+            }
+          }
           case powertype: SMPowertype => {
             aThema match {
               case "perspective" => graph.addPowertypeSimple(powertype, id)
               case "hilight"     => graph.addPowertypeSimple(powertype, id)
               case "detail"      => graph.addPowertypeFull(powertype, id)
+              case _             => sys.error("illegal thema: " + aThema)
+            }
+          }
+          case sm: SMStateMachine => {
+            aThema match {
+              case "perspective" => graph.addStateMachineSimple(sm, id)
+              case "hilight"     => graph.addStateMachineSimple(sm, id)
+              case "detail"      => graph.addStateMachineFull(sm, id)
               case _             => sys.error("illegal thema: " + aThema)
             }
           }
@@ -280,15 +300,30 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
           }
         }
 
+        def add_association_class_relationships(aSource: SMAssociationEntity) {
+          val sourceId = get_id(aSource)
+          val targets = aSource.associations.map(x => {
+            (get_id(x.associationType.typeObject), x)
+          })
+          aThema match {
+            case "perspective" => graph.addSimpleAssociationClassRelationship(sourceId, targets)
+            case "hilight"     => graph.addPlainAssociationClassRelationship(sourceId, targets)
+            case "detail"      => graph.addAssociationClassRelationship(sourceId, targets)
+            case _             => graph.addSimpleAssociationClassRelationship(sourceId, targets)
+          }
+        }
+
         add_generalization_relationships(anObject)
         add_trait_relationships(anObject)
         add_powertype_relationships(anObject)
         add_statemachine_relationships(anObject)
         add_role_relationships(anObject)
-        if (anObject.isInstanceOf[SMUsecase]) {
-          add_usecase_association_relationships(anObject)
-        } else {
-          add_association_relationships(anObject)
+        anObject match {
+          case u: SMUsecase => add_usecase_association_relationships(u)
+          case t: SMTask => add_usecase_association_relationships(t)
+          case a: SMAssociationEntity => add_association_class_relationships(a)
+          case p: SMEntityPart => add_association_relationships(anObject)
+          case _ => add_association_relationships(anObject)
         }
         add_usecase_relationships(anObject)
       }

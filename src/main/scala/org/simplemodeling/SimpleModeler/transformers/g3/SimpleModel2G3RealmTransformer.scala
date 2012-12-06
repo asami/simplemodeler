@@ -24,7 +24,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 /*
  * @since   Jul. 11, 2011
  *  version Aug. 25, 2011
- * @version Nov. 19, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2G3RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -110,6 +110,10 @@ class SimpleModel2G3RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContex
     }
 
     override protected def create_Summary(entity: SMDomainSummary): DomainSummaryTYPE = {
+      new G3EntityEntity(target_java_context)
+    }
+
+    override protected def create_AssociationEntity(entity: SMDomainAssociationEntity): DomainAssociationEntityTYPE = {
       new G3EntityEntity(target_java_context)
     }
 

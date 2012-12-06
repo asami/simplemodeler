@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
  * @since   Aug. 19, 2011
  *  version Aug. 19, 2011
  *  version Feb. 11, 2012
- * @version Nov. 21, 2012
+ * @version Nov. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassDefinition(
@@ -69,11 +69,11 @@ class ScalaClassDefinition(
     sm_end_import_section()
   }
 
-  protected final def base_name: Option[String] = {
+  protected def base_name: Option[String] = {
     customBaseName orElse baseObject.map(_.name)
   }
 
-  protected final def trait_names: Seq[String] = {
+  protected def trait_names: Seq[String] = {
     mixinTraits.map(_.name) ++ customImplementNames ++ custom_Trait_Names
   }
 

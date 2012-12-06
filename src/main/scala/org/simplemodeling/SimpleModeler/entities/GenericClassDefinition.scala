@@ -17,6 +17,7 @@ import org.simplemodeling.SimpleModeler.entity.domain.SMDomainRule
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainService
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainStateMachine
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainSummary
+import org.simplemodeling.SimpleModeler.entity.domain.SMDomainAssociationEntity
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainValue
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainValueId
 import org.simplemodeling.SimpleModeler.entity.domain.SMDomainValueName
@@ -25,6 +26,7 @@ import org.simplemodeling.SimpleModeler.entity.AssociationParticipationRole
 import org.simplemodeling.SimpleModeler.entity.AttributeParticipationRole
 import org.simplemodeling.SimpleModeler.entity.CompositionParticipationRole
 import org.simplemodeling.SimpleModeler.entity.StateMachineParticipationRole
+import org.simplemodeling.SimpleModeler.entity.AssociationClassParticipationRole
 import org.simplemodeling.SimpleModeler.entity.SMAttribute
 import org.simplemodeling.SimpleModeler.entity.SMAssociation
 import org.simplemodeling.SimpleModeler.entity.SMPowertypeRelationship
@@ -46,7 +48,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov. 21, 2012
+ * @version Nov. 28, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -97,6 +99,7 @@ abstract class GenericClassDefinition(
   val baseObject: Option[PObjectReferenceType] = pobject.getBaseObjectType
   def hasBaseObject = baseObject.isDefined
   val mixinTraits: List[PObjectReferenceType] = pobject.getTraitObjects
+  val associationClassAttributes: List[PAttribute] = pobject.associationEntityAttributes
   def isRootObject = baseObject.isEmpty
   val modelEntityOption: Option[SMEntity] = modelObject match {
     case entity: SMEntity => Some(entity)
@@ -132,8 +135,12 @@ abstract class GenericClassDefinition(
     }
     _ordering(a)
   }
+  lazy val associationClassAttributeDefinitions: List[ATTR_DEF] = {
+    val a = associationClassAttributes.map(attribute)
+    _ordering(a)
+  }
   lazy val implementsAttributeDefinitions: List[ATTR_DEF] = {
-    val a = attributeDefinitions ::: traitsAttributeDefinitions
+    val a = attributeDefinitions ::: associationClassAttributeDefinitions ::: traitsAttributeDefinitions
     _ordering(_cleansing(a))
   }
   lazy val wholeAttributeDefinitions: List[ATTR_DEF] = {
@@ -398,7 +405,8 @@ abstract class GenericClassDefinition(
     attribute_variables_constants
     attribute_variables_id
     attribute_variables_plain
-    attribute_variables_aggregate
+    attribute_variables_backreference
+    attribute_variables_participation
     attribute_variables_extension
     attribute_variables_Epilogue
   }
@@ -425,13 +433,18 @@ abstract class GenericClassDefinition(
     }
   }
 
-  protected def attribute_variables_aggregate {
+  /*
+   * Back reference
+   * XXX unused?
+   */
+  protected def attribute_variables_backreference {
     def back_reference(source: SMObject, assoc: SMAssociation) {
-      attribute_variables_aggregate_BackReference(source, assoc)
+      attribute_variables_BackReference(source, assoc)
     }
 
     def is_back_reference(participation: SMParticipation) = {
       participation.roleType match {
+        case AssociationClassParticipationRole => true
         case CompositionParticipationRole => true
         case AggregationParticipationRole => true
         case AssociationParticipationRole => {
@@ -450,8 +463,36 @@ abstract class GenericClassDefinition(
     }
   }
 
-  protected def attribute_variables_aggregate_BackReference(source: SMObject, assoc: SMAssociation) {}
+  protected def attribute_variables_BackReference(source: SMObject, assoc: SMAssociation) {}
 
+  /*
+   * Participation
+   */
+  protected def attribute_variables_participation {
+    def is_back_reference(participation: PParticipation) = {
+      participation match {
+        case _: BaseParticipation => false
+        case _: TraitParticipation => false
+        case a: AttributeParticipation => a.attribute.isAssociationClass
+      }
+    }
+
+    for (participation <- pobject.participations) {
+      if (is_back_reference(participation)) {
+        participation match {
+          case a: AttributeParticipation => {
+            attribute_variables_participation_BackReference(a)
+          }
+        }
+      }
+    }
+  }
+
+  protected def attribute_variables_participation_BackReference(a: AttributeParticipation) {}
+
+  /*
+   * Extension
+   */
   protected def attribute_variables_extension {
   }
 
@@ -480,6 +521,7 @@ abstract class GenericClassDefinition(
         case event: SMDomainEvent         => package_variables_Event(event)
         case role: SMDomainRole           => package_variables_Role(role)
         case summary: SMDomainSummary     => package_variables_Summary(summary)
+        case assoc: SMDomainAssociationEntity     => package_variables_AssociationEntity(assoc)
         case entity: SMDomainEntity       => package_variables_Entity(entity)
         case part: SMDomainEntityPart     => package_variables_Entity_Part(part)
         case id: SMDomainValueId          => package_variables_Id(id)
@@ -522,6 +564,10 @@ abstract class GenericClassDefinition(
 
   protected def package_variables_Summary(summary: SMDomainSummary) {
     package_variables_Entity(summary)
+  }
+
+  protected def package_variables_AssociationEntity(assoc: SMDomainAssociationEntity) {
+    package_variables_Entity(assoc)
   }
 
   protected def package_variables_Entity(entity: SMDomainEntity) {
@@ -899,6 +945,7 @@ abstract class GenericClassDefinition(
         case event: SMDomainEvent         => package_methods_Event(event)
         case role: SMDomainRole           => package_methods_Role(role)
         case summary: SMDomainSummary     => package_methods_Summary(summary)
+        case assoc: SMDomainAssociationEntity     => package_methods_AssociationEntity(assoc)
         case entity: SMDomainEntity       => package_methods_Entity(entity)
         case part: SMDomainEntityPart     => package_methods_Entity_Part(part)
         case id: SMDomainValueId          => package_methods_Id(id)
@@ -941,6 +988,10 @@ abstract class GenericClassDefinition(
 
   protected def package_methods_Summary(summary: SMDomainSummary) {
     package_methods_Entity(summary)
+  }
+
+  protected def package_methods_AssociationEntity(assoc: SMDomainAssociationEntity) {
+    package_methods_Entity(assoc)
   }
 
   protected def package_methods_Entity(entity: SMDomainEntity) {
@@ -1302,9 +1353,28 @@ abstract class GenericClassDefinition(
     }
   }
 
+  protected final def association_entities = {
+    collect_entities_in_module {
+      case x: PEntityEntity if (x.modelObject.isInstanceOf[SMDomainAssociationEntity]) => x
+    }
+  }
+
   protected final def domain_entities = {
     actor_entities ++ role_entities ++
     event_entities ++ resource_entities ++
-    summary_entities
+    summary_entities ++ association_entities
   }
+}
+
+object NullClassDefinition extends GenericClassDefinition(
+  null, Nil, null
+) {
+  protected def pln() {}
+  protected def class_open_body {}
+  protected def class_close_body {}
+  protected def attribute(attr: PAttribute): ATTR_DEF = {
+    sys.error("not reached.")
+  }
+  override def build() {}
+  override def toText = "Not implemented yet. override class_Defition or write_Content in PObjectEntity."
 }

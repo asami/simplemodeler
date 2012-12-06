@@ -26,7 +26,7 @@ import org.goldenport.entity.content.ResourceContent
  * @since   Dec. 12, 2011
  *  version Dec. 14, 2011
  *  version Oct. 26, 2012
- * @version Nov. 19, 2012
+ * @version Nov. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2JavaRealmTransformerBase(sm, sctx) {
@@ -96,6 +96,10 @@ class SimpleModel2Java6RealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
     }
 
     override protected def create_Summary(entity: SMDomainSummary): DomainSummaryTYPE = {
+      new Java6EntityEntity(target_context)
+    }
+
+    override protected def create_AssociationEntity(entity: SMDomainAssociationEntity): DomainAssociationEntityTYPE = {
       new Java6EntityEntity(target_context)
     }
 

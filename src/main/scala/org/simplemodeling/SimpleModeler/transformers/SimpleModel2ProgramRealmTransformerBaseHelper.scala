@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.transformers
 
+import scalaz._, Scalaz._
 import _root_.java.io.File
 import scala.collection.mutable.{ArrayBuffer}
 import org.simplemodeling.SimpleModeler.SimpleModelerConstants
@@ -23,7 +24,7 @@ import org.goldenport.recorder.Recordable
 
 /**
  * @since   Nov.  2, 2012
- * @version Nov. 21, 2012
+ * @version Nov. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SimpleModel2ProgramRealmTransformerBaseHelper {
@@ -31,15 +32,12 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
 
   protected final def build_object_for_package(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) = {
     obj.name = if (name != null) name else make_object_name(modelPackage.name)
-    obj.term = modelPackage.term
-    obj.term_en = modelPackage.term_en
-    obj.term_ja = modelPackage.term_ja
     obj.asciiName = target_context.asciiName(modelPackage)
     obj.uriName = target_context.uriName(modelPackage)
     obj.classNameBase = target_context.classNameBase(modelPackage)
     obj.modelPackage = Some(modelPackage)
     obj.platformPackage = Some(ppkg)
-    obj.setKindedPackageName(make_PackageName(modelPackage))
+    obj.setKindedPackageName(make_Package_Name(modelPackage))
     obj.xmlNamespace = modelPackage.xmlNamespace
 //      obj.modelObject = modelPackage
 //      build_properties(obj, modelPackage)
@@ -50,15 +48,12 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
 
   protected final def build_object_for_package_at_pathname(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, pathname: String) = {
     obj.name = UPathString.getLastComponent(pathname)
-    obj.term = modelPackage.term
-    obj.term_en = modelPackage.term_en
-    obj.term_ja = modelPackage.term_ja
     obj.asciiName = target_context.asciiName(modelPackage)
     obj.uriName = target_context.uriName(modelPackage)
     obj.classNameBase = target_context.classNameBase(modelPackage)
     obj.modelPackage = Some(modelPackage)
     obj.platformPackage = Some(ppkg)
-    obj.setKindedPackageName(make_PackageName(modelPackage))
+    obj.setKindedPackageName(make_Package_Name(modelPackage))
     obj.xmlNamespace = modelPackage.xmlNamespace
 //      obj.modelObject = modelPackage
 //      build_properties(obj, modelPackage)
@@ -68,15 +63,12 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
 
   protected final def build_object_for_package_in_script(obj: PObjectEntity, modelPackage: SMPackage, ppkg: PPackageEntity, name: String = null) = {
     obj.name = if (name != null) name else make_object_name(modelPackage.name)
-    obj.term = modelPackage.term
-    obj.term_en = modelPackage.term_en
-    obj.term_ja = modelPackage.term_ja
     obj.asciiName = target_context.asciiName(modelPackage)
     obj.uriName = target_context.uriName(modelPackage)
     obj.classNameBase = target_context.classNameBase(modelPackage)
     obj.modelPackage = Some(modelPackage)
     obj.platformPackage = Some(ppkg)
-    obj.setKindedPackageName(make_PackageName(modelPackage))
+    obj.setKindedPackageName(make_Package_Name(modelPackage))
     obj.xmlNamespace = modelPackage.xmlNamespace
     //      obj.modelObject = modelPackage
     //      build_properties(obj, modelPackage)
@@ -90,9 +82,6 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
     name: String, packagename: String
   ) = {
     obj.name = name
-    obj.term = modelPackage.term
-    obj.term_en = modelPackage.term_en
-    obj.term_ja = modelPackage.term_ja
     obj.asciiName = target_context.asciiName(modelPackage)
     obj.uriName = target_context.uriName(modelPackage)
     obj.classNameBase = target_context.classNameBase(modelPackage)
@@ -106,15 +95,12 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
   }
 
   protected final def build_package(ppkg: PPackageEntity, modelPackage: SMPackage) = {
-    ppkg.term = modelPackage.term
-    ppkg.term_en = modelPackage.term_en
-    ppkg.term_ja = modelPackage.term_ja
     ppkg.asciiName = target_context.asciiName(modelPackage)
     ppkg.uriName = target_context.uriName(modelPackage)
     ppkg.classNameBase = target_context.classNameBase(modelPackage)
-//      ppkg.modelPackage = Some(modelPackage)
+    ppkg.modelPackage = Some(modelPackage)
 //      ppkg.platformPackage = Some(ppkg)
-    ppkg.setKindedPackageName(make_PackageName(modelPackage))
+    ppkg.setKindedPackageName(make_Package_Name(modelPackage))
     ppkg.xmlNamespace = modelPackage.xmlNamespace
 //      ppkg.modelObject = modelPackage
 //      build_properties(ppkg, modelPackage)
@@ -130,9 +116,10 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
    */
   protected final def build_entity_android(obj: PObjectEntity, entity: PEntityEntity, name: String = null) {
     obj.name = if (name != null) name else make_object_name(entity.name)
-    obj.term = entity.term
-    obj.term_en = entity.term_en
-    obj.term_ja = entity.term_ja
+    obj.platform_name_en = entity.name_en.some
+    obj.platform_term = entity.term.some
+    obj.platform_term_en = entity.term_en.some
+    obj.platform_term_ja = entity.term_ja.some
     obj.asciiName = entity.asciiName
     obj.uriName = entity.uriName
     obj.classNameBase = entity.classNameBase
@@ -148,9 +135,6 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
   protected final def build_package_android(obj: PObjectEntity, pkg: PPackageEntity, name: String = null) {
     val modelPackage = pkg.modelPackage.get
     obj.name = if (name != null) name else make_object_name(modelPackage.name)
-    obj.term = modelPackage.term
-    obj.term_en = modelPackage.term_en
-    obj.term_ja = modelPackage.term_ja
     obj.asciiName = target_context.asciiName(modelPackage)
     obj.uriName = target_context.uriName(modelPackage)
     obj.classNameBase = target_context.classNameBase(modelPackage)
@@ -228,7 +212,7 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
     try {
       findObject(name, pkgname).get
     } catch {
-      case _ => sys.error("No object = " + name + "/" + pkgname)
+      case _ => sys.error("No object = " + name + "/" + pkgname + "/")
     }
   }
 
@@ -248,8 +232,7 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
     target_realm.getNode(make_pathname(aQName)) match {
       case Some(node) => node.entity.asInstanceOf[Some[PEntityEntity]]
       case None => {
-        println("SimpleModel2ProgramRealmTransformerBase#findEntity(%s, %s) = None".format(aQName, make_pathname(aQName)))
-        target_realm.dump
+        record_trace("SimpleModel2ProgramRealmTransformerBase#findEntity(%s, %s) = None".format(aQName, make_pathname(aQName)))
         None
       }
     }
@@ -262,7 +245,7 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
   }
 
   protected final def getModelEntity(aQName: String): PEntityEntity = {
-    try {
+     try {
       (findEntity(aQName) orElse findEntity(get_kinded_qname("model", aQName))).get
     } catch _no_entry("entity", aQName)
   }
@@ -314,13 +297,13 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
   }
 
   protected final def findDocument(aQName: String): Option[PDocumentEntity] = {
-    println("SimpleModel2ProgramRealmTransformerBaseHelper#findDocument = " + aQName)
+//    println("SimpleModel2ProgramRealmTransformerBaseHelper#findDocument = " + aQName)
     target_realm.getNode(make_pathname(aQName)) match {
       case Some(node) => node.entity.get match {
         case d: PDocumentEntity => Some(d)
         case e: PEntityEntity => {
           val docname = make_document_name(e.modelObject) // e.documentName
-          println("SimpleModel2ProgramRealmTransformerBaseHelper#findDocument = " + docname + "/" + e.documentName)
+//          println("SimpleModel2ProgramRealmTransformerBaseHelper#findDocument = " + docname + "/" + e.documentName)
           findDocument(_make_qname(docname, e.packageName))
         }
       }
@@ -333,7 +316,7 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
   }
 
   protected final def getDocument(aQName: String): PDocumentEntity = {
-    println("SimpleModel2ProgramRealmTransformerBaseHelper#getDocument = " + aQName)
+//    println("SimpleModel2ProgramRealmTransformerBaseHelper#getDocument = " + aQName)
     try {
       findDocument(aQName).get
     } catch _no_entry("document", aQName)

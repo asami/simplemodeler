@@ -14,7 +14,8 @@ import com.asamioffice.goldenport.text.UPathString
  *  version Feb.  7, 2012
  *  version Apr.  8, 2012
  *  version Oct. 16, 2012
- * @version Nov. 19, 2012
+ *  version Nov. 25, 2012
+ * @version Dec.  2, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -103,6 +104,10 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
     }
   }
 
+  def xmlElementName = {
+    dslObject.getXmlElementName getOrElse name
+  }
+
   def baseObjectName = {
     if (dslObject.baseObject == NullObject) {
       var clazz = dslObject.getClass.getSuperclass.asInstanceOf[Class[SObject]]
@@ -126,6 +131,13 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
       else clazz.getName
     } else dslObject.baseObject.qualifiedName
   }
+
+  /**
+   * Used by SimpleModel2JavaRealmTransformerBase via PObjectEntity
+   * to decide whether or not to add entity reference participation.
+   * Currently unused.
+   */
+  def isEntity: Boolean = false
 
   /**
    * Used to decide creating event service.

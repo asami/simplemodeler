@@ -15,7 +15,8 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  * @since   Apr. 18, 2011
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
- * @version Nov. 21, 2012
+ *  version Nov. 27, 2012
+ * @version Dec.  3, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -61,7 +62,13 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   def applicationName(po: PObjectEntity): String = {
-    applicationName(po.packageName)
+    val pkg = {
+      po.modelPackage.map(applicationName) orElse
+      po.getModelObject.map(_.packageName) orElse
+      po.platformPackage.map(_.qualifiedName) orElse
+      po.sourcePlatformObject.map(_.packageName) getOrElse po.packageName
+    }
+    applicationName(pkg)
   }
 
   def applicationName(pkg: SMPackage): String = {
@@ -343,9 +350,127 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
 
   final def labelName(modelElement: SMElement): String = {
 //    underscore_name(enTerm(modelElement))
-    UString.capitalize(localeTerm(modelElement))
+    val a = pickup_name(
+      modelElement.label.toText,
+      modelElement.title_sdoc.toText,
+      modelElement.term_ja,
+      modelElement.term_en,
+      modelElement.term,
+      modelElement.name_ja,
+      modelElement.name_en,
+      modelElement.name)
+    UString.capitalize(a)
   }
 
+  /**
+   * Use to enname entity reference column field to destinguish joined column.
+   */
+  def labelNameWithId(attr: PAttribute): String = {
+    labelName(attr.modelElement) + "ID"
+  }
+
+  /**
+   * Generic title string.
+   */
+  final def titleName(anObject: PObjectEntity): String = {
+    titleName(anObject.modelObject)
+  }
+
+  final def titleName(attr: PAttribute): String = {
+    titleName(attr.modelElement)
+  }
+
+  final def titleName(modelElement: SMElement): String = {
+    val a = pickup_name(
+      modelElement.title_sdoc.toText,
+      modelElement.caption.toText,
+      modelElement.label.toText,
+      modelElement.term_ja,
+      modelElement.term_en,
+      modelElement.term,
+      modelElement.name_ja,
+      modelElement.name_en,
+      modelElement.name)
+    UString.capitalize(a)
+  }
+
+  /*
+   * XML
+   */
+  def xmlName(attr: PAttribute): String = {
+    xmlName(attr.modelElement)
+  }
+
+  def xmlName(obj: PObjectEntity): String = {
+    xmlName(obj.modelObject)
+  }
+
+  def xmlName(modelElement: SMElement): String = {
+    val a = pickup_name(
+      modelElement.xmlName,
+      modelElement.term_en,
+      modelElement.term_ja,
+      modelElement.name_en,
+      modelElement.name_ja,
+      modelElement.term,
+      modelElement.name)
+    // UString.capitalize(a)
+    a
+  }
+
+  /*
+   * GUI
+   */
+  /**
+   * Label for GUI tab label.
+   */
+  final def tabName(anObject: PObjectEntity): String = {
+    tabName(anObject.modelObject)
+  }
+
+  final def tabName(attr: PAttribute): String = {
+    tabName(attr.modelElement)
+  }
+
+  final def tabName(modelElement: SMElement): String = {
+    val a = pickup_name(
+      modelElement.tabLabel,
+      modelElement.label.toText,
+      modelElement.title_sdoc.toText,
+      modelElement.term_ja,
+      modelElement.term_en,
+      modelElement.term,
+      modelElement.name_ja,
+      modelElement.name_en,
+      modelElement.name)
+    UString.capitalize(a)
+  }
+
+  /**
+   * Label for GUI navigation tree label.
+   */
+  final def naviName(anObject: PObjectEntity): String = {
+    naviName(anObject.modelObject)
+  }
+
+  final def naviName(attr: PAttribute): String = {
+    naviName(attr.modelElement)
+  }
+
+  final def naviName(modelElement: SMElement): String = {
+    val a = pickup_name(
+      modelElement.naviLabel,
+      modelElement.label.toText,
+      modelElement.term_ja,
+      modelElement.term_en,
+      modelElement.term,
+      modelElement.name_ja,
+      modelElement.name_en,
+      modelElement.name)
+    UString.capitalize(a)
+  }
+
+  //
   final def dataKey(attr: PAttribute): String = {
     asciiName(attr)
   }
@@ -531,11 +656,56 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   def sqlMaker(entity: PEntityEntity): SqlMaker = {
-    new EntitySqlMaker(entity)
+    new EntitySqlMaker(this)(entity)
   }
 
   def sqlMaker(doc: PDocumentEntity): SqlMaker = {
-    new DocumentSqlMaker(doc)
+    new DocumentSqlMaker(this)(doc)
+  }
+
+  def sqlTableName(o: PObjectEntity): String = {
+    pickup_name(o.sqlTableName, o.term_en, o.term_ja, o.term, o.name_en, o.name_ja, o.name)
+  }
+
+  def sqlColumnName(o: PAttribute): String = {
+    pickup_name(o.sqlColumnName, o.term_en, o.term_ja, o.term, o.name_en, o.name_ja, o.name)
+  }
+
+  def sqlTableName(a: PAttribute): String = {
+    val o = a.attributeType match {
+      case e: PEntityType => e.entity
+      case p: PPowertypeType => p.powertype
+      case s: PStateMachineType => s.statemachine
+    }
+    sqlTableName(o)
+  }
+
+
+  def sqlJoinColumnName(a: PAttribute): String = {
+    val o = a.attributeType match {
+      case e: PEntityType => e.entity
+      case p: PPowertypeType => p.powertype
+      case s: PStateMachineType => s.statemachine
+    }
+    sqlColumnName(o.idAttr)
+  }
+
+  def sqlNameColumnName(a: PAttribute): String = {
+    val o = a.attributeType match {
+      case e: PEntityType => e.entity
+      case p: PPowertypeType => p.powertype
+      case s: PStateMachineType => s.statemachine
+    }
+    val r = sqlColumnName(o.nameAttr)
+//    println("PEntityContext#sqlNameColumnName(%s) = %s / %s".format(a.name, o.name, r))
+//    println(o.nameAttr)
+//    o.wholeAttributesWithoutId.foreach(println)
+//    println("===")
+    r
+  }
+
+  def sqlNameAlias(a: PAttribute): String = {
+    asciiName(a) + "__name"
   }
 
   /*
