@@ -4,9 +4,9 @@
   name: simplemodeler
   class: org.simplemodeling.SimpleModeler.AppMain
 [scala]
-  version: 2.9.2
+  version: 2.9.1
 [repositories]
   local
   maven-central
-  sonatype-oss-releases
+  sonatype-releases: https://oss.sonatype.org/content/repositories/releases/
   asamioffice:http://www.asamioffice.com/maven
