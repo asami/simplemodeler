@@ -12,7 +12,7 @@ import org.simplemodeling.SimpleModeler.entity.domain.SMDomainDocument
  * @since   Oct. 23, 2008
  *  version Sep. 21, 2009
  *  version Nov. 12, 2012
- * @version Dec.  3, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class SMOperation(val dslOperation: SOperation) extends SMElement(dslOperation) {
@@ -20,6 +20,7 @@ class SMOperation(val dslOperation: SOperation) extends SMElement(dslOperation) 
   val out: Option[SMDocument] = _make_inout(dslOperation.out)
 
   def uriName = dslOperation.uriName
+  def isQuery = dslOperation.isQuery
 
   add_feature(FeatureName, SText(name)) label_is "操作名"
   add_feature(FeatureInput, input_literal) label_is "入力"

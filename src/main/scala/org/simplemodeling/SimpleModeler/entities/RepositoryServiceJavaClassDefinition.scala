@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import scalaz._, Scalaz._
 import com.asamioffice.goldenport.text.UJavaString
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.domain._
@@ -7,7 +8,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov.  2, 2012
- * @version Dec.  5, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 class RepositoryServiceJavaClassDefinition(
@@ -20,19 +21,24 @@ class RepositoryServiceJavaClassDefinition(
   lazy val entities = pContext.collectPlatform { // XXX package local
     case x: PEntityEntity if x.isId => x.documentEntity
   }.flatten
-  lazy val services = pContext.collectPlatform {  // XXX package local
-    case s: PServiceEntity => s
+  lazy val events = pContext.collectPlatform { // XXX package local
+    case x: PEntityEntity if x.isEvent => x
   }
+  lazy val services = pContext.collectPlatform {  // XXX package local
+    case _: PRepositoryServiceEntity => None
+    case _: PEventServiceEntity => None
+    case s: PServiceEntity => s.some
+  }.flatten
 
   /*
    * public methods
    */
-  def wadlElement = {
-    wadl.WadlMaker(entities, services)(pContext).application
+  def wadlElement(title: String, subtitle: String, author: String = null, date: String = null) = { // XXX events, services
+    wadl.WadlMaker(title, subtitle, entities, events, services, author, date)(pContext).application
   }
 
-  def wadlSpec = {
-    wadl.WadlMaker(entities, services)(pContext).spec
+  def wadlSpec(title: String, subtitle: String, author: String = null, date: String = null) = { // XXX events, services
+    wadl.WadlMaker(title, subtitle, entities, events, services, author, date)(pContext).spec
   }
 
   /*
@@ -163,7 +169,7 @@ protected %repository% repository;
   }
 
   private def wadl_description_literal(pobject: PObjectEntity): String = {
-    val a = wadlElement
+    val a = wadlElement("", "")
     UJavaString.stringLiteral(a.toString)
   }
 

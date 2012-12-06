@@ -11,11 +11,20 @@ import org.simplemodeling.SimpleModeler.entities.relaxng._
 
 /*
  * @since   Dec.  2, 2012
- * @version Dec.  5, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
-case class WadlMaker(entities: Seq[PDocumentEntity], services: Seq[PServiceEntity])(implicit context: PEntityContext) {
+case class WadlMaker(
+  title: String,
+  subtitle: String,
+  entities: Seq[PDocumentEntity],
+  events: Seq[PEntityEntity],
+  services: Seq[PServiceEntity],
+  author: String = null,
+  date: String = null
+)(implicit context: PEntityContext) {
   val entityMakers = entities.map(EntityMethodMaker(_))
+  val eventMakers = events.map(EventMethodMaker(_))
   val serviceMakers = services.map(ServiceMethodMaker(_))
 
   def application = {
@@ -32,19 +41,21 @@ case class WadlMaker(entities: Seq[PDocumentEntity], services: Seq[PServiceEntit
 
   def schemas = {
     val a = entityMakers.flatMap(_.schemas)
+    val c = eventMakers.flatMap(_.schemas)
     val b = serviceMakers.flatMap(_.schemas)
-    a ++ b // unify
+    c ++ a ++ b // unify
   }
 
   def resources = <resources>{resourceElements}</resources>
 
   def resourceElements: Seq[Elem] = {
     val a = entityMakers.flatMap(_.resources)
+    val c = eventMakers.flatMap(_.resources)
     val b = serviceMakers.flatMap(_.resources)
-    a ++ b
+    c ++ a ++ b
   }
 
-  def spec = SpecMaker(this, entityMakers, serviceMakers).spec
+  def spec = SpecMaker(title, subtitle, this, entityMakers, eventMakers, serviceMakers, author, date).spec
 }
 
 abstract class MethodMaker(val context: PEntityContext) {
@@ -71,6 +82,10 @@ abstract class MethodMaker(val context: PEntityContext) {
 
   protected def doc2rng_element(doc: PDocumentEntity): Elem = {
     PRelaxngMaker(context, doc).element
+  }
+
+  protected def entity2rng_element(entity: PEntityEntity): Elem = {
+   doc2rng_element(entity.documentEntity.get) // XXX
   }
 }
 
@@ -157,15 +172,56 @@ case class EntityMethodMaker(entity: PDocumentEntity)(implicit context: PEntityC
   }
 }
 
-case class ServiceMethodMaker(service: PServiceEntity)(implicit context: PEntityContext) extends MethodMaker(context) {
-  val ops = service.operations.map(OperationMethodMaker(_))
+case class EventMethodMaker(entity: PEntityEntity)(implicit context: PEntityContext) extends MethodMaker(context) {
+  def schemaName = "rng:" + context.xmlName(entity)
 
-  def schemas = ops.flatMap(_.schemas)
-  def resources = {
+  def schemas: List[Elem] = {
+    entity2rng_element(entity).pure[List]
+  }
+
+  def resources: List[Elem] = {
+    List(resource)
+  }
+
+  def resource: Elem = {
+    val attr = entity.idAttr
+    val name = attr.name
+    val doc = Nil // XXX
+    val path = entity.uriName + "/{" + name + "}"
+    val xt = "xsd:" + attr.attributeType.xmlDatatypeName
+    <resource path={path}><doc>{doc}</doc><param
+    name={attr.name}
+    style="template" type={xt} required="true"/>{
+      postMethod
+    }</resource>
+  }
+
+  def postMethod = {
+    val inout = {
+      List(
+        <request><representation mediaType="application/xml"
+        element={schemaName}/></request>,
+        response200,
+        response400)
+    }
+    <method name="POST">{inout}</method>
+  }
+}
+
+case class ServiceMethodMaker(service: PServiceEntity)(implicit context: PEntityContext) extends MethodMaker(context) {
+  val operations = service.operations.map(OperationMethodMaker(_))
+
+  def schemas = operations.flatMap(_.schemas)
+
+  def resources: List[Elem] = {
+    List(resource)
+  }
+
+  def resource = {
     val path = service.uriName
     val desc = Nil
-    val children = ops.flatMap(_.resources)
-    <resource path={path}><doc>{desc}</doc>{children}</resource>.pure[List]
+    val children = operations.flatMap(_.resources)
+    <resource path={path}><doc>{desc}</doc>{children}</resource>
   }
 }
 
@@ -176,9 +232,13 @@ case class OperationMethodMaker(op: POperation)(implicit context: PEntityContext
   }
 
   def resources: List[Elem] = {
+    List(resource)
+  }
+
+  def resource: Elem = {
     val path = op.uriName
     val desc = Nil
-    <resource path={path}><doc>{desc}</doc>{methods}</resource>.pure[List]
+    <resource path={path}><doc>{desc}</doc>{methods}</resource>
   }
 
   def methods: Seq[Elem] = List(method)
@@ -229,4 +289,6 @@ case class OperationMethodMaker(op: POperation)(implicit context: PEntityContext
   def outputDocumentTypeName: Option[String] = {
     op.out.map(x => "app:" + x.xmlDatatypeName)
   }
+
+  def isQuery = op.isQuery
 }
