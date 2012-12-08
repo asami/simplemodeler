@@ -9,7 +9,8 @@ import org.goldenport.sdoc.SDoc
  *  version Dec. 15, 2011
  *  version Feb.  9, 2012
  *  version Mar. 25, 2012
- * @version Oct. 30, 2012
+ *  version Oct. 30, 2012
+ * @version Dec.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -31,7 +32,7 @@ class SAttribute(aName: String, aMultiplicity: SMultiplicity) extends SElement(a
   var constraints = new ArrayBuffer[SConstraint]
   var defaultValueExpression: SExpression = NullExpression
   var deriveExpression: SExpression = NullExpression
-  var columnName: String = ""
+//  var columnName: String = ""
 
   final def isId = {
     kind == IdAttributeKind

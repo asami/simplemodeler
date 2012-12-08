@@ -16,7 +16,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec.  2, 2012
+ * @version Dec.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -69,7 +69,6 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   def term_en = modelElement.term_en
   def term_ja = modelElement.term_ja
   def xmlName = modelElement.xmlName
-  def sqlColumnName: String = modelElement.sqlColumnName
 
   val use_object_over_datatype = true
 
@@ -128,6 +127,16 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     candidates.find(StringUtils.isNotBlank)
   }
 */
+
+  /*
+   * SQL
+   */
+  def sqlColumnName: String = modelElement.sqlColumnName
+  def sqlAutoId: Boolean = modelElement.sqlAutoId
+  def sqlReadOnly: Boolean = modelElement.sqlReadOnly
+  def sqlCreate: Boolean = modelElement.sqlCreate
+  def sqlUpdate: Boolean = modelElement.sqlUpdate
+  // def sqlLifeCycle = modelElement.sqlLifeCycle
 
   /*
    * Atom Publishing

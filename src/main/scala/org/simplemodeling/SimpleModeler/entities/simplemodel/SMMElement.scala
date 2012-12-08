@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * @since   Oct.  5, 2012
  *  version Nov. 13, 2012
  *  version Nov. 26, 2012
- * @version Dec.  2, 2012
+ * @version Dec.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMElement {
@@ -29,6 +29,16 @@ trait SMMElement {
    * First entry is available.
    */
   var properties: Seq[PropertyRecord] = Nil
+
+  /*
+   * SQL
+   */
+  var sqlTableName: String = ""
+  var sqlColumnName: String = ""
+  var sqlAutoId: Boolean = false
+  var sqlReadOnly: Boolean = false
+  var sqlCreate: Boolean = false
+  var sqlUpdate: Boolean = false
 
   /**
    * Used by SimpleModelMakerEntity#build#resolve_annotations

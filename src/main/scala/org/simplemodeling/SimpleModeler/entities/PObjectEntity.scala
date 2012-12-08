@@ -20,7 +20,7 @@ import org.simplemodeling.dsl._
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
- * @version Dec.  3, 2012
+ * @version Dec.  6, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -446,10 +446,8 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   def nameAttr: PAttribute = getNameAttr match {
     case Some(attr) => attr
     case None => {
-      throw new UnsupportedOperationException("no id [%s]: %s".format(
-        name,
-        wholeAttributes.map(_.name)
-      ))
+      record_warning("Name特性を持つ属性がないのでId属性を使用します。(%s)".format(name))
+      idAttr
     }
   }
 

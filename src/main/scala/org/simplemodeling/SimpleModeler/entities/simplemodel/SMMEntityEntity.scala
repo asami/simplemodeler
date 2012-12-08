@@ -94,7 +94,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
- * @version Dec.  6, 2012
+ * @version Dec.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1253,6 +1253,12 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     target.summary = source.summary
     target.description = source.description
     target.properties = source.properties
+    //
+    target.sqlColumnName = source.sqlColumnName
+    target.sqlAutoId = source.sqlAutoId
+    target.sqlReadOnly = source.sqlReadOnly
+    target.sqlCreate = source.sqlCreate
+    target.sqlUpdate = source.sqlUpdate
   }
 
   private def _build_base(entities: Map[String, SObject], entity: SObject) {
