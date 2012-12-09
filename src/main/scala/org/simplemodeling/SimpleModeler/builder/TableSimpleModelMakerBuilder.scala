@@ -160,6 +160,7 @@ class TableSimpleModelMakerBuilder(
           attr.deriveExpression = value
 //          println("TableSimpleModelMakerBuilder: derive = " + attr.deriveExpression)
         }
+        case x => ;
       }
     }
   }
