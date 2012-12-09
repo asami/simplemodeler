@@ -1238,7 +1238,63 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     entity.sqlTableName = tableName
   }
 
-  private def _build_properties(target: SElement, source: SMMElement) {
+  // _build_element
+  private def _build_properties(target: SElement, src: SMMElement) {
+    for (a <- _dsl_text(src.name_ja)) {
+      target.name_ja = a
+    }
+    for (a <- _dsl_text(src.name_en)) {
+      target.name_en = a
+    }
+    for (a <- _dsl_text(src.term)) {
+      target.term = a
+    }
+    for (a <- _dsl_text(src.term_ja)) {
+      target.term_ja = a
+    }
+    for (a <- _dsl_text(src.term_en)) {
+      target.term_en = a
+    }
+    for (a <- _dsl_text(src.xmlName)) {
+      target.xmlName = a
+    }
+    for (a <- _dsl_text(src.title)) {
+      target.title = a
+    }
+    for (a <- _dsl_text(src.subtitle)) {
+      target.subtitle = a
+    }
+    for (a <- _dsl_text(src.label)) {
+      target.label = a
+    }
+    for (a <- _dsl_text(src.caption)) {
+      target.caption = a
+    }
+    for (a <- _dsl_text(src.brief)) {
+      target.brief = a
+    }
+    for (a <- _dsl_text(src.summary)) {
+      target.summary = a
+    }
+    for (a <- _dsl_text(src.description)) {
+      target.description = a
+    }
+    for (a <- _dsl_boolean(src.sqlAutoId)) {
+      target.sqlAutoId = a
+    }
+    for (a <- _dsl_boolean(src.sqlReadOnly)) {
+      target.sqlReadOnly = a
+    }
+    for (a <- _dsl_boolean(src.sqlCreate)) {
+      target.sqlCreate = a
+    }
+    for (a <- _dsl_boolean(src.sqlUpdate)) {
+      target.sqlUpdate = a
+    }
+  }
+
+/*
+  private def _build_properties0(target: SElement, source: SMMElement) {
     target.name_ja = source.name_ja
     target.name_en = source.name_en
     target.term = source.term
@@ -1260,6 +1316,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     target.sqlCreate = source.sqlCreate
     target.sqlUpdate = source.sqlUpdate
   }
+*/
 
   private def _build_base(entities: Map[String, SObject], entity: SObject) {
     if (base != NullEntityEntity) {
@@ -1346,53 +1403,31 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 */
   private def _build_attribute(attr: SAttribute, src: SMMAttribute) {
+    _build_properties(attr, src)
     if (src.id) {
       attr kind_is IdAttributeKind
-    }
-    for (a <- _dsl_text(src.name_ja)) {
-      attr.name_ja = a
-    }
-    for (a <- _dsl_text(src.name_en)) {
-      attr.name_en = a
-    }
-    for (a <- _dsl_text(src.term)) {
-      attr.term = a
-    }
-    for (a <- _dsl_text(src.term_ja)) {
-      attr.term_ja = a
-    }
-    for (a <- _dsl_text(src.term_en)) {
-      attr.term_en = a
-    }
-    for (a <- _dsl_text(src.title)) {
-      attr.title = a
-    }
-    for (a <- _dsl_text(src.subtitle)) {
-      attr.subtitle = a
-    }
-    for (a <- _dsl_text(src.label)) {
-      attr.label = a
-    }
-    for (a <- _dsl_text(src.caption)) {
-      attr.caption = a
-    }
-    for (a <- _dsl_text(src.brief)) {
-      attr.brief = a
     }
     for (a <- _dsl_expression(src.deriveExpression)) {
       attr.deriveExpression = a
     }
-    for (a <- _dsl_text(src.summary)) {
-      attr.summary = a
-    }
-    for (a <- _dsl_text(src.columnName)) {
-      attr.columnName = a
+    for (a <- _dsl_text(src.sqlColumnName)) {
+      attr.sqlColumnName = a
     }
   }
 
   private def _dsl_text(s: String): Option[String] = {
     if (UString.isNull(s)) None
     else Some(s)
+  }
+
+  private def _dsl_boolean(s: String): Option[Boolean] = {
+    s.toLowerCase match {
+      case "true" => Some(true)
+      case "false" => Some(false)
+      case "1" => Some(true)
+      case "0" => Some(false)
+      case _ => None
+    }
   }
 
   private def _dsl_type(atype: SMMAttributeTypeSet, entities: Map[String, SObject]): Option[SAttributeType] = {

@@ -2,12 +2,13 @@ package org.simplemodeling.SimpleModeler.entities.simplemodel
 
 /*
  * @since   Oct.  6, 2012
- * @version Nov. 25, 2012
+ *  version Nov. 25, 2012
+ * @version Dec.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMSlot extends SMMElement {
   val name: String
-  var columnName: String = ""
+  var sqlColumnName: String = ""
   var sqlDatatype: Option[SMMObjectType] = None
   var multiplicity: GRMultiplicity = GROne
 }

@@ -34,11 +34,10 @@ trait SMMElement {
    * SQL
    */
   var sqlTableName: String = ""
-  var sqlColumnName: String = ""
-  var sqlAutoId: Boolean = false
-  var sqlReadOnly: Boolean = false
-  var sqlCreate: Boolean = false
-  var sqlUpdate: Boolean = false
+  var sqlAutoId: String = ""
+  var sqlReadOnly: String = ""
+  var sqlCreate: String = ""
+  var sqlUpdate: String = ""
 
   /**
    * Used by SimpleModelMakerEntity#build#resolve_annotations

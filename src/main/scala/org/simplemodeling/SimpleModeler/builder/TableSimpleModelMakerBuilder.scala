@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.builder
 
+import com.asamioffice.goldenport.text.UString
 import scalaz._
 import Scalaz._
 import org.goldenport.entities.csv._
@@ -16,7 +17,8 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
- * @version Nov. 26, 2012
+ *  version Nov. 26, 2012
+ * @version Dec.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -150,6 +152,19 @@ class TableSimpleModelMakerBuilder(
   }
 
   private def _build_attribute(attr: SMMAttribute, entry: Seq[PropertyRecord]) {
+    _build_slot(attr, entry)
+    for (r <- entry) {
+      val (key, value) = r.toTuple
+      NaturalLabel(key) match {
+        case DeriveLabel => {
+          attr.deriveExpression = value
+//          println("TableSimpleModelMakerBuilder: derive = " + attr.deriveExpression)
+        }
+      }
+    }
+  }
+
+  private def _build_slot(slot: SMMSlot, entry: Seq[PropertyRecord]) {
     for (r <- entry) {
 //      println("TableSimpleModelMakerBuilder: %s => %s".format(key, NaturalLabel(key)))
       val (key, value) = r.toTuple
@@ -158,26 +173,38 @@ class TableSimpleModelMakerBuilder(
         case TypeLabel => {}
         case DatatypeLabel => {}
         case ObjecttypeLabel => {}
-        case MultiplicityLabel => attr.multiplicity = GRMultiplicity(value)
-        case NameJaLabel => attr.name_ja = value
-        case NameEnLabel => attr.name_en = value
-        case TermLabel => attr.term = value
-        case TermJaLabel => attr.term_ja = value
-        case TermEnLabel => attr.term_en = value
-        case TitleLabel => attr.title = value
-        case SubtitleLabel => attr.subtitle = value
-        case LabelLabel => attr.label = value
-        case CaptionLabel => attr.caption = value
-        case BriefLabel => attr.brief = value
-        case SummaryLabel => attr.summary = value
-        case DescriptionLabel => attr.description = value
-        case DeriveLabel => {
-          attr.deriveExpression = value
-//          println("TableSimpleModelMakerBuilder: derive = " + attr.deriveExpression)
-        }
-        case ColumnNameLabel => attr.columnName = value
-        case SqlDatatypeLabel => attr.sqlDatatype = SMMObjectType.getSqlDataType(value)
+        case MultiplicityLabel => slot.multiplicity = GRMultiplicity(value)
+        case NameJaLabel => slot.name_ja = value
+        case NameEnLabel => slot.name_en = value
+        case TermLabel => slot.term = value
+        case TermJaLabel => slot.term_ja = value
+        case TermEnLabel => slot.term_en = value
+        case TitleLabel => slot.title = value
+        case SubtitleLabel => slot.subtitle = value
+        case LabelLabel => slot.label = value
+        case CaptionLabel => slot.caption = value
+        case BriefLabel => slot.brief = value
+        case SummaryLabel => slot.summary = value
+        case DescriptionLabel => slot.description = value
+        case ColumnNameLabel => slot.sqlColumnName = value
+        case SqlDatatypeLabel => slot.sqlDatatype = SMMObjectType.getSqlDataType(value)
+        case SqlAutoIdLabel => slot.sqlAutoId = value
+        case SqlReadOnlyLabel => slot.sqlReadOnly = value
+        case SqlCreateLabel => slot.sqlCreate = value
+        case SqlUpdateLabel => slot.sqlUpdate = value
+        case SqlPropertyLabel => _build_slot_property(slot, value)
         case x => ; // {println("TableSimpleModelMakerBuilder: " + x)}
+      }
+    }
+  }
+
+  private def _build_slot_property(slot: SMMSlot, value: String) {
+    for (v <- UString.getTokens(value)) {
+      NaturalLabel(v) match {
+        case SqlAutoIdLabel => slot.sqlAutoId = "true"
+        case SqlReadOnlyLabel => slot.sqlReadOnly = "true"
+        case SqlCreateLabel => slot.sqlCreate = "true"
+        case SqlUpdateLabel => slot.sqlUpdate = "true"
       }
     }
   }
@@ -395,6 +422,11 @@ class TableSimpleModelMakerBuilder(
   }
 
   private def _build_association(assoc: SMMAssociation, entry: Seq[PropertyRecord]) {
+    _build_slot(assoc, entry)
+  }
+
+/*
+  private def _build_association0(assoc: SMMAssociation, entry: Seq[PropertyRecord]) {
     for (r <- entry) {
       val (key, value) = r.toTuple
       NaturalLabel(key) match {
@@ -415,12 +447,14 @@ class TableSimpleModelMakerBuilder(
         case BriefLabel => assoc.brief = value
         case SummaryLabel => assoc.summary = value
         case DescriptionLabel => assoc.description = value
-        case ColumnNameLabel => assoc.columnName = value
+        case ColumnNameLabel => assoc.sqlColumnName = value
+        
         case SqlDatatypeLabel => {}
         case _ => {}
       }
     }
   }
+*/
 
   /**
    * OutlineBuilderBase uses the method.

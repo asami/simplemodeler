@@ -10,7 +10,8 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  * @since   Mar. 24, 2012
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
- * @version Nov. 26, 2012
+ *  version Nov. 26, 2012
+ * @version Dec.  9, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -332,6 +333,27 @@ case object SqlDatatypeLabel extends NaturalLabel {
       "SQL型", "SQLデータ型", "SQLデータタイプ")
   
 }
+
+case object SqlAutoIdLabel extends NaturalLabel {
+  val candidates = List("autoid")
+}
+
+case object SqlReadOnlyLabel extends NaturalLabel {
+  val candidates = List("readonly")
+}
+
+case object SqlCreateLabel extends NaturalLabel {
+  val candidates = List("create")
+}
+
+case object SqlUpdateLabel extends NaturalLabel {
+  val candidates = List("update")
+}
+
+case object SqlPropertyLabel extends NaturalLabel {
+  val candidates = List("property")
+}
+
 //
 case object UnknownNaturalLabel extends NaturalLabel {
   val candidates = Nil
