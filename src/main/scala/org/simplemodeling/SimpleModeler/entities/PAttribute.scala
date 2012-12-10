@@ -16,7 +16,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec.  9, 2012
+ * @version Dec. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -134,8 +134,8 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   def sqlColumnName: String = modelElement.sqlColumnName
   def sqlAutoId: Boolean = modelElement.sqlAutoId
   def sqlReadOnly: Boolean = modelElement.sqlReadOnly
-  def sqlCreate: Boolean = modelElement.sqlCreate
-  def sqlUpdate: Boolean = modelElement.sqlUpdate
+  def sqlAutoCreate: Boolean = modelElement.sqlAutoCreate
+  def sqlAutoUpdate: Boolean = modelElement.sqlAutoUpdate
   // def sqlLifeCycle = modelElement.sqlLifeCycle
 
   /*

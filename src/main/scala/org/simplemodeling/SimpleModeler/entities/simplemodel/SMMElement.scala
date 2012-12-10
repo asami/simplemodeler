@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * @since   Oct.  5, 2012
  *  version Nov. 13, 2012
  *  version Nov. 26, 2012
- * @version Dec.  9, 2012
+ * @version Dec. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMElement {
@@ -36,8 +36,8 @@ trait SMMElement {
   var sqlTableName: String = ""
   var sqlAutoId: String = ""
   var sqlReadOnly: String = ""
-  var sqlCreate: String = ""
-  var sqlUpdate: String = ""
+  var sqlAutoCreate: String = ""
+  var sqlAutoUpdate: String = ""
 
   /**
    * Used by SimpleModelMakerEntity#build#resolve_annotations

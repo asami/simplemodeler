@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec.  9, 2012
+ * @version Dec. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -191,8 +191,8 @@ class TableSimpleModelMakerBuilder(
         case SqlDatatypeLabel => slot.sqlDatatype = SMMObjectType.getSqlDataType(value)
         case SqlAutoIdLabel => slot.sqlAutoId = value
         case SqlReadOnlyLabel => slot.sqlReadOnly = value
-        case SqlCreateLabel => slot.sqlCreate = value
-        case SqlUpdateLabel => slot.sqlUpdate = value
+        case SqlAutoCreateLabel => slot.sqlAutoCreate = value
+        case SqlAutoUpdateLabel => slot.sqlAutoUpdate = value
         case SqlPropertyLabel => _build_slot_property(slot, value)
         case x => ; // {println("TableSimpleModelMakerBuilder: " + x)}
       }
@@ -204,8 +204,8 @@ class TableSimpleModelMakerBuilder(
       NaturalLabel(v) match {
         case SqlAutoIdLabel => slot.sqlAutoId = "true"
         case SqlReadOnlyLabel => slot.sqlReadOnly = "true"
-        case SqlCreateLabel => slot.sqlCreate = "true"
-        case SqlUpdateLabel => slot.sqlUpdate = "true"
+        case SqlAutoCreateLabel => slot.sqlAutoCreate = "true"
+        case SqlAutoUpdateLabel => slot.sqlAutoUpdate = "true"
       }
     }
   }

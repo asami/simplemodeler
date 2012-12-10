@@ -94,7 +94,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
- * @version Dec.  9, 2012
+ * @version Dec. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1285,11 +1285,11 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     for (a <- _dsl_boolean(src.sqlReadOnly)) {
       target.sqlReadOnly = a
     }
-    for (a <- _dsl_boolean(src.sqlCreate)) {
-      target.sqlCreate = a
+    for (a <- _dsl_boolean(src.sqlAutoCreate)) {
+      target.sqlAutoCreate = a
     }
-    for (a <- _dsl_boolean(src.sqlUpdate)) {
-      target.sqlUpdate = a
+    for (a <- _dsl_boolean(src.sqlAutoUpdate)) {
+      target.sqlAutoUpdate = a
     }
   }
 

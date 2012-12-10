@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec.  9, 2012
+ * @version Dec. 10, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -335,23 +335,23 @@ case object SqlDatatypeLabel extends NaturalLabel {
 }
 
 case object SqlAutoIdLabel extends NaturalLabel {
-  val candidates = List("autoid")
+  val candidates = List("auto id")
 }
 
 case object SqlReadOnlyLabel extends NaturalLabel {
-  val candidates = List("readonly")
+  val candidates = List("read only")
 }
 
-case object SqlCreateLabel extends NaturalLabel {
-  val candidates = List("create")
+case object SqlAutoCreateLabel extends NaturalLabel {
+  val candidates = List("auto create")
 }
 
-case object SqlUpdateLabel extends NaturalLabel {
-  val candidates = List("update")
+case object SqlAutoUpdateLabel extends NaturalLabel {
+  val candidates = List("auto update")
 }
 
 case object SqlPropertyLabel extends NaturalLabel {
-  val candidates = List("property")
+  val candidates = List("sql")
 }
 
 //
