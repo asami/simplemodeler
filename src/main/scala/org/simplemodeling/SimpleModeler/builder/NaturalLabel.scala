@@ -351,7 +351,7 @@ case object SqlAutoUpdateLabel extends NaturalLabel {
 }
 
 case object SqlPropertyLabel extends NaturalLabel {
-  val candidates = List("sql")
+  val candidates = List("sql property", "sql properties")
 }
 
 //
@@ -417,7 +417,13 @@ object NaturalLabel {
     ObjecttypeLabel,
     TableNameLabel,
     ColumnNameLabel,
-    SqlDatatypeLabel)
+    SqlDatatypeLabel,
+    SqlAutoIdLabel,
+    SqlReadOnlyLabel,
+    SqlAutoCreateLabel,
+    SqlAutoUpdateLabel,
+    SqlPropertyLabel
+  )
 
   def apply(string: String): NaturalLabel = {
     unapply(string) | NullNaturalLabel

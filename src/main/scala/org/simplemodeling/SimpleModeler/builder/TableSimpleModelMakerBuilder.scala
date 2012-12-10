@@ -169,6 +169,7 @@ class TableSimpleModelMakerBuilder(
     for (r <- entry) {
 //      println("TableSimpleModelMakerBuilder: %s => %s".format(key, NaturalLabel(key)))
       val (key, value) = r.toTuple
+      println("TableSimpleModelMakerBuilder#_build_slot = " + key)
       NaturalLabel(key) match {
         case NameLabel => {}
         case TypeLabel => {}
@@ -194,13 +195,14 @@ class TableSimpleModelMakerBuilder(
         case SqlAutoCreateLabel => slot.sqlAutoCreate = value
         case SqlAutoUpdateLabel => slot.sqlAutoUpdate = value
         case SqlPropertyLabel => _build_slot_property(slot, value)
-        case x => ; // {println("TableSimpleModelMakerBuilder: " + x)}
+        case x => {println("TableSimpleModelMakerBuilder: " + x)}
       }
     }
   }
 
   private def _build_slot_property(slot: SMMSlot, value: String) {
-    for (v <- UString.getTokens(value)) {
+    for (v <- UString.getTokens(value, ",")) {
+      println("TableSimpleModelMakerBuilder#_build_slot_property(%s) = %s".format(value, v))
       NaturalLabel(v) match {
         case SqlAutoIdLabel => slot.sqlAutoId = "true"
         case SqlReadOnlyLabel => slot.sqlReadOnly = "true"
