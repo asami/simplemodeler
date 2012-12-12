@@ -4,7 +4,7 @@ name := "simplemodeler"
 
 organization := "org.simplemodeling"
 
-version := "0.4.0-RC6-SNAPSHOT"
+version := "0.4.0-RC6a"
 
 // scalaVersion := "2.9.2"
 
