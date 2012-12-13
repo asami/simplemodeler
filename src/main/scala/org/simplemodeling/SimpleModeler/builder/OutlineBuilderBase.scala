@@ -355,6 +355,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   private def _build_display_table(table: GTable[String], target: SMMEntityEntity) {
+    println("OutlineEntityBase#_build_display_table = %s".format(target.name))
     _table_builder.buildDisplay(target, table)
   }
 

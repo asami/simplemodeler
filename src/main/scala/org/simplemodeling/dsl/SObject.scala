@@ -6,6 +6,7 @@ import java.util.Locale
 import org.goldenport.sdoc._
 import org.simplemodeling.dsl.datatype._
 import org.simplemodeling.dsl.datatype.ext._
+import org.simplemodeling.SimpleModeler.entities.simplemodel.SMMDisplay
 
 /*
  * derived from ModelElement since Mar. 18, 2007
@@ -156,6 +157,14 @@ abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) 
   val port = new SPortSet(isMaster)
   protected val property_factory = new SPropertyFactory(attribute, association)
 
+  /*
+   * GUI
+   */
+  val displays = new ArrayBuffer[SMMDisplay]
+
+  /*
+   *
+   */
   def association_binary(aName: String, anEntity: => SEntity, aMultiplicity: SMultiplicity): SAssociation = {
     association.create(aName, anEntity, aMultiplicity) binary_is true
   }

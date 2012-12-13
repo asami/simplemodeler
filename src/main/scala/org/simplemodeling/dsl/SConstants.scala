@@ -6,7 +6,7 @@ package org.simplemodeling.dsl
  * @author  ASAMI, Tomoharu
  */
 trait SConstants {
-  val DEFAULT_DISPLAY_SEQUENCE = 1000
+  val DEFAULT_DISPLAY_SEQUENCE = 100000
 }
 
 object SConstants extends SConstants

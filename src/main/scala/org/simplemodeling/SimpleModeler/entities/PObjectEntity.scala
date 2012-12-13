@@ -3,6 +3,7 @@ package org.simplemodeling.SimpleModeler.entities
 import scalaz._, Scalaz._
 import scala.collection.mutable.ArrayBuffer
 import com.asamioffice.goldenport.text.{JavaTextMaker, UString}
+import org.simplemodeling.SimpleModeler.entities.simplemodel.SMMDisplay
 import org.simplemodeling.SimpleModeler.SimpleModelerConstants
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.builder.NameLabel
@@ -20,7 +21,7 @@ import org.simplemodeling.dsl._
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
- * @version Dec.  6, 2012
+ * @version Dec. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -442,6 +443,8 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     }
     None
   }
+
+  val displays = new ArrayBuffer[SMMDisplay]
 
   def nameAttr: PAttribute = getNameAttr match {
     case Some(attr) => attr

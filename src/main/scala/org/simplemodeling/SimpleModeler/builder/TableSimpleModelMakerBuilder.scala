@@ -466,14 +466,22 @@ class TableSimpleModelMakerBuilder(
    */
   def buildDisplay(entity: SMMEntityEntity, table: GTable[String]) {
 //    record_trace("TableSimpleModelMakerBuilder#buildDisplay(%s) = %s/%s/%s".format(entity.name, table.width, table.height, table.head))
-    val counter = Stream(100, 10000, 100)
-    for ((h, n) <- table.headAsStringList zip counter) {
+    for (h <- table.headAsStringList) {
+      val counter = Stream.range(100, 100000, 100)
+      var c = 100
       val rows = for (row <- table.rows) yield h.zip(row)
-      rows.map(entry => add_display(entity, _record(entry), n))
+      for ((entry, n) <- rows zip counter) {
+        add_display(entity, _record(entry), c)
+        c += 100
+      }
     }
   }
 
   protected final def add_display(entity: SMMEntityEntity, entry: Seq[PropertyRecord], seq: Int) {
+    entity.display(_slot_name(entry), seq, entry)
+  }
+
+  protected final def add_display0(entity: SMMEntityEntity, entry: Seq[PropertyRecord], seq: Int) {
     val slot: SMMSlot = _slot_kind(entry) match {
       case IdLabel => add_id(entity, entry)
       case AttributeLabel => add_attribute(entity, entry)
@@ -504,6 +512,7 @@ class TableSimpleModelMakerBuilder(
       case _ => sys.error("???")
     }
     slot.displaySequence = seq
+    println("TableSimpleModelMakerBuilder#add_display(%s) = %s / %s".format(entity.name, slot.name, slot.displaySequence))
   }
 
   /*

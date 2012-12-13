@@ -15,7 +15,7 @@ import com.asamioffice.goldenport.text.UPathString
  *  version Apr.  8, 2012
  *  version Oct. 16, 2012
  *  version Nov. 25, 2012
- * @version Dec.  2, 2012
+ * @version Dec. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -44,6 +44,8 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   val _documents = new ArrayBuffer[SMDocumentRelationship]
   val _uses = new ArrayBuffer[SMUse]
   val _participations = new ArrayBuffer[SMParticipation]
+
+  def displays = dslObject.displays
 
   def baseObject: SMObject = {
     if (_baseObject == null) {

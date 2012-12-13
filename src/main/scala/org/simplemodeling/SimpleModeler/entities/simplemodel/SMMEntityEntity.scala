@@ -2,6 +2,7 @@ package org.simplemodeling.SimpleModeler.entities.simplemodel
 
 import org.apache.commons.lang3.StringUtils
 import org.simplemodeling.dsl.SStoryObject
+import org.simplemodeling.dsl.util.PropertyRecord
 import scalaz._, Scalaz._
 import java.io.BufferedWriter
 import scala.collection.mutable.Set
@@ -153,6 +154,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val secondaryActors = new ArrayBuffer[SMMAssociation]
   val supportingActors = new ArrayBuffer[SMMAssociation]
   val scenarioSteps = new ArrayBuffer[SMMAssociation]
+  val displays = new ArrayBuffer[SMMDisplay]
 
   def isAttribute(name: String) = attributes.exists(_.name == name)
   def isAssociation(name: String) = associations.exists(_.name == name)
@@ -581,6 +583,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case TableNameLabel => tableName = value
       case _ => {}
     }
+  }
+
+  def display(name: String, seq: Int, entry: Seq[PropertyRecord]) {
+    displays += new SMMDisplay(name, seq, entry)
   }
 
 /*
@@ -1219,6 +1225,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     _build_compositions(entity, entities)
     _build_statemachineStates(entity) // XXX
     _build_operations(entity, entities)
+    _build_displays(entity)
     entity
   }
 
@@ -1366,6 +1373,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _build_attributes(entity: SObject, entities: Map[String, SObject]) {
     for (attr <- attributes) {
       record_trace("SMMEntityEntity#_build_attributes(%s) = %s: %s".format(name, attr.name, attr.attributeType.getName))
+      println("SMMEntityEntity#_build_attributes(%s) = %s".format(name, attr.displaySequence))
       attr.attributeType.idType match {
         case Some(t) => {
 //          entity.attribute_id.attributeType = _dsl_type(t)
@@ -1413,6 +1421,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     for (a <- _dsl_text(src.sqlColumnName)) {
       attr.sqlColumnName = a
     }
+    println("SMMEntityEntity#_build_attribute(%s/%s) = %s".format(name, attr.name, src.displaySequence))
+    attr.displaySequence = src.displaySequence
   }
 
   private def _dsl_text(s: String): Option[String] = {
@@ -1819,6 +1829,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
         record_warning("SMMEntityEntity#_describe_event_issue: " + x)
       }
     }
+  }
+
+  private def _build_displays(entity: SObject) {
+    entity.displays ++= displays
   }
 }
 
