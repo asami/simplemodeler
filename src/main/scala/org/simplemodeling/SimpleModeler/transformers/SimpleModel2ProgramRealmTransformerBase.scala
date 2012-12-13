@@ -28,7 +28,7 @@ import org.goldenport.recorder.Recordable
  *  version May.  6, 2012
  *  version Jun. 17, 2012
  *  version Nov. 29, 2012
- * @version Dec. 13, 2012
+ * @version Dec. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -732,7 +732,8 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       anObject.attributes.foreach(build_attribute(obj, _))
       anObject.associations.foreach(build_association(obj, _))
       anObject.operations.foreach(build_operation(obj, _))
-      anObject.displays ++= anObject.displays
+      obj.displays ++= anObject.displays
+      println("SimpleModel2ProgramRealmTransformerBase#build_properties(%s) = %s".format(obj.name, anObject.displays))
     }
 
     private def build_properties_entity_document(obj: PObjectEntity, anObject: SMObject) {
@@ -741,7 +742,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       anObject.attributes.foreach(build_attribute(obj, _))
       anObject.associations.foreach(build_association_entity_document(obj, _))
       anObject.operations.foreach(build_operation(obj, _))
-      anObject.displays ++= anObject.displays
+      obj.displays ++= anObject.displays
     }
 
     private def build_attribute(aObj: PObjectEntity, anAttr: SMAttribute) {

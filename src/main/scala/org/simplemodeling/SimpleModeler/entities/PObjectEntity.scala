@@ -21,7 +21,7 @@ import org.simplemodeling.dsl._
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
- * @version Dec. 13, 2012
+ * @version Dec. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -445,6 +445,10 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   }
 
   val displays = new ArrayBuffer[SMMDisplay]
+
+  def getDisplay(name: String): Option[SMMDisplay] = {
+    displays.find(_.name == name)
+  }
 
   def nameAttr: PAttribute = getNameAttr match {
     case Some(attr) => attr
