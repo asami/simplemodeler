@@ -8,7 +8,7 @@ import util.PropertyRecord
  * @since   Sep. 21, 2008
  *  version Jul. 19, 2009
  *  version Nov. 26, 2012
- * @version Dec. 10, 2012
+ * @version Dec. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SElement(aName: String) extends SDescriptable with SHistoriable {
@@ -107,6 +107,7 @@ abstract class SElement(aName: String) extends SDescriptable with SHistoriable {
   /*
    * GUI
    */
+  var displaySequence: Int = SConstants.DEFAULT_DISPLAY_SEQUENCE
   var naviLabel: String = ""
   var tabLabel: String = ""
 

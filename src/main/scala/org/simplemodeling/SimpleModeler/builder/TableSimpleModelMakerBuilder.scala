@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 10, 2012
+ * @version Dec. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -133,7 +133,7 @@ class TableSimpleModelMakerBuilder(
     }
   }
 
-  protected final def add_attribute(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+  protected final def add_attribute(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
     _slot_kind(entry) match {
       case IdLabel => add_id(obj, entry)
       case _ => {
@@ -144,14 +144,14 @@ class TableSimpleModelMakerBuilder(
     }
   }
 
-  protected final def add_id(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+  protected final def add_id(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
 //    println("TableSimpleModelMakerBuilder#add_id:" + entry)
     val atype = SMMAttributeTypeSet(entry, obj.packageName)
     val attr = obj.attribute(_slot_name(entry), atype, true)
     _build_attribute(attr, entry)
   }
 
-  private def _build_attribute(attr: SMMAttribute, entry: Seq[PropertyRecord]) {
+  private def _build_attribute(attr: SMMAttribute, entry: Seq[PropertyRecord]) = {
     _build_slot(attr, entry)
     for (r <- entry) {
       val (key, value) = r.toTuple
@@ -163,9 +163,10 @@ class TableSimpleModelMakerBuilder(
         case x => ;
       }
     }
+    attr
   }
 
-  private def _build_slot(slot: SMMSlot, entry: Seq[PropertyRecord]) {
+  private def _build_slot(slot: SMMSlot, entry: Seq[PropertyRecord]) = {
     for (r <- entry) {
 //      println("TableSimpleModelMakerBuilder: %s => %s".format(key, NaturalLabel(key)))
       val (key, value) = r.toTuple
@@ -198,6 +199,7 @@ class TableSimpleModelMakerBuilder(
         case x => {println("TableSimpleModelMakerBuilder: " + x)}
       }
     }
+    slot
   }
 
   private def _build_slot_property(slot: SMMSlot, value: String) {
@@ -386,7 +388,7 @@ class TableSimpleModelMakerBuilder(
     }
   }
 
-  protected final def add_composition(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+  protected final def add_composition(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
     val entitytype = SMMEntityTypeSet(entity.packageName, entry)
     val assoc = entity.composition(_slot_name(entry), entitytype)
     _build_association(assoc, entry)
@@ -402,7 +404,7 @@ class TableSimpleModelMakerBuilder(
     }
   }
 
-  protected final def add_aggregation(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+  protected final def add_aggregation(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
     val entitytype = SMMEntityTypeSet(entity.packageName, entry)
     val assoc = entity.aggregation(_slot_name(entry), entitytype)
     _build_association(assoc, entry)
@@ -418,13 +420,13 @@ class TableSimpleModelMakerBuilder(
     }
   }
 
-  protected final def add_association(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+  protected final def add_association(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
     val entitytype = SMMEntityTypeSet(entity.packageName, entry)
     val assoc = entity.association(_slot_name(entry), entitytype)
     _build_association(assoc, entry)
   }
 
-  private def _build_association(assoc: SMMAssociation, entry: Seq[PropertyRecord]) {
+  private def _build_association(assoc: SMMAssociation, entry: Seq[PropertyRecord]) = {
     _build_slot(assoc, entry)
   }
 
@@ -462,6 +464,54 @@ class TableSimpleModelMakerBuilder(
   /**
    * OutlineBuilderBase uses the method.
    */
+  def buildDisplay(entity: SMMEntityEntity, table: GTable[String]) {
+//    record_trace("TableSimpleModelMakerBuilder#buildDisplay(%s) = %s/%s/%s".format(entity.name, table.width, table.height, table.head))
+    val counter = Stream(100, 10000, 100)
+    for ((h, n) <- table.headAsStringList zip counter) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_display(entity, _record(entry), n))
+    }
+  }
+
+  protected final def add_display(entity: SMMEntityEntity, entry: Seq[PropertyRecord], seq: Int) {
+    val slot: SMMSlot = _slot_kind(entry) match {
+      case IdLabel => add_id(entity, entry)
+      case AttributeLabel => add_attribute(entity, entry)
+      case CompositionLabel => add_composition(entity, entry)
+      case AggregationLabel => add_aggregation(entity, entry)
+      case AssociationLabel => add_association(entity, entry)
+      case PowertypeLabel => add_powertype(entity, entry)
+      case StateMachineLabel => add_statemachine(entity, entry)
+      case UnknownNaturalLabel => {
+        val name = _slot_name(entry)
+        println("TableSimpleModelMakerBuilder#add_display(%s) = %s".format(entity.name, entry))
+        if (entity.isAttribute(name)) {
+          add_attribute(entity, entry)          
+        } else if (entity.isComposition(name)) {
+          add_composition(entity, entry)
+        } else if (entity.isAggregation(name)) {
+          add_aggregation(entity, entry)
+        } else if (entity.isAssociation(name)) {
+          add_association(entity, entry)
+        } else if (entity.isPowertype(name)) {
+          add_powertype(entity, entry)
+        } else if (entity.isStateMachine(name)) {
+          add_statemachine(entity, entry)
+        } else {
+          add_attribute(entity, entry)
+        }
+      }
+      case _ => sys.error("???")
+    }
+    slot.displaySequence = seq
+  }
+
+  /*
+   * Builds Slots
+   */
+  /**
+   * OutlineBuilderBase uses the method.
+   */
   def buildOperation(entity: SMMEntityEntity, table: GTable[String]) {
     println("buildOperationTable:" + table)
     for (h <- table.headAsStringList) {
@@ -489,9 +539,9 @@ class TableSimpleModelMakerBuilder(
     }
   }
 
-  protected final def add_powertype(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+  protected final def add_powertype(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
     val entitytype = SMMEntityTypeSet(entity.packageName, entry)
-    val assoc = entity.powertype(_slot_name(entry), entitytype)
+    entity.powertype(_slot_name(entry), entitytype)
   }
 
   /**
@@ -524,9 +574,9 @@ class TableSimpleModelMakerBuilder(
   /**
    * Used by add_feature.
    */
-  protected final def add_statemachine(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+  protected final def add_statemachine(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
     val entitytype = SMMEntityTypeSet(entity.packageName, entry)
-    val assoc = entity.statemachine(_slot_name(entry), entitytype)
+    entity.statemachine(_slot_name(entry), entitytype)
   }
 
   /**

@@ -16,7 +16,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 10, 2012
+ * @version Dec. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -127,6 +127,11 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     candidates.find(StringUtils.isNotBlank)
   }
 */
+
+  /*
+   * GUI
+   */
+  def displaySequence: Int = modelElement.displaySequence
 
   /*
    * SQL

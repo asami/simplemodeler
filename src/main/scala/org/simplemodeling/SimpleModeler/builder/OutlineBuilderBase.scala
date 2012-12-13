@@ -18,7 +18,8 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Apr. 21, 2012
  *  version Sep. 30, 2012
  *  version Oct. 26, 2012
- * @version Nov. 24, 2012
+ *  version Nov. 24, 2012
+ * @version Dec. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -198,6 +199,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     _mmx.attributeTables(aNode).foreach(_build_attribute_table(_, target))
     _mmx.derivations(aNode).foreach(_build_derivation(_, target))
 //    _mmx.derivationTables(aNode).foreach(_build_derivation_table(_, target))
+    _mmx.displayTables(aNode).foreach(_build_display_table(_, target))
     _mmx.powertypes(aNode).foreach(_build_powertype(_, target))
     _mmx.powertypeTables(aNode).foreach(_build_powertype_table(_, target))
     _mmx.kinds(aNode).foreach(_build_kind(_, target))
@@ -350,6 +352,10 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     val obj = model_Builder.createObject(target.kind, term)
     obj.setNarrativeBase(target.term)
     _build_object(source, obj)
+  }
+
+  private def _build_display_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildDisplay(target, table)
   }
 
   private def _build_powertype(source: TopicNode, target: SMMEntityEntity) {

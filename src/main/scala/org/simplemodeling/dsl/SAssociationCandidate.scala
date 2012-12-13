@@ -1,8 +1,10 @@
 package org.simplemodeling.dsl
 
 /*
- * Sep. 23, 2008
- * Oct. 19, 2008
+ * @since   Sep. 23, 2008
+ *  version Oct. 19, 2008
+ * @version Dec. 13, 2012
+ * @author  ASAMI, Tomoharu
  */
 class SAssociationCandidate(val name: String, val associations: SAssociationSet) {
   var done = false
@@ -13,6 +15,10 @@ class SAssociationCandidate(val name: String, val associations: SAssociationSet)
 
   def apply(aName: String, anEntity: SEntity, aMultiplicity: SMultiplicity): SAssociation = {
     associations.create(this, aName, anEntity, aMultiplicity)
+  }
+
+  def apply(aName: String, anEntity: SEntity, aMultiplicity: SMultiplicity, displayseq: Int): SAssociation = {
+    associations.create(this, aName, anEntity, aMultiplicity, displayseq)
   }
 
   // from SPropertyProxy

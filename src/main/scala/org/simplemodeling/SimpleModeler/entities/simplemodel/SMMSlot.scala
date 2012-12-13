@@ -1,9 +1,11 @@
 package org.simplemodeling.SimpleModeler.entities.simplemodel
 
+import org.simplemodeling.dsl.SConstants
+
 /*
  * @since   Oct.  6, 2012
  *  version Nov. 25, 2012
- * @version Dec.  9, 2012
+ * @version Dec. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMSlot extends SMMElement {
@@ -11,6 +13,7 @@ trait SMMSlot extends SMMElement {
   var sqlColumnName: String = ""
   var sqlDatatype: Option[SMMObjectType] = None
   var multiplicity: GRMultiplicity = GROne
+  var displaySequence: Int = SConstants.DEFAULT_DISPLAY_SEQUENCE
 }
 
 abstract class GRMultiplicity

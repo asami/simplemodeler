@@ -4,7 +4,8 @@ import scala.collection.mutable.ArrayBuffer
 
 /*
  * @since   Sep. 12, 2008
- * @version Oct. 15, 2009
+ *  version Oct. 15, 2009
+ * @version Dec. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 class SAttributeSet {
@@ -51,9 +52,10 @@ class SAttributeSet {
     create(aName, aValue, One)
   }
 
-  def create(aName: String, aValue: SAttributeType, aMultiplicity: SMultiplicity): SAttribute = {
+  def create(aName: String, aValue: SAttributeType, aMultiplicity: SMultiplicity, dispseq: Int = SConstants.DEFAULT_DISPLAY_SEQUENCE): SAttribute = {
     val attr = new SAttribute(aName, aMultiplicity)
     attr.attributeType = aValue
+    attr.displaySequence = dispseq
     _attributes += attr
     attr
   }

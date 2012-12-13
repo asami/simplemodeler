@@ -5,7 +5,8 @@ import org.goldenport.sdoc._
 
 /*
  * @since   Sep. 12, 2008
- * @version Oct. 22, 2009
+ *  version Oct. 22, 2009
+ * @version Dec. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 class SAssociationSet(val isMaster: Boolean) {
@@ -65,11 +66,12 @@ class SAssociationSet(val isMaster: Boolean) {
     create(aName, anEntity, One)
   }
 
-  def create(aName: String, anEntity: => SEntity, aMultiplicity: SMultiplicity): SAssociation = {
+  def create(aName: String, anEntity: => SEntity, aMultiplicity: SMultiplicity, dispseq: Int = SConstants.DEFAULT_DISPLAY_SEQUENCE): SAssociation = {
     if (isMaster) {
       val assoc = new SAssociation(aName)
       assoc.entity = anEntity
       assoc.multiplicity = aMultiplicity
+      assoc.displaySequence = dispseq
       _associations += assoc
       assoc
     } else {
@@ -131,6 +133,11 @@ class SAssociationSet(val isMaster: Boolean) {
   final def create(aCandidate: SAssociationCandidate, aName: String, anEntity: SEntity, aMultiplicity: SMultiplicity): SAssociation = {
     aCandidate.done = true
     create(aName, anEntity, aMultiplicity)
+  }
+
+  final def create(aCandidate: SAssociationCandidate, aName: String, anEntity: SEntity, aMultiplicity: SMultiplicity, dispseq: Int): SAssociation = {
+    aCandidate.done = true
+    create(aName, anEntity, aMultiplicity, dispseq)
   }
 
   // from BusinessUsecase

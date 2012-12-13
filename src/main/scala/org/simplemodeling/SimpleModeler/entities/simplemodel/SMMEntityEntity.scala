@@ -94,7 +94,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
- * @version Dec. 10, 2012
+ * @version Dec. 13, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1358,7 +1358,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _build_roles(entities: Map[String, SObject], entity: SObject) {
     for (role <- roles) {
       doe_w(_role_ref(role.associationType.getName, entities))(r => {
-        entity.role(role.name, r, _dsl_multiplicity(role.multiplicity))
+        entity.role.create(role.name, r, _dsl_multiplicity(role.multiplicity), role.displaySequence)
       })
     }
   }
@@ -1374,7 +1374,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
         case _ => {
           _dsl_type(attr.attributeType, entities) match {
             case Some(t) => {
-              val a = entity.attribute(attr.name, t, _dsl_multiplicity(attr.multiplicity))
+              val a = entity.attribute.create(attr.name, t, _dsl_multiplicity(attr.multiplicity), attr.displaySequence)
               _build_attribute(a, attr)
             }
             case None => {
@@ -1498,7 +1498,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     for (assoc <- associations) {
       doe_w(_entity_ref(assoc.associationType.getName, entities)) { x =>
         record_trace("SMMEntityEntity#_build_associations: " + assoc.name)
-        val a = entity.association(assoc.name, x, _dsl_multiplicity(assoc.multiplicity))
+        val a = entity.association.create(assoc.name, x, _dsl_multiplicity(assoc.multiplicity), assoc.displaySequence)
         _build_specifications(a, assoc)
         _build_properties(a, assoc)
         a
@@ -1510,7 +1510,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     for (assoc <- aggregations) {
       doe_w(_entity_ref(assoc.associationType.getName, entities)) { x =>
         record_trace("SMMEntityEntity#_build_aggregations: " + assoc.name)
-        val a = entity.aggregation(assoc.name, x, _dsl_multiplicity(assoc.multiplicity))
+        val a = entity.aggregation(assoc.name, x, _dsl_multiplicity(assoc.multiplicity), assoc.displaySequence)
         _build_specifications(a, assoc)
         _build_properties(a, assoc)
         a
@@ -1522,7 +1522,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     for (assoc <- compositions) {
       doe_w(_entity_ref(assoc.associationType.getName, entities)) { x =>
         record_trace("SMMEntityEntity#_build_compositions: " + assoc.name)
-        val a = entity.composition(assoc.name, x, _dsl_multiplicity(assoc.multiplicity))
+        val a = entity.composition(assoc.name, x, _dsl_multiplicity(assoc.multiplicity), assoc.displaySequence)
         _build_specifications(a, assoc)
         _build_properties(a, assoc)
         a
@@ -1787,9 +1787,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     dr
   }
 
-  private def _describe_association(entities: Map[String, SObject], set: (String, SEntity, SMultiplicity) => SAssociation, assoc: SMMAssociation) {
+  private def _describe_association(entities: Map[String, SObject], set: (String, SEntity, SMultiplicity, Int) => SAssociation, assoc: SMMAssociation) {
     doe_w(_entity_ref(assoc.associationType.getName, entities)) { 
-      set(assoc.name, _, _dsl_multiplicity(assoc.multiplicity))
+      set(assoc.name, _, _dsl_multiplicity(assoc.multiplicity), assoc.displaySequence)
     }
   }
 

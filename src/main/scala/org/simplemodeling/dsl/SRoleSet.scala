@@ -3,8 +3,10 @@ package org.simplemodeling.dsl
 import scala.collection.mutable.ArrayBuffer
 
 /*
- * Nov. 18, 2008
- * Feb. 27, 2009
+ * @since   Nov. 18, 2008
+ *  version Feb. 27, 2009
+ * @version Dec. 13, 2012
+ * @author  ASAMI, Tomoharu
  */
 class SRoleSet {
   private val _roles = new ArrayBuffer[SRoleRelationship]
@@ -37,9 +39,10 @@ class SRoleSet {
     create(aName, aRole, One)
   }
 
-  def create(aName: String, aRole: SRole, aMultiplicity: SMultiplicity): SRoleRelationship = {
+  def create(aName: String, aRole: SRole, aMultiplicity: SMultiplicity, dispseq: Int = SConstants.DEFAULT_DISPLAY_SEQUENCE): SRoleRelationship = {
     val role = new SRoleRelationship(aRole, aName)
     role.multiplicity = aMultiplicity
+    role.displaySequence = dispseq
     _roles += role
     role
   }

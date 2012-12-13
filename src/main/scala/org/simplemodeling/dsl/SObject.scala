@@ -14,8 +14,11 @@ import org.simplemodeling.dsl.datatype.ext._
  *  version Sep. 18, 2011
  *  version Oct. 21, 2012
  *  version Nov. 22, 2012
- * @version Dec.  2, 2012
+ * @version Dec. 13, 2012
  * @author  ASAMI, Tomoharu
+ */
+/**
+ * SimpleModelEntity converts SObject into SMobject.
  */
 abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) {
   type Descriptable_TYPE = SObject
@@ -181,8 +184,8 @@ abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) 
     aggregation(aSymbol.name, anEntity, aMultiplicity)
   }
 
-  def aggregation(aName: String, anEntity: => SEntity, aMultiplicity: SMultiplicity): SAssociation = {
-    association.create(aName, anEntity, aMultiplicity) aggregation_is true
+  def aggregation(aName: String, anEntity: => SEntity, aMultiplicity: SMultiplicity, dispseq: Int = SConstants.DEFAULT_DISPLAY_SEQUENCE): SAssociation = {
+    association.create(aName, anEntity, aMultiplicity, dispseq) aggregation_is true
   }
 
   def composition(aSymbol: Symbol, anEntity: => SEntity): SAssociation = {
@@ -197,8 +200,8 @@ abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) 
     composition(aSymbol.name, anEntity, aMultiplicity)
   }
 
-  def composition(aName: String, anEntity: => SEntity, aMultiplicity: SMultiplicity): SAssociation = {
-    association.create(aName, anEntity, aMultiplicity) composition_is true
+  def composition(aName: String, anEntity: => SEntity, aMultiplicity: SMultiplicity, dispseq: Int = SConstants.DEFAULT_DISPLAY_SEQUENCE): SAssociation = {
+    association.create(aName, anEntity, aMultiplicity, dispseq) composition_is true
   }
 
   def getXmlNamespace: Option[String] = Option(xmlNamespace)
