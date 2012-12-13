@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 13, 2012
+ * @version Dec. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -467,12 +467,10 @@ class TableSimpleModelMakerBuilder(
   def buildDisplay(entity: SMMEntityEntity, table: GTable[String]) {
 //    record_trace("TableSimpleModelMakerBuilder#buildDisplay(%s) = %s/%s/%s".format(entity.name, table.width, table.height, table.head))
     for (h <- table.headAsStringList) {
-      val counter = Stream.range(100, 100000, 100)
-      var c = 100
+      val counter = Stream.from(100, 100)
       val rows = for (row <- table.rows) yield h.zip(row)
       for ((entry, n) <- rows zip counter) {
-        add_display(entity, _record(entry), c)
-        c += 100
+        add_display(entity, _record(entry), n)
       }
     }
   }
