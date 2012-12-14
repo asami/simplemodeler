@@ -64,12 +64,29 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     else NullAttributeKind
   }
 
-  def name_en = modelElement.name_en
-  def name_ja = modelElement.name_ja
-  def term = modelElement.term
-  def term_en = modelElement.term_en
-  def term_ja = modelElement.term_ja
-  def xmlName = modelElement.xmlName
+  def name_en = {
+    getModelElement.map(_.name_en) | name
+  }
+
+  def name_ja = {
+    getModelElement.map(_.name_ja) | name
+  }
+
+  def term = {
+    getModelElement.map(_.term) | name
+  }
+
+  def term_en = {
+    getModelElement.map(_.term_en) | name
+  }
+
+  def term_ja = {
+    getModelElement.map(_.term_ja) | name
+  }
+
+  def xmlName = {
+    getModelElement.map(_.xmlName) | name
+  }
 
   val use_object_over_datatype = true
 
@@ -95,8 +112,13 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   def isAssociationClass = getModelAssociation.map(_.isAssociationClass) | false
 
-  def getProperty(key: String) = modelElement.getProperty(key)
-  def getProperty(key: NaturalLabel) = modelElement.getProperty(key)
+  def getProperty(key: String) = {
+    getModelElement.flatMap(_.getProperty(key))
+  }
+
+  def getProperty(key: NaturalLabel) = {
+    getModelElement.flatMap(_.getProperty(key))
+  }
 
   /*
    * attributes for GUI
@@ -133,16 +155,32 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   /*
    * GUI
    */
-  def displaySequence: Int = modelElement.displaySequence
+  def displaySequence: Int = {
+    getModelElement.map(_.displaySequence) | SConstants.DEFAULT_DISPLAY_SEQUENCE
+  }
 
   /*
    * SQL
    */
-  def sqlColumnName: String = modelElement.sqlColumnName
-  def sqlAutoId: Boolean = modelElement.sqlAutoId
-  def sqlReadOnly: Boolean = modelElement.sqlReadOnly
-  def sqlAutoCreate: Boolean = modelElement.sqlAutoCreate
-  def sqlAutoUpdate: Boolean = modelElement.sqlAutoUpdate
+  def sqlColumnName: String = {
+    getModelElement.map(_.sqlColumnName) | name
+  }
+
+  def sqlAutoId: Boolean = {
+    getModelElement.map(_.sqlAutoId) | false
+  }
+
+  def sqlReadOnly: Boolean = {
+    getModelElement.map(_.sqlReadOnly) | false
+  }
+
+  def sqlAutoCreate: Boolean = {
+    getModelElement.map(_.sqlAutoCreate) | false
+  }
+
+  def sqlAutoUpdate: Boolean = {
+    getModelElement.map(_.sqlAutoUpdate) | false
+  }
   // def sqlLifeCycle = modelElement.sqlLifeCycle
 
   /*
@@ -412,6 +450,6 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   //
   override def toString() = {
-    name + multiplicity.mark + "/" + modelElement
+    name + multiplicity.mark + "/" + (getModelElement.map(_.toString) | "No model")
   }
 }

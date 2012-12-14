@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entities
 
+import scalaz._, Scalaz._
 import scala.util.control.Exception._
 import org.simplemodeling.SimpleModeler.entity._
 import org.goldenport.Goldenport.{Application_Version, Application_Version_Build}
@@ -16,7 +17,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
  *  version Nov. 27, 2012
- * @version Dec.  3, 2012
+ * @version Dec. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -345,7 +346,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   final def labelName(attr: PAttribute): String = {
-    labelName(attr.modelElement)
+    attr.getModelElement.map(labelName) | UString.capitalize(attr.name)
   }
 
   final def labelName(modelElement: SMElement): String = {
