@@ -732,7 +732,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       anObject.attributes.foreach(build_attribute(obj, _))
       anObject.associations.foreach(build_association(obj, _))
       anObject.operations.foreach(build_operation(obj, _))
-      obj.displays ++= anObject.displays
+      obj.displays = anObject.displays
       println("SimpleModel2ProgramRealmTransformerBase#build_properties(%s) = %s".format(obj.name, anObject.displays))
     }
 
@@ -742,7 +742,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       anObject.attributes.foreach(build_attribute(obj, _))
       anObject.associations.foreach(build_association_entity_document(obj, _))
       anObject.operations.foreach(build_operation(obj, _))
-      obj.displays ++= anObject.displays
+      obj.displays = anObject.displays
     }
 
     private def build_attribute(aObj: PObjectEntity, anAttr: SMAttribute) {

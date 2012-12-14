@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 13, 2012
+ * @version Dec. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -321,6 +321,10 @@ case object TabLabelLabel extends NaturalLabel {
   val candidates = List("tab", "タブ", "タブ名")
 }
 
+case object VisibilityLabel extends NaturalLabel {
+  val candidates = List("visibility", "可視性")
+}
+
 /*
  * SQL
  */
@@ -422,6 +426,7 @@ object NaturalLabel {
     DisplayLabel,
     NaviLabelLabel,
     TabLabelLabel,
+    VisibilityLabel,
     TableNameLabel,
     ColumnNameLabel,
     SqlDatatypeLabel,

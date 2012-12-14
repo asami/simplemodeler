@@ -5,6 +5,7 @@ import scalaz._
 import Scalaz._
 import scala.collection.mutable.{Buffer, ArrayBuffer}
 import org.simplemodeling.dsl._
+import org.simplemodeling.SimpleModeler.builder.NaturalLabel
 import org.simplemodeling.SimpleModeler.entity._
 
 /*
@@ -16,7 +17,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 13, 2012
+ * @version Dec. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -95,6 +96,7 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   def isAssociationClass = getModelAssociation.map(_.isAssociationClass) | false
 
   def getProperty(key: String) = modelElement.getProperty(key)
+  def getProperty(key: NaturalLabel) = modelElement.getProperty(key)
 
   /*
    * attributes for GUI

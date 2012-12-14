@@ -1,8 +1,10 @@
 package org.simplemodeling.dsl.util
 
+import org.simplemodeling.SimpleModeler.builder.NaturalLabel
+
 /*
  * @since   Nov. 26, 2012
- * @version Nov. 26, 2012
+ * @version Dec. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 case class PropertyRecord(
@@ -11,6 +13,10 @@ case class PropertyRecord(
 ) {
   def isMatch(k: String) = {
     key.equalsIgnoreCase(k)
+  }
+
+  def isMatch(k: NaturalLabel) = {
+    k.isMatch(key)
   }
 
   def toTuple = (key, value.get)

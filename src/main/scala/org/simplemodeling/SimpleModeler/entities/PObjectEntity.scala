@@ -444,11 +444,9 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     None
   }
 
-  val displays = new ArrayBuffer[SMMDisplay]
+  var displays: SMDisplays = SMDisplays(Nil)
 
-  def getDisplay(name: String): Option[SMMDisplay] = {
-    displays.find(_.name == name)
-  }
+  def getDisplay(name: String): Option[SMMDisplay] = displays.get(name)
 
   def nameAttr: PAttribute = getNameAttr match {
     case Some(attr) => attr
