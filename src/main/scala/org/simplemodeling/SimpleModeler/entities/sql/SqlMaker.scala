@@ -8,7 +8,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Nov.  2, 2012
- * @version Dec.  6, 2012
+ * @version Dec. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
@@ -83,7 +83,7 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
   private def _column(attr: PAttribute): List[String] = {
     if (attr.isMulti) return Nil
     val columnname = context.sqlColumnName(attr)
-    println("SqlMaker#_column(%s/%s) = %s".format(entity.name, attr.name, attr))
+//    println("SqlMaker#_column(%s/%s) = %s".format(entity.name, attr.name, attr))
     val name = context.asciiName(attr)
     val c1 = _column_as("T." + columnname, name)
     attr match {

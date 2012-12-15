@@ -170,7 +170,6 @@ class TableSimpleModelMakerBuilder(
     for (r <- entry) {
 //      println("TableSimpleModelMakerBuilder: %s => %s".format(key, NaturalLabel(key)))
       val (key, value) = r.toTuple
-      println("TableSimpleModelMakerBuilder#_build_slot = " + key)
       NaturalLabel(key) match {
         case NameLabel => {}
         case TypeLabel => {}
@@ -196,7 +195,7 @@ class TableSimpleModelMakerBuilder(
         case SqlAutoCreateLabel => slot.sqlAutoCreate = value
         case SqlAutoUpdateLabel => slot.sqlAutoUpdate = value
         case SqlPropertyLabel => _build_slot_property(slot, value)
-        case x => {println("TableSimpleModelMakerBuilder: " + x)}
+        case x => // record_trace("TableSimpleModelMakerBuilder: not label = " + x)
       }
     }
     slot
@@ -204,7 +203,7 @@ class TableSimpleModelMakerBuilder(
 
   private def _build_slot_property(slot: SMMSlot, value: String) {
     for (v <- UString.getTokens(value, ",")) {
-      println("TableSimpleModelMakerBuilder#_build_slot_property(%s) = %s".format(value, v))
+//      println("TableSimpleModelMakerBuilder#_build_slot_property(%s) = %s".format(value, v))
       NaturalLabel(v) match {
         case SqlAutoIdLabel => slot.sqlAutoId = "true"
         case SqlReadOnlyLabel => slot.sqlReadOnly = "true"
@@ -339,7 +338,7 @@ class TableSimpleModelMakerBuilder(
       case StateMachineLabel => add_statemachine(entity, entry)
       case UnknownNaturalLabel => {
         val name = _slot_name(entry)
-        println("TableSimpleModelMakerBuilder#add_feature(%s) = %s".format(entity.name, entry))
+//        println("TableSimpleModelMakerBuilder#add_feature(%s) = %s".format(entity.name, entry))
         if (entity.isAttribute(name)) {
           add_attribute(entity, entry)          
         } else if (entity.isComposition(name)) {
@@ -479,40 +478,6 @@ class TableSimpleModelMakerBuilder(
     entity.display(_slot_name(entry), seq, entry)
   }
 
-  protected final def add_display0(entity: SMMEntityEntity, entry: Seq[PropertyRecord], seq: Int) {
-    val slot: SMMSlot = _slot_kind(entry) match {
-      case IdLabel => add_id(entity, entry)
-      case AttributeLabel => add_attribute(entity, entry)
-      case CompositionLabel => add_composition(entity, entry)
-      case AggregationLabel => add_aggregation(entity, entry)
-      case AssociationLabel => add_association(entity, entry)
-      case PowertypeLabel => add_powertype(entity, entry)
-      case StateMachineLabel => add_statemachine(entity, entry)
-      case UnknownNaturalLabel => {
-        val name = _slot_name(entry)
-        println("TableSimpleModelMakerBuilder#add_display(%s) = %s".format(entity.name, entry))
-        if (entity.isAttribute(name)) {
-          add_attribute(entity, entry)          
-        } else if (entity.isComposition(name)) {
-          add_composition(entity, entry)
-        } else if (entity.isAggregation(name)) {
-          add_aggregation(entity, entry)
-        } else if (entity.isAssociation(name)) {
-          add_association(entity, entry)
-        } else if (entity.isPowertype(name)) {
-          add_powertype(entity, entry)
-        } else if (entity.isStateMachine(name)) {
-          add_statemachine(entity, entry)
-        } else {
-          add_attribute(entity, entry)
-        }
-      }
-      case _ => sys.error("???")
-    }
-    slot.displaySequence = seq
-    println("TableSimpleModelMakerBuilder#add_display(%s) = %s / %s".format(entity.name, slot.name, slot.displaySequence))
-  }
-
   /*
    * Builds Slots
    */
@@ -520,7 +485,7 @@ class TableSimpleModelMakerBuilder(
    * OutlineBuilderBase uses the method.
    */
   def buildOperation(entity: SMMEntityEntity, table: GTable[String]) {
-    println("buildOperationTable:" + table)
+//    println("buildOperationTable:" + table)
     for (h <- table.headAsStringList) {
       val rows = for (row <- table.rows) yield h.zip(row)
       rows.map(entry => add_operation(entity, _record(entry)))

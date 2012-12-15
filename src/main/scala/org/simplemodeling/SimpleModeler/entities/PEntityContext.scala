@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
  *  version Nov. 27, 2012
- * @version Dec. 14, 2012
+ * @version Dec. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -279,6 +279,14 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     model.entityDocumentName(anObject)
   }
 
+  /**
+   * SimpleModel2ProgramRealmTransformerBase uses this method.
+   * In case of association class optimization.
+   */
+  final def entityDocumentName(name: String): String = {
+    model.entityDocumentName(name)
+  }
+
   @deprecated("candidate old feature", "before 0.3.3")
   final def entityDocumentName(anObject: PObjectEntity): String = {
     entityDocumentName(anObject.modelObject)
@@ -318,6 +326,22 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
       else UJavaString.qname2simpleName(aPackageName)
     }
     UString.capitalize(domainName) + "EventService"
+  }
+
+  /**
+   * SimpleModel2ProgramRealmTransformerBase uses this method.
+   */
+  final def participationAssociationReferenceName(participation: SMParticipation): String = {
+    val a = participation.associationOption.map(_.name + "__") | ""
+    val b = make_attr_element_name(participation.element)
+    "backref__" + a + b
+  }
+  
+  /**
+   * SimpleModel2ProgramRealmTransformerBase uses this method.
+   */
+  final def participationAssociationClassReferenceName(participation: SMParticipation): String = {
+    UString.uncapitalize(make_attr_element_name(participation.element))
   }
 
   @deprecated("candidate old feature", "before 0.3.3")

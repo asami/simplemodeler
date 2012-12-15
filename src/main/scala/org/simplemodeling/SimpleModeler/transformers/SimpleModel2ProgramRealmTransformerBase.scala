@@ -28,7 +28,7 @@ import org.goldenport.recorder.Recordable
  *  version May.  6, 2012
  *  version Jun. 17, 2012
  *  version Nov. 29, 2012
- * @version Dec. 14, 2012
+ * @version Dec. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -731,9 +731,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       anObject.stateMachines.foreach(build_statemachine(obj, _))
       anObject.attributes.foreach(build_attribute(obj, _))
       anObject.associations.foreach(build_association(obj, _))
+      anObject.participations.foreach(build_participation(obj, _))
       anObject.operations.foreach(build_operation(obj, _))
       obj.displays = anObject.displays
-      println("SimpleModel2ProgramRealmTransformerBase#build_properties(%s) = %s".format(obj.name, anObject.displays))
     }
 
     private def build_properties_entity_document(obj: PObjectEntity, anObject: SMObject) {
@@ -741,6 +741,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       anObject.stateMachines.foreach(build_statemachine(obj, _))
       anObject.attributes.foreach(build_attribute(obj, _))
       anObject.associations.foreach(build_association_entity_document(obj, _))
+      anObject.participations.foreach(build_participation_entity_document(obj, _))
       anObject.operations.foreach(build_operation(obj, _))
       obj.displays = anObject.displays
     }
@@ -766,6 +767,55 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       aObj.addAttribute(attr)
       attr.multiplicity = get_multiplicity(anAssoc.multiplicity)
       attr.modelAssociation = anAssoc
+    }
+
+    private def build_participation(aObj: PObjectEntity, participation: SMParticipation) {
+      participation.roleType match {
+        case AssociationParticipationRole => // build_participation_assocation(aObj, participation)
+        case AssociationClassParticipationRole => build_participation_assocation_class(aObj, participation)
+        case _ => ;
+      }
+    }
+
+    private def build_participation_assocation(aObj: PObjectEntity, participation: SMParticipation) {
+      
+      val name = target_context.participationAssociationReferenceName(participation)
+      val attr = make_attribute(name, object_type_participation_association(participation))
+      aObj.addAttribute(attr)
+      attr.multiplicity = PZeroMore
+      attr.modelParticipation = participation
+    }
+
+    private def build_participation_assocation_class(aObj: PObjectEntity, participation: SMParticipation) {
+      val name = target_context.participationAssociationClassReferenceName(participation)
+      val attr = make_attribute(name, object_type_participation_association_class(participation, aObj))
+      aObj.addAttribute(attr)
+      attr.multiplicity = PZeroMore
+      attr.modelParticipation = participation
+    }
+
+    private def build_participation_entity_document(aObj: PObjectEntity, participation: SMParticipation) {
+      participation.roleType match {
+        case AssociationParticipationRole => // build_participation_entity_document_assocation(aObj, participation)
+        case AssociationClassParticipationRole => build_participation_entity_document_assocation_class(aObj, participation)
+        case _ => ;
+      }
+    }
+
+    private def build_participation_entity_document_assocation(aObj: PObjectEntity, participation: SMParticipation) {
+      val name = target_context.participationAssociationReferenceName(participation)
+      val attr = make_attribute(name, object_type_entity_document_participation_association(participation))
+      aObj.addAttribute(attr)
+      attr.multiplicity = PZeroMore
+      attr.modelParticipation = participation
+    }
+
+    private def build_participation_entity_document_assocation_class(aObj: PObjectEntity, participation: SMParticipation) {
+      val name = target_context.participationAssociationClassReferenceName(participation)
+      val attr = make_attribute(name, object_type_entity_document_participation_association_class(participation, aObj))
+      aObj.addAttribute(attr)
+      attr.multiplicity = PZeroMore
+      attr.modelParticipation = participation
     }
 
     private def build_powertype(aObj: PObjectEntity, aPowertype: SMPowertypeRelationship) {
@@ -886,6 +936,52 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       record_trace("SimpleModel2ProgramRealmTransformerBase#object_type: statemachine name = " + name)
       val objectType = new PStateMachineType(name, make_Package_Name(statemachine.packageName))
       objectType
+    }
+
+    private def object_type_participation_association(participation: SMParticipation): PObjectType = {
+      val entity = participation.element
+      val name = entity.name
+      val pkgname = entity.packageName
+      new PEntityType(name, make_Package_Name(pkgname))
+    }
+
+    private def object_type_participation_association_class(participation: SMParticipation, obj: PObjectEntity): PObjectType = {
+      val (name, pkgname) = _association_class_entity(participation, obj)
+      new PEntityType(name, make_Package_Name(pkgname))
+    }
+
+    private def _association_class_entity(participation: SMParticipation, obj: PObjectEntity): (String, String) = {
+      val entity = participation.element
+      if (entity.attributes.isEmpty &&
+          entity.associations.length == 2 &&
+          entity.powertypes.isEmpty &&
+          entity.stateMachines.isEmpty) {
+        val e0t = entity.associations(0).associationType
+        val e1t = entity.associations(1).associationType
+        val et = if (!(e0t.name == obj.name && e0t.packageName == obj.packageName)) {
+          e1t
+        } else if (!(e1t.name != obj.name && e1t.packageName != obj.packageName)) {
+          e0t
+        } else {
+          sys.error("No suitable associations in association class.")
+        }
+        (e0t.name, e0t.packageName)
+      } else {
+        (entity.name, entity.packageName)
+      }
+    }
+
+    private def object_type_entity_document_participation_association(participation: SMParticipation): PObjectType = {
+      val entity = participation.element
+      val name = make_entity_document_name(entity)
+      val pkgname = entity.packageName
+      new PDocumentType(name, make_Package_Name(pkgname))
+    }
+
+    private def object_type_entity_document_participation_association_class(participation: SMParticipation, obj: PObjectEntity): PObjectType = {
+      val (name, pkgname) = _association_class_entity(participation, obj)
+      val dname = make_entity_document_name(name)
+      new PDocumentType(dname, make_Package_Name(pkgname))
     }
 
     private def get_multiplicity(aMultiplicity: SMMultiplicity): PMultiplicity = {
@@ -1120,6 +1216,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
 
   protected final def make_entity_document_name(anObject: SMObject): String = {
     target_context.entityDocumentName(anObject)
+  }
+
+  protected final def make_entity_document_name(name: String): String = {
+    target_context.entityDocumentName(name)
   }
 
   protected final def make_entity_service_name(pkg: SMPackage): String = {

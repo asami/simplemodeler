@@ -25,7 +25,7 @@ import com.asamioffice.goldenport.text.UJavaString
 
 /*
  * @since   Nov.  7, 2012
- * @version Nov.  7, 2012
+ * @version Dec. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SimpleModelEntityHelper {
@@ -59,7 +59,11 @@ trait SimpleModelEntityHelper {
   }
 
   final def entityDocumentName(anObject: SMObject): String = {
-    classNameBase(anObject) + "Doc"
+    entityDocumentName(classNameBase(anObject))
+  }
+
+  final def entityDocumentName(name: String): String = {
+    name + "Doc"
   }
 
   final def classNameBase(anObject: SMObject) = {

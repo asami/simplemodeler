@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 14, 2012
+ * @version Dec. 15, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -33,11 +33,13 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   var modelAssociation: SMAssociation = null // XXX
   var modelPowertype: SMPowertypeRelationship = null // XXX
   var modelStateMachine: SMStateMachineRelationship = null // XXX
+  var modelParticipation: SMParticipation = null // XXX
   def modelElement: SMElement = {
     if (modelAttribute != null) modelAttribute
     else if (modelAssociation != null) modelAssociation
     else if (modelPowertype != null) modelPowertype
     else if (modelStateMachine != null) modelStateMachine
+    else if (modelParticipation != null) modelParticipation
     else throw new IllegalArgumentException("modelElement should not be null.: " + name)
   } 
   def getModelElement: Option[SMElement] = {
@@ -45,6 +47,7 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     else if (modelAssociation != null) modelAssociation.some
     else if (modelPowertype != null) modelPowertype.some
     else if (modelStateMachine != null) modelStateMachine.some
+    else if (modelParticipation != null) modelParticipation.some
     else None
   }
   def getModelAssociation: Option[SMAssociation] = {

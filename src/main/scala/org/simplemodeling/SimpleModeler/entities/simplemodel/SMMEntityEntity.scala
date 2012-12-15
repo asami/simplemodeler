@@ -95,7 +95,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
- * @version Dec. 13, 2012
+ * @version Dec. 14, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1373,7 +1373,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _build_attributes(entity: SObject, entities: Map[String, SObject]) {
     for (attr <- attributes) {
       record_trace("SMMEntityEntity#_build_attributes(%s) = %s: %s".format(name, attr.name, attr.attributeType.getName))
-      println("SMMEntityEntity#_build_attributes(%s) = %s".format(name, attr.displaySequence))
+//      println("SMMEntityEntity#_build_attributes(%s) = %s".format(name, attr.displaySequence))
       attr.attributeType.idType match {
         case Some(t) => {
 //          entity.attribute_id.attributeType = _dsl_type(t)
@@ -1421,7 +1421,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     for (a <- _dsl_text(src.sqlColumnName)) {
       attr.sqlColumnName = a
     }
-    println("SMMEntityEntity#_build_attribute(%s/%s) = %s".format(name, attr.name, src.displaySequence))
+//    println("SMMEntityEntity#_build_attribute(%s/%s) = %s".format(name, attr.name, src.displaySequence))
     attr.displaySequence = src.displaySequence
   }
 
