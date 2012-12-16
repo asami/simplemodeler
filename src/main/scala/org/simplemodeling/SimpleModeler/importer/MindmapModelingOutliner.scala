@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Apr.  8, 2012
  *  version Oct. 21, 2012
  *  version Nov. 25, 2012
- * @version Dec. 13, 2012
+ * @version Dec. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -633,8 +633,8 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
    * OutlineBuilderBase uses the method.
    */
   def isDefined(name: String): Boolean = {
-    val a: List[TopicNode] = traits ::: actors ::: resources ::: events ::: roles ::: rules ::: businessusecases ::: businesstasks ::: usecases ::: tasks
-    val b = entityTables ::: traitTables ::: actorTables ::: resourceTables ::: eventTables ::: roleTables ::: ruleTables ::: businessusecaseTables ::: businesstaskTables ::: usecaseTables ::: taskTables
+    val a: List[TopicNode] = traits ::: actors ::: resources ::: events ::: roles ::: summarys ::: rules ::: services ::: businessusecases ::: businesstasks ::: usecases ::: tasks
+    val b = entityTables ::: traitTables ::: actorTables ::: resourceTables ::: eventTables ::: roleTables ::: summaryTables ::: ruleTables ::: serviceTables ::: businessusecaseTables ::: businesstaskTables ::: usecaseTables ::: taskTables
     _is_defined_in_boi(name, a) || _is_defined_in_table(name, b)
   }
 

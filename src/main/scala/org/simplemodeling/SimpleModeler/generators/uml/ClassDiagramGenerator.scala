@@ -17,7 +17,8 @@ import org.goldenport.Strings
  *  version Nov. 20, 2011
  *  version Sep. 18, 2012
  *  version Oct. 23, 2012
- * @version Nov. 30, 2012
+ *  version Nov. 30, 2012
+ * @version Dec. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -70,7 +71,8 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
       val classes: Seq[SMObject] = aPackage.children.collect {
         case entity: SMEntity       => entity
         case tr: SMTrait => tr
-        case rule: SMRule if !rule.associations.isEmpty => rule
+//        case rule: SMRule if !rule.associations.isEmpty => rule
+        case rule: SMRule => rule
         case powertype: SMPowertype => powertype
         case sm: SMStateMachine     => sm
         case service: SMService     => service

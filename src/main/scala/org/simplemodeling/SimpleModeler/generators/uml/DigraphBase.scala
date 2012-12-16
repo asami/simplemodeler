@@ -17,7 +17,8 @@ import com.asamioffice.goldenport.text.UString
  * @since   Jan. 15, 2009
  *  version Mar. 27, 2011
  *  version Nov. 20, 2011
- * @version Nov. 28, 2012
+ *  version Nov. 28, 2012
+ * @version Dec. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
@@ -717,7 +718,7 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
       case _: SMDomainRole => "#e49e61" // 小麦色 こむぎいろ
       case _: SMDomainResource => "#38a1db" // 露草色 つゆくさいろ
       case _: SMDomainEvent => "#e2041b" // 猩々緋 しょうじょうひ
-      case _: SMDomainSummary => "#84a2d4" // 青藤色 あおふじいろ // "#674196" // 菖蒲色 しょうぶいろ
+      case _: SMDomainSummary => "#cc7eb1" // 菖蒲色 しょうぶいろ "#a6a5c4" // 藤鼠 ふじねず "#84a2d4" // 青藤色 あおふじいろ // "#674196" // 菖蒲色 しょうぶいろ
       case _: SMDomainAssociationEntity => "#fef263" // 黄檗色きはだいろ // "#c89932" // 山吹茶やまぶきちゃ
       case _: SMDomainEntity => "#c1e4e9" // 白藍 しらあい
       case _: SMDomainTrait => "#b3ada0" // 利休白茶
@@ -725,7 +726,8 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
       case _: SMEntityPart => "#c1e4e9" // 白藍 しらあい
       case _: SMEntity => "#c1e4e9" // 白藍 しらあい
       case _: SMStateMachine => "#f5b1aa" // 珊瑚色 さんごいろ
-      case _: SMRule => "#a6a5c4" // 藤鼠 ふじねず "#93ca76" // 山吹色 やまぶきいろ
+      case _: SMRule => "#68be8d" // 若竹色わかたけいろ "#a6a5c4" // 藤鼠 ふじねず "#93ca76" // 山吹色 やまぶきいろ 
+      case _: SMService => "#ebd842" // 金糸雀色かなりあいろ
       case _: SMDatatype => "#b3ada0" // 利休白茶 りきゅうしろちゃ
       case _: SMPowertype => "#7ebea5" // 青磁色 せいじいろ
       case _: SMDocument => "#93ca76" // 淡萌黄 うすもえぎ
