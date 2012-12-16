@@ -8,7 +8,8 @@ import scala.collection.mutable.ArrayBuffer
  *  version Jul. 12, 2009
  *  version Mar. 24, 2012
  *  version Oct. 30, 2012
- * @version Nov. 15, 2012
+ *  version Nov. 15, 2012
+ * @version Dec. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -50,6 +51,12 @@ class SMMRoleType(aName: String, aPackageName: String) extends SMMEntityType(aNa
 
 class SMMStateMachineType(aName: String, aPackageName: String) extends SMMEntityType(aName, aPackageName) {
   val states = new ArrayBuffer[(String, String)]
+}
+
+class SMMRuleType(aName: String, aPackageName: String) extends SMMEntityType(aName, aPackageName) {
+}
+
+class SMMServiceType(aName: String, aPackageName: String) extends SMMEntityType(aName, aPackageName) {
 }
 
 /*

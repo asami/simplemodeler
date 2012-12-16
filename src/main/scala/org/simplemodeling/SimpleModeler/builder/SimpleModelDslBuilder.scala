@@ -18,7 +18,8 @@ import org.goldenport.recorder.Recordable
  *  version Feb.  8, 2012
  *  version Sep. 29, 2012
  *  version Oct. 21, 2012
- * @version Nov. 30, 2012
+ *  version Nov. 30, 2012
+ * @version Dec. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -208,6 +209,16 @@ class SimpleModelDslBuilder(
       val (name, target, multiplicity) = get_association_by_term(term)
       record_trace("SimpleModelDslBuilder#_resolve_entity association(%s): %s".format(entity.name, name))
       entity.association(name, target) multiplicity_is multiplicity
+    }
+    for (term <- entity.narrativeRules) {
+      val (name, target) = get_rule_by_term(term)
+      record_trace("SimpleModelDslBuilder#_resolve_entity rule(%s): %s".format(entity.name, name))
+      entity.rule(name, target)
+    }
+    for (term <- entity.narrativeServices) {
+      val (name, target) = get_service_by_term(term)
+      record_trace("SimpleModelDslBuilder#_resolve_entity service(%s): %s".format(entity.name, name))
+      entity.service(name, target)
     }
     for (term <- entity.narrativeStateTransitions) {
 //      val (name, target, multiplicity) = get_association_by_term(term)
@@ -433,6 +444,18 @@ class SimpleModelDslBuilder(
     val in = get_in_by_term(aTerm, pkg)
     val out = get_out_by_term(aTerm, pkg)
     (name, in, out)
+  }
+
+  def get_rule_by_term(aTerm: String): (String, SMMRuleType) = {
+    val name = get_name_by_term(aTerm)
+    val entity = get_entity_by_term(aTerm)
+    (name, new SMMRuleType(name, entity.packageName))
+  }
+
+  def get_service_by_term(aTerm: String): (String, SMMServiceType) = {
+    val name = get_name_by_term(aTerm)
+    val entity = get_entity_by_term(aTerm)
+    (name, new SMMServiceType(name, entity.packageName))
   }
 
   def get_annotation_by_term(aTerm: String): (String, String) = {

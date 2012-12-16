@@ -318,6 +318,14 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
     _structure_node_tables(term, SummaryLabel)
   }
 
+  def rules(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, RuleLabel)
+  }
+
+  def ruleTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, RuleLabel)
+  }
+
   def services(term: TopicNode): List[TopicNode] = {
     structure_node_children(term, ServiceLabel)
   }

@@ -95,7 +95,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
- * @version Dec. 14, 2012
+ * @version Dec. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -145,6 +145,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val associations = new ArrayBuffer[SMMAssociation]
   val aggregations = new ArrayBuffer[SMMAssociation]
   val compositions = new ArrayBuffer[SMMAssociation]
+  val rules = new ArrayBuffer[SMMRuleRelationship]
+  val services = new ArrayBuffer[SMMServiceRelationship]
   val statemachines = new ArrayBuffer[SMMStateMachine]
   val statemachineRelationships = new ArrayBuffer[SMMAssociation]
 //  val statemachineStates = new ArrayBuffer[(String, String)]
@@ -193,6 +195,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val narrativeCompositions = new ArrayBuffer[String]
   val narrativeAggregations = new ArrayBuffer[String]
   val narrativeAssociations = new ArrayBuffer[String]
+  val narrativeRules = new ArrayBuffer[String]
+  val narrativeServices = new ArrayBuffer[String]
   val narrativeStateMachines = new ArrayBuffer[String]
   val narrativeAnnotations = new ArrayBuffer[String]
 //  val narrativeBusinessUsecases = new ArrayBuffer[String]
@@ -325,10 +329,26 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
 
   final def role(aName: String, anObject: SMMEntityEntity): SMMAssociation = {
-    _add_slot(aName, compositions, "「%s」の役割「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+    _add_slot(aName, roles, "「%s」の役割「%s」は追加定義を持っています。型以外の情報が追加されます。") {
       val roleType = new SMMEntityType(anObject.name, anObject.packageName)
       roleType.term = anObject.term
       new SMMAssociation(aName, new SMMEntityTypeSet(roleType.some))
+    }
+  }
+
+  final def rule(aName: String, ruleType: SMMRuleType): SMMRuleRelationship = {
+    _add_slot(aName, rules, "「%s」の規則「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+//      val ruleType = new SMMEntityType(anObject.name, anObject.packageName)
+//      ruleType.term = anObject.term
+      new SMMRuleRelationship(aName, ruleType)
+    }
+  }
+
+  final def service(aName: String, serviceType: SMMServiceType): SMMServiceRelationship = {
+    _add_slot(aName, services, "「%s」のサービス「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+//      val serviceType = new SMMEntityType(anObject.name, anObject.packageName)
+//      serviceType.term = anObject.term
+      new SMMServiceRelationship(aName, serviceType)
     }
   }
 

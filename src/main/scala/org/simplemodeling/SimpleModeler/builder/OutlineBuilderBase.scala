@@ -19,7 +19,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Sep. 30, 2012
  *  version Oct. 26, 2012
  *  version Nov. 24, 2012
- * @version Dec. 15, 2012
+ * @version Dec. 16, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -210,8 +210,12 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     _mmx.stateTables(aNode).foreach(_build_state_table(_, target))
     _mmx.documents(aNode).foreach(_build_document(_, target))
     _mmx.documentTables(aNode).foreach(_build_document_table(_, target))
-    _mmx.roles(aNode).foreach(_build_role(_, target))
+    _mmx.roles(aNode).foreach(_build_role_relationship(_, target))
 //    _mmx.roleTables(aNode).foreach(_build_role_table(_, target))
+    _mmx.rules(aNode).foreach(_build_rule_relationship(_, target))
+//    _mmx.ruleTables(aNode).foreach(_build_rule_table(_, target))
+    _mmx.services(aNode).foreach(_build_service_relationship(_, target))
+//    _mmx.serviceTables(aNode).foreach(_build_service_table(_, target))
     _mmx.operations(aNode).foreach(_build_operation(_, target))
     _mmx.operationTables(aNode).foreach(_build_operation_table(_, target))
     _mmx.annotations(aNode).foreach(_build_annotation(_, target))
@@ -415,9 +419,19 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
     }
   }
 
-  private def _build_role(source: TopicNode, target: SMMEntityEntity) {
+  private def _build_role_relationship(source: TopicNode, target: SMMEntityEntity) {
     val term = source.title
     target.addNarrativeRole(term)
+  }
+
+  private def _build_rule_relationship(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    target.narrativeRules += term
+  }
+
+  private def _build_service_relationship(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    target.narrativeServices += term
   }
 
   private def _build_operation(source: TopicNode, target: SMMEntityEntity) {
