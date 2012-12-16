@@ -1245,6 +1245,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     _build_compositions(entity, entities)
     _build_statemachineStates(entity) // XXX
     _build_operations(entity, entities)
+    _build_rules(entity, entities)
+    _build_services(entity, entities)
     _build_displays(entity)
     entity
   }
@@ -1571,7 +1573,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     entities.get(name) match {
       case Some(entity: SEntity) => entity.right
       case Some(x) => "エンティティに対してのみ関連・集約・合成を持つことができます。(参照元: %s, 参照先: %s)".format(this.name, name).left
-      case None => Left("エンティティ%sはみつかりません。(参照元: %s)".format(name, this.name))
+      case None => Left("エンティティ「%s」はみつかりません。(参照元: %s)".format(name, this.name))
     }
   }
 
@@ -1605,8 +1607,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _powertype_ref(name: String, entities: Map[String, SObject]): Either[String, DomainPowertype] = {
     entities.get(name) match {
       case Some(p: DomainPowertype) => p.right
-      case Some(x) => "%sはパワータイプ(区分)ではありません。(参照元: %s)".format(x.name, this.name).left
-      case None => Left("パワータイプ(区分)%sはみつかりません。(参照元: %s)".format(name, this.name))
+      case Some(x) => "「%s」はパワータイプ(区分)ではありません。(参照元: %s)".format(x.name, this.name).left
+      case None => Left("パワータイプ(区分)「%s」はみつかりません。(参照元: %s)".format(name, this.name))
     }
   }
 
@@ -1621,8 +1623,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _statemachine_ref(name: String, entities: Map[String, SObject]): Either[String, DomainStateMachine] = {
     entities.get(name) match {
       case Some(p: DomainStateMachine) => p.right
-      case Some(x) => "%sは状態機械ではありません。(参照元: %s)".format(x.name, this.name).left
-      case None => Left("状態機械%sはみつかりません。(参照元: %s)".format(name, this.name))
+      case Some(x) => "「%s」は状態機械ではありません。(参照元: %s)".format(x.name, this.name).left
+      case None => Left("状態機械「%s」はみつかりません。(参照元: %s)".format(name, this.name))
 
     }
   }
@@ -1637,8 +1639,38 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _role_ref(name: String, entities: Map[String, SObject]): Either[String, DomainRole] = {
     entities.get(name) match {
       case Some(r: DomainRole) => r.right
-      case Some(x) => "%sはロール(役割)ではありません。(参照元: %s)".format(x.name, this.name).left
-      case None => Left("ロール(役割)%sはみつかりません。(参照元: %s)".format(name, this.name))
+      case Some(x) => "「%s」はロール(役割)ではありません。(参照元: %s)".format(x.name, this.name).left
+      case None => Left("ロール(役割)「%s」はみつかりません。(参照元: %s)".format(name, this.name))
+    }
+  }
+
+  private def _rule_ref(name: Option[String], entities: Map[String, SObject]): Either[String, DomainRule] = {
+    name match {
+      case Some(s) => _rule_ref(s, entities)
+      case None => "規則名がありません。(参照元: %s)".format(this.name).left
+    }
+  }
+
+  private def _rule_ref(name: String, entities: Map[String, SObject]): Either[String, DomainRule] = {
+    entities.get(name) match {
+      case Some(r: DomainRule) => r.right
+      case Some(x) => "「%s」は規則ではありません。(参照元: %s)".format(x.name, this.name).left
+      case None => Left("規則「%s」はみつかりません。(参照元: %s)".format(name, this.name))
+    }
+  }
+
+  private def _service_ref(name: Option[String], entities: Map[String, SObject]): Either[String, DomainService] = {
+    name match {
+      case Some(s) => _service_ref(s, entities)
+      case None => "サービス名がありません。(参照元: %s)".format(this.name).left
+    }
+  }
+
+  private def _service_ref(name: String, entities: Map[String, SObject]): Either[String, DomainService] = {
+    entities.get(name) match {
+      case Some(r: DomainService) => r.right
+      case Some(x) => "「%s」はサービスではありません。(参照元: %s)".format(x.name, this.name).left
+      case None => Left("サービス「%s」はみつかりません。(参照元: %s)".format(name, this.name))
     }
   }
 
@@ -1756,6 +1788,36 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       _build_properties(s, state)
 //      println("SMMEntityEntity#_build_statemachineStates: %s, %s, %s".format(s.name, s.value, s.label))
       entity.state(s)
+    }
+  }
+
+  private def _build_rules(entity: SObject, entities: Map[String, SObject]) {
+    for (rel <- rules) {
+      doe_w(_rule_ref(rel.name, entities)) { x =>
+        record_trace("SMMEntityEntity#_build_rules: " + rel.name)
+        entity.rule(rel.name, x)
+      }
+    }
+  }
+
+  private def _build_rule(srv: DomainRule, entities: Map[String, SObject]): DomainRule = {
+    _build_specifications(srv)
+    _build_base(entities, srv)
+    _build_traits(entities, srv)
+    _build_attributes(srv, entities)
+    _build_associations(srv, entities)
+    _build_aggregations(srv, entities)
+    _build_compositions(srv, entities)
+    _build_operations(srv, entities)
+    srv
+  }
+
+  private def _build_services(entity: SObject, entities: Map[String, SObject]) {
+    for (rel <- services) {
+      doe_w(_service_ref(rel.name, entities)) { x =>
+        record_trace("SMMEntityEntity#_build_services: " + rel.name)
+        entity.service(rel.name, x)
+      }
     }
   }
 

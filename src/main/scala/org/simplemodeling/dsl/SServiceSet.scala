@@ -3,8 +3,10 @@ package org.simplemodeling.dsl
 import scala.collection.mutable.ArrayBuffer
 
 /*
- * Nov. 18, 2008
- * Nov. 19, 2008
+ * @since   Nov. 18, 2008
+ *  version Nov. 19, 2008
+ * @version Dec. 16, 2012
+ * @author  ASAMI, Tomoharu
  */
 class SServiceSet {
   private val _services = new ArrayBuffer[SServiceRelationship]
@@ -13,6 +15,10 @@ class SServiceSet {
 
   // from model itself
   def apply(aService: SService): SServiceRelationship = {
+    create(aService)
+  }
+
+  def apply(name: String, aService: SService): SServiceRelationship = {
     create(aService)
   }
 

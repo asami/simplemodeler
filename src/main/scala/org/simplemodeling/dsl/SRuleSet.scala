@@ -3,8 +3,10 @@ package org.simplemodeling.dsl
 import scala.collection.mutable.ArrayBuffer
 
 /*
- * Nov. 18, 2008
- * Nov. 19, 2008
+ * @since   Nov. 18, 2008
+ *  version Nov. 19, 2008
+ * @version Dec. 16, 2012
+ * @author  ASAMI, Tomoharu
  */
 class SRuleSet {
   private val _rules = new ArrayBuffer[SRuleRelationship]
@@ -13,6 +15,10 @@ class SRuleSet {
 
   // from model itself
   def apply(aRule: SRule): SRuleRelationship = {
+    create(aRule)
+  }
+
+  def apply(name: String, aRule: SRule): SRuleRelationship = {
     create(aRule)
   }
 
