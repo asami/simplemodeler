@@ -18,7 +18,7 @@ import com.asamioffice.goldenport.text.UString
  *  version Mar. 27, 2011
  *  version Nov. 20, 2011
  *  version Nov. 28, 2012
- * @version Dec. 16, 2012
+ * @version Dec. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
@@ -614,6 +614,17 @@ class DigraphBase(val graph: GVDigraph, val context: GEntityContext) {
   }
 
   def addUsecaseIncludeRelationship(source: String, target: String) {
+    val edge = new GVEdge(source, "p", target, "p")
+    edge.arrowhead = "open"
+    edge.arrowtail = "none"
+    edge.style = "dashed"
+    graph.edges += edge
+  }
+
+  /*
+   * Dependency relationship
+   */
+  def addDependencyRelationship(source: String, target: String) {
     val edge = new GVEdge(source, "p", target, "p")
     edge.arrowhead = "open"
     edge.arrowtail = "none"

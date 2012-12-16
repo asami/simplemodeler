@@ -18,7 +18,7 @@ import org.goldenport.Strings
  *  version Sep. 18, 2012
  *  version Oct. 23, 2012
  *  version Nov. 30, 2012
- * @version Dec. 16, 2012
+ * @version Dec. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(sm) {
@@ -315,6 +315,34 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
           }
         }
 
+        def add_rule_relationships(aSource: SMObject) {
+          for (rel <- aSource.rules) {
+            val target = rel.rule
+            val sourceId = ids.get(aSource).get
+            val targetId = ids.get(target).get
+            aThema match {
+              case "perspective" => graph.addDependencyRelationship(sourceId, targetId)
+              case "hilight"     => graph.addDependencyRelationship(sourceId, targetId)
+              case "detail"      => graph.addDependencyRelationship(sourceId, targetId)
+              case _             => graph.addDependencyRelationship(sourceId, targetId)
+            }
+          }
+        }
+
+        def add_service_relationships(aSource: SMObject) {
+          for (rel <- aSource.services) {
+            val target = rel.service
+            val sourceId = ids.get(aSource).get
+            val targetId = ids.get(target).get
+            aThema match {
+              case "perspective" => graph.addDependencyRelationship(sourceId, targetId)
+              case "hilight"     => graph.addDependencyRelationship(sourceId, targetId)
+              case "detail"      => graph.addDependencyRelationship(sourceId, targetId)
+              case _             => graph.addDependencyRelationship(sourceId, targetId)
+            }
+          }
+        }
+
         add_generalization_relationships(anObject)
         add_trait_relationships(anObject)
         add_powertype_relationships(anObject)
@@ -328,6 +356,8 @@ class ClassDiagramGenerator(sm: SimpleModelEntity) extends DiagramGeneratorBase(
           case _ => add_association_relationships(anObject)
         }
         add_usecase_relationships(anObject)
+        add_rule_relationships(anObject)
+        add_service_relationships(anObject)
       }
 
       classes.foreach(add_object)

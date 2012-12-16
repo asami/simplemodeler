@@ -95,7 +95,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
- * @version Dec. 16, 2012
+ * @version Dec. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1667,6 +1667,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   }
 
   private def _service_ref(name: String, entities: Map[String, SObject]): Either[String, DomainService] = {
+//    println("SMMEntityEntity#_service_ref(%s) = %s / %s".format(this.name, name, entities))
     entities.get(name) match {
       case Some(r: DomainService) => r.right
       case Some(x) => "「%s」はサービスではありません。(参照元: %s)".format(x.name, this.name).left
