@@ -23,7 +23,7 @@ import com.asamioffice.goldenport.text.UString
  *  version Jun. 17, 2012
  *  version Sep. 16, 2012
  *  version Oct. 19, 2012
- * @version Nov. 17, 2012
+ * @version Dec. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class ScalaDslImporter(aCall: GServiceCall) extends GImporter(aCall) {

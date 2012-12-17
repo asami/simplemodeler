@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 14, 2012
+ * @version Dec. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -127,6 +127,22 @@ case object InLabel extends NaturalLabel {
 
 case object OutLabel extends NaturalLabel {
   val candidates = List("out", "output", "出力", "アウトプット")
+}
+
+case object CreateLabel extends NaturalLabel {
+  val candidates = List("create", "作成")
+}
+
+case object ReadLabel extends NaturalLabel {
+  val candidates = List("read", "参照")
+}
+
+case object UpdateLabel extends NaturalLabel {
+  val candidates = List("update", "更新")
+}
+
+case object DeleteLabel extends NaturalLabel {
+  val candidates = List("delete", "削除")
 }
 
 case object ObjecttypeLabel extends NaturalLabel {
@@ -422,6 +438,12 @@ object NaturalLabel {
     AnnotationLabel,
     TypeLabel,
     DatatypeLabel,
+    InLabel,
+    OutLabel,
+    CreateLabel,
+    ReadLabel,
+    UpdateLabel,
+    DeleteLabel,
     ObjecttypeLabel,
     DisplayLabel,
     NaviLabelLabel,

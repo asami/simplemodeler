@@ -209,6 +209,12 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val narrativeGoals = new ArrayBuffer[String]
   val narrativeStateTransitions = new ArrayBuffer[String]
   val narrativeOperations = new ArrayBuffer[String]
+  val narrativeOperationIns = new ArrayBuffer[String]
+  val narrativeOperationOuts = new ArrayBuffer[String]
+  val narrativeOperationCreates = new ArrayBuffer[String]
+  val narrativeOperationReads = new ArrayBuffer[String]
+  val narrativeOperationUpdates = new ArrayBuffer[String]
+  val narrativeOperationDeletes = new ArrayBuffer[String]
   val narrativeScenarioSteps = new ArrayBuffer[String]
   /**
    * SimpleModelDslBuilder uses to collect composition classes in narrative.

@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Apr.  8, 2012
  *  version Oct. 21, 2012
  *  version Nov. 25, 2012
- * @version Dec. 16, 2012
+ * @version Dec. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -348,6 +348,54 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 
   def operationTables(term: TopicNode): List[GTable[String]] = {
     _structure_node_tables(term, OperationLabel)
+  }
+
+  def operationIns(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, InLabel)
+  }
+
+  def operationInTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, InLabel)
+  }
+
+  def operationOuts(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, OutLabel)
+  }
+
+  def operationOutTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, OutLabel)
+  }
+
+  def operationCreates(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, CreateLabel)
+  }
+
+  def operationCreateTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, CreateLabel)
+  }
+
+  def operationReads(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, ReadLabel)
+  }
+
+  def operationReadTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, ReadLabel)
+  }
+
+  def operationUpdates(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, UpdateLabel)
+  }
+
+  def operationUpdateTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, UpdateLabel)
+  }
+
+  def operationDeletes(term: TopicNode): List[TopicNode] = {
+    structure_node_children(term, DeleteLabel)
+  }
+
+  def operationDeleteTables(term: TopicNode): List[GTable[String]] = {
+    _structure_node_tables(term, DeleteLabel)
   }
 
   def annotations(term: TopicNode): List[TopicNode] = {

@@ -16,7 +16,8 @@ import org.smartdox.Text
  * @since   Nov.  7, 2011
  *  version Dec.  6, 2011
  *  version Feb. 28, 2012
- * @version Jun. 17, 2012
+ *  version Jun. 17, 2012
+ * @version Dec. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 class DiagramGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -37,7 +38,7 @@ class DiagramGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) 
       a match {
         case Some(pkg) => pkg
         case None => {
-          throw new IllegalArgumentException("bad model")
+          throw new IllegalArgumentException("モデルがありません。")
         }
       }
     }

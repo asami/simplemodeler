@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 14, 2012
+ * @version Dec. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -496,6 +496,81 @@ class TableSimpleModelMakerBuilder(
     val in = SMMAttributeTypeSet.in(entry, entity.packageName)
     val out = SMMAttributeTypeSet.out(entry, entity.packageName)
     val op = entity.operation(_slot_name(entry), in, out)
+  }
+
+  /*
+   * Build action parameters
+   */
+  def buildOperationIn(entity: SMMEntityEntity, table: GTable[String]) {
+//    println("buildOperationInTable:" + table)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_operation_in(entity, _record(entry)))
+    }
+  }
+
+  protected final def add_operation_in(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+    // XXX
+  }
+
+  def buildOperationOut(entity: SMMEntityEntity, table: GTable[String]) {
+//    println("buildOperationOutTable:" + table)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_operation_out(entity, _record(entry)))
+    }
+  }
+
+  protected final def add_operation_out(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+    // XXX
+  }
+
+  def buildOperationCreate(entity: SMMEntityEntity, table: GTable[String]) {
+//    println("buildOperationCreateTable:" + table)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_operation_create(entity, _record(entry)))
+    }
+  }
+
+  protected final def add_operation_create(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+    // XXX
+  }
+
+  def buildOperationRead(entity: SMMEntityEntity, table: GTable[String]) {
+//    println("buildOperationReadTable:" + table)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_operation_read(entity, _record(entry)))
+    }
+  }
+
+  protected final def add_operation_read(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+    // XXX
+  }
+
+  def buildOperationUpdate(entity: SMMEntityEntity, table: GTable[String]) {
+//    println("buildOperationUpdateTable:" + table)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_operation_update(entity, _record(entry)))
+    }
+  }
+
+  protected final def add_operation_update(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+    // XXX
+  }
+
+  def buildOperationDelete(entity: SMMEntityEntity, table: GTable[String]) {
+//    println("buildOperationDeleteTable:" + table)
+    for (h <- table.headAsStringList) {
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.map(entry => add_operation_delete(entity, _record(entry)))
+    }
+  }
+
+  protected final def add_operation_delete(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+    // XXX
   }
 
   /*

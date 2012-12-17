@@ -19,7 +19,7 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Sep. 30, 2012
  *  version Oct. 26, 2012
  *  version Nov. 24, 2012
- * @version Dec. 16, 2012
+ * @version Dec. 17, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -40,6 +40,9 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 
   protected final def build_model {
     outline.open()
+    if (outline.isEmpty) {
+      throw new IllegalArgumentException("モデルがありません。")
+    }
     try {
       _mmx.traits.foreach(_create_object(TraitKind, _, _build_object))
       _mmx.traitTables.foreach(create_object_table(TraitKind, _))
@@ -218,6 +221,18 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 //    _mmx.serviceTables(aNode).foreach(_build_service_table(_, target))
     _mmx.operations(aNode).foreach(_build_operation(_, target))
     _mmx.operationTables(aNode).foreach(_build_operation_table(_, target))
+    _mmx.operationIns(aNode).foreach(_build_operation_in(_, target))
+    _mmx.operationInTables(aNode).foreach(_build_operation_in_table(_, target))
+    _mmx.operationOuts(aNode).foreach(_build_operation_out(_, target))
+    _mmx.operationOutTables(aNode).foreach(_build_operation_out_table(_, target))
+    _mmx.operationCreates(aNode).foreach(_build_operation_create(_, target))
+    _mmx.operationCreateTables(aNode).foreach(_build_operation_create_table(_, target))
+    _mmx.operationReads(aNode).foreach(_build_operation_read(_, target))
+    _mmx.operationReadTables(aNode).foreach(_build_operation_read_table(_, target))
+    _mmx.operationUpdates(aNode).foreach(_build_operation_update(_, target))
+    _mmx.operationUpdateTables(aNode).foreach(_build_operation_update_table(_, target))
+    _mmx.operationDeletes(aNode).foreach(_build_operation_delete(_, target))
+    _mmx.operationDeleteTables(aNode).foreach(_build_operation_delete_table(_, target))
     _mmx.annotations(aNode).foreach(_build_annotation(_, target))
 //    _mmx.annotationTables(aNode).foreach(_build_annotation_table(_, target))
     _mmx.businessusecases(aNode).foreach(_build_businessusecase_compositions(_, target))
@@ -441,6 +456,60 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
 
   private def _build_operation_table(table: GTable[String], target: SMMEntityEntity) {
     _table_builder.buildOperation(target, table)
+  }
+
+  private def _build_operation_in(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    target.narrativeOperationIns += term
+  }
+
+  private def _build_operation_in_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildOperationIn(target, table)
+  }
+
+  private def _build_operation_out(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    target.narrativeOperationOuts += term
+  }
+
+  private def _build_operation_out_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildOperationOut(target, table)
+  }
+
+  private def _build_operation_create(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    target.narrativeOperationCreates += term
+  }
+
+  private def _build_operation_create_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildOperationCreate(target, table)
+  }
+
+  private def _build_operation_read(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    target.narrativeOperationReads += term
+  }
+
+  private def _build_operation_read_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildOperationRead(target, table)
+  }
+
+  private def _build_operation_update(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    target.narrativeOperationUpdates += term
+  }
+
+  private def _build_operation_update_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildOperationUpdate(target, table)
+  }
+
+  private def _build_operation_delete(source: TopicNode, target: SMMEntityEntity) {
+    val term = source.title
+    target.narrativeOperationDeletes += term
+  }
+
+  private def _build_operation_delete_table(table: GTable[String], target: SMMEntityEntity) {
+    _table_builder.buildOperationDelete(target, table)
   }
 
   private def _build_annotation(source: TopicNode, target: SMMEntityEntity) {
