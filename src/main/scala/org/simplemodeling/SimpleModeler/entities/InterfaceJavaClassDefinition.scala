@@ -2,7 +2,7 @@ package org.simplemodeling.SimpleModeler.entities
 
 /*
  * @since   Nov.  6, 2012
- * @version Nov.  7, 2012
+ * @version Dec. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class InterfaceJavaClassDefinition(
@@ -19,11 +19,18 @@ class InterfaceJavaClassDefinition(
   }
 
   override protected def class_open_body {
+    val bases = List(customBaseName, baseObject.map(_.name)).flatten
+    val traits = mixinTraits.map(_.name)
+//    println("InterfaceJavaClassAttributeDefinition#class_open_body(%s) = %s / %s".format(pobject.name, bases, traits))
+//    println("InterfaceJavaClassAttributeDefinition = " + customBaseName)
     jm_p("public interface ")
     jm_p(name)
-    for (base <- customBaseName orElse baseObject.map(_.name)) {
-      jm_p(" extends ")
-      jm_p(base)
+    bases ::: traits match {
+      case Nil => ;
+      case xs => {
+        jm_p(" extends ")
+        jm_p(xs.mkString(", "))
+      }
     }
     jm_pln(" {")
     jm_indent_up

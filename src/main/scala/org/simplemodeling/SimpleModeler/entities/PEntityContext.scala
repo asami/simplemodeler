@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
  *  version Nov. 27, 2012
- * @version Dec. 15, 2012
+ * @version Dec. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -341,7 +341,11 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
    * SimpleModel2ProgramRealmTransformerBase uses this method.
    */
   final def participationAssociationClassReferenceName(participation: SMParticipation): String = {
-    UString.uncapitalize(make_attr_element_name(participation.element))
+    participationAssociationClassReferenceName(make_attr_element_name(participation.element))
+  }
+
+  final def participationAssociationClassReferenceName(name: String): String = {
+    "assoc__" + UString.uncapitalize(name)
   }
 
   @deprecated("candidate old feature", "before 0.3.3")

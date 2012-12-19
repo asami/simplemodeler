@@ -14,7 +14,7 @@ import java.util.TimeZone
  *  version Aug.  7, 2011
  *  version Dec. 14, 2011
  *  version Feb. 20, 2012
- * @version Nov. 16, 2012
+ * @version Dec. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassAttributeDefinition(
@@ -290,7 +290,7 @@ class JavaClassAttributeDefinition(
   override protected def method_bean_multi_powertype(e: PPowertypeType) {
     jm_mark("// JavaClassAttributeDefinition#method_bean_multi_powertype")
     jm_public_get_list_method_prologue(javaType, attrName, varName) { // erPowerVarName) {
-      jm_pln("fill_%s()", attrName)
+      jm_pln("fill_%s();", attrName)
     }
     if (is_settable()) {
     jm_mark("// JavaClassAttributeDefinition#method_bean_multi_powertype")

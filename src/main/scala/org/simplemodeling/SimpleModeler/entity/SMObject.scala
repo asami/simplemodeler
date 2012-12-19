@@ -15,7 +15,7 @@ import com.asamioffice.goldenport.text.UPathString
  *  version Apr.  8, 2012
  *  version Oct. 16, 2012
  *  version Nov. 25, 2012
- * @version Dec. 14, 2012
+ * @version Dec. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -302,6 +302,7 @@ class SMObject(val dslObject: SObject) extends SMElement(dslObject) {
   }
 
   private def add_attribute(anAttr: SAttribute) {
+//    println("SMObject#add_attribute(%s) = %s".format(name, anAttr.name))
     _attributes += new SMAttribute(anAttr)
   }
 

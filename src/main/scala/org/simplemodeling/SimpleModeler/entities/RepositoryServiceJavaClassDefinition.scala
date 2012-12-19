@@ -8,7 +8,7 @@ import org.simplemodeling.SimpleModeler.entity.business._
 
 /*
  * @since   Nov.  2, 2012
- * @version Dec.  6, 2012
+ * @version Dec. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class RepositoryServiceJavaClassDefinition(
@@ -170,7 +170,9 @@ protected %repository% repository;
 
   private def wadl_description_literal(pobject: PObjectEntity): String = {
     val a = wadlElement("", "")
-    UJavaString.stringLiteral(a.toString)
+    val b = a.toString
+    val c = if (b.length > 4000) b.substring(0, 4000) + "..." else b
+    UJavaString.stringLiteral(c)
   }
 
 /*

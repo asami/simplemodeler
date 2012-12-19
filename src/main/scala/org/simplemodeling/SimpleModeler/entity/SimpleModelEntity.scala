@@ -29,7 +29,7 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Jan. 30, 2012
  *  version Jun. 17, 2012
  *  version Oct. 16, 2012
- * @version Nov. 25, 2012
+ * @version Dec. 18, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GTreeEntityBase[SMElement](aIn, aOut, aContext) with SimpleModelEntityHelper {
@@ -633,7 +633,7 @@ class SimpleModelEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
 
   private def build_powertype_object(aPowertype: SPowertypeRelationship) {
     require (aPowertype.powertype != null, "build_attribute_object = " + aPowertype.name)
-record_trace("build_powertype_object = " + aPowertype)
+//    record_trace("build_powertype_object = " + aPowertype)
     build_object(aPowertype.powertype)
   }
 
@@ -1187,6 +1187,7 @@ record_trace("build_powertype_object = " + aPowertype)
       }
 
       def resolve_attribute(anAttr: SMAttribute) {
+//        println("SimpleModelEntity#resolve_attribute(%s) = %s".format(name, anAttr))
         val attrType = anAttr.attributeType
         findObject(attrType.qualifiedName) match {
           case Some(target) => {

@@ -21,7 +21,7 @@ import org.simplemodeling.dsl._
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
- * @version Dec. 14, 2012
+ * @version Dec. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -76,6 +76,15 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     } else _operations += oper
   }
 
+  /**
+   * Logic duplicates with build_participation_association_class via
+   * build_participation in SimpleModel2ProgramRealmTransformerBase.
+   *
+   * GenericClassDefinition uses this method.
+   *
+   * AttributeParticipation is setted in resolve_attribute of
+   * SimpleModel2ProgramRealmTransformerBase. (not SimpleModelEntity).
+   */
   lazy val associationEntityAttributes: List[PAttribute] = {
     participations.toList.collect({
       case a: AttributeParticipation if a.attribute.isAssociationClass => a
@@ -92,6 +101,9 @@ abstract class PObjectEntity(val pContext: PEntityContext)
         case d: PDocumentType => {
           _document_type_attribute(d.document)
         }
+        case p: PPowertypeType => {
+          _powertype_type_attribute(p.powertype)
+        }
       }
       case None => a.source match {
         case e: PEntityEntity => {
@@ -99,6 +111,9 @@ abstract class PObjectEntity(val pContext: PEntityContext)
         }
         case d: PDocumentEntity => {
           _document_type_attribute(d)
+        }
+        case p: PPowertypeEntity => {
+          _powertype_type_attribute(p)
         }
       }
     }
@@ -125,13 +140,22 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   private def _entity_type_attribute(e: PEntityEntity): PAttribute = {
     val t = new PEntityType(e.name, e.packageName)
     t.entity = e
-    new PAttribute(e.name, t) multiplicity_is PZeroMore // XXX
+    val name = pContext.participationAssociationClassReferenceName(e.name)
+    new PAttribute(name, t) multiplicity_is PZeroMore // XXX
   }
 
   private def _document_type_attribute(d: PDocumentEntity): PAttribute = {
     val t = new PDocumentType(d.name, d.packageName)
     t.document = d
-    new PAttribute(d.modelObject.name, t) multiplicity_is PZeroMore // XXX
+    val name = pContext.participationAssociationClassReferenceName(d.modelObject.name)
+    new PAttribute(name, t) multiplicity_is PZeroMore // XXX
+  }
+
+  private def _powertype_type_attribute(d: PPowertypeEntity): PAttribute = {
+    val t = new PPowertypeType(d.name, d.packageName)
+    t.powertype = d
+    val name = pContext.participationAssociationClassReferenceName(d.modelObject.name)
+    new PAttribute(name, t) multiplicity_is PZeroMore // XXX
   }
 /*
   private def _direct_entity(a: AttributeParticipation): Option[PObjectEntity] = {

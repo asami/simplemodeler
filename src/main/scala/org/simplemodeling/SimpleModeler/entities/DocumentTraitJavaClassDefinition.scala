@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils
 
 /*
  * @since   Nov.  8, 2012
- * @version Nov.  8, 2012
+ * @version Dec. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 class DocumentTraitJavaClassDefinition(
@@ -13,7 +13,7 @@ class DocumentTraitJavaClassDefinition(
   pobject: PObjectEntity
 ) extends TraitJavaClassDefinition(pContext, aspects, pobject) {
   isImmutable = true
-  customBaseName = baseObject.map(x => pContext.entityDocumentName(x.reference))
+//  customBaseName = baseObject.map(x => pContext.entityDocumentName(x.reference))
 
   override protected def attribute(attr: PAttribute) = {
     new DocumentTraitJavaClassAttributeDefinition(pContext, aspects, attr, this, jm_maker)

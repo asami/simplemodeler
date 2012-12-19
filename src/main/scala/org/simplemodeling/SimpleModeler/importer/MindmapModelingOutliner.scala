@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Apr.  8, 2012
  *  version Oct. 21, 2012
  *  version Nov. 25, 2012
- * @version Dec. 17, 2012
+ * @version Dec. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -551,11 +551,10 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
 */
 
   protected final def structure_node_children(aParent: OutlineNode, ismatch: OutlineNode => Boolean): List[TopicNode] = {
-    val mayNodes = aParent.children.find(ismatch)
-    if (mayNodes.isEmpty) Nil
-    else {
-      mayNodes.get.children.asInstanceOf[Seq[TopicNode]].toList
-    }
+    val mayNodes = aParent.children.filter(ismatch).toList
+    mayNodes.flatMap(x => {
+      x.children.asInstanceOf[Seq[TopicNode]].toList
+    })
   }
 
 /*
@@ -578,7 +577,7 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
       val width = src.width
       val height = sh.height
       for (y <- 0 until height; x <- 0 until width) {
-        val d: String = sh.getText(x, y)
+        val d: String = sh.getData(x, y)
         hd.put(x, y, d)
       }
       r.setHead(hd)
@@ -589,7 +588,7 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
     val width = src.width
     val height = src.body.height
     for (y <- 0 until height; x <- 0 until width) {
-      r.put(x, y, src.body.getText(x, y))
+      r.put(x, y, src.body.getData(x, y))
     }
   }
 
@@ -599,7 +598,7 @@ class MindmapModelingOutliner(val outline: OutlineEntityBase) extends UseTerm {
       val width = src.width
       val height = h.height
       for (y <- 0 until height; x <- 0 until width) {
-        hd.put(x, y, h.getText(x, y))
+        hd.put(x, y, h.getData(x, y))
       }
 // XXX
 //      r.setFoot(hd)
