@@ -1191,7 +1191,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case None => sys.error("buildSObject")
     }
     privateObjects.foreach(_.buildSObjects(entities))
-    println("SMMEntityEntity#buildSObjects(%s) = %s / %s".format(name, _sobject.map(_.label), label))
+//    println("SMMEntityEntity#buildSObjects(%s) = %s / %s".format(name, _sobject.map(_.label), label))
   }
 
   private def _build_trait(tr: DomainTrait, entities: Map[String, SObject]): DomainTrait = {
