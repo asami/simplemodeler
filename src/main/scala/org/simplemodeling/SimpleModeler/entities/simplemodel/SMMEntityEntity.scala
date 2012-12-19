@@ -95,7 +95,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
- * @version Dec. 17, 2012
+ * @version Dec. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1191,6 +1191,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case None => sys.error("buildSObject")
     }
     privateObjects.foreach(_.buildSObjects(entities))
+    println("SMMEntityEntity#buildSObjects(%s) = %s / %s".format(name, _sobject.map(_.label), label))
   }
 
   private def _build_trait(tr: DomainTrait, entities: Map[String, SObject]): DomainTrait = {

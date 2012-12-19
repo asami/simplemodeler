@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.builder._
  * @since   Oct.  5, 2012
  *  version Nov. 13, 2012
  *  version Nov. 26, 2012
- * @version Dec. 10, 2012
+ * @version Dec. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMElement {
@@ -69,6 +69,10 @@ trait SMMElement {
   protected def set_Annotation_Pf(key: String, value: String): Boolean = false
 */
 
+  def updateTuple(entry: (String, String)) {
+    updateField(PropertyRecord.create(entry))
+  }
+
   def update(entry: Seq[PropertyRecord]) {
     properties = entry ++ properties
     entry.foreach(updateField)
@@ -76,30 +80,31 @@ trait SMMElement {
 
   def updateField(field: PropertyRecord) {
     val key = field.key
-    val value = field.value.get // XXX
-    NaturalLabel(key) match {
-      case NameLabel => {}
-      case TypeLabel => {}
-      case DatatypeLabel => {}
-      case ObjecttypeLabel => {}
-      case MultiplicityLabel => {}
-      case NameJaLabel => name_ja = value
-      case NameEnLabel => name_en = value
-      case TermLabel => term = value
-      case TermJaLabel => term_ja = value
-      case TermEnLabel => term_en = value
-      case TitleLabel => title = value
-      case SubtitleLabel => subtitle = value
-      case LabelLabel => label = value
-      case CaptionLabel => caption = value
-      case BriefLabel => brief = value
-      case SummaryLabel => brief = value
-      case DescriptionLabel => description = value
-      case ColumnNameLabel => {}
-      case SqlDatatypeLabel => {}
-      case l: NaturalLabel => update_Field(l, value)
+    for (value <- field.value) {
+      NaturalLabel(key) match {
+        case NameLabel => {}
+        case TypeLabel => {}
+        case DatatypeLabel => {}
+        case ObjecttypeLabel => {}
+        case MultiplicityLabel => {}
+        case NameJaLabel => name_ja = value
+        case NameEnLabel => name_en = value
+        case TermLabel => term = value
+        case TermJaLabel => term_ja = value
+        case TermEnLabel => term_en = value
+        case TitleLabel => title = value
+        case SubtitleLabel => subtitle = value
+        case LabelLabel => label = value
+        case CaptionLabel => caption = value
+        case BriefLabel => brief = value
+        case SummaryLabel => brief = value
+        case DescriptionLabel => description = value
+        case ColumnNameLabel => {}
+        case SqlDatatypeLabel => {}
+        case l: NaturalLabel => update_Field(l, value)
+      }
+      update_Field(key, value)
     }
-    update_Field(key, value)
   }
 
   protected def update_Field(label: NaturalLabel, value: String) {

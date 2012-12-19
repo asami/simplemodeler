@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 17, 2012
+ * @version Dec. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -498,7 +498,7 @@ object NaturalLabel {
   }
 
   def getObjectKind(entry: Seq[PropertyRecord]): Option[ElementKind] = {
-    getObjectKind0(entry.map(_.toTuple))
+    getObjectKind0(entry.flatMap(_.toTuple))
   }
 
   def getObjectKind0(entry: Seq[(String, String)]): Option[ElementKind] = {
@@ -519,7 +519,7 @@ object NaturalLabel {
   }
 
   def getObjectName(entry: Seq[PropertyRecord]): Option[String] = {
-    getObjectName0(entry.map(_.toTuple))
+    getObjectName0(entry.flatMap(_.toTuple))
   }
 
   def getObjectName0(entry: Seq[(String, String)]): Option[String] = {

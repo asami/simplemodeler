@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 17, 2012
+ * @version Dec. 19, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -80,9 +80,8 @@ class TableSimpleModelMakerBuilder(
 
   protected final def build_object(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) {
     var is_derived = false
-    for (r <- entry) {
-      val (key, value) = r.toTuple
-      NaturalLabel(key) match {
+    for (r <- entry; value <- r.value) {
+      NaturalLabel(r.key) match {
         case NameLabel => {}
         case NameJaLabel => obj.name_ja = value
         case NameEnLabel => obj.name_en = value
@@ -153,8 +152,7 @@ class TableSimpleModelMakerBuilder(
 
   private def _build_attribute(attr: SMMAttribute, entry: Seq[PropertyRecord]) = {
     _build_slot(attr, entry)
-    for (r <- entry) {
-      val (key, value) = r.toTuple
+    for (r <- entry; (key, value) <- r.toTuple) {
       NaturalLabel(key) match {
         case DeriveLabel => {
           attr.deriveExpression = value
@@ -167,9 +165,8 @@ class TableSimpleModelMakerBuilder(
   }
 
   private def _build_slot(slot: SMMSlot, entry: Seq[PropertyRecord]) = {
-    for (r <- entry) {
+    for (r <- entry; (key, value) <- r.toTuple) {
 //      println("TableSimpleModelMakerBuilder: %s => %s".format(key, NaturalLabel(key)))
-      val (key, value) = r.toTuple
       NaturalLabel(key) match {
         case NameLabel => {}
         case TypeLabel => {}
@@ -251,6 +248,7 @@ class TableSimpleModelMakerBuilder(
       case ActorLabel => add_primary_actor(entity, entry)
       case GoalLabel => add_goal(entity, entry)
     }
+    entity.updateTuple((entry._1, entry._2))
   }
 
   private def _property_kind(entry: (String, String, Seq[String])): Option[NaturalLabel] = {
