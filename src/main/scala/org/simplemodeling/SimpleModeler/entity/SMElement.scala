@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entity
 
+import org.apache.commons.lang3.StringUtils
 import scala.collection.mutable.{Buffer, ArrayBuffer}
 import java.util.UUID
 import org.simplemodeling.dsl._
@@ -16,7 +17,7 @@ import org.simplemodeling.SimpleModeler.sdoc.SMObjectRef
  *  version Dec. 18, 2010
  *  version Feb. 22, 2012
  *  version Nov. 26, 2012
- * @version Dec. 14, 2012
+ * @version Dec. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMElement] {
@@ -78,8 +79,13 @@ abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMEleme
    * GUI
    */
   def displaySequence = dslElement.displaySequence
-  def naviLabel = dslElement.naviLabel
-  def tabLabel = dslElement.tabLabel
+  def guiNaviLabel: Option[String] = _option(dslElement.guiNaviLabel)
+  def guiTabLabel: Option[String] = _option(dslElement.guiTabLabel)
+  def guiView: Option[String] = _option(dslElement.guiView)
+
+  private def _option(s: String): Option[String] = {
+    Option(s).filter(StringUtils.isNotBlank)
+  }
 
   /*
    * SQL

@@ -21,7 +21,7 @@ import org.simplemodeling.dsl._
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
- * @version Dec. 19, 2012
+ * @version Dec. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -206,15 +206,6 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   }
   var platform_term_ja: Option[String] = None
 
-  /*
-   * SQL
-   */
-  def sqlTableName = {
-    (platform_sqlTableName orElse modelPackage.map(_.sqlTableName)) |
-    modelObject.sqlTableName
-  }
-  var platform_sqlTableName: Option[String] = None
-
   /**
    * 
    */
@@ -282,6 +273,20 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   protected def class_Definition: ClassDefinition_TYPE = {
     throw new UnsupportedOperationException("Please create ClassDefinition or let this Entity be hidden.")
   }
+
+  /*
+   * GUI
+   */
+  def guiView: Option[String] = modelEntity.guiView
+
+  /*
+   * SQL
+   */
+  def sqlTableName = {
+    (platform_sqlTableName orElse modelPackage.map(_.sqlTableName)) |
+    modelObject.sqlTableName
+  }
+  var platform_sqlTableName: Option[String] = None
 
   /*
    * Body

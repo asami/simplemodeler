@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
  *  version Nov. 27, 2012
- * @version Dec. 18, 2012
+ * @version Dec. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -463,7 +463,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
 
   final def tabName(modelElement: SMElement): String = {
     val a = pickup_name(
-      modelElement.tabLabel,
+      modelElement.guiTabLabel | "",
       modelElement.label.toText,
       modelElement.title_sdoc.toText,
       modelElement.term_ja,
@@ -488,7 +488,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
 
   final def naviName(modelElement: SMElement): String = {
     val a = pickup_name(
-      modelElement.naviLabel,
+      modelElement.guiNaviLabel | "",
       modelElement.label.toText,
       modelElement.term_ja,
       modelElement.term_en,

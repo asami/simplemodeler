@@ -95,7 +95,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
- * @version Dec. 19, 2012
+ * @version Dec. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -117,8 +117,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   /*
    * GUI
    */
-  var naviLabel: String = ""
-  var tabLabel: String = ""
+  var guiNaviLabel: String = ""
+  var guiTabLabel: String = ""
+  var guiView: String = ""
   /*
    * SQL
    */
@@ -604,8 +605,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   override protected def update_Field(label: NaturalLabel, value: String) {
     label match {
-      case NaviLabelLabel => naviLabel = value
-      case TabLabelLabel => tabLabel = value
+      case GuiNaviLabelLabel => guiNaviLabel = value
+      case GuiTabLabelLabel => guiTabLabel = value
+      case GuiViewLabel => guiView = value
       case TableNameLabel => tableName = value
       case _ => {}
     }
@@ -1269,8 +1271,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_properties(entity: SObject) {
     _build_properties(entity, this)
-    entity.naviLabel = naviLabel
-    entity.tabLabel = tabLabel
+    entity.guiNaviLabel = guiNaviLabel
+    entity.guiTabLabel = guiTabLabel
+    entity.guiView = guiView
     entity.sqlTableName = tableName
   }
 

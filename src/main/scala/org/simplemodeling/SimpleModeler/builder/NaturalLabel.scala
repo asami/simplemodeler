@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 19, 2012
+ * @version Dec. 20, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -329,16 +329,20 @@ case object DisplayLabel extends NaturalLabel {
   val candidates = List("display", "表示")
 }
 
-case object NaviLabelLabel extends NaturalLabel {
+case object VisibilityLabel extends NaturalLabel {
+  val candidates = List("visibility", "可視性")
+}
+
+case object GuiNaviLabelLabel extends NaturalLabel {
   val candidates = List("navi", "navigation", "ナビ", "ナビゲーション", "ナビ名")
 }
 
-case object TabLabelLabel extends NaturalLabel {
+case object GuiTabLabelLabel extends NaturalLabel {
   val candidates = List("tab", "タブ", "タブ名")
 }
 
-case object VisibilityLabel extends NaturalLabel {
-  val candidates = List("visibility", "可視性")
+case object GuiViewLabel extends NaturalLabel {
+  val candidates = List("gui view")
 }
 
 /*
@@ -446,8 +450,9 @@ object NaturalLabel {
     DeleteLabel,
     ObjecttypeLabel,
     DisplayLabel,
-    NaviLabelLabel,
-    TabLabelLabel,
+    GuiNaviLabelLabel,
+    GuiTabLabelLabel,
+    GuiViewLabel,
     VisibilityLabel,
     TableNameLabel,
     ColumnNameLabel,
