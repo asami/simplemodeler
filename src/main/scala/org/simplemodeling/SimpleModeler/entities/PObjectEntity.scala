@@ -21,7 +21,7 @@ import org.simplemodeling.dsl._
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
- * @version Dec. 20, 2012
+ * @version Dec. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -128,6 +128,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     val c = new PAttribute(n, t) multiplicity_is PZeroMore // XXX
     List(c)
 */
+    b.platformParticipation = Some(a)
     List(b)
   }
 

@@ -14,15 +14,16 @@ import java.util.TimeZone
  *  version Aug.  7, 2011
  *  version Dec. 14, 2011
  *  version Feb. 20, 2012
- * @version Dec. 19, 2012
+ *  version Nov.  9, 2012
+ * @version Dec. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 class JavaClassAttributeDefinition(
-  pContext: PEntityContext,
+  ctx: PEntityContext,
   aspects: Seq[JavaAspect],
   anattr: PAttribute,
-  owner: JavaClassDefinition,
-  jmaker: JavaMaker) extends GenericClassAttributeDefinition(pContext, aspects, anattr, owner) with JavaMakerHolder with JavaClassAttributeDefinitionHelper with JavaClassAttributeDefinitionExtension with JavaClassAttributeCodeUtils {
+  val jowner: JavaClassDefinition,
+  jmaker: JavaMaker) extends GenericClassAttributeDefinition(ctx, aspects, anattr, jowner) with JavaMakerHolder with JavaClassAttributeDefinitionHelper with JavaClassAttributeDefinitionExtension with JavaClassAttributeCodeUtils {
   /**
    * withImmutable method depends on this type.
    */
@@ -31,7 +32,7 @@ class JavaClassAttributeDefinition(
   /**
    * References to entity are converted to documents of entity.
    */
-  def isDocument = owner.isDocument
+  def isDocument = jowner.isDocument
 
   jm_open(jmaker, aspects)
 

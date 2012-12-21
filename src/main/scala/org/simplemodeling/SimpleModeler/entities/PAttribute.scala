@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 15, 2012
+ * @version Dec. 21, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -53,6 +53,12 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   def getModelAssociation: Option[SMAssociation] = {
     Option(modelAssociation)
   }
+
+  /**
+   * PObjectEntity sets when this attribute created from participation.
+   * JavaExpressionBuilder uses it to get entity via association class.
+   */
+  var platformParticipation: Option[PParticipation] = None
 
   final def typeName: String = type_name
   final def objectTypeName: String = type_name_object
