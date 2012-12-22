@@ -78,12 +78,12 @@ trait SqlHelper {
 
   protected def sql_select_grid_literal(entity: PEntityEntity): String = {
     val maker = pContext.sqlMaker(entity)
-    maker.selectGridLiteral
+    maker.selectLiteral(GridVisibility)
   }
 
   protected def sql_select_grid_literal(doc: PDocumentEntity): String = {
     val maker = pContext.sqlMaker(doc)
-    maker.selectGridLiteral
+    maker.selectLiteral(GridVisibility)
   }
 
   protected def sql_select_grid_literal(o: PObjectEntity): String = {

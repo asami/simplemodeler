@@ -18,10 +18,10 @@ trait SqlMaker {
   def create: String
   def createLiteral: String
   def select: String
-  def selectGrid: String
+  def select(v: PVisibility): String
   def selectFetch: String
   def selectLiteral: String
-  def selectGridLiteral: String
+  def selectLiteral(v: PVisibility): String
   def selectFetchLiteral: String
   def update: String
   def updateLiteral: String
@@ -59,20 +59,20 @@ class EntitySqlMaker(
   }
 
   def select = {
-    val tablename = context.sqlTableName(entity)
-    "select " + _columns + " from " + tablename + " T " + _joins
+    select(WholeVisibility)
   }
 
-  def selectGrid = {
-    sys.error("???")
+  def select(v: PVisibility) = {
+    val tablename = context.sqlTableName(entity)
+    "select " + _columns(v) + " from " + tablename + " T " + _joins
   }
 
   def selectFetch = {
     sys.error("???")
   }
 
-  private def _columns = {
-    attributes.flatMap(_column).mkString(", ")
+  private def _columns(v: PVisibility) = {
+    attributes.withFilter(v.isVisible).flatMap(_column).mkString(", ")
   }
 
   object EntityReference {
@@ -221,8 +221,8 @@ class EntitySqlMaker(
     UJavaString.stringLiteral(select)
   }
 
-  def selectGridLiteral = {
-    UJavaString.stringLiteral(selectGrid)
+  def selectLiteral(v: PVisibility) = {
+    UJavaString.stringLiteral(select(v))
   }
 
   def selectFetchLiteral = {
@@ -271,12 +271,12 @@ class DocumentSqlMaker(val document: PDocumentEntity)(implicit val context: PEnt
     UJavaString.stringLiteral(select)
   }
 
-  def selectGrid = {
+  def select(v: PVisibility) = {
     "select %s from %s".format("columns", "table")
   }
 
-  def selectGridLiteral = {
-    UJavaString.stringLiteral(selectGrid)
+  def selectLiteral(v: PVisibility) = {
+    UJavaString.stringLiteral(select(v))
   }
 
   def selectFetch = {

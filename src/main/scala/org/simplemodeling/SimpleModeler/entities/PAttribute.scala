@@ -125,6 +125,15 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   def isAssociationClass = getModelAssociation.map(_.isAssociationClass) | false
 
+  def getVisibility: Option[PVisibility] = {
+    getProperty("Visivility").flatMap(_ match {
+      case "plain" => Some(PlainVisibility)
+      case "detail" => Some(DetailVisibility)
+      case "whole" => Some(WholeVisibility)
+      case _ => None
+    })
+  }
+
   def getProperty(key: String) = {
     getModelElement.flatMap(_.getProperty(key))
   }
