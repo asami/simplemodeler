@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities.expr.SqlExpressionBuilder
 
 /**
  * @since   Nov.  2, 2012
- * @version Dec. 22, 2012
+ * @version Dec. 23, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
@@ -18,10 +18,8 @@ trait SqlMaker {
   def create: String
   def createLiteral: String
   def select: String
-  def select(v: PVisibility): String
   def selectFetch: String
   def selectLiteral: String
-  def selectLiteral(v: PVisibility): String
   def selectFetchLiteral: String
   def update: String
   def updateLiteral: String
@@ -35,10 +33,18 @@ class EntitySqlMaker(
   val entity: PEntityEntity,
   val isTarget: PAttribute => Boolean = _ => true
 )(implicit val context: PEntityContext) extends SqlMaker {
-  val attributes = entity.wholeAttributes.filter(isTarget)
+  val attributeCandicates = entity.wholeAttributes
+  val attributes = attributeCandicates.filter(isTarget)
+  val joinedAttributeCandidates: Seq[(PAttribute, String)] = {
+    val a = attributeCandicates.filter(_is_join_candidate)
+//    filter(_.isEntityReference).
+//    filter(_.isSingle)
+    val b = (1 to a.length).map(x => "T" + x)
+    a zip b
+  }
   val joinedAttributes: Seq[(PAttribute, String)] = {
     println("EntitySqlMaker#joinedAttributes in (%s) = %s".format(entity.name, attributes))
-    val a = attributes.filter(_is_join)
+    val a = attributeCandicates.filter(_is_join)
 //    filter(_.isEntityReference).
 //    filter(_.isSingle)
     val b = (1 to a.length).map(x => "T" + x)
@@ -46,8 +52,32 @@ class EntitySqlMaker(
     a zip b
   }
 
-  private def _is_join(a: PAttribute) = {
+  private def _is_join_candidate(a: PAttribute) = {
     a.isEntityReference
+  }
+
+  private def _is_join(a: PAttribute) = {
+    a.isEntityReference &&
+    (isTarget(a) || _is_refered(a))
+/*
+    if (a.isEntityReference) true
+    else if (a.isDerive) {
+      println("SqlMaker#_is_join(%s/%s) = %s".format(entity.name, a.name, a.deriveExpression))
+      true
+    } else false
+*/
+  }
+
+  private def _is_refered(a: PAttribute) = {
+    attributeCandicates.exists(_is_refer(a))
+  }
+
+  private def _is_refer(target: PAttribute)(source: PAttribute): Boolean = {
+    val a = for (expr <- source.deriveExpression) yield {
+      if (target == source) false
+      else new SqlExpressionBuilder(expr.model)(context, joinedAttributeCandidates).isTarget(target)
+    }
+    a | false
   }
 
   def create = {
@@ -59,20 +89,16 @@ class EntitySqlMaker(
   }
 
   def select = {
-    select(WholeVisibility)
-  }
-
-  def select(v: PVisibility) = {
     val tablename = context.sqlTableName(entity)
-    "select " + _columns(v) + " from " + tablename + " T " + _joins(v)
+    "select " + _columns + " from " + tablename + " T " + _joins
   }
 
   def selectFetch = {
     "???"
   }
 
-  private def _columns(v: PVisibility) = {
-    attributes.withFilter(v.isVisible).flatMap(_column).mkString(", ")
+  private def _columns = {
+    attributes.flatMap(_column).mkString(", ")
   }
 
   object EntityReference {
@@ -156,20 +182,8 @@ class EntitySqlMaker(
     "coalesce(%s) as %s".format(column, alias)
   }
 
-  private def _is_entity_reference(attr: PAttribute) = {
-    
-  }
-
-  private def _is_powertype(attr: PAttribute) = {
-    
-  }
-
-  private def _is_statemachine(attr: PAttribute) = {
-    
-  }
-
-  private def _joins(v: PVisibility) = {
-    val a: Seq[String] = for ((attr, t) <- joinedAttributes if v.isVisible(attr)) yield {
+  private def _joins = {
+    val a: Seq[String] = for ((attr, t) <- joinedAttributes) yield {
       attr.platformParticipation match {
         case Some(s: AttributeParticipation) => _join_association_class(attr, t, s)
         case Some(s) => sys.error("???")
@@ -221,10 +235,6 @@ class EntitySqlMaker(
     UJavaString.stringLiteral(select)
   }
 
-  def selectLiteral(v: PVisibility) = {
-    UJavaString.stringLiteral(select(v))
-  }
-
   def selectFetchLiteral = {
     UJavaString.stringLiteral(selectFetch)
   }
@@ -254,7 +264,7 @@ class EntitySqlMaker(
   }
 }
 
-class DocumentSqlMaker(val document: PDocumentEntity)(implicit val context: PEntityContext) extends SqlMaker {
+class DocumentSqlMaker(val document: PDocumentEntity, isTarget: PAttribute => Boolean = _ => true)(implicit val context: PEntityContext) extends SqlMaker {
   def create = {
     "create"
   }
@@ -269,14 +279,6 @@ class DocumentSqlMaker(val document: PDocumentEntity)(implicit val context: PEnt
 
   def selectLiteral = {
     UJavaString.stringLiteral(select)
-  }
-
-  def select(v: PVisibility) = {
-    "select %s from %s".format("columns", "table")
-  }
-
-  def selectLiteral(v: PVisibility) = {
-    UJavaString.stringLiteral(select(v))
   }
 
   def selectFetch = {

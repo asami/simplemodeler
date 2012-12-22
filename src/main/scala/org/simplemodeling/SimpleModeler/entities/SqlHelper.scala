@@ -2,7 +2,7 @@ package org.simplemodeling.SimpleModeler.entities
 
 /*
  * @since   Nov.  1, 2012
- * @version Dec. 22, 2012
+ * @version Dec. 23, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SqlHelper {
@@ -77,13 +77,13 @@ trait SqlHelper {
   }
 
   protected def sql_select_grid_literal(entity: PEntityEntity): String = {
-    val maker = pContext.sqlMaker(entity)
-    maker.selectLiteral(GridVisibility)
+    val maker = pContext.sqlMaker(entity, GridVisibility.isVisible(_))
+    maker.selectLiteral
   }
 
   protected def sql_select_grid_literal(doc: PDocumentEntity): String = {
-    val maker = pContext.sqlMaker(doc)
-    maker.selectLiteral(GridVisibility)
+    val maker = pContext.sqlMaker(doc, GridVisibility.isVisible(_))
+    maker.selectLiteral
   }
 
   protected def sql_select_grid_literal(o: PObjectEntity): String = {

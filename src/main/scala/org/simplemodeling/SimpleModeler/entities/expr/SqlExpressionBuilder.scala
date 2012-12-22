@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Dec. 21, 2012
- * @version Dec. 22, 2012
+ * @version Dec. 23, 2012
  * @author  ASAMI, Tomoharu
  */
 class SqlExpressionBuilder(
@@ -15,6 +15,12 @@ class SqlExpressionBuilder(
 )(implicit c: PEntityContext, joinedAttributes: Seq[(PAttribute, String)]) extends ExpressionBuilder(c, expr) {
   val attributes = joinedAttributes.map(_._1)
   var current: List[(PAttribute, String)] = Nil // TODO work around
+
+  def isTarget(attr: PAttribute) = {
+    expr_string(expr.tree)
+    println("SqlExpressionBuilder#isTarget(%s) = %s".format(expr, current))
+    current.exists(_._1 == attr)
+  }
 
   override protected def expr_dot(expr: Tree[SMExpressionNode], x: SMEDot): String = {
     expr_string(x.lhs)
