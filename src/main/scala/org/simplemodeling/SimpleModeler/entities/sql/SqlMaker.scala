@@ -5,10 +5,11 @@ import com.asamioffice.goldenport.text.UJavaString
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.domain._
 import org.simplemodeling.SimpleModeler.entities._
+import org.simplemodeling.SimpleModeler.entities.expr.SqlExpressionBuilder
 
 /**
  * @since   Nov.  2, 2012
- * @version Dec. 15, 2012
+ * @version Dec. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
@@ -26,13 +27,23 @@ trait SqlMaker {
   def deleteLiteral: String
 }
 
-class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) extends SqlMaker {
+class EntitySqlMaker(
+  val entity: PEntityEntity,
+  val isTarget: PAttribute => Boolean = _ => true
+)(implicit val context: PEntityContext) extends SqlMaker {
+  val attributes = entity.wholeAttributes.filter(isTarget)
   val joinedAttributes: Seq[(PAttribute, String)] = {
-    val a = entity.wholeAttributesWithoutId.
-    filter(_.isEntityReference).
-    filter(_.isSingle)
+    println("EntitySqlMaker#joinedAttributes in (%s) = %s".format(entity.name, attributes))
+    val a = attributes.filter(_is_join)
+//    filter(_.isEntityReference).
+//    filter(_.isSingle)
     val b = (1 to a.length).map(x => "T" + x)
+    println("EntitySqlMaker#joinedAttributes out (%s) = %s".format(entity.name, a))
     a zip b
+  }
+
+  private def _is_join(a: PAttribute) = {
+    a.isEntityReference
   }
 
   def create = {
@@ -49,7 +60,7 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
   }
 
   private def _columns = {
-    entity.wholeAttributes.flatMap(_column).mkString(", ")
+    attributes.flatMap(_column).mkString(", ")
   }
 
   object EntityReference {
@@ -80,13 +91,48 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
     }
   }
 
+  object ExpressionReference {
+    def unapply(attr: PAttribute): Option[String] = {
+      for {
+        expr <- attr.deriveExpression
+      } yield {
+        val name = context.sqlColumnName(attr)
+        val column = new SqlExpressionBuilder(expr.model)(context, joinedAttributes).build
+        _column_as(column, name)
+      }
+    }
+  }
+
+  object AssociationClassReference {
+    def unapply(attr: PAttribute): Option[List[String]] = {
+      val a: Option[Option[List[String]]] = for {
+        (a, t) <- joinedAttributes.find(_._1 == attr)
+      } yield {
+        attr.platformParticipation.collect {
+          case p: AttributeParticipation => {
+            val name = context.sqlColumnName(a)
+            val column = context.sqlJoinColumnName(p.attribute)
+            val b = _column_as(t + "." + column, name)
+            val name2 = context.sqlNameAlias(a)
+            val column2 = context.sqlNameColumnName(p.attribute)
+            val c = _column_as(t + "." + column2, name2)
+            List(b, c)
+          }
+        }
+      }
+      a.flatMap(identity)
+    }
+  }
+
   private def _column(attr: PAttribute): List[String] = {
-    if (attr.isMulti) return Nil
+//    if (attr.isMulti) return Nil
     val columnname = context.sqlColumnName(attr)
 //    println("SqlMaker#_column(%s/%s) = %s".format(entity.name, attr.name, attr))
     val name = context.asciiName(attr)
     val c1 = _column_as("T." + columnname, name)
     attr match {
+      case ExpressionReference(c) => List(c)
+      case AssociationClassReference(cs) => cs
       case EntityReference(c) => List(c1, c)
       case LabelReference(c) => List(c1, c)
       case _ => List(c1)
@@ -94,7 +140,7 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
   }
 
   protected def _column_as(column: String, alias: String): String = {
-    // 'coalesce' is workaround for MySQL Java Driver
+    // Using 'coalesce' is workaround for MySQL Java Driver
     "coalesce(%s) as %s".format(column, alias)
   }
 
@@ -112,11 +158,51 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
 
   private def _joins = {
     val a: Seq[String] = for ((attr, t) <- joinedAttributes) yield {
-      "left outer join " + context.sqlTableName(attr) + " " + t + " on " +
-      "T." + context.sqlColumnName(attr) + "=" + t + "." + context.sqlJoinColumnName(attr)
+      attr.platformParticipation match {
+        case Some(s: AttributeParticipation) => _join_association_class(attr, t, s)
+        case Some(s) => sys.error("???")
+        case _ => _join_master(attr, t)
+      }
     }
 //    a.mkString("\n", " ", "\n")
     a.mkString(" ")
+  }
+
+  private def _join_master(attr: PAttribute, t: String) = {
+    "left outer join " + context.sqlTableName(attr) + " " + t + " on " +
+    "T." + context.sqlColumnName(attr) + "=" + t + "." + context.sqlJoinColumnName(attr)
+  }
+
+  private def _join_association_class(attr: PAttribute, t: String, p: AttributeParticipation): String = {
+    context.sqlAssociationClassCounterAssociation(p) match {
+      case Some(s) => _join_association_class_direct(attr, t, p, s)
+      case None => _join_association_class_itself(attr, t)
+    }
+  }
+
+  private def _join_association_class_direct(ownattr: PAttribute, t: String, participation: AttributeParticipation, targetattr: PAttribute) = {
+    val assoc = participation.source
+    val tx = t + "x"
+    val assoctable = context.sqlTableName(assoc)
+    val assocjoincolumn = context.sqlColumnName(participation.attribute)
+    val targettable = context.sqlTableName(targetattr)
+    val targetcolumn = context.sqlColumnName(targetattr)
+    val a = "left outer join %s %s on T.%s=%s.%s".format(
+      assoctable, tx,
+      context.sqlIdColumnName(entity), tx, assocjoincolumn)
+    val b = "left outer join %s %s on %s.%s=%s.%s".format(
+      targettable, t,
+      tx, targetcolumn,
+      t, context.sqlJoinColumnName(targetattr))
+    a + " " + b
+  }
+
+  private def _join_association_class_itself(ownattr: PAttribute, t: String) = {
+    val assoctable = context.sqlTableName(ownattr)
+    val assocjoincolumn = context.sqlColumnName(ownattr)
+    "left outer join %s %s on T.%s=%s.%s".format(
+      assoctable, t,
+      context.sqlIdColumnName(entity), t, assocjoincolumn)
   }
 
   def selectLiteral = {
@@ -148,7 +234,7 @@ class EntitySqlMaker(val context: PEntityContext)(val entity: PEntityEntity) ext
   }
 }
 
-class DocumentSqlMaker(val context: PEntityContext)(val document: PDocumentEntity) extends SqlMaker {
+class DocumentSqlMaker(val document: PDocumentEntity)(implicit val context: PEntityContext) extends SqlMaker {
   def create = {
     "create"
   }

@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
  *  version Nov. 27, 2012
- * @version Dec. 20, 2012
+ * @version Dec. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -513,9 +513,10 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
 
   /**
    * Program oriented name. Capitalized nuetral.
+   * In case of participation, attr does not have modelElement.
    */
   final def asciiName(attr: PAttribute): String = {
-    asciiName(attr.modelElement)
+    attr.getModelElement.map(asciiName) | attr.name
   }
 
   /**
@@ -685,15 +686,19 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   }
 
   def sqlMaker(entity: PEntityEntity): SqlMaker = {
-    new EntitySqlMaker(this)(entity)
+    new EntitySqlMaker(entity)(this)
   }
 
   def sqlMaker(doc: PDocumentEntity): SqlMaker = {
-    new DocumentSqlMaker(this)(doc)
+    new DocumentSqlMaker(doc)(this)
   }
 
   def sqlTableName(o: PObjectEntity): String = {
     pickup_name(o.sqlTableName, o.term_en, o.term_ja, o.term, o.name_en, o.name_ja, o.name)
+  }
+
+  def sqlIdColumnName(o: PObjectEntity): String = {
+    sqlColumnName(o.idAttr)
   }
 
   def sqlColumnName(o: PAttribute): String = {
@@ -708,7 +713,6 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     }
     sqlTableName(o)
   }
-
 
   def sqlJoinColumnName(a: PAttribute): String = {
     val o = a.attributeType match {
@@ -735,6 +739,16 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
 
   def sqlNameAlias(a: PAttribute): String = {
     asciiName(a) + "__name"
+  }
+
+  def sqlAssociationClassCounterAssociation(a: AttributeParticipation): Option[PAttribute] = {
+    sqlAssociationClassCounterAssociation(a.source, a.attribute)
+  }
+
+  def sqlAssociationClassCounterAssociation(s: PObjectEntity, a: PAttribute): Option[PAttribute] = {
+    val attrs = s.attributes
+    if (attrs.length != 2) None
+    else attrs.filter(_ != a).headOption
   }
 
   /*

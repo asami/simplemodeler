@@ -48,7 +48,7 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Nov. 28, 2012
+ * @version Dec. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(

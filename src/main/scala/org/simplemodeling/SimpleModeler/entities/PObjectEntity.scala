@@ -21,7 +21,7 @@ import org.simplemodeling.dsl._
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
- * @version Dec. 21, 2012
+ * @version Dec. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -93,7 +93,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
 
   private def _to_attr(a: AttributeParticipation): List[PAttribute] = {
 //    println("PObjectEntity#AttributeParticipation(%s) = %s".format(name, a))
-    val b = _another_association(a.source, a.attribute) match {
+    val b = _another_association(a) match {
       case Some(x) => x.attributeType match {
         case e: PEntityType => {
           _entity_type_attribute(e.entity)
@@ -132,10 +132,8 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     List(b)
   }
 
-  private def _another_association(s: PObjectEntity, a: PAttribute): Option[PAttribute] = {
-    val attrs = s.attributes
-    if (attrs.length != 2) None
-    else attrs.filter(_ != a).headOption
+  private def _another_association(a: AttributeParticipation): Option[PAttribute] = {
+    pContext.sqlAssociationClassCounterAssociation(a)
   }
 
   private def _entity_type_attribute(e: PEntityEntity): PAttribute = {
@@ -395,10 +393,10 @@ abstract class PObjectEntity(val pContext: PEntityContext)
       (c._1 ::: a._1, c._2 ++ a._2)
     })
     if (b._2.contains(qualifiedName)) b
-    else (b._1 ::: attributes.toList, b._2 + qualifiedName)
+    else (b._1 ::: attributes.toList ::: associationEntityAttributes, b._2 + qualifiedName)
   }
 
-    lazy val wholeAttributesWithoutId: List[PAttribute] = {
+  lazy val wholeAttributesWithoutId: List[PAttribute] = {
     wholeAttributes.filter(!_.isId)
   }
 

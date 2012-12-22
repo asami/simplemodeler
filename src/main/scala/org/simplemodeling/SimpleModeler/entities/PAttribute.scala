@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 21, 2012
+ * @version Dec. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -113,10 +113,14 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     multiplicity == POne && attributeType.isDataType
   }
 
+  /**
+   * SqlMaker Uses to decide requiring join.
+   */
   def isEntityReference = {
     modelAssociation != null ||
     (modelPowertype != null && modelPowertype.isEntityReference) ||
-    (modelStateMachine != null && modelStateMachine.isEntityReference)
+    (modelStateMachine != null && modelStateMachine.isEntityReference) ||
+    platformParticipation.isDefined
   }
 
   def isAssociationClass = getModelAssociation.map(_.isAssociationClass) | false
@@ -459,6 +463,7 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   //
   override def toString() = {
-    name + multiplicity.mark + "/" + (getModelElement.map(_.toString) | "No model")
+    val a = getModelElement.map(_.toString) orElse platformParticipation
+    name + multiplicity.mark + "/" + (a | "No model")
   }
 }
