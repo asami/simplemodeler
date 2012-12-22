@@ -2,7 +2,7 @@ package org.simplemodeling.SimpleModeler.entities
 
 /*
  * @since   Nov.  1, 2012
- * @version Dec.  6, 2012
+ * @version Dec. 22, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SqlHelper {
@@ -73,6 +73,40 @@ trait SqlHelper {
     o match {
       case x: PEntityEntity => sql_select_literal(x)
       case x: PDocumentEntity => sql_select_literal(x)
+    }
+  }
+
+  protected def sql_select_grid_literal(entity: PEntityEntity): String = {
+    val maker = pContext.sqlMaker(entity)
+    maker.selectGridLiteral
+  }
+
+  protected def sql_select_grid_literal(doc: PDocumentEntity): String = {
+    val maker = pContext.sqlMaker(doc)
+    maker.selectGridLiteral
+  }
+
+  protected def sql_select_grid_literal(o: PObjectEntity): String = {
+    o match {
+      case x: PEntityEntity => sql_select_grid_literal(x)
+      case x: PDocumentEntity => sql_select_grid_literal(x)
+    }
+  }
+
+  protected def sql_select_fetch_literal(entity: PEntityEntity): String = {
+    val maker = pContext.sqlMaker(entity)
+    maker.selectFetchLiteral
+  }
+
+  protected def sql_select_fetch_literal(doc: PDocumentEntity): String = {
+    val maker = pContext.sqlMaker(doc)
+    maker.selectFetchLiteral
+  }
+
+  protected def sql_select_fetch_literal(o: PObjectEntity): String = {
+    o match {
+      case x: PEntityEntity => sql_select_fetch_literal(x)
+      case x: PDocumentEntity => sql_select_fetch_literal(x)
     }
   }
 

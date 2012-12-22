@@ -18,7 +18,11 @@ trait SqlMaker {
   def create: String
   def createLiteral: String
   def select: String
+  def selectGrid: String
+  def selectFetch: String
   def selectLiteral: String
+  def selectGridLiteral: String
+  def selectFetchLiteral: String
   def update: String
   def updateLiteral: String
   def insert: String
@@ -57,6 +61,14 @@ class EntitySqlMaker(
   def select = {
     val tablename = context.sqlTableName(entity)
     "select " + _columns + " from " + tablename + " T " + _joins
+  }
+
+  def selectGrid = {
+    sys.error("???")
+  }
+
+  def selectFetch = {
+    sys.error("???")
   }
 
   private def _columns = {
@@ -209,6 +221,14 @@ class EntitySqlMaker(
     UJavaString.stringLiteral(select)
   }
 
+  def selectGridLiteral = {
+    UJavaString.stringLiteral(selectGrid)
+  }
+
+  def selectFetchLiteral = {
+    UJavaString.stringLiteral(selectFetch)
+  }
+
   def insert = {
     "insert"
   }
@@ -249,6 +269,22 @@ class DocumentSqlMaker(val document: PDocumentEntity)(implicit val context: PEnt
 
   def selectLiteral = {
     UJavaString.stringLiteral(select)
+  }
+
+  def selectGrid = {
+    "select %s from %s".format("columns", "table")
+  }
+
+  def selectGridLiteral = {
+    UJavaString.stringLiteral(selectGrid)
+  }
+
+  def selectFetch = {
+    "select %s from %s".format("columns", "table")
+  }
+
+  def selectFetchLiteral = {
+    UJavaString.stringLiteral(selectFetch)
   }
 
   def insert = {
