@@ -64,11 +64,11 @@ class EntitySqlMaker(
 
   def select(v: PVisibility) = {
     val tablename = context.sqlTableName(entity)
-    "select " + _columns(v) + " from " + tablename + " T " + _joins
+    "select " + _columns(v) + " from " + tablename + " T " + _joins(v)
   }
 
   def selectFetch = {
-    sys.error("???")
+    "???"
   }
 
   private def _columns(v: PVisibility) = {
@@ -168,8 +168,8 @@ class EntitySqlMaker(
     
   }
 
-  private def _joins = {
-    val a: Seq[String] = for ((attr, t) <- joinedAttributes) yield {
+  private def _joins(v: PVisibility) = {
+    val a: Seq[String] = for ((attr, t) <- joinedAttributes if v.isVisible(attr)) yield {
       attr.platformParticipation match {
         case Some(s: AttributeParticipation) => _join_association_class(attr, t, s)
         case Some(s) => sys.error("???")

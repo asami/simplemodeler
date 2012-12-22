@@ -24,6 +24,7 @@ case object GridVisibility extends PVisibility {
       case Some(PlainVisibility) => true
       case Some(GridVisibility) => true
       case Some(DetailVisibility) => false
+      case None => attr.isSingle
     }
   }
 }
@@ -35,6 +36,7 @@ case object DetailVisibility extends PVisibility {
       case Some(PlainVisibility) => false
       case Some(GridVisibility) => false
       case Some(DetailVisibility) => true
+      case None => false
     }
   }
 }
