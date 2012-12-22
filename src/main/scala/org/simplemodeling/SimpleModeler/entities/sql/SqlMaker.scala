@@ -37,18 +37,14 @@ class EntitySqlMaker(
   val attributes = attributeCandicates.filter(isTarget)
   val joinedAttributeCandidates: Seq[(PAttribute, String)] = {
     val a = attributeCandicates.filter(_is_join_candidate)
-//    filter(_.isEntityReference).
-//    filter(_.isSingle)
     val b = (1 to a.length).map(x => "T" + x)
     a zip b
   }
   val joinedAttributes: Seq[(PAttribute, String)] = {
-    println("EntitySqlMaker#joinedAttributes in (%s) = %s".format(entity.name, attributes))
+//    println("EntitySqlMaker#joinedAttributes in (%s) = %s".format(entity.name, attributes))
     val a = attributeCandicates.filter(_is_join)
-//    filter(_.isEntityReference).
-//    filter(_.isSingle)
     val b = (1 to a.length).map(x => "T" + x)
-    println("EntitySqlMaker#joinedAttributes out (%s) = %s".format(entity.name, a))
+//    println("EntitySqlMaker#joinedAttributes out (%s) = %s".format(entity.name, a))
     a zip b
   }
 
@@ -148,13 +144,18 @@ class EntitySqlMaker(
       } yield {
         attr.platformParticipation.collect {
           case p: AttributeParticipation => {
-            val name = context.sqlColumnName(a)
-            val column = context.sqlJoinColumnName(p.attribute)
-            val b = _column_as(t + "." + column, name)
-            val name2 = context.sqlNameAlias(a)
-            val column2 = context.sqlNameColumnName(p.attribute)
-            val c = _column_as(t + "." + column2, name2)
+            context.sqlAssociationClassCounterAssociation(p) match {
+              case Some(counter) => {
+                val name = context.sqlColumnName(a)
+                val column = context.sqlJoinColumnName(counter)
+                val b = _column_as(t + "." + column, name)
+                val name2 = context.sqlNameAlias(a)
+                val column2 = context.sqlNameColumnName(counter)
+                val c = _column_as(t + "." + column2, name2)
             List(b, c)
+              }
+              case None => Nil
+            }
           }
         }
       }

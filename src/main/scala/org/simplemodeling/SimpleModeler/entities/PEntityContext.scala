@@ -728,6 +728,10 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
       case p: PPowertypeType => p.powertype
       case s: PStateMachineType => s.statemachine
     }
+    sqlJoinColumnName(o)
+  }
+
+  def sqlJoinColumnName(o: PObjectEntity): String = {
     sqlColumnName(o.idAttr)
   }
 
@@ -737,6 +741,10 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
       case p: PPowertypeType => p.powertype
       case s: PStateMachineType => s.statemachine
     }
+    sqlNameColumnName(o)
+  }
+
+  def sqlNameColumnName(o: PObjectEntity): String = {
     val r = sqlColumnName(o.nameAttr)
 //    println("PEntityContext#sqlNameColumnName(%s) = %s / %s".format(a.name, o.name, r))
 //    println(o.nameAttr)
