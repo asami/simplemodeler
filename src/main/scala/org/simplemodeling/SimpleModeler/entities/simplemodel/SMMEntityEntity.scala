@@ -95,7 +95,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
- * @version Dec. 20, 2012
+ * @version Dec. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -114,12 +114,16 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   var packageName: String = ""
   var kind: ElementKind = NoneKind
+
   /*
    * GUI
    */
   var guiNaviLabel: String = ""
   var guiTabLabel: String = ""
   var guiView: String = ""
+  var guiTemplate: String = ""
+  var guiWidget: String = ""
+
   /*
    * SQL
    */
@@ -608,6 +612,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case GuiNaviLabelLabel => guiNaviLabel = value
       case GuiTabLabelLabel => guiTabLabel = value
       case GuiViewLabel => guiView = value
+      case GuiTemplateLabel => guiTemplate = value
+      case GuiWidgetLabel => guiWidget = value
       case TableNameLabel => tableName = value
       case _ => {}
     }
@@ -1274,6 +1280,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     entity.guiNaviLabel = guiNaviLabel
     entity.guiTabLabel = guiTabLabel
     entity.guiView = guiView
+    entity.guiTemplate = guiTemplate
+    entity.guiWidget = guiWidget
     entity.sqlTableName = tableName
   }
 

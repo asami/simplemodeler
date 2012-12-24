@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.sdoc.SMObjectRef
  *  version Dec. 18, 2010
  *  version Feb. 22, 2012
  *  version Nov. 26, 2012
- * @version Dec. 20, 2012
+ * @version Dec. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMElement] {
@@ -82,6 +82,8 @@ abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMEleme
   def guiNaviLabel: Option[String] = _option(dslElement.guiNaviLabel)
   def guiTabLabel: Option[String] = _option(dslElement.guiTabLabel)
   def guiView: Option[String] = _option(dslElement.guiView)
+  def guiTemplate: Option[String] = _option(dslElement.guiTemplate)
+  def guiWidget: Option[String] = _option(dslElement.guiWidget)
 
   private def _option(s: String): Option[String] = {
     Option(s).filter(StringUtils.isNotBlank)

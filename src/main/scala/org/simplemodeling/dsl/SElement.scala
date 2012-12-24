@@ -8,7 +8,7 @@ import util.PropertyRecord
  * @since   Sep. 21, 2008
  *  version Jul. 19, 2009
  *  version Nov. 26, 2012
- * @version Dec. 20, 2012
+ * @version Dec. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SElement(aName: String) extends SDescriptable with SHistoriable {
@@ -111,6 +111,8 @@ abstract class SElement(aName: String) extends SDescriptable with SHistoriable {
   var guiNaviLabel: String = ""
   var guiTabLabel: String = ""
   var guiView: String = ""
+  var guiTemplate: String = ""
+  var guiWidget: String = ""
 
   /*
    * SQL

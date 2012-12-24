@@ -21,7 +21,7 @@ import org.simplemodeling.dsl._
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
- * @version Dec. 22, 2012
+ * @version Dec. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -277,6 +277,8 @@ abstract class PObjectEntity(val pContext: PEntityContext)
    * GUI
    */
   def guiView: Option[String] = modelEntity.guiView
+  def guiTemplate: Option[String] = modelEntity.guiTemplate
+  def guiWidget: Option[String] = modelEntity.guiWidget
 
   /*
    * SQL

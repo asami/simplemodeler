@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 20, 2012
+ * @version Dec. 24, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -345,6 +345,14 @@ case object GuiViewLabel extends NaturalLabel {
   val candidates = List("gui view")
 }
 
+case object GuiTemplateLabel extends NaturalLabel {
+  val candidates = List("gui template")
+}
+
+case object GuiWidgetLabel extends NaturalLabel {
+  val candidates = List("gui widget")
+}
+
 /*
  * SQL
  */
@@ -453,6 +461,8 @@ object NaturalLabel {
     GuiNaviLabelLabel,
     GuiTabLabelLabel,
     GuiViewLabel,
+    GuiTemplateLabel,
+    GuiWidgetLabel,
     VisibilityLabel,
     TableNameLabel,
     ColumnNameLabel,
