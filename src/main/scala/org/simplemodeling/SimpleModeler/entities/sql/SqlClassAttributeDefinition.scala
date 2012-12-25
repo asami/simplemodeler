@@ -1,5 +1,6 @@
 package org.simplemodeling.SimpleModeler.entities.sql
 
+import scalaz._, Scalaz._
 import scala.collection.mutable.ArrayBuffer
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entities._
@@ -10,7 +11,7 @@ import java.util.TimeZone
 
 /**
  * @since   May.  3, 2012
- * @version May. 19, 2012
+ * @version Dec. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SqlClassAttributeDefinition(
@@ -218,7 +219,7 @@ abstract class SqlClassAttributeDefinition(
     }
 
     override protected def apply_EntityType(datatype: PEntityType): String = {
-      datatype.entity.idAttr.attributeType(sql_typename)
+      datatype.entity.idAttrOption.map(_.attributeType(sql_typename)) | "INT"
     }
 
     override protected def apply_EntityPartType(datatype: PEntityPartType): String = {

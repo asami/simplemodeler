@@ -25,7 +25,8 @@ import com.asamioffice.goldenport.util.MultiValueMap
 /**
  * @since   May.  6, 2012
  *  version May. 18, 2012
- * @version Nov.  2, 2012
+ *  version Nov.  2, 2012
+ * @version Dec. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2SqlRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
@@ -64,6 +65,10 @@ class SimpleModel2SqlRealmTransformer(sm: SimpleModelEntity, sctx: GServiceConte
  
     override protected def create_Entity_Part(entity: SMDomainEntityPart): DomainEntityPartTYPE = {
       new SqlEntityPartEntity(target_context)
+    }
+
+    override protected def create_Trait(entity: SMDomainTrait): DomainTraitTYPE = {
+      new SqlTraitEntity(target_context)
     }
 
     override protected def create_Powertype(entity: SMDomainPowertype): Option[DomainPowertypeTYPE] = {

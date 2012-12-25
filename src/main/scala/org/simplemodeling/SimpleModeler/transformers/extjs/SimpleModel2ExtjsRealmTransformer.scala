@@ -26,7 +26,8 @@ import com.asamioffice.goldenport.util.MultiValueMap
 /**
  * @since   Mar. 31, 2011
  *  version Jun. 16, 2012
- * @version Nov.  2, 2012
+ *  version Nov.  2, 2012
+ * @version Dec. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
@@ -201,6 +202,12 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
       val r = new ExtjsPowertypeEntity(target_context)
       r.modelPowertype = entity
       r.some
+    }
+
+    override protected def create_Trait(entity: SMDomainTrait): DomainTraitTYPE = {
+      val r = new ExtjsTraitEntity(target_context)
+//      r.modelTrait = entity
+      r
     }
 
     override protected def create_Value(entity: SMDomainValue): Option[DomainValueTYPE] = {

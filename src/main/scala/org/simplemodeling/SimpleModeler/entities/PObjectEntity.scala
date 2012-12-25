@@ -21,7 +21,7 @@ import org.simplemodeling.dsl._
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
- * @version Dec. 24, 2012
+ * @version Dec. 25, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -270,7 +270,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   }
 
   protected def class_Definition: ClassDefinition_TYPE = {
-    throw new UnsupportedOperationException("Please create ClassDefinition or let this Entity be hidden.")
+    throw new UnsupportedOperationException("Please create ClassDefinition or let this Entity be hidden(%s/%s).".format(name, getClass.getSimpleName))
   }
 
   /*

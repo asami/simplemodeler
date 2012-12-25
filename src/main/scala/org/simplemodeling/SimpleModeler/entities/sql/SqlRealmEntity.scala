@@ -17,17 +17,18 @@ import org.goldenport.entity.content.EntityContent
 /*
  * @since   May.  5, 2012
  *  version May.  6, 2012
- * @version Nov.  2, 2012
+ *  version Nov.  2, 2012
+ * @version Dec. 25, 2012
  * @author  ASAMI, Tomoharu
- */
+n */
 class SqlRealmEntity(aIn: GDataSource, aOut: GDataSource, val sqlContext: SqlEntityContext) extends PRealmEntity(aIn, aOut, sqlContext) {
   def this(aDataSource: GDataSource, aContext: SqlEntityContext) = this(aDataSource, aDataSource, aContext)
   def this(aContext: SqlEntityContext) = this(null, aContext)
 
   def getEntityEntity(entity: PEntityEntity): SqlEntityEntity = {
-    println("SqlRealmEntity: start")
-    dump()
-    println("SqlRealmEntity: end")
+//    println("SqlRealmEntity: start")
+//    dump()
+//    println("SqlRealmEntity: end")
     val me = entity.modelEntity
     val pn = sqlContext.makePathname(me.qualifiedName)
     getContent(pn) match {
@@ -44,9 +45,9 @@ class SqlRealmEntity(aIn: GDataSource, aOut: GDataSource, val sqlContext: SqlEnt
    * This method invoked by DocumentJavaClassDefinition via PEntityContext.getSqlEntity.
    */
   def getDocumentEntity(entity: PDocumentEntity): Option[SqlDocumentEntity] = {
-    println("SqlRealmEntity: start")
-    dump()
-    println("SqlRealmEntity: end")
+//    println("SqlRealmEntity: start")
+//    dump()
+//    println("SqlRealmEntity: end")
     entity.modelEntityOption.flatMap(me => {
       println("SqlRealmEntity#getDocumentEntity: " + me)
       val pn = sqlContext.makePathname(me.qualifiedName)
