@@ -13,7 +13,8 @@ import org.simplemodeling.SimpleModeler.entities.sql._
 
 /**
  * @since   Apr. 21, 2012
- * @version May. 14, 2012
+ *  version May. 14, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 class EvolutionPlayClassDefinition(
@@ -48,7 +49,7 @@ class EvolutionPlayClassDefinition(
   }
 
   private def _drop_table(entity: PEntityEntity) {
-    var name = pContext.sqlName(entity)
+    var name = pContext.sqlTableName(entity)
     sm_pln("DROP TABLE IF EXISTS %s;", name)
   }
 }

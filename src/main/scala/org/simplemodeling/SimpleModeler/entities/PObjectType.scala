@@ -15,13 +15,14 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
  *  version Apr. 11, 2012
  *  version Oct. 30, 2012
  *  version Nov. 24, 2012
- * @version Dec.  5, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
   def objectTypeName: String
   def getDatatypeName: Option[String] = None
   def xmlDatatypeName: String = "string"
+  def sqlDatatypeName: String = "VARCHAR(32)"
   /**
    * For JPA.
    */
@@ -38,6 +39,7 @@ abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
    * For Google AppEngine.
    */
   def getJdoDatatypeName: Option[String] = getDatatypeName
+  //
   val constraints = mutable.Map[String, PConstraint]()
   def isEntity = false
   def isDataType = getDatatypeName.isDefined
@@ -105,6 +107,7 @@ trait PDataType extends PObjectType
 
 class PStringType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "String"
+  override def sqlDatatypeName: String = "VARCHAR(64)"
 
   def this() = this(null)
 }
@@ -112,6 +115,7 @@ object PStringType extends PStringType
 
 class PTokenType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "String"
+  override def sqlDatatypeName: String = "VARCHAR(32)"
   override def dslDataTypeName = Some("XToken")
 
   def this() = this(null)
@@ -121,6 +125,7 @@ object PTokenType extends PTokenType
 class PByteStringType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "ShortBlob" // XXX
   override def xmlDatatypeName = "base64Binary"
+  override def sqlDatatypeName: String = "BLOB" // XXX
   override def jdoObjectTypeName = "ShortBlob" // com.google.appengine.api.datastore.ShortBlob
   override def dslDataTypeName = Some("XBase64Binary")
 
@@ -132,6 +137,7 @@ class PBooleanType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAt
   override def objectTypeName = "Boolean"
   override def getDatatypeName = Some("boolean")
   override def xmlDatatypeName = "boolean"
+  override def sqlDatatypeName: String = "BOOLEAN"
 
   def this() = this(null)
 }
@@ -141,6 +147,7 @@ class PByteType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrT
   override def objectTypeName = "Byte"
   override def getDatatypeName = Some("byte")
   override def xmlDatatypeName = "byte"
+  override def sqlDatatypeName: String = "TINYINT"
   override def jdoObjectTypeName = "Short"
 
   override def base_long_max_option = Some(java.lang.Byte.MAX_VALUE)
@@ -153,6 +160,7 @@ object PByteType extends PByteType
 class PUnsignedByteType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "Short"
   override def getDatatypeName = Some("short")
+  override def sqlDatatypeName = "TINYINT"
   override def xmlDatatypeName = "unsignedByte"
 
   override def base_long_max_option = Some(java.lang.Byte.MAX_VALUE * 2)
@@ -165,6 +173,7 @@ object PUnsignedByteType extends PUnsignedByteType
 class PShortType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "Short"
   override def getDatatypeName = Some("short")
+  override def sqlDatatypeName = "SMALLINT"
   override def xmlDatatypeName = "short"
 
   override def base_long_max_option = Some(java.lang.Short.MAX_VALUE)
@@ -178,6 +187,7 @@ class PUnsignedShortType(aModelAttrType: SMAttributeType) extends PObjectType(aM
   override def objectTypeName = "Integer"
   override def getDatatypeName = Some("int")
   override def xmlDatatypeName = "unsignedShort"
+  override def sqlDatatypeName = "SMALLINT"
 
   override def base_long_max_option = Some(java.lang.Short.MAX_VALUE * 2)
   override def base_long_min_option = Some(0)
@@ -190,6 +200,7 @@ class PIntType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrTy
   override def objectTypeName = "Integer"
   override def getDatatypeName = Some("int")
   override def xmlDatatypeName = "int"
+  override def sqlDatatypeName = "INT"
   override def dslDataTypeName = Some("XInt")
 
   override def base_long_max_option = Some(java.lang.Integer.MAX_VALUE)
@@ -203,6 +214,7 @@ class PUnsignedIntType(aModelAttrType: SMAttributeType) extends PObjectType(aMod
   override def objectTypeName = "Long"
   override def getDatatypeName = Some("long")
   override def xmlDatatypeName = "unsignedInt"
+  override def sqlDatatypeName = "INT"
 
   override def base_long_max_option = Some(java.lang.Integer.MAX_VALUE * 2)
   override def base_long_min_option = Some(0)
@@ -215,6 +227,7 @@ class PLongType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrT
   override def objectTypeName = "Long"
   override def getDatatypeName = Some("long")
   override def xmlDatatypeName = "long"
+  override def sqlDatatypeName = "BIGINT"
 
   override def base_long_max_option = Some(java.lang.Long.MAX_VALUE)
   override def base_long_min_option = Some(java.lang.Long.MIN_VALUE)
@@ -226,6 +239,7 @@ object PLongType extends PLongType
 class PUnsignedLongType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "BigInteger"
   override def xmlDatatypeName = "unsignedLong"
+  override def sqlDatatypeName = "BIGINT"
 
   def this() = this(null)
 }
@@ -235,6 +249,7 @@ class PFloatType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttr
   override def objectTypeName = "Float"
   override def getDatatypeName = Some("float")
   override def xmlDatatypeName = "float"
+  override def sqlDatatypeName = "REAL"
 
   def this() = this(null)
 }
@@ -244,6 +259,7 @@ class PDoubleType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAtt
   override def objectTypeName = "Double"
   override def getDatatypeName = Some("double")
   override def xmlDatatypeName = "double"
+  override def sqlDatatypeName = "DOUBLE"
 
   def this() = this(null)
 }
@@ -252,6 +268,7 @@ object PDoubleType extends PDoubleType
 class PIntegerType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "BigInteger"
   override def xmlDatatypeName = "integer"
+  override def sqlDatatypeName = "INTEGER"
   override def jdoObjectTypeName = "String"
 
   def this() = this(null)
@@ -261,6 +278,7 @@ object PIntegerType extends PIntegerType
 class PPositiveIntegerType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "BigInteger"
   override def xmlDatatypeName = "positiveInteger"
+  override def sqlDatatypeName = "INTEGER"
   override def jdoObjectTypeName = "String"
 
   def this() = this(null)
@@ -270,6 +288,7 @@ object PPositiveIntegerType extends PPositiveIntegerType
 class PNonPositiveIntegerType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "BigInteger"
   override def xmlDatatypeName = "nonPositiveInteger"
+  override def sqlDatatypeName = "INTEGER"
   override def jdoObjectTypeName = "String"
 
   def this() = this(null)
@@ -279,6 +298,7 @@ object PNonPositiveIntegerType extends PNonPositiveIntegerType
 class PNegativeIntegerType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "BigInteger"
   override def xmlDatatypeName = "negativeInteger"
+  override def sqlDatatypeName = "INTEGER"
   override def jdoObjectTypeName = "String"
 
   def this() = this(null)
@@ -288,6 +308,7 @@ object PNegativeIntegerType extends PNegativeIntegerType
 class PNonNegativeIntegerType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "BigInteger"
   override def xmlDatatypeName = "nonNegativeInteger"
+  override def sqlDatatypeName = "INTEGER"
   override def jdoObjectTypeName = "String"
 
   def this() = this(null)
@@ -298,6 +319,7 @@ class PDecimalType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAt
   override def objectTypeName = "BigDecimal"
   override def xmlDatatypeName = "decimal"
   override def jdoObjectTypeName = "String"
+  override def sqlDatatypeName = "DECIMAL"
   override def dslDataTypeName = Some("XDecimal")
 
   def this() = this(null)
@@ -316,6 +338,7 @@ object PDurationType extends PDurationType
 class PDateTimeType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "Date" // java.util.Date
   override def xmlDatatypeName = "dateTime"
+  override def sqlDatatypeName = "DATETIME"
   override def dslDataTypeName = Some("XDateTime")
 
   def this() = this(null)
@@ -325,6 +348,7 @@ object PDateTimeType extends PDateTimeType
 class PDateType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "Date"
   override def xmlDatatypeName = "date"
+  override def sqlDatatypeName = "DATE"
 
   def this() = this(null)
 }
@@ -333,6 +357,7 @@ object PDateType extends PDateType
 class PTimeType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "Date"
   override def xmlDatatypeName = "time"
+  override def sqlDatatypeName = "TIME"
   override def dslDataTypeName = Some("XTime")
 
   def this() = this(null)
@@ -342,6 +367,7 @@ object PTimeType extends PTimeType
 class PGYearMonthType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "XMLGregorianCalendar" // javax.xml.datatype.XMLGregorianCalendar
   override def xmlDatatypeName = "gYearMonth"
+  override def sqlDatatypeName = "TINYINT"
   override def dslDataTypeName = Some("XGYearMonth")
 
   def this() = this(null)
@@ -351,6 +377,7 @@ object PGYearMonthType extends PGYearMonthType
 class PGMonthDayType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "XMLGregorianCalendar" // javax.xml.datatype.XMLGregorianCalendar
   override def xmlDatatypeName = "gMonthDay"
+  override def sqlDatatypeName = "TINYINT"
   override def dslDataTypeName = Some("XGMonthDay")
 
   def this() = this(null)
@@ -360,6 +387,7 @@ object PGMonthDayType extends PGMonthDayType
 class PGYearType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "XMLGregorianCalendar" // javax.xml.datatype.XMLGregorianCalendar
   override def xmlDatatypeName = "gYear"
+  override def sqlDatatypeName = "TINYINT"
   override def dslDataTypeName = Some("XGYear")
 
   def this() = this(null)
@@ -369,6 +397,7 @@ object PGYearType extends PGYearType
 class PGMonthType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "XMLGregorianCalendar" // javax.xml.datatype.XMLGregorianCalendar
   override def xmlDatatypeName = "gMonth"
+  override def sqlDatatypeName = "TINYINT"
   override def dslDataTypeName = Some("XGMonth")
 
   def this() = this(null)
@@ -378,6 +407,7 @@ object PGMonthType extends PGMonthType
 class PGDayType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "XMLGregorianCalendar" // javax.xml.datatype.XMLGregorianCalendar
   override def xmlDatatypeName = "gDay"
+  override def sqlDatatypeName = "TINYINT"
   override def dslDataTypeName = Some("XGDay")
 
   def this() = this(null)
@@ -386,6 +416,7 @@ object PGDayType extends PGDayType
 
 class PAnyURIType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "URI"
+  override def sqlDatatypeName = "VARCHAR(128)"
   override def dslDataTypeName = Some("XAnyURI")
 
   def this() = this(null)
@@ -394,6 +425,7 @@ object PAnyURIType extends PAnyURIType
 
 class PLanguageType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "Locale"
+  override def sqlDatatypeName = "VARCHAR(32)"
   override def dslDataTypeName = Some("XLanguage")
 
   def this() = this(null)
@@ -437,6 +469,7 @@ object PCategoryType extends PCategoryType
 
 class PLinkType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "Link" // com.google.appengine.api.datastore.Link
+  override def sqlDatatypeName = "VARCHAR(128)"
 
   def this() = this(null)
 }
@@ -444,6 +477,7 @@ object PLinkType extends PLinkType
 
 class PEmailType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "Email" // com.google.appengine.api.datastore.Email
+  override def sqlDatatypeName = "VARCHAR(64)"
 
   def this() = this(null)
 }
@@ -614,6 +648,7 @@ class PStateMachineType(val name: String, val packageName: String) extends PObje
   def this(aStateMachine: PStateMachineEntity) = this(aStateMachine.name, aStateMachine.packageName)
   override def objectTypeName = name
   override def dslDataTypeName = None
+  override def sqlDatatypeName = "INT" // XXX
 
   private var _statemachine: PStateMachineEntity = _
   def statemachine: PStateMachineEntity = {

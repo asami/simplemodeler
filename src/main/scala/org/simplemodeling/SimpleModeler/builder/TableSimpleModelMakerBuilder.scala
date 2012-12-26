@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 19, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -138,6 +138,7 @@ class TableSimpleModelMakerBuilder(
       case _ => {
         val atype = SMMAttributeTypeSet(entry, obj.packageName)
         val attr = obj.attribute(_slot_name(entry), atype)
+//        println("TableSimpleModelMakerBuilder#add_attribute(%s/%s) = %s".format(obj.name, attr.name, atype))
         _build_attribute(attr, entry)
       }
     }
@@ -186,7 +187,12 @@ class TableSimpleModelMakerBuilder(
         case SummaryLabel => slot.summary = value
         case DescriptionLabel => slot.description = value
         case ColumnNameLabel => slot.sqlColumnName = value
-        case SqlDatatypeLabel => slot.sqlDatatype = SMMObjectType.getSqlDataType(value)
+/* SMMAttributeTypeSet holds sql datatype.
+        case SqlDatatypeLabel => {
+          slot.sqlDatatype = SMMObjectType.getSqlDataType(value)
+          println("TableSimpleModelMakerBuilder#_build_slot(%s) sqlDatatype = %s".format(slot.name, slot.sqlDatatype))
+        }
+*/
         case SqlAutoIdLabel => slot.sqlAutoId = value
         case SqlReadOnlyLabel => slot.sqlReadOnly = value
         case SqlAutoCreateLabel => slot.sqlAutoCreate = value

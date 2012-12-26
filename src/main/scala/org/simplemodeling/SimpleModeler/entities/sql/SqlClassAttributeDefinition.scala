@@ -11,7 +11,7 @@ import java.util.TimeZone
 
 /**
  * @since   May.  3, 2012
- * @version Dec. 25, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SqlClassAttributeDefinition(
@@ -251,7 +251,7 @@ abstract class SqlClassAttributeDefinition(
     }
 
     override protected def handle_all(datatype: PObjectType): String = {
-      datatype.getClass.toString // debug
+      datatype.sqlDatatypeName
     }
   }
 
@@ -270,13 +270,18 @@ abstract class SqlClassAttributeDefinition(
   }
 
   private def _column {
-    val typename = attr.attributeType(sql_typename)
-    jm_p(sqlContext.sqlName(attr))
+    jm_p(sqlContext.sqlColumnName(attr))
     jm_p(" ")
-    jm_p(typename)
-    if (attr.multiplicity == POne) {
+    jm_p(_datatype)
+    if (attr.isId) {
+      jm_p(" PRIMARY KEY")
+    } else if (attr.multiplicity == POne) {
       jm_p(" NOT NULL")
     }
+  }
+
+  private def _datatype = {
+    attr.getSqlDatatypeName | attr.attributeType(sql_typename)
   }
 }
 

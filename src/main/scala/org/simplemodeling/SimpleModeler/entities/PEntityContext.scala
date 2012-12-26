@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
  *  version Nov. 27, 2012
- * @version Dec. 23, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -195,7 +195,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
 //    name.capitalize
     pascal_case_name(name)
   }
-
+/*
   final def sqlName(anObject: PObjectEntity): String = {
     // XXX SQL specific
     pascal_case_name(asciiName(anObject))
@@ -205,7 +205,7 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     // XXX SQL specific
     pascal_case_name(dataKey(attr))
   }
-  
+*/  
   final def name_en(anObject: PObjectEntity): String = {
     name_en(anObject.modelObject)
   }

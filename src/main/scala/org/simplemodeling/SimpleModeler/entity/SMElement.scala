@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.sdoc.SMObjectRef
  *  version Dec. 18, 2010
  *  version Feb. 22, 2012
  *  version Nov. 26, 2012
- * @version Dec. 24, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMElement] {
@@ -94,7 +94,7 @@ abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMEleme
    */
   def sqlTableName = dslElement.sqlTableName
   def sqlColumnName = dslElement.sqlColumnName
-//  def sqlDataType = dslElement.sqlDataType
+  def sqlDatatypeName = dslElement.sqlDatatypeName
   def sqlAutoId = dslElement.sqlAutoId
   def sqlReadOnly = dslElement.sqlReadOnly
   def sqlAutoCreate = dslElement.sqlAutoCreate

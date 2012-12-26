@@ -5,7 +5,7 @@ import org.simplemodeling.SimpleModeler.builder.NaturalLabel
 
 /*
  * @since   Nov. 26, 2012
- * @version Dec. 19, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 case class PropertyRecord(
@@ -25,6 +25,7 @@ case class PropertyRecord(
 
 object PropertyRecord {
   def create(kv: (String, String)): PropertyRecord = {
+//    println("PropertyRecord#create = " + kv)
     val v = if (StringUtils.isBlank(kv._2)) None else Some(kv._2)
     new PropertyRecord(kv._1, v, None)
   }

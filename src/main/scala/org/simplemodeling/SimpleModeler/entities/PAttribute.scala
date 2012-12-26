@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 22, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -185,7 +185,16 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
    * SQL
    */
   def sqlColumnName: String = {
-    getModelElement.map(_.sqlColumnName) | name
+    getModelElement.flatMap(a => _non_blank_string(a.sqlColumnName)) | name
+  }
+
+  def getSqlDatatypeName: Option[String] = {
+    getModelElement.flatMap(a => _non_blank_string(a.sqlDatatypeName))
+  }
+
+  private def _non_blank_string(s: String): Option[String] = {
+    if (StringUtils.isNotBlank(s)) Some(s)
+    else None
   }
 
   def sqlAutoId: Boolean = {

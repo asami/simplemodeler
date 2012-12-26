@@ -44,6 +44,8 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
   useValue = false
   usePowertype = false
   useKindPackage = true
+  var useProject = true
+  var usePlay = true
 
   def toExtjsRealm() = transform
 
@@ -57,8 +59,10 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
   }
 
   override protected def make_Project() {
-    _make_project()
-    _make_play()
+    if (useProject)
+      _make_project()
+    if (usePlay)
+      _make_play()
 /*
     make_service_utilities()
     _gaejRealm.traverse(new CrudMaker())
@@ -93,10 +97,12 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
   class ExtjsBuilder extends BuilderBase {
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
       println("SimpleModel2Extjs:" + ppkg.name)
-      val evolution = new PlayEvolutionEntity(target_context)
-      build_object_for_package_at_pathname(evolution, pkg, ppkg, "/conf/evolutions/default/1.sql.sm")
-      if (true) {
-        build_object_for_package_at_pathname(evolution, pkg, ppkg, "/conf/evolutions/default/1.sql")
+      if (usePlay) {
+        val evolution = new PlayEvolutionEntity(target_context)
+        build_object_for_package_at_pathname(evolution, pkg, ppkg, "/conf/evolutions/default/1.sql.sm")
+        if (true) {
+          build_object_for_package_at_pathname(evolution, pkg, ppkg, "/conf/evolutions/default/1.sql")
+        }
       }
 
       // XXX unify application view

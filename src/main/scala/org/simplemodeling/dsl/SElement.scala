@@ -8,7 +8,7 @@ import util.PropertyRecord
  * @since   Sep. 21, 2008
  *  version Jul. 19, 2009
  *  version Nov. 26, 2012
- * @version Dec. 24, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SElement(aName: String) extends SDescriptable with SHistoriable {
@@ -119,7 +119,7 @@ abstract class SElement(aName: String) extends SDescriptable with SHistoriable {
    */
   var sqlTableName: String = ""
   var sqlColumnName: String = ""
-//  var sqlDataType: String = ""
+  var sqlDatatypeName: String = ""
   var sqlAutoId: Boolean = false
   var sqlReadOnly: Boolean = false
   var sqlAutoCreate: Boolean = false

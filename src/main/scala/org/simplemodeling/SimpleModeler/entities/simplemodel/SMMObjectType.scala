@@ -9,7 +9,7 @@ import scala.collection.mutable.ArrayBuffer
  *  version Mar. 24, 2012
  *  version Oct. 30, 2012
  *  version Nov. 15, 2012
- * @version Dec. 16, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -221,6 +221,7 @@ class SMMUnknownDataType(val unkonwn: String) extends SMMDataType("XString", "or
  */
 abstract class SMMSqlDataType(name: String, pkg: String) extends SMMObjectType(name, pkg) {
   def dataType: SMMDataType
+  def text: String
 }
 
 trait SMMSqlDataTypeFactory {
@@ -229,6 +230,7 @@ trait SMMSqlDataTypeFactory {
 
 class SMMSqlCharType(val length: Int) extends SMMSqlDataType("SChar", "org.simplemodeling.dsl.datatype.sql") {
   val dataType = SMMStringType
+  val text = "CHAR(" + length + ")"
 }
 
 object SMMSqlCharType extends SMMSqlDataTypeFactory {
@@ -241,8 +243,9 @@ object SMMSqlCharType extends SMMSqlDataTypeFactory {
   }
 }
 
-class SMMSqlVarCharType(val length: Int) extends SMMSqlDataType("SChar", "org.simplemodeling.dsl.datatype.sql") {
+class SMMSqlVarCharType(val length: Int) extends SMMSqlDataType("SVarchar", "org.simplemodeling.dsl.datatype.sql") {
   val dataType = SMMStringType
+  val text = "VARCHAR(" + length+ ")"
 }
 
 object SMMSqlVarCharType extends SMMSqlDataTypeFactory {
@@ -255,8 +258,9 @@ object SMMSqlVarCharType extends SMMSqlDataTypeFactory {
   }
 }
 
-class SMMSqlDateType extends SMMSqlDataType("SChar", "org.simplemodeling.dsl.datatype.sql") {
+class SMMSqlDateType extends SMMSqlDataType("SDate", "org.simplemodeling.dsl.datatype.sql") {
   val dataType = SMMDateType
+  val text = "DATE"
 }
 
 object SMMSqlDateType extends SMMSqlDateType with SMMSqlDataTypeFactory {
@@ -266,8 +270,32 @@ object SMMSqlDateType extends SMMSqlDateType with SMMSqlDataTypeFactory {
   }
 }
 
-class SMMSqlIntType extends SMMSqlDataType("SChar", "org.simplemodeling.dsl.datatype.sql") {
+class SMMSqlTimeType extends SMMSqlDataType("STime", "org.simplemodeling.dsl.datatype.sql") {
+  val dataType = SMMTimeType
+  val text = "TIME"
+}
+
+object SMMSqlTimeType extends SMMSqlTimeType with SMMSqlDataTypeFactory {
+  def unapply(string: String): Option[SMMSqlTimeType] = {
+    if (string.toUpperCase == "TIME") SMMSqlTimeType.some
+    else none
+  }
+}
+class SMMSqlDateTimeType extends SMMSqlDataType("SDateTime", "org.simplemodeling.dsl.datatype.sql") {
+  val dataType = SMMDateTimeType
+  val text = "DATETIME"
+}
+
+object SMMSqlDateTimeType extends SMMSqlDateTimeType with SMMSqlDataTypeFactory {
+  def unapply(string: String): Option[SMMSqlDateTimeType] = {
+    if (string.toUpperCase == "DATETIME") SMMSqlDateTimeType.some
+    else none
+  }
+}
+
+class SMMSqlIntType extends SMMSqlDataType("SInt", "org.simplemodeling.dsl.datatype.sql") {
   val dataType = SMMIntType
+  val text = "Int"
 }
 
 object SMMSqlIntType extends SMMSqlIntType with SMMSqlDataTypeFactory {
@@ -277,10 +305,71 @@ object SMMSqlIntType extends SMMSqlIntType with SMMSqlDataTypeFactory {
   }
 }
 
+class SMMSqlBigIntType extends SMMSqlDataType("SBigInt", "org.simplemodeling.dsl.datatype.sql") {
+  val dataType = SMMLongType
+  val text = "BIGINT"
+}
+
+object SMMSqlBigIntType extends SMMSqlBigIntType with SMMSqlDataTypeFactory {
+  def unapply(string: String): Option[SMMSqlBigIntType] = {
+    if (string.toUpperCase == "BIGINT") SMMSqlBigIntType.some
+    else none
+  }
+}
+
+class SMMSqlFloatType extends SMMSqlDataType("SFloat", "org.simplemodeling.dsl.datatype.sql") {
+  val dataType = SMMFloatType
+  val text = "Float"
+}
+
+object SMMSqlFloatType extends SMMSqlFloatType with SMMSqlDataTypeFactory {
+  def unapply(string: String): Option[SMMSqlFloatType] = {
+    if (string.toUpperCase == "FLOAT") SMMSqlFloatType.some
+    else none
+  }
+}
+
+class SMMSqlDoubleType extends SMMSqlDataType("SDouble", "org.simplemodeling.dsl.datatype.sql") {
+  val dataType = SMMDoubleType
+  val text = "Double"
+}
+
+object SMMSqlDoubleType extends SMMSqlDoubleType with SMMSqlDataTypeFactory {
+  def unapply(string: String): Option[SMMSqlDoubleType] = {
+    if (string.toUpperCase == "DOUBLE") SMMSqlDoubleType.some
+    else none
+  }
+}
+
+class SMMSqlDecimalType extends SMMSqlDataType("SDecimal", "org.simplemodeling.dsl.datatype.sql") {
+  val dataType = SMMDecimalType
+  val text = "Decimal"
+}
+
+object SMMSqlDecimalType extends SMMSqlDecimalType with SMMSqlDataTypeFactory {
+  def unapply(string: String): Option[SMMSqlDecimalType] = {
+    if (string.toUpperCase == "DECIMAL") SMMSqlDecimalType.some
+    else none
+  }
+}
+
+class SMMSqlRealType extends SMMSqlDataType("SReal", "org.simplemodeling.dsl.datatype.sql") {
+  val dataType = SMMDoubleType
+  val text = "Real"
+}
+
+object SMMSqlRealType extends SMMSqlRealType with SMMSqlDataTypeFactory {
+  def unapply(string: String): Option[SMMSqlRealType] = {
+    if (string.toUpperCase == "REAL") SMMSqlRealType.some
+    else none
+  }
+}
+
 // Special datatype
 class SMMSqlUnknownDataType(val unkonwn: String) extends SMMSqlDataType("TEXT", "org.simplemodeling.dsl.datatype.sql") {
   val candidates = Nil
   val dataType = SMMStringType
+  val text = "Unkonwn:" + unkonwn
 }
 
 /*
@@ -331,14 +420,22 @@ object SMMObjectType {
     SMMSqlCharType,
     SMMSqlVarCharType,
     SMMSqlDateType,
-    SMMSqlIntType
+    SMMSqlTimeType,
+    SMMSqlDateTimeType,
+    SMMSqlIntType,
+    SMMSqlBigIntType,
+    SMMSqlFloatType,
+    SMMSqlDoubleType,
+    SMMSqlDecimalType,
+    SMMSqlRealType
   )
 
   def getSqlDataType(string: String): Option[SMMSqlDataType] = {
+//    println("SMMObjectType#getSqlDataType(%s) = %s".format(string, sqlDatatypes.flatMap(_.unapply(string))))
     sqlDatatypes.flatMap(_.unapply(string)).headOption
   }
 
-  def getSqlDataTypeOrUnkonwn(string: String): SMMSqlDataType = {
+  def sqlDataType(string: String): SMMSqlDataType = {
     getSqlDataType(string) | new SMMSqlUnknownDataType(string)
   }
 }

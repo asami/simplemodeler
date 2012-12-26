@@ -11,13 +11,16 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 24, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 /**
  * MindmapModelingOutliner uses this class.
  */
 sealed abstract trait NaturalLabel {
+  /**
+   * String in candiates must be lower case.
+   */
   def candidates: Seq[String]
   lazy val allCandidates: Seq[String] = {
     def augumentsSpace(s: String): Seq[String] = {
@@ -366,8 +369,7 @@ case object ColumnNameLabel extends NaturalLabel {
 
 case object SqlDatatypeLabel extends NaturalLabel {
   val candidates = List("sql type", "sql data type",
-      "SQL型", "SQLデータ型", "SQLデータタイプ")
-  
+      "sql 型", "sql データ型", "sql データタイプ")
 }
 
 case object SqlAutoIdLabel extends NaturalLabel {

@@ -7,7 +7,8 @@ import org.simplemodeling.SimpleModeler.builder._
 /*
  * @since   Oct.  8, 2012
  *  version Oct. 26, 2012
- * @version Nov. 26, 2012
+ *  version Nov. 26, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 trait SMMTypeSet {
@@ -18,7 +19,8 @@ trait SMMTypeSet {
 
 object SMMTypeSet {
   def sqlType(entry: Seq[PropertyRecord]): Option[SMMSqlDataType] = {
-    SqlDatatypeLabel.findData(entry).flatMap(SMMObjectType.getSqlDataType)
+//    println("SMMTypeSet#sqlType(%s) = %s".format(SqlDatatypeLabel.findData(entry), entry))
+    SqlDatatypeLabel.findData(entry).map(SMMObjectType.sqlDataType)
   }
 }
 
@@ -56,8 +58,25 @@ class SMMAttributeTypeSet(
       case x: SMMValueIdType => x
     }
   }
+
+  def getSqlDataType: Option[SMMSqlDataType] = {
+    sqlDataType orElse
+    dataType.collect { case x: SMMSqlDataType => x } orElse
+    attributeType.collect { case x: SMMSqlDataType => x }
+  }
+
+  def getSqlDataTypeName: Option[String] = {
+    getSqlDataType.map(_.text)
+  }
+
+  override def toString() = {
+    "SMMAttributeTypeSet(%s, %s, %s)".format(attributeType, dataType, sqlDataType)
+  }
 }
 
+/**
+ * Currently non pre defined datatype is ignored.
+ */
 object SMMAttributeTypeSet {
   def apply(entry: Seq[PropertyRecord], pkg: String): SMMAttributeTypeSet = {
     new SMMAttributeTypeSet(
