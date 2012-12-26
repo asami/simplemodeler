@@ -27,7 +27,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
  * @since   Mar. 31, 2011
  *  version Jun. 16, 2012
  *  version Nov.  2, 2012
- * @version Dec. 25, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ProgramRealmTransformerBase(sm, sctx) {
@@ -96,7 +96,7 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
 
   class ExtjsBuilder extends BuilderBase {
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
-      println("SimpleModel2Extjs:" + ppkg.name)
+//      println("SimpleModel2Extjs:" + ppkg.name)
       if (usePlay) {
         val evolution = new PlayEvolutionEntity(target_context)
         build_object_for_package_at_pathname(evolution, pkg, ppkg, "/conf/evolutions/default/1.sql.sm")
@@ -167,6 +167,7 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
 
     override protected def make_Entities(entity: SMDomainEntity, po: PEntityObjectEntity): List[PObjectEntity] = {
 //      val pos = Some(po)
+//      println("SimpleModel2ExtjsRealmTransformer#make_Entities(%s)".format(po.name))
       List(
         new ExtjsEntityGridEntity(target_context) {
 //          modelObject = entity

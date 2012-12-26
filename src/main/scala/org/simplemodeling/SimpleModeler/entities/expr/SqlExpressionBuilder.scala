@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Dec. 21, 2012
- * @version Dec. 23, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 class SqlExpressionBuilder(
@@ -18,7 +18,7 @@ class SqlExpressionBuilder(
 
   def isTarget(attr: PAttribute) = {
     expr_string(expr.tree)
-    println("SqlExpressionBuilder#isTarget(%s) = %s".format(expr, current))
+//    println("SqlExpressionBuilder#isTarget(%s) = %s".format(expr, current))
     current.exists(_._1 == attr)
   }
 
@@ -28,21 +28,21 @@ class SqlExpressionBuilder(
   }
 
   override protected def expr_identifier(x: SMEIdentifier): String = {
-    println("SqlExpressionBuilder#expr_identifier = %s".format(x.name))
+//    println("SqlExpressionBuilder#expr_identifier = %s".format(x.name))
     get_association_class(x).map(_expr_identifier_association_class(x)) orElse
     get_attribute(x).map(_expr_identifier_attribute(x)) getOrElse
     current.headOption.map(a => "%s.%s".format(a._2, x.name)) | x.name
   }
 
   private def _expr_identifier_attribute(x: SMEIdentifier)(a: PAttribute): String = {
-    println("SqlExpressionBuilder#_expr_identifier_attribute(%s) = %s".format(x, a))
+//    println("SqlExpressionBuilder#_expr_identifier_attribute(%s) = %s".format(x, a))
     current = joinedAttributes.find(_._1 == a).get :: current
     val t = current.head._2
     "%s.%s".format(t, context.sqlColumnName(a))
   }
 
   private def _expr_identifier_association_class(x: SMEIdentifier)(a: PAttribute): String = {
-    println("SqlExpressionBuilder#_expr_identifier_attribute(%s) = %s".format(x, a))
+//    println("SqlExpressionBuilder#_expr_identifier_attribute(%s) = %s".format(x, a))
     current = joinedAttributes.find(_._1 == a).get :: current
     val t = current.head._2
     "%s.%s".format(t, context.sqlColumnName(a))

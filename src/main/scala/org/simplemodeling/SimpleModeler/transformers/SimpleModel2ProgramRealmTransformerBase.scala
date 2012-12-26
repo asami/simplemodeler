@@ -28,7 +28,7 @@ import org.goldenport.recorder.Recordable
  *  version May.  6, 2012
  *  version Jun. 17, 2012
  *  version Nov. 29, 2012
- * @version Dec. 19, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -188,7 +188,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Actors(entity: SMDomainActor, po: DomainActorTYPE): List[PObjectEntity] = Nil
+    protected def make_Actors(entity: SMDomainActor, po: DomainActorTYPE): List[PObjectEntity] = {
+      make_Entities(entity, po)
+    }
 
     protected def transform_Resource(resource: SMDomainResource): DomainResourceTYPE = {
       val obj = create_Resource(resource)
@@ -201,7 +203,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Resources(entity: SMDomainResource, po: DomainResourceTYPE): List[PObjectEntity] = Nil
+    protected def make_Resources(entity: SMDomainResource, po: DomainResourceTYPE): List[PObjectEntity] = {
+      make_Entities(entity, po)
+    }
 
     protected def transform_Event(event: SMDomainEvent): DomainEventTYPE = {
       val obj = create_Event(event)
@@ -214,7 +218,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Events(entity: SMDomainEvent, po: DomainEventTYPE): List[PObjectEntity] = Nil
+    protected def make_Events(entity: SMDomainEvent, po: DomainEventTYPE): List[PObjectEntity] = {
+      make_Entities(entity, po)
+    }
 
     protected def transform_Role(role: SMDomainRole): DomainRoleTYPE = {
       val obj = create_Role(role)
@@ -227,7 +233,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(role)
     }
 
-    protected def make_Roles(entity: SMDomainRole, po: DomainRoleTYPE): List[PObjectEntity] = Nil
+    protected def make_Roles(entity: SMDomainRole, po: DomainRoleTYPE): List[PObjectEntity] = {
+      make_Entities(entity, po)
+    }
 
     protected def transform_Summary(summary: SMDomainSummary): DomainSummaryTYPE = {
       val obj = create_Summary(summary)
@@ -240,7 +248,9 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       create_Entity(entity)
     }
 
-    protected def make_Summarys(entity: SMDomainSummary, po: DomainSummaryTYPE): List[PObjectEntity] = Nil
+    protected def make_Summarys(entity: SMDomainSummary, po: DomainSummaryTYPE): List[PObjectEntity] = {
+      make_Entities(entity, po)
+    }
 
     protected def transform_AssociationEntity(assoc: SMDomainAssociationEntity): DomainAssociationEntityTYPE = {
       val obj = create_AssociationEntity(assoc)
@@ -256,6 +266,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
     protected def make_AssociationEntities(entity: SMDomainAssociationEntity, po: DomainAssociationEntityTYPE): List[PObjectEntity] = Nil
 
     protected def transform_Entity(entity: SMDomainEntity): DomainEntityTYPE = {
+//      println("SimpleModel2ProgramRealmTransformerBaseHelper#transform_Entity(%s)".format(entity.name))
       val obj = create_Entity(entity)
       build_entity(obj, entity)
       make_Entities(entity, obj).foreach(build_derived_object(entity, obj))
@@ -705,6 +716,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
      * Used for service and rule.
      */
     private def build_derived_object(modelObject: SMObject, source: PObjectEntity)(obj: PObjectEntity) = {
+//      println("SimpleModel2ProgramRealmTransformerBase#build_derived_object(%s)".format(obj))
       obj.modelObject = modelObject
       obj.sourcePlatformObject = Some(source)
       obj.asciiName = target_context.asciiName(modelObject)
