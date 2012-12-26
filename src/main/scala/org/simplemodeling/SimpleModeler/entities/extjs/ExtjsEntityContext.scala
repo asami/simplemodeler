@@ -18,6 +18,7 @@ import com.asamioffice.goldenport.text.{UString, UJavaString}
  */
 class ExtjsEntityContext(ectx: GEntityContext, sctx: GServiceContext) extends JavaScriptEntityContextBase(ectx, sctx) {
   var packageNickname: Option[String] = None
+  var restBaseUri = "app/rest/"
 
   def qualifiedNickname(obj: PObjectEntity): String = {
     val a = for (n <- packageNickname) yield {
@@ -112,6 +113,6 @@ class ExtjsEntityContext(ectx: GEntityContext, sctx: GServiceContext) extends Ja
   }
 
   def restUri(obj: ExtjsObjectEntity) = {
-    "app/rest/" + obj.uriName
+    restBaseUri + obj.uriName
   }
 }

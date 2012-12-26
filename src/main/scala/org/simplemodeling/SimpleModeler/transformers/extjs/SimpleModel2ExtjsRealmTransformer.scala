@@ -2,6 +2,7 @@ package org.simplemodeling.SimpleModeler.transformers.extjs
 
 import scalaz._, Scalaz._
 import _root_.java.io.File
+import org.apache.commons.lang3.StringUtils
 import scala.collection.mutable.{ArrayBuffer}
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.business._
@@ -48,7 +49,13 @@ class SimpleModel2ExtjsRealmTransformer(sm: SimpleModelEntity, sctx: GServiceCon
   var usePlay = true
 
   def setPackageNickname(n: String) {
+    require (StringUtils.isNotBlank(n))
     target_context.packageNickname = n.some
+  }
+
+  def setRestBaseUri(uri: String) {
+    require (StringUtils.isNotBlank(uri) && !uri.startsWith("/") && uri.endsWith("/"))
+    target_context.restBaseUri = uri;
   }
 
   def toExtjsRealm() = transform

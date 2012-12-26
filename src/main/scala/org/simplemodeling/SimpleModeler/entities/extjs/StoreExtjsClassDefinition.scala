@@ -21,8 +21,8 @@ class StoreExtjsClassDefinition(
   baseName = "Ext.data.Store".some
 
   override protected def attribute_variables_Prologue {
-    js_ptrue("autoLoad")
-    js_ptrue("autoSync")
+//    js_ptrue("autoLoad")
+//    js_ptrue("autoSync")
     js_ps("model", context.entityModelQualifiedNickname(extjsobject))
     js_po("proxy") {
       js_ps("type", "rest")
