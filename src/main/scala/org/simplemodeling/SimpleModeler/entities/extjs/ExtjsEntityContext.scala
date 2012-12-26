@@ -19,13 +19,14 @@ import com.asamioffice.goldenport.text.{UString, UJavaString}
 class ExtjsEntityContext(ectx: GEntityContext, sctx: GServiceContext) extends JavaScriptEntityContextBase(ectx, sctx) {
   var packageNickname: Option[String] = None
 
-  def qualifiedNickname(obj: PObjectEntity) = {
-    for (n <- packageNickname) yield {
+  def qualifiedNickname(obj: PObjectEntity): String = {
+    val a = for (n <- packageNickname) yield {
       obj.getKindName match {
         case Some(s) => n + "." + s + "." + obj.name
         case None => n + "." + obj.name
       }
     }
+    a | obj.packageName
   }
 
   def entityModelQualifiedName(obj: PObjectEntity) = {

@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Jun. 16, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 class StoreExtjsClassDefinition(
@@ -23,7 +23,7 @@ class StoreExtjsClassDefinition(
   override protected def attribute_variables_Prologue {
     js_ptrue("autoLoad")
     js_ptrue("autoSync")
-    js_ps("model", extjsobject.sourcePlatformObject.get.qualifiedName)
+    js_ps("model", context.entityModelQualifiedNickname(extjsobject))
     js_po("proxy") {
       js_ps("type", "rest")
       js_ps("url", extjsContext.restUri(extjsobject))
