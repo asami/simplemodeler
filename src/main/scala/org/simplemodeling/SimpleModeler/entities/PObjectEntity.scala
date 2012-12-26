@@ -2,6 +2,7 @@ package org.simplemodeling.SimpleModeler.entities
 
 import scalaz._, Scalaz._
 import scala.collection.mutable.ArrayBuffer
+import org.apache.commons.lang3.StringUtils
 import com.asamioffice.goldenport.text.{JavaTextMaker, UString}
 import org.simplemodeling.SimpleModeler.entities.simplemodel.SMMDisplay
 import org.simplemodeling.SimpleModeler.SimpleModelerConstants
@@ -21,7 +22,7 @@ import org.simplemodeling.dsl._
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
- * @version Dec. 25, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -42,6 +43,11 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   var kindName = ""
   var xmlNamespace = ""
   def qualifiedName = if (packageName != "") packageName + "." + name else name
+  def getKindName: Option[String] = {
+    if (StringUtils.isNotBlank(kindName)) kindName.some
+    else None
+  }
+
   /**
    * Used when this object is entity.
    */

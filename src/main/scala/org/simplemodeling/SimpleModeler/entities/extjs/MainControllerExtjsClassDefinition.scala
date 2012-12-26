@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Jun. 10, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 class MainControllerExtjsClassDefinition(
@@ -34,6 +34,6 @@ class MainControllerExtjsClassDefinition(
   }
 
   override def store_QNames: Seq[String] = {
-    "app.store.NavigationStore" +: entities_in_module.map(extjsContext.entityStoreQualifiedName)
+    "app.store.NavigationStore" +: entities_in_module.map(extjsContext.entityStoreQualifiedNickname)
   }
 }

@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr.  4, 2012
- * @version Jun. 10, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class ExtjsClassDefinition(
@@ -28,6 +28,7 @@ abstract class ExtjsClassDefinition(
   val kindName: String = extjsObject.kindName
   var baseName: Option[String] = None // XXX
   var aliasName: Option[String] = None
+  def qualifiedNickname = extjsContext.qualifiedNickname(extjsObject)
 
   if (maker == null) {
     ej_open(aspects)
@@ -70,7 +71,7 @@ abstract class ExtjsClassDefinition(
   }
 
   override protected def class_open_body {
-    jm_pln("Ext.define('%s', {", qualifiedName)
+    jm_pln("Ext.define('%s', {", qualifiedNickname)
     jm_indent_up
     for (n <- baseName) {
       jm_pln("extend: '%s',", n)

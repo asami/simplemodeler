@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Jun. 10, 2012
+ * @version Dec. 26, 2012
  * @author  ASAMI, Tomoharu
  */
 class GridExtjsClassDefinition(
@@ -39,7 +39,7 @@ class GridExtjsClassDefinition(
   override protected def attribute_variables_Epilogue {
     jm_indent_down
     jm_pln("],")
-    js_ps("store", extjsContext.entityStoreQualifiedName(extjsObject))
+    js_ps("store", extjsContext.entityStoreQualifiedNickname(extjsObject))
   }
 }
 
