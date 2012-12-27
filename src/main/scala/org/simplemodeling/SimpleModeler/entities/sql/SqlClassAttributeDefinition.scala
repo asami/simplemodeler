@@ -11,7 +11,7 @@ import java.util.TimeZone
 
 /**
  * @since   May.  3, 2012
- * @version Dec. 26, 2012
+ * @version Dec. 27, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SqlClassAttributeDefinition(
@@ -277,6 +277,9 @@ abstract class SqlClassAttributeDefinition(
       jm_p(" PRIMARY KEY")
     } else if (attr.multiplicity == POne) {
       jm_p(" NOT NULL")
+    }
+    if (attr.sqlAutoId) {
+      jm_p(" AUTO_INCREMENT") // MySQL
     }
   }
 
