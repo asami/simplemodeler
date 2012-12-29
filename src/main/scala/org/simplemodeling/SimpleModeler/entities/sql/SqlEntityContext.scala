@@ -10,8 +10,16 @@ import com.asamioffice.goldenport.text.{UString, UJavaString}
 
 /**
  * @since   May.  3, 2012
- * @version May.  3, 2012
+ * @version Dec. 29, 2012
  * @author  ASAMI, Tomoharu
  */
 class SqlEntityContext(ectx: GEntityContext, sctx: GServiceContext) extends PEntityContext(ectx, sctx) {
+  var sqlKind = "mysql" // for RDS
+
+  def createClassDefinition(entity: SqlEntityEntity): SqlClassDefinition = {
+    sqlKind match {
+      case "mysql" => new MySqlClassDefinition(this, Nil, entity)
+      case _ => new Sql92SqlClassDefinition(this, Nil, entity)
+    }
+  }
 }

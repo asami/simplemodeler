@@ -11,7 +11,7 @@ import org.simplemodeling.SimpleModeler.entities._
 /**
  * @since   May.  3, 2012
  *  version Jun. 16, 2012
- * @version Dec. 26, 2012
+ * @version Dec. 29, 2012
  * @author  ASAMI, Tomoharu
  */
 abstract class SqlClassDefinition(
@@ -63,6 +63,10 @@ abstract class SqlClassDefinition(
     } map (_())
     jm_pln
     jm_indent_down
-    jm_pln(");")
+    jm_p(")")
+    create_Epilogue
+    jm_pln(";")
   }
+
+  protected def create_Epilogue {}
 }
