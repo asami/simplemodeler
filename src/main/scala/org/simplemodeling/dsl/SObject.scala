@@ -6,7 +6,7 @@ import java.util.Locale
 import org.goldenport.sdoc._
 import org.simplemodeling.dsl.datatype._
 import org.simplemodeling.dsl.datatype.ext._
-import org.simplemodeling.SimpleModeler.entities.simplemodel.SMMDisplay
+import org.simplemodeling.SimpleModeler.entities.simplemodel.{SMMAction, SMMDisplay}
 
 /*
  * derived from ModelElement since Mar. 18, 2007
@@ -15,7 +15,8 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel.SMMDisplay
  *  version Sep. 18, 2011
  *  version Oct. 21, 2012
  *  version Nov. 22, 2012
- * @version Dec. 13, 2012
+ *  version Dec. 13, 2012
+ * @version Jan. 10, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -156,6 +157,8 @@ abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) 
   val document = new SDocumentSet(isMaster)
   val port = new SPortSet(isMaster)
   protected val property_factory = new SPropertyFactory(attribute, association)
+
+  val actions = new ArrayBuffer[SMMAction]
 
   /*
    * GUI

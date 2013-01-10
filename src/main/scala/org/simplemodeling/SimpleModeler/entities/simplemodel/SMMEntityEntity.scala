@@ -95,7 +95,8 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
- * @version Dec. 26, 2012
+ *  version Dec. 26, 2012
+ * @version Jan. 10, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -162,6 +163,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   val supportingActors = new ArrayBuffer[SMMAssociation]
   val scenarioSteps = new ArrayBuffer[SMMAssociation]
   val displays = new ArrayBuffer[SMMDisplay]
+  val actions = new ArrayBuffer[SMMAction]
 
   def isAttribute(name: String) = attributes.exists(_.name == name)
   def isAssociation(name: String) = associations.exists(_.name == name)
@@ -621,6 +623,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   def display(name: String, seq: Int, entry: Seq[PropertyRecord]) {
     displays += new SMMDisplay(name, seq, entry)
+  }
+
+  def action(name: String, entry: Seq[PropertyRecord]) {
+    actions += new SMMAction(name, entry)
   }
 
 /*
@@ -1263,6 +1269,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     _build_rules(entity, entities)
     _build_services(entity, entities)
     _build_displays(entity)
+    _build_actions(entity)
     entity
   }
 
@@ -1937,6 +1944,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_displays(entity: SObject) {
     entity.displays ++= displays
+  }
+
+  private def _build_actions(entity: SObject) {
+    entity.actions ++= actions
   }
 }
 

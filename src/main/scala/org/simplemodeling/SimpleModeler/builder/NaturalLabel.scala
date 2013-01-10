@@ -11,7 +11,8 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Mar. 25, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 26, 2012
+ *  version Dec. 26, 2012
+ * @version Jan. 10, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -249,8 +250,15 @@ case object PropertyLabel extends NaturalLabel {
   val candidates = List("property", "性質")
 }
 
-case object FeatureLabel extends NaturalLabel { // feature is used as class slot (e.g. attribute, association) at the time.
+case object FeatureLabel extends NaturalLabel { // TODO change semantics. current semantics delegates to member.
   val candidates = List("feature", "特性")
+}
+
+/**
+ * Class slot (e.g. attribute, association)
+ */
+case object MemberLabel extends NaturalLabel {
+  val candidates = List("member", "メンバ", "メンバー")
 }
 
 case object AttributeLabel extends NaturalLabel {
@@ -323,6 +331,10 @@ case object ScenarioLabel extends NaturalLabel {
 
 case object AnnotationLabel extends NaturalLabel {
   val candidates = List("annotation", "注記")
+}
+
+case object ActionLabel extends NaturalLabel {
+  val candidates = List("action", "アクション")
 }
 
 /*
@@ -434,6 +446,7 @@ object NaturalLabel {
     DescriptionLabel,
     PropertyLabel,
     FeatureLabel,
+    MemberLabel,
     AttributeLabel,
     IdLabel,
     AssociationLabel,

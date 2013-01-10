@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 26, 2012
+ * @version Jan. 10, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -480,6 +480,22 @@ class TableSimpleModelMakerBuilder(
 
   protected final def add_display(entity: SMMEntityEntity, entry: Seq[PropertyRecord], seq: Int) {
     entity.display(_slot_name(entry), seq, entry)
+  }
+
+  /**
+   * OutlineBuilderBase uses the method.
+   */
+  def buildAction(entity: SMMEntityEntity, table: GTable[String]) {
+//    record_trace("TableSimpleModelMakerBuilder#buildAction(%s) = %s/%s/%s".format(entity.name, table.width, table.height, table.head))
+    for (h <- table.headAsStringList) {
+      val counter = Stream.from(100, 100)
+      val rows = for (row <- table.rows) yield h.zip(row)
+      rows.foreach(entry => add_action(entity, _record(entry)))
+    }
+  }
+
+  protected final def add_action(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) {
+    entity.action(_slot_name(entry), entry)
   }
 
   /*

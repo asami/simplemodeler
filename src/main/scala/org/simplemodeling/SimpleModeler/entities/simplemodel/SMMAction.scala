@@ -4,15 +4,15 @@ import org.simplemodeling.dsl.util.PropertyRecord
 import org.simplemodeling.SimpleModeler.builder.NaturalLabel
 
 /*
- * @since   Dec. 13, 2012
+ * @since   Jan. 10, 2013
  * @version Jan. 10, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
- * The SMMDisplay is converted to a SMDisplay
+ * The SMMAction is converted to a SMAction
  * in a SMObject construcor.
  */
-case class SMMDisplay(name: String, seq: Int, entry: Seq[PropertyRecord]) {
+case class SMMAction(name: String, entry: Seq[PropertyRecord]) {
   def get(k: String): Option[String] = {
     entry.find(_.key.equalsIgnoreCase(k)).flatMap(_.value)
   }
