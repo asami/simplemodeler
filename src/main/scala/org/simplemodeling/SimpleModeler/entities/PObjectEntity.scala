@@ -22,7 +22,8 @@ import org.simplemodeling.dsl._
  *  version Jun. 17, 2012
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
- * @version Dec. 26, 2012
+ *  version Dec. 26, 2012
+ * @version Jan. 10, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -480,6 +481,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     None
   }
 
+  var actions: SMActions = SMActions(Nil)
   var displays: SMDisplays = SMDisplays(Nil)
 
   def getDisplay(name: String): Option[SMMDisplay] = displays.get(name)

@@ -28,7 +28,8 @@ import org.goldenport.recorder.Recordable
  *  version May.  6, 2012
  *  version Jun. 17, 2012
  *  version Nov. 29, 2012
- * @version Dec. 26, 2012
+ *  version Dec. 26, 2012
+ * @version Jan. 10, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -749,6 +750,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       anObject.associations.foreach(build_association(obj, _))
       anObject.participations.foreach(build_participation(obj, _))
       anObject.operations.foreach(build_operation(obj, _))
+      obj.actions = anObject.actions
       obj.displays = anObject.displays
     }
 
@@ -759,6 +761,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       anObject.associations.foreach(build_association_entity_document(obj, _))
       anObject.participations.foreach(build_participation_entity_document(obj, _))
       anObject.operations.foreach(build_operation(obj, _))
+      obj.actions = anObject.actions
       obj.displays = anObject.displays
     }
 
