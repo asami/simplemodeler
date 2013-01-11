@@ -48,7 +48,8 @@ import org.goldenport.recorder.Recordable
  *  version May. 15, 2012
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
- * @version Dec. 22, 2012
+ *  version Dec. 22, 2012
+ * @version Jan. 11, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -322,6 +323,7 @@ abstract class GenericClassDefinition(
     utilities
     builder
     class_close
+    companions
   }
 
   def includeImports {
@@ -396,6 +398,9 @@ abstract class GenericClassDefinition(
   }
 
   protected def class_close_body
+
+  protected def companions {
+  }
 
   /*
    * Attributes Variables

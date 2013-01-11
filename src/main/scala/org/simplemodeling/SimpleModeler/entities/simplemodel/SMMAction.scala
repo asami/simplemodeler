@@ -17,6 +17,10 @@ case class SMMAction(name: String, entry: Seq[PropertyRecord]) {
     entry.find(_.key.equalsIgnoreCase(k)).flatMap(_.value)
   }
 
+  def getAsStrings(k: String): Option[Seq[String]] = {
+    get(k).map(_.split(" ,;"))
+  }
+
   def get(k: NaturalLabel): Option[String] = {
     entry.find(_.isMatch(k)).flatMap(_.value)
   }

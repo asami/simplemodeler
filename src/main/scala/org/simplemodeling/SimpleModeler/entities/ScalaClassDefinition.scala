@@ -6,7 +6,8 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
  * @since   Aug. 19, 2011
  *  version Aug. 19, 2011
  *  version Feb. 11, 2012
- * @version Nov. 22, 2012
+ *  version Nov. 22, 2012
+ * @version Jan. 11, 2013
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassDefinition(
@@ -18,6 +19,7 @@ class ScalaClassDefinition(
   type ATTR_DEF = ScalaClassAttributeDefinition
 
   var scalaKind: ScalaClassifierKind = ClassScalaKind
+  var useSimpleCompanionObject: Boolean = false
 
   if (maker == null) {
     sm_open(aspects)
@@ -127,6 +129,12 @@ class ScalaClassDefinition(
   override protected def class_close_body {
     sm_indent_down
     sm_pln("}")
+  }
+
+  override protected def companions {
+    if (useSimpleCompanionObject) {
+      sm_pln("object %s extends %s", name, name)
+    }
   }
 
   override protected def constructors_null_constructor {
