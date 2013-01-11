@@ -17,17 +17,12 @@ class SqlExpressionBuilder(
   var current: List[(PAttribute, String)] = Nil // TODO work around
 
   def isTarget(attr: PAttribute) = {
-    expr_string(expr.tree)
+    expr_eval("", expr.tree)
 //    println("SqlExpressionBuilder#isTarget(%s) = %s".format(expr, current))
     current.exists(_._1 == attr)
   }
 
-  override protected def expr_dot(expr: Tree[SMExpressionNode], x: SMEDot): String = {
-    expr_string(x.lhs)
-    expr_string(x.rhs)
-  }
-
-  override protected def expr_identifier(x: SMEIdentifier): String = {
+  override protected def expr_identifier(parent: String, x: SMEIdentifier): String = {
 //    println("SqlExpressionBuilder#expr_identifier = %s".format(x.name))
     get_association_class(x).map(_expr_identifier_association_class(x)) orElse
     get_attribute(x).map(_expr_identifier_attribute(x)) getOrElse

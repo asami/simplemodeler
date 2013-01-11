@@ -16,62 +16,64 @@ abstract class StringExpressionBuilder(
 ) extends ExpressionBuilder(c, e) {
   type RESULT_TYPE = String
 
-  override protected def expr_boolean(expr: Tree[SMExpressionNode], x: SMEBoolean): String = {
+  protected def root_Result = ""
+
+  override protected def expr_boolean(parent: String, expr: Tree[SMExpressionNode], x: SMEBoolean): String = {
     x.toJava
   }
 
-  override protected def expr_bracket(expr: Tree[SMExpressionNode], x: SMEBracket): String = {
+  override protected def expr_bracket(parent: String, expr: Tree[SMExpressionNode], x: SMEBracket): String = {
     expr.drawTree
   }
 
-  override protected def expr_choice(expr: Tree[SMExpressionNode], x: SMEChoice): String = {
+  override protected def expr_choice(parent: String, expr: Tree[SMExpressionNode], x: SMEChoice): String = {
      expr.drawTree
   }
 
-  override protected def expr_composite(expr: Tree[SMExpressionNode], x: SMEComposite): String = {
+  override protected def expr_composite(parent: String, expr: Tree[SMExpressionNode], x: SMEComposite): String = {
      expr.drawTree
   }
 
-  override protected def expr_dot(expr: Tree[SMExpressionNode], x: SMEDot): String = {
-    val cond = x.containerPath.map(p => expr_string(p) + " != null").mkString(" && ")
+  override protected def expr_dot(parent: String, expr: Tree[SMExpressionNode], x: SMEDot): String = {
+    val cond = x.containerPath.map(p => expr_eval(parent, p) + " != null").mkString(" && ")
     "(%s) ? %s : null".format(
       cond,
-      expr_string(x.lhs) + "." + expr_string(x.rhs))
+      expr_eval(parent, x.lhs) + "." + expr_eval(parent, x.rhs))
   }
 
-  override protected def expr_method(expr: Tree[SMExpressionNode], x: SMEMethod): String = {
+  override protected def expr_method(parent: String, expr: Tree[SMExpressionNode], x: SMEMethod): String = {
     expr.drawTree    
   }
 
-  override protected def expr_nested(expr: Tree[SMExpressionNode], x: SMENested): String = {
+  override protected def expr_nested(parent: String, expr: Tree[SMExpressionNode], x: SMENested): String = {
     expr.drawTree
   }
 
-  override protected def expr_null(expr: Tree[SMExpressionNode], x: SMENull): String = {
+  override protected def expr_null(parent: String, expr: Tree[SMExpressionNode], x: SMENull): String = {
     x.toJava
   }
 
-  override protected def expr_number(x: SMENumber): String = {
+  override protected def expr_number(parent: String, x: SMENumber): String = {
     x.toJava
   }
 
-  override protected def expr_property(expr: Tree[SMExpressionNode], x: SMEProperty): String = {
+  override protected def expr_property(parent: String, expr: Tree[SMExpressionNode], x: SMEProperty): String = {
     expr.drawTree
   }
 
-  override protected def expr_string(x: SMEString): String = {
+  override protected def expr_string(parent: String, x: SMEString): String = {
      x.toJava
   }
 
-  override protected def expr_text(x: SMEText): String = {
+  override protected def expr_text(parent: String, x: SMEText): String = {
     x.toJava
   }
 
-  override protected def expr_unary(expr: Tree[SMExpressionNode], x: SMEUnary): String = {
+  override protected def expr_unary(parent: String, expr: Tree[SMExpressionNode], x: SMEUnary): String = {
      expr.drawTree
   }
 
-  override protected def expr_identifier(x: SMEIdentifier): String = {
+  override protected def expr_identifier(parent: String, x: SMEIdentifier): String = {
     _get_attribute(x) orElse
     _get_association_class(x) getOrElse {
       record_warning("XXX")
@@ -79,13 +81,21 @@ abstract class StringExpressionBuilder(
     }
   }
 
-  override protected def expr_binary_operator(expr: SMEBinaryOperator): String = {
-    _binary_operator_string(expr)
+  override protected def expr_binary_operator(parent: String, expr: SMEBinaryOperator): String = {
+    _binary_operator_string(parent, expr)
   }
 
+  private def _binary_operator_string(parent: String, expr: SMEBinaryOperator): String = {
+    _binary_operator_string_lib(parent, expr)
+  }
 
-  protected final def get_attribute(x: SMEIdentifier): Option[PAttribute] = {
-    attributes.find(_.name == x.name)
+  private def _binary_operator_string_raw(parent: String, expr: SMEBinaryOperator): String = {
+    expr_eval(parent, expr.lhs) + " " + expr.toJavaOperator + " " + expr_eval(parent, expr.rhs)
+  }
+
+  private def _binary_operator_string_lib(parent: String, expr: SMEBinaryOperator): String = {
+    "USimpleModeler." + expr.toOperatorMethodName + "(" +
+    expr_eval(parent, expr.lhs) + ", " + expr_eval(parent, expr.rhs) + ")"
   }
 
   private def _get_attribute(x: SMEIdentifier): Option[String] = {
@@ -94,30 +104,9 @@ abstract class StringExpressionBuilder(
     }
   }
 
-  protected final def get_association_class(x: SMEIdentifier): Option[PAttribute] = {
-    attributes.find(_is_association_class(x.name))
-  }
-
   private def _get_association_class(x: SMEIdentifier): Option[String] = {
-    for (a <- attributes.find(_is_association_class(x.name))) yield {
+    for (a <- attributes.find(is_association_class(x.name))) yield {
       UJavaString.makeGetterName(a.name) + "().get(0)"
     }
-  }
-
-  private def _is_association_class(name: String)(a: PAttribute): Boolean = {
-    a.platformParticipation.map(_.source.name == name) | false
-  }
-
-  private def _binary_operator_string(expr: SMEBinaryOperator): String = {
-    _binary_operator_string_lib(expr)
-  }
-
-  private def _binary_operator_string_raw(expr: SMEBinaryOperator): String = {
-    expr_string(expr.lhs) + " " + expr.toJavaOperator + " " + expr_string(expr.rhs)
-  }
-
-  private def _binary_operator_string_lib(expr: SMEBinaryOperator): String = {
-    "USimpleModeler." + expr.toOperatorMethodName + "(" +
-    expr_string(expr.lhs) + ", " + expr_string(expr.rhs) + ")"
   }
 }
