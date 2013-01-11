@@ -7,12 +7,12 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Dec. 21, 2012
- * @version Dec. 26, 2012
+ * @version Jan. 11, 2013
  * @author  ASAMI, Tomoharu
  */
 class SqlExpressionBuilder(
   expr: SMExpression
-)(implicit c: PEntityContext, joinedAttributes: Seq[(PAttribute, String)]) extends ExpressionBuilder(c, expr) {
+)(implicit c: PEntityContext, joinedAttributes: Seq[(PAttribute, String)]) extends StringExpressionBuilder(c, expr) {
   val attributes = joinedAttributes.map(_._1)
   var current: List[(PAttribute, String)] = Nil // TODO work around
 
