@@ -17,7 +17,8 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Apr. 19, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Dec. 26, 2012
+ *  version Dec. 26, 2012
+ * @version Jan. 12, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -121,6 +122,10 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     (modelPowertype != null && modelPowertype.isEntityReference) ||
     (modelStateMachine != null && modelStateMachine.isEntityReference) ||
     platformParticipation.isDefined
+  }
+
+  def getEntity: Option[PEntityEntity] = {
+    attributeType.getEntity
   }
 
   def isAssociationClass = getModelAssociation.map(_.isAssociationClass) | false

@@ -8,7 +8,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Dec. 21, 2012
- * @version Jan. 11, 2013
+ * @version Jan. 12, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class ExpressionBuilder(val context: PEntityContext, val expr: SMExpression) extends GRecordable {
@@ -120,6 +120,14 @@ abstract class ExpressionBuilder(val context: PEntityContext, val expr: SMExpres
 
   protected final def get_attribute(x: SMEIdentifier): Option[PAttribute] = {
     attributes.find(_.name == x.name)
+  }
+
+  protected final def get_attribute_entity(x: SMEIdentifier): Option[PAttribute] = {
+    attributes.find(is_attribute_entity(x.name))
+  }
+
+  protected final def is_attribute_entity(name: String)(a: PAttribute): Boolean = {
+    a.name == name && a.isEntity
   }
 
   protected final def get_association_class(x: SMEIdentifier): Option[PAttribute] = {

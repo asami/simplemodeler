@@ -15,7 +15,8 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
  *  version Apr. 11, 2012
  *  version Oct. 30, 2012
  *  version Nov. 24, 2012
- * @version Dec. 26, 2012
+ *  version Dec. 26, 2012
+ * @version Jan. 12, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -63,6 +64,8 @@ abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
   def addConstraint(constraint: PConstraint) {
     this.constraints += constraint.name -> constraint
   }
+
+  def getEntity: Option[PEntityEntity] = None
 
   final def getLongMax(): Option[Long] = {
     constraints.get("max") match {
@@ -680,6 +683,8 @@ class PEntityType(val name: String, val packageName: String) extends PObjectType
     require (_entity == null, "EntityType entity already has been setted up: " + name)
     _entity = anEntity
   }
+
+  override def getEntity = Some(entity)
 
 /*
   var modelAssociation: SMAssociation = _

@@ -17,7 +17,8 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  *  version Aug. 26, 2011
  *  version Jun. 16, 2012
  *  version Nov. 27, 2012
- * @version Dec. 26, 2012
+ *  version Dec. 26, 2012
+ * @version Jan. 12, 2013
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -499,6 +500,22 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     UString.capitalize(a)
   }
 
+  def guiSchemaName(o: PObjectEntity) = {
+    "S" + o.name 
+  }
+
+  def guiDriverName(o: PObjectEntity) = {
+    "D" + o.name 
+  }
+
+  def guiResourceName(o: PObjectEntity) = {
+    "R" + o.name 
+  }
+
+  def guiSqlDriverBase(o: PObjectEntity) = {
+    applicationName(o) + "SqlDriver"
+  }
+
   //
   final def dataKey(attr: PAttribute): String = {
     asciiName(attr)
@@ -757,6 +774,9 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
     asciiName(a) + "__name"
   }
 
+  /**
+   * SqlMaker uses to get a attribute of counter association.
+   */
   def sqlAssociationClassCounterAssociation(a: AttributeParticipation): Option[PAttribute] = {
     sqlAssociationClassCounterAssociation(a.source, a.attribute)
   }
