@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
- * @version Jan. 12, 2013
+ * @version Jan. 13, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -43,6 +43,7 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     else if (modelParticipation != null) modelParticipation
     else throw new IllegalArgumentException("modelElement should not be null.: " + name)
   } 
+
   def getModelElement: Option[SMElement] = {
     if (modelAttribute != null) modelAttribute.some
     else if (modelAssociation != null) modelAssociation.some
@@ -51,8 +52,13 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     else if (modelParticipation != null) modelParticipation.some
     else None
   }
+
   def getModelAssociation: Option[SMAssociation] = {
     Option(modelAssociation)
+  }
+
+  def getModelPowertype: Option[SMPowertypeRelationship] = {
+    Option(modelPowertype)
   }
 
   /**
@@ -129,6 +135,8 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   }
 
   def isAssociationClass = getModelAssociation.map(_.isAssociationClass) | false
+
+  def isInheritancePowertype = getModelPowertype.map(_.isInheritancePowertype) | false
 
   def getVisibility: Option[PVisibility] = {
     getProperty("Visivility").flatMap(_ match {

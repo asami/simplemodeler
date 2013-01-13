@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  *  version Jun. 16, 2012
  *  version Nov. 27, 2012
  *  version Dec. 26, 2012
- * @version Jan. 12, 2013
+ * @version Jan. 13, 2013
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -720,6 +720,18 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
 
   def sqlTableName(o: PObjectEntity): String = {
     pickup_name(o.sqlTableName, o.term_en, o.term_ja, o.term, o.name_en, o.name_ja, o.name)
+  }
+
+  /**
+   * for Single Table Inheritance.
+   */
+  def sqlTableName4SingleTableInheritance(o: PObjectEntity): Option[String] = {
+    baseClassesAsStream(o).find(_.hasInheritancePowertype).map(sqlTableName)
+  }
+
+  // utility
+  def baseClassesAsStream(o: PObjectEntity): Stream[PObjectEntity] = {
+    Stream.cons(o, o.getBaseObject.map(baseClassesAsStream) | Stream.empty)
   }
 
   def sqlIdColumnName(o: PObjectEntity): String = {

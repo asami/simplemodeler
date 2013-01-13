@@ -16,7 +16,8 @@ import org.simplemodeling.dsl.SObject
  *  version Mar.  6, 2009
  *  version Dec. 12, 2011
  *  version Feb.  8, 2012
- * @version Sep. 27, 2012
+ *  version Sep. 27, 2012
+ * @version Jan. 13, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -26,8 +27,10 @@ class SimpleModelMakerBuilder(
     private val simplemodel: SimpleModelMakerEntity,
     packageName: String,
     policy: Policy,
-    strategy: Option[Strategy] = None) extends SimpleModelDslBuilder(
-    simplemodel.entityContext, packageName, policy, strategy) with Recordable {
+    strategy: Option[Strategy] = None
+) extends SimpleModelDslBuilder(
+    simplemodel.entityContext, packageName, policy, strategy
+) with Recordable {
   val packagePathname = UJavaString.packageName2pathname(packageName)
 
   override protected def create_Object(name: String, entity: SMMEntityEntity) {

@@ -23,7 +23,7 @@ import org.simplemodeling.dsl._
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
  *  version Dec. 26, 2012
- * @version Jan. 10, 2013
+ * @version Jan. 13, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -401,7 +401,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
       val c = x.reference.whole_attributes(a._2)
       (c._1 ::: a._1, c._2 ++ a._2)
     })
-    if (b._2.contains(qualifiedName)) b
+    if (b._2.contains(qualifiedName)) b // XXX what?
     else (b._1 ::: attributes.toList ::: associationEntityAttributes, b._2 + qualifiedName)
   }
 
@@ -495,6 +495,11 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   }
 
   def getNameName: Option[String] = getNameAttr.map(_.name)
+
+  def hasInheritancePowertype: Boolean = {
+    this.attributes.exists(_.isInheritancePowertype) ||
+    _mixinTraits.exists(_.reference.wholeAttributes.exists(_.isInheritancePowertype))
+  }
 
   //
   def isUser: Boolean = {

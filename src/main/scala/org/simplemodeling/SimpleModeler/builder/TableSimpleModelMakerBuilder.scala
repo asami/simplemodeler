@@ -8,6 +8,7 @@ import org.goldenport.value._
 import org.goldenport.sdoc.SDoc
 import org.simplemodeling.dsl.util.PropertyRecord
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
+import org.goldenport.recorder.Recordable
 import org.apache.commons.lang3.StringUtils.isNotBlank
 
 /*
@@ -18,7 +19,8 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Sep. 30, 2012
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
- * @version Jan. 10, 2013
+ *  version Dec. 26, 2012
+ * @version Jan. 13, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -26,9 +28,12 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  */
 class TableSimpleModelMakerBuilder(
   builder: SimpleModelMakerBuilder,
-  policy: Policy, packageName: String
-) extends TabularBuilderBase(policy, packageName) {
+  policy: Policy,
+  packageName: String
+) extends TabularBuilderBase(policy, packageName) with Recordable {
   val model_Builder = builder
+
+  setup_FowardingRecorder(builder)
 
   override protected def build_Model {}
 
@@ -340,6 +345,7 @@ class TableSimpleModelMakerBuilder(
       case AssociationLabel => add_association(entity, entry)
       case PowertypeLabel => add_powertype(entity, entry)
       case StateMachineLabel => add_statemachine(entity, entry)
+      case BaseLabel => add_inheritance_powertype(entity, entry)
       case UnknownNaturalLabel => {
         val name = _slot_name(entry)
 //        println("TableSimpleModelMakerBuilder#add_feature(%s) = %s".format(entity.name, entry))
@@ -359,7 +365,7 @@ class TableSimpleModelMakerBuilder(
           add_attribute(entity, entry)
         }
       }
-      case _ => sys.error("???")
+      case _ => record_warning("「%s」は特性に指定できません。".format(_slot_kind(entry))) // XXX
     }
   }
 
@@ -609,6 +615,11 @@ class TableSimpleModelMakerBuilder(
   protected final def add_powertype(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
     val entitytype = SMMEntityTypeSet(entity.packageName, entry)
     entity.powertype(_slot_name(entry), entitytype)
+  }
+
+  protected final def add_inheritance_powertype(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    val entitytype = SMMEntityTypeSet(entity.packageName, entry)
+    entity.powertype(_slot_name(entry), entitytype).withInheritancePowertype(true)
   }
 
   /**
