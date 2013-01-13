@@ -9,7 +9,8 @@ import org.simplemodeling.SimpleModeler.entities.expr.SqlExpressionBuilder
 
 /**
  * @since   Nov.  2, 2012
- * @version Dec. 23, 2012
+ *  version Dec. 23, 2012
+ * @version Jan. 14, 2013
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
@@ -85,8 +86,8 @@ class EntitySqlMaker(
   }
 
   def select = {
-    val tablename = context.sqlTableName(entity)
-    "select " + _columns + " from " + tablename + " T " + _joins
+    val tablename = context.sqlTableName4SingleTableInheritance(entity)
+    "select " + _columns + " from " + tablename + " T " + _joins + _wheres
   }
 
   def selectFetch = {
@@ -195,6 +196,7 @@ class EntitySqlMaker(
     a.mkString(" ")
   }
 
+  // TODO inheritance handling: table, where
   private def _join_master(attr: PAttribute, t: String) = {
     "left outer join " + context.sqlTableName(attr) + " " + t + " on " +
     "T." + context.sqlColumnName(attr) + "=" + t + "." + context.sqlJoinColumnName(attr)
@@ -210,7 +212,7 @@ class EntitySqlMaker(
   private def _join_association_class_direct(ownattr: PAttribute, t: String, participation: AttributeParticipation, targetattr: PAttribute) = {
     val assoc = participation.source
     val tx = t + "x"
-    val assoctable = context.sqlTableName(assoc)
+    val assoctable = context.sqlTableName4SingleTableInheritance(assoc)
     val assocjoincolumn = context.sqlColumnName(participation.attribute)
     val targettable = context.sqlTableName(targetattr)
     val targetcolumn = context.sqlColumnName(targetattr)
@@ -224,12 +226,36 @@ class EntitySqlMaker(
     a + " " + b
   }
 
+  // TODO inheritance handling: table, where
   private def _join_association_class_itself(ownattr: PAttribute, t: String) = {
     val assoctable = context.sqlTableName(ownattr)
     val assocjoincolumn = context.sqlColumnName(ownattr)
     "left outer join %s %s on T.%s=%s.%s".format(
       assoctable, t,
       context.sqlIdColumnName(entity), t, assocjoincolumn)
+  }
+
+  private def _wheres = {
+    List(_wheres_inheritance).flatten match {
+      case Nil => ""
+      case xs => " where " + xs.mkString(" and ")
+    }
+  }
+
+  private def _wheres_inheritance = {
+    entity.getInheritancePowertype.flatMap(attr => {
+      attr.getPowertype match {
+        case Some(p) => {
+          val n = entity.name
+          val columnname = context.sqlColumnName(attr)
+          p.kinds.find(_.name.equalsIgnoreCase(n)).map(k => k.value match {
+            case Left(v) => "T.%s='%s'".format(columnname, v)
+            case Right(v) => "T.%s=%s".format(columnname, v)
+          })
+        }
+        case None => sys.error("No powertype (%s/%s)".format(entity.name, attr.name))
+      }
+    })
   }
 
   def selectLiteral = {

@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
- * @version Jan. 13, 2013
+ * @version Jan. 14, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -132,6 +132,13 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   def getEntity: Option[PEntityEntity] = {
     attributeType.getEntity
+  }
+
+  def getPowertype: Option[PPowertypeEntity] = {
+    attributeType match {
+      case p: PPowertypeType => Some(p.powertype)
+      case _ => None
+    }
   }
 
   def isAssociationClass = getModelAssociation.map(_.isAssociationClass) | false

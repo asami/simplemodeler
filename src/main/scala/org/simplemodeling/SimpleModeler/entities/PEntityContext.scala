@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  *  version Jun. 16, 2012
  *  version Nov. 27, 2012
  *  version Dec. 26, 2012
- * @version Jan. 13, 2013
+ * @version Jan. 14, 2013
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -725,8 +725,12 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
   /**
    * for Single Table Inheritance.
    */
-  def sqlTableName4SingleTableInheritance(o: PObjectEntity): Option[String] = {
-    baseClassesAsStream(o).find(_.hasInheritancePowertype).map(sqlTableName)
+  def sqlTableName4SingleTableInheritanceOption(o: PObjectEntity): Option[String] = {
+    baseClassesAsStream(o).find(_.hasInheritancePowertypeExcludingBaseClasses).map(sqlTableName)
+  }
+
+  def sqlTableName4SingleTableInheritance(o: PObjectEntity): String = {
+    sqlTableName4SingleTableInheritanceOption(o) | sqlTableName(o)
   }
 
   // utility

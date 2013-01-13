@@ -23,7 +23,7 @@ import org.simplemodeling.dsl._
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
  *  version Dec. 26, 2012
- * @version Jan. 13, 2013
+ * @version Jan. 14, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -496,9 +496,13 @@ abstract class PObjectEntity(val pContext: PEntityContext)
 
   def getNameName: Option[String] = getNameAttr.map(_.name)
 
-  def hasInheritancePowertype: Boolean = {
+  def hasInheritancePowertypeExcludingBaseClasses: Boolean = {
     this.attributes.exists(_.isInheritancePowertype) ||
     _mixinTraits.exists(_.reference.wholeAttributes.exists(_.isInheritancePowertype))
+  }
+
+  def getInheritancePowertype: Option[PAttribute] = {
+    wholeAttributes.find(_.isInheritancePowertype)
   }
 
   //
