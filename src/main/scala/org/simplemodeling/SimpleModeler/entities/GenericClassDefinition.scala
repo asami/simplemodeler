@@ -49,7 +49,7 @@ import org.goldenport.recorder.Recordable
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
  *  version Dec. 22, 2012
- * @version Jan. 11, 2013
+ * @version Jan. 15, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -121,32 +121,59 @@ abstract class GenericClassDefinition(
    * Attributes info
    */
   lazy val attributeDefinitions: List[ATTR_DEF] = {
-    val a = attributes.map(attribute).toList
-    _ordering(a)
+    attributeDefinitions(pobject) ++ customAttributes.map(attribute)
   }
   lazy val parentAttributeDefinitions: List[ATTR_DEF] = {
+/*
     val a: List[ATTR_DEF] = baseObject.map(
       _.reference.wholeAttributes.map(attribute).toList
     ).orZero
     _ordering(a)
+*/
+    parentAttributeDefinitions(pobject)
   }
   lazy val traitsAttributeDefinitions: List[ATTR_DEF] = {
-    val a = mixinTraits flatMap {
+    traitsAttributeDefinitions(pobject)
+  }
+  lazy val associationClassAttributeDefinitions: List[ATTR_DEF] = {
+    associationClassAttributeDefinitions(pobject)
+  }
+  lazy val implementsAttributeDefinitions: List[ATTR_DEF] = {
+    implementsAttributeDefinitions(pobject) ++ customAttributes.map(attribute)
+  }
+  lazy val wholeAttributeDefinitions: List[ATTR_DEF] = {
+    wholeAttributeDefinitions(pobject) ++ customAttributes.map(attribute)
+  }
+
+  def wholeAttributeDefinitions(o: PObjectEntity): List[ATTR_DEF] = {
+    val a = parentAttributeDefinitions(o) ::: implementsAttributeDefinitions(o)
+    _ordering(_cleansing(a))
+  }
+
+  def parentAttributeDefinitions(o: PObjectEntity): List[ATTR_DEF] = {
+    o.getBaseObject.map(wholeAttributeDefinitions) | Nil
+  }
+
+  def implementsAttributeDefinitions(o: PObjectEntity): List[ATTR_DEF] = {
+    val a = attributeDefinitions(o) ::: traitsAttributeDefinitions(o) ::: associationClassAttributeDefinitions(o)
+    _ordering(_cleansing(a))
+  }
+
+  def attributeDefinitions(o: PObjectEntity): List[ATTR_DEF] = {
+    val a = o.attributes.map(attribute).toList
+    _ordering(a)
+  }
+
+  def traitsAttributeDefinitions(o: PObjectEntity): List[ATTR_DEF] = {
+    val a = o.getTraitObjects flatMap {
       _.reference.wholeAttributes.map(attribute)
     }
     _ordering(a)
   }
-  lazy val associationClassAttributeDefinitions: List[ATTR_DEF] = {
-    val a = associationClassAttributes.map(attribute)
+
+  def associationClassAttributeDefinitions(o: PObjectEntity): List[ATTR_DEF] = {
+    val a = o.associationEntityAttributes.map(attribute)
     _ordering(a)
-  }
-  lazy val implementsAttributeDefinitions: List[ATTR_DEF] = {
-    val a = attributeDefinitions ::: associationClassAttributeDefinitions ::: traitsAttributeDefinitions
-    _ordering(_cleansing(a))
-  }
-  lazy val wholeAttributeDefinitions: List[ATTR_DEF] = {
-    val a = parentAttributeDefinitions ::: implementsAttributeDefinitions
-    _ordering(_cleansing(a))
   }
 
   /**

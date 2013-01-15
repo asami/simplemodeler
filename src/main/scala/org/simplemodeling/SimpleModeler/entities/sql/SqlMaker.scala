@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entities.expr.SqlExpressionBuilder
 /**
  * @since   Nov.  2, 2012
  *  version Dec. 23, 2012
- * @version Jan. 14, 2013
+ * @version Jan. 15, 2013
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
@@ -243,19 +243,15 @@ class EntitySqlMaker(
   }
 
   private def _wheres_inheritance = {
-    entity.getInheritancePowertype.flatMap(attr => {
-      attr.getPowertype match {
-        case Some(p) => {
-          val n = entity.name
-          val columnname = context.sqlColumnName(attr)
-          p.kinds.find(_.name.equalsIgnoreCase(n)).map(k => k.value match {
-            case Left(v) => "T.%s='%s'".format(columnname, v)
-            case Right(v) => "T.%s=%s".format(columnname, v)
-          })
+    entity.getInheritancePowertypeAttributeValue.map {
+      case (attr, value) => {
+        val columnname = context.sqlColumnName(attr)
+        value match {
+          case Left(v) => "T.%s='%s'".format(columnname, v)
+          case Right(v) => "T.%s=%s".format(columnname, v)
         }
-        case None => sys.error("No powertype (%s/%s)".format(entity.name, attr.name))
       }
-    })
+    }
   }
 
   def selectLiteral = {

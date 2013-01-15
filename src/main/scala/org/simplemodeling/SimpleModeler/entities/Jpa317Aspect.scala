@@ -8,7 +8,8 @@ import com.asamioffice.goldenport.text.UString.notNull
 /*
  * @since   Dec. 15, 2011
  *  version Feb. 20, 2012
- * @version Oct. 29, 2012
+ *  version Oct. 29, 2012
+ * @version Jan. 15, 2013
  * @author  ASAMI, Tomoharu
  */
 class Jpa317Aspect extends JavaAspect with JavaHelper {
@@ -38,18 +39,18 @@ class Jpa317Aspect extends JavaAspect with JavaHelper {
     if (is_logical_operation) { // XXX
       jm_pln("@Id")
       jm_pln("@GeneratedValue(strategy=GenerationType.AUTO)")
-      jm_pln("private %s %s;".format(idAttr.typeName, varName))
+      jm_pln("protected %s %s;".format(idAttr.typeName, varName))
     } else {
       jm_pln("@Id")
       if (idAttr.idPolicy == SMAutoIdPolicy) {
         jm_pln("@GeneratedValue(strategy=GenerationType.AUTO)")
       }
       if (is_primitive(idAttr)) {
-        jm_pln("private %s %s;".format(java_typename(idAttr), varName))
+        jm_pln("protected %s %s;".format(java_typename(idAttr), varName))
       } else {
         val datatypename = idAttr.idDatatypeName
-        jm_pln("private %s %s;".format(datatypename, varName))
-        jm_pln("private %s %s;".format(idAttr.typeName, id_holder_name(varName)))
+        jm_pln("protected %s %s;".format(datatypename, varName))
+        jm_pln("protected %s %s;".format(idAttr.typeName, id_holder_name(varName)))
       }
     }
     true
@@ -58,7 +59,7 @@ class Jpa317Aspect extends JavaAspect with JavaHelper {
   override def weavePowertypeAttributeSlot(attr: PAttribute, varName: String): Boolean = {
     val pwr = attr.modelPowertype
     jm_pln("@Enumerated")
-    jm_pln("private %s %s;".format(attr.typeName, varName))
+    jm_pln("protected %s %s;".format(attr.typeName, varName))
     true
   }
 

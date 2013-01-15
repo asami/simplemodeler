@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
  * @since   Jun.  6, 2011
  *  version Aug. 13, 2011
  *  version Oct. 30, 2012
- * @version Nov. 28, 2012
+ * @version Jan. 15, 2013
  * @author  ASAMI, Tomoharu
  */
 class JavaClassDefinition(
@@ -168,13 +168,13 @@ class JavaClassDefinition(
 
   override protected def constructors_plain_constructor {
 //    println("JavaClassDefinition#constructors_plain_constructor(%s) = %s".format(this.name, not_derived_whole_attribute_definitions.map(_.attr.name)))
-    val params = not_derived_whole_attribute_definitions.filter(!_.isInject).
-    map(a => a.javaType + " " + a.paramName).mkString(", ")
+    val constructorparamattrs = not_derived_whole_attribute_definitions.filter(!_.isInject)
+    val params = constructorparamattrs.map(a => a.javaType + " " + a.paramName).mkString(", ")
     jm_public_constructor("%s(%s)", name, params) {
       if (hasBaseObject) {
-        val vs = not_derived_parent_attribute_definitions.filter(!_.isInject).
-          map(a => a.paramName).mkString(", ")
-        jm_pln("super(%s);", vs)
+        val superparamattrs = not_derived_parent_attribute_definitions.filter(!_.isInject)
+        val sps = superparamattrs.map(a => a.paramName).mkString(", ")
+        jm_pln("super(%s);", sps)
       }
       for (a <- not_derived_implements_attribute_definitions) {
         if (aspects.find(_.weavePlainConstructorAttributeBlock(a.attr, a.varName, a.paramName)).isDefined) {}

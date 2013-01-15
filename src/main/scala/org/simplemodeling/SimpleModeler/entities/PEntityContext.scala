@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  *  version Jun. 16, 2012
  *  version Nov. 27, 2012
  *  version Dec. 26, 2012
- * @version Jan. 14, 2013
+ * @version Jan. 15, 2013
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
