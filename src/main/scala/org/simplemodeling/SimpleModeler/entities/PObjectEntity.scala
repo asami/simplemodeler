@@ -484,7 +484,13 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   var actions: SMActions = SMActions(Nil)
   var displays: SMDisplays = SMDisplays(Nil)
 
-  def getDisplay(name: String): Option[SMMDisplay] = displays.get(name)
+  def getActions: SMActions = {
+    SMActions(actions.actions ++ getBaseObject.toList.flatMap(_.getActions.actions))
+  }
+
+  def getDisplay(name: String): Option[SMMDisplay] = {
+    displays.get(name) orElse getBaseObject.flatMap(_.getDisplay(name))
+  }
 
   def nameAttr: PAttribute = getNameAttr match {
     case Some(attr) => attr

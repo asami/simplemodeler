@@ -133,6 +133,7 @@ class EntitySqlMaker(
       } yield {
         val name = context.sqlColumnName(attr)
         val column = new SqlExpressionBuilder(expr.model)(context, joinedAttributes).build
+//        println("SqlMaker:ExpressionReference = " + column)
         _column_as(column, name)
       }
     }
