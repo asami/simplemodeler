@@ -7,7 +7,8 @@ import org.simplemodeling.SimpleModeler.builder._
  * @since   Oct.  5, 2012
  *  version Nov. 13, 2012
  *  version Nov. 26, 2012
- * @version Dec. 19, 2012
+ *  version Dec. 19, 2012
+ * @version Jan. 17, 2013
  * @author  ASAMI, Tomoharu
  */
 trait SMMElement {
@@ -74,13 +75,14 @@ trait SMMElement {
   }
 
   def update(entry: Seq[PropertyRecord]) {
-    properties = entry ++ properties
+//    properties = entry ++ properties
     entry.foreach(updateField)
   }
 
   def updateField(field: PropertyRecord) {
     val key = field.key
     for (value <- field.value) {
+      properties = field +: properties
       NaturalLabel(key) match {
         case NameLabel => {}
         case TypeLabel => {}
@@ -101,6 +103,7 @@ trait SMMElement {
         case DescriptionLabel => description = value
         case ColumnNameLabel => {}
         case SqlDatatypeLabel => {}
+        case NullNaturalLabel => {}
         case l: NaturalLabel => update_Field(l, value)
       }
       update_Field(key, value)

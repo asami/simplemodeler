@@ -5,7 +5,8 @@ import org.simplemodeling.SimpleModeler.builder.NaturalLabel
 
 /*
  * @since   Nov. 26, 2012
- * @version Dec. 26, 2012
+ *  version Dec. 26, 2012
+ * @version Jan. 17, 2013
  * @author  ASAMI, Tomoharu
  */
 case class PropertyRecord(
@@ -13,7 +14,8 @@ case class PropertyRecord(
   location: Option[DslLocation]
 ) {
   def isMatch(k: String) = {
-    key.equalsIgnoreCase(k)
+    val a = k.replace(" ", "")
+    key.equalsIgnoreCase(a)
   }
 
   def isMatch(k: NaturalLabel) = {

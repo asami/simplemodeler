@@ -96,7 +96,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
  *  version Dec. 26, 2012
- * @version Jan. 13, 2013
+ * @version Jan. 17, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1294,6 +1294,8 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   // _build_element
   private def _build_properties(target: SElement, src: SMMElement) {
+    target.properties = src.properties
+    println("SMMEntityEntity#_build_properties = " + target.properties)
     for (a <- _dsl_text(src.name_ja)) {
       target.name_ja = a
     }

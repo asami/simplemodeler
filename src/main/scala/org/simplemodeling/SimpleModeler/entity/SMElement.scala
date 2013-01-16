@@ -17,7 +17,7 @@ import org.simplemodeling.SimpleModeler.sdoc.SMObjectRef
  *  version Dec. 18, 2010
  *  version Feb. 22, 2012
  *  version Nov. 26, 2012
- * @version Dec. 26, 2012
+ * @version Jan. 17, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMElement] {
@@ -118,7 +118,10 @@ abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMEleme
   final def features: Seq[SMFeature] = _features.toList
 
   def getProperty(key: String): Option[String] = {
+    val r = 
     dslElement.properties.find(_.isMatch(key)).flatMap(_.value)
+    println("SMElement#getProperty(%s): %s = %s -> %s".format(name, dslElement.properties, key, r))
+    r
   }
 
   def getProperty(key: NaturalLabel): Option[String] = {
