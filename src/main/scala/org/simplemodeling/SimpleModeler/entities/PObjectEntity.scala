@@ -71,6 +71,8 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   def attributes: Seq[PAttribute] = _attributes
   def operations: Seq[POperation] = _operations
 
+  var joinEntities: Seq[PEntityEntity] = Nil
+
   def addAttribute(attr: PAttribute) {
     if (_attributes.exists(_.name == attr.name)) {
         record_warning("「%s」で属性・関連「%s」の重複があります。", name, attr.name)
@@ -269,6 +271,10 @@ abstract class PObjectEntity(val pContext: PEntityContext)
 
   var isImmutable: Boolean = false
 
+  def isAncestor(o: PObjectEntity): Boolean = {
+    o == this || (getBaseObject.map(_.isAncestor(o)) | false)
+  }
+
   override protected def write_Content(out: java.io.BufferedWriter) {
     val klass = class_Definition
     klass.build()
@@ -297,6 +303,11 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     modelObject.sqlTableName
   }
   var platform_sqlTableName: Option[String] = None
+
+  def sqlJoinNames: Seq[String] = {
+    if (StringUtils.isBlank(modelObject.sqlJoinName)) Nil
+    else List(modelObject.sqlJoinName)
+  }
 
   /*
    * Body

@@ -10,7 +10,7 @@ import org.simplemodeling.SimpleModeler.entities.expr.SqlExpressionBuilder
 /**
  * @since   Nov.  2, 2012
  *  version Dec. 23, 2012
- * @version Jan. 15, 2013
+ * @version Jan. 17, 2013
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
@@ -95,7 +95,21 @@ class EntitySqlMaker(
   }
 
   private def _columns = {
-    attributes.flatMap(_column).mkString(", ")
+    (_columns_attributes ++ _columns_joins).mkString(", ")
+  }
+
+  private def _columns_attributes = {
+    attributes.flatMap(_column("T"))
+  }
+
+  private def _columns_joins = {
+    entity.joinEntities.flatMap(_columns_join)
+  }
+
+  private def _columns_join(o: PEntityEntity) = {
+    println("SqlMaker#_columns_join = %s".format(o))
+    val dups = attributes.map(_.name)
+    o.wholeAttributesWithoutId.filterNot(x => dups.contains(x.name)).flatMap(_column("TJ"))
   }
 
   object EntityReference {
@@ -165,12 +179,12 @@ class EntitySqlMaker(
     }
   }
 
-  private def _column(attr: PAttribute): List[String] = {
+  private def _column(alias: String)(attr: PAttribute): List[String] = {
 //    if (attr.isMulti) return Nil
     val columnname = context.sqlColumnName(attr)
 //    println("SqlMaker#_column(%s/%s) = %s".format(entity.name, attr.name, attr))
     val name = context.asciiName(attr)
-    val c1 = _column_as("T." + columnname, name)
+    val c1 = _column_as(alias + "." + columnname, name)
     attr match {
       case ExpressionReference(c) => List(c)
       case AssociationClassReference(cs) => cs
@@ -186,15 +200,17 @@ class EntitySqlMaker(
   }
 
   private def _joins = {
-    val a: Seq[String] = for ((attr, t) <- joinedAttributes) yield {
+    (_joins_participation ++ _joins_join).mkString(" ")
+  }
+
+  private def _joins_participation: Seq[String] = {
+    for ((attr, t) <- joinedAttributes) yield {
       attr.platformParticipation match {
         case Some(s: AttributeParticipation) => _join_association_class(attr, t, s)
         case Some(s) => sys.error("???")
         case _ => _join_master(attr, t)
       }
     }
-//    a.mkString("\n", " ", "\n")
-    a.mkString(" ")
   }
 
   // TODO inheritance handling: table, where
@@ -234,6 +250,19 @@ class EntitySqlMaker(
     "left outer join %s %s on T.%s=%s.%s".format(
       assoctable, t,
       context.sqlIdColumnName(entity), t, assocjoincolumn)
+  }
+
+  private def _joins_join: Seq[String] = {
+    entity.joinEntities.map(_joins_join_entity)
+  }
+
+  private def _joins_join_entity(e: PEntityEntity) = {
+//    println("SqlMaker#_joins_join_entity = " + e.name)
+    val tj = "TJ"
+    "left outer join %s %s on T.%s=%s.%s".format(
+      context.sqlTableName(e), tj,
+      context.sqlJoinColumnName(entity),
+      tj, context.sqlJoinBackReferenceColumnName(entity, e))
   }
 
   private def _wheres = {

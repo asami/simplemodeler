@@ -129,6 +129,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * SQL
    */
   var tableName: String = ""
+  var joinName: String = ""
   // to aviod cyclic recursive initialization for base in the NullEntityEntity signleton.
   private var _base: SMMEntityEntity = null
   def base: SMMEntityEntity = {
@@ -617,6 +618,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case GuiTemplateLabel => guiTemplate = value
       case GuiWidgetLabel => guiWidget = value
       case TableNameLabel => tableName = value
+      case JoinLabel => joinName = value
       case _ => {}
     }
   }
@@ -1290,12 +1292,13 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     entity.guiTemplate = guiTemplate
     entity.guiWidget = guiWidget
     entity.sqlTableName = tableName
+    entity.sqlJoinName = joinName
   }
 
   // _build_element
   private def _build_properties(target: SElement, src: SMMElement) {
     target.properties = src.properties
-    println("SMMEntityEntity#_build_properties = " + target.properties)
+//    println("SMMEntityEntity#_build_properties = " + target.properties)
     for (a <- _dsl_text(src.name_ja)) {
       target.name_ja = a
     }

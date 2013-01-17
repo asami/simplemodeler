@@ -29,7 +29,7 @@ import org.goldenport.recorder.Recordable
  *  version Jun. 17, 2012
  *  version Nov. 29, 2012
  *  version Dec. 26, 2012
- * @version Jan. 10, 2013
+ * @version Jan. 17, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -1084,6 +1084,7 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
       resolve_traits(obj)
       resolve_attributes(obj)
       resolve_operations(obj)
+      resolve_sql(obj)
     }      
 
     def resolve_base(obj: PObjectEntity) {
@@ -1193,6 +1194,24 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
           case None => {}
         }
       }
+    }
+
+    def resolve_sql(obj: PObjectEntity) {
+//      println("SimpleModel2ProgramRealmTransformerBase#resolve_sql(%s) = %s".format(obj.name, obj.joinEntities))
+      obj.joinEntities = obj.sqlJoinNames.flatMap(x => {
+        val qname = obj.packageName + "." + x // XXX
+        findObject(qname) match {
+          case Some(e: PEntityEntity) => Some(e)
+          case Some(o) => {
+            record_warning("「%s」は結合(join)対象ではありません。".format(o.name))
+            None
+          }
+          case None => {
+            record_warning("結合「%s」は見つかりません。".format(x))
+            None
+          }
+        }
+      })
     }
 
     def resolve_package(pkg: PPackageEntity, aNode: GTreeNode[GContent]) {

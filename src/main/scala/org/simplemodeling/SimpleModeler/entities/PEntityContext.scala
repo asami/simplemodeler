@@ -18,7 +18,7 @@ import org.simplemodeling.SimpleModeler.entities.sql._
  *  version Jun. 16, 2012
  *  version Nov. 27, 2012
  *  version Dec. 26, 2012
- * @version Jan. 15, 2013
+ * @version Jan. 17, 2013
  * @author  ASAMI, Tomoharu
  */
 class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) with PEntityContextAppEngineService {
@@ -766,6 +766,12 @@ class PEntityContext(aContext: GEntityContext, val serviceContext: GServiceConte
 
   def sqlJoinColumnName(o: PObjectEntity): String = {
     sqlColumnName(o.idAttr)
+  }
+
+  def sqlJoinBackReferenceColumnName(base: PObjectEntity, backref: PObjectEntity): String = {
+    backref.wholeAttributesWithoutId.find(x => {
+      x.getEntity.map(base.isAncestor) | false
+    }).map(sqlColumnName).get
   }
 
   def sqlNameColumnName(a: PAttribute): String = {

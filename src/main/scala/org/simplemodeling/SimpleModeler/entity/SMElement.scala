@@ -93,6 +93,7 @@ abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMEleme
    * SQL
    */
   def sqlTableName = dslElement.sqlTableName
+  def sqlJoinName = dslElement.sqlJoinName
   def sqlColumnName = dslElement.sqlColumnName
   def sqlDatatypeName = dslElement.sqlDatatypeName
   def sqlAutoId = dslElement.sqlAutoId
@@ -120,7 +121,7 @@ abstract class SMElement(val dslElement: SElement) extends GTreeNodeBase[SMEleme
   def getProperty(key: String): Option[String] = {
     val r = 
     dslElement.properties.find(_.isMatch(key)).flatMap(_.value)
-    println("SMElement#getProperty(%s): %s = %s -> %s".format(name, dslElement.properties, key, r))
+//    println("SMElement#getProperty(%s): %s = %s -> %s".format(name, dslElement.properties, key, r))
     r
   }
 

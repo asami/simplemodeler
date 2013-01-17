@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
- * @version Jan. 13, 2013
+ * @version Jan. 17, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -253,6 +253,7 @@ class TableSimpleModelMakerBuilder(
       case BaseLabel => add_base(entity, entry)
       case TraitLabel => add_traits(entity, entry)
       case TableNameLabel => add_table_name(entity, entry)
+      case JoinLabel => add_join(entity, entry)
       case PrimaryActorLabel => add_primary_actor(entity, entry)
       case SecondaryActorLabel => add_secondary_actor(entity, entry)
       case SupportingActorLabel => add_supporting_actor(entity, entry)
@@ -281,6 +282,12 @@ class TableSimpleModelMakerBuilder(
   protected final def add_table_name(entity: SMMEntityEntity, entry: (String, String, Seq[String])) {
     _set_property_one(entry, x => {
       entity.tableName = x
+    })
+  }
+
+  protected final def add_join(entity: SMMEntityEntity, entry: (String, String, Seq[String])) {
+    _set_property_one(entry, x => {
+      entity.joinName = x
     })
   }
 

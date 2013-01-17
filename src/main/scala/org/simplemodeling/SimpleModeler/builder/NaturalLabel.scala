@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
- * @version Jan. 10, 2013
+ * @version Jan. 17, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -375,6 +375,10 @@ case object TableNameLabel extends NaturalLabel {
   val candidates = List("table name", "table", "テーブル", "表", "テーブル名")
 }
 
+case object JoinLabel extends NaturalLabel {
+  val candidates = List("join", "結合")
+}
+
 case object ColumnNameLabel extends NaturalLabel {
   val candidates = List("column name", "column", "カラム名", "カラム")
 }
@@ -480,6 +484,7 @@ object NaturalLabel {
     GuiWidgetLabel,
     VisibilityLabel,
     TableNameLabel,
+    JoinLabel,
     ColumnNameLabel,
     SqlDatatypeLabel,
     SqlAutoIdLabel,
