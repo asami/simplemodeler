@@ -3,7 +3,8 @@ package org.simplemodeling.SimpleModeler.entities
 /*
  * @since   Jul. 23, 2011
  *  version Aug. 21, 2011
- * @version Nov. 16, 2012
+ *  version Nov. 16, 2012
+ * @version Jan. 29, 2013
  * @author  ASAMI, Tomoharu
  */
 trait PObjectTypeFunction[T] extends PartialFunction[PObjectType, T] {
@@ -55,6 +56,12 @@ trait PObjectTypeFunction[T] extends PartialFunction[PObjectType, T] {
       case ot: PRatingType => apply_RatingType(ot)
       case ot: PUrlType => apply_UrlType(ot)
       case ot: PMoneyType => apply_MoneyType(ot)
+      case ot: PPercentType => apply_PercentType(ot)
+      case ot: PUnitType => apply_UnitType(ot)
+      case ot: PUuidType => apply_UuidType(ot)
+      case ot: PEverforthidType => apply_EverforthidType(ot)
+      case ot: PXmlType => apply_XmlType(ot)
+      case ot: PHtmlType => apply_HtmlType(ot)
       case ot: PObjectReferenceType => apply_ObjectReferenceType(ot)
       case ot: PValueType => apply_ValueType(ot)
       case ot: PDocumentType => apply_DocumentType(ot)
@@ -249,6 +256,30 @@ trait PObjectTypeFunction[T] extends PartialFunction[PObjectType, T] {
   }
 
   protected def apply_MoneyType(datatype: PMoneyType): T = {
+    handle_auxiliary(datatype)
+  }
+
+  protected def apply_PercentType(datatype: PPercentType): T = {
+    handle_auxiliary(datatype)
+  }
+
+  protected def apply_UnitType(datatype: PUnitType): T = {
+    handle_auxiliary(datatype)
+  }
+
+  protected def apply_UuidType(datatype: PUuidType): T = {
+    handle_auxiliary(datatype)
+  }
+
+  protected def apply_EverforthidType(datatype: PEverforthidType): T = {
+    handle_auxiliary(datatype)
+  }
+
+  protected def apply_XmlType(datatype: PXmlType): T = {
+    handle_auxiliary(datatype)
+  }
+
+  protected def apply_HtmlType(datatype: PHtmlType): T = {
     handle_auxiliary(datatype)
   }
 

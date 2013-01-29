@@ -32,6 +32,7 @@ import org.simplemodeling.dsl.datatype.ext.XLink
 import org.simplemodeling.dsl.datatype.business.XMoney
 import org.simplemodeling.dsl.datatype.business.XPercent
 import org.simplemodeling.dsl.datatype.business.XUnit
+import org.simplemodeling.dsl.datatype.platform._
 import org.simplemodeling.dsl.IdAttributeKind
 import org.simplemodeling.dsl.SUsecase
 import org.simplemodeling.dsl.STask
@@ -96,7 +97,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
  *  version Dec. 26, 2012
- * @version Jan. 17, 2013
+ * @version Jan. 29, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1148,6 +1149,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 //        override def isObjectScope = true
         isMasterSingleton = true
       }
+      case ValueKind    => new DomainValue(name, packageName) {
+//        override def isObjectScope = true
+        isMasterSingleton = true
+      }
       case ServiceKind    => new DomainService(name, packageName) {
 //        override def isObjectScope = true
         isMasterSingleton = true
@@ -1541,6 +1546,10 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       case _: SMMMoneyType => XMoney.some
       case _: SMMPercentType => XPercent.some
       case _: SMMUnitType => XUnit.some
+      case _: SMMUuidType => XUuid.some
+      case _: SMMEverforthidType => XEverforthid.some
+      case _: SMMXmlType => XXml.some
+      case _: SMMHtmlType => XHtml.some
       case v: SMMDocumentType => doc(v.name, v.packageName).some
       case e: SMMEntityType => entitydoc(e)
       case _ => None

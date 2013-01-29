@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Dec. 21, 2012
- * @version Jan. 15, 2013
+ * @version Jan. 29, 2013
  * @author  ASAMI, Tomoharu
  */
 class JavaExpressionBuilder(
@@ -76,7 +76,7 @@ class JavaExpressionBuilder(
   override protected def expr_identifier(parent: String, x: SMEIdentifier): String = {
     _get_attribute(x) orElse
     _get_association_class(x) getOrElse {
-      record_warning("XXX")
+      record_warning("式中の「%s」が見つかりません。".format(x))
       "null"
     }
   }

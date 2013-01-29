@@ -24,7 +24,8 @@ import org.goldenport.recorder.Recordable
 
 /**
  * @since   Nov.  2, 2012
- * @version Dec. 15, 2012
+ *  version Dec. 15, 2012
+ * @version Jan. 29, 2013
  * @author  ASAMI, Tomoharu
  */
 trait SimpleModel2ProgramRealmTransformerBaseHelper {
@@ -306,7 +307,7 @@ trait SimpleModel2ProgramRealmTransformerBaseHelper {
 //          println("SimpleModel2ProgramRealmTransformerBaseHelper#findDocument = " + docname + "/" + e.documentName)
           findDocument(_make_qname(docname, e.packageName))
         }
-        case t: PTraitEntity => None
+//        case t: PTraitEntity => None
       }
       case None => None
     }

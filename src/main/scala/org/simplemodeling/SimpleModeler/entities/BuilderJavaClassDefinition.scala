@@ -5,7 +5,8 @@ package org.simplemodeling.SimpleModeler.entities
  *  version Aug. 27, 2011
  *  version Dec. 14, 2011
  *  version Feb.  8, 2012
- * @version Nov. 16, 2012
+ *  version Nov. 16, 2012
+ * @version Jan. 29, 2013
  * @author  ASAMI, Tomoharu
  */
 class BuilderJavaClassDefinition(
@@ -134,6 +135,11 @@ class BuilderJavaClassDefinition(
         override protected def apply_BlobType(datatype: PBlobType) = "XBlob"
         override protected def apply_UrlType(datatype: PUrlType) = "XUrl"
         override protected def apply_MoneyType(datatype: PMoneyType) = "XMoney"
+        override protected def apply_UnitType(datatype: PUnitType) = "XUnit"
+        override protected def apply_UuidType(datatype: PUuidType) = "XUuid"
+        override protected def apply_EverforthidType(datatype: PEverforthidType) = "XEverforthid"
+        override protected def apply_XmlType(datatype: PXmlType) = "XXml"
+        override protected def apply_HtmlType(datatype: PHtmlType) = "XHtml"
         override protected def apply_ObjectReferenceType(datatype: PObjectReferenceType) = "XObjectReference"
 
         override protected def apply_ValueType(datatype: PValueType) = {

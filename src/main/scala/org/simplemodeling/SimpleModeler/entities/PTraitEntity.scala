@@ -10,9 +10,12 @@ import org.simplemodeling.SimpleModeler.entities.gaej.GaejUtil._
 
 /*
  * @since   Nov.  6, 2012
- * @version Nov.  8, 2012
+ * @version Jan. 29, 2013
  * @author  ASAMI, Tomoharu
  */
-trait PTraitEntity extends PObjectEntity {
+/*
+ * Jan. 29, 2013:
+ * Trials that PTraitEntity be PEntityEntity and PDocumentEntity does not work.*/
+trait PTraitEntity extends PObjectEntity { // with PEntityEntity with PDocumentEntity {
   var isDocument = false
 }

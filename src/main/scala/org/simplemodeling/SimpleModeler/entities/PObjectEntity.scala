@@ -23,7 +23,7 @@ import org.simplemodeling.dsl._
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
  *  version Dec. 26, 2012
- * @version Jan. 17, 2013
+ * @version Jan. 29, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -409,13 +409,38 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   }
 
   def whole_attributes(used: Set[String]): (List[PAttribute], Set[String]) = {
-    val a = Option(_baseObject).orEmpty[List] ::: _mixinTraits.toList
+    val a = {
+      if (cyclic_inheritance.nonEmpty) {
+        record_warning("「%s」は継承が循環しています: %s".format(name, cyclic_inheritance.get))
+        Nil
+      } else {
+        Option(_baseObject).orEmpty[List] ::: _mixinTraits.toList
+      }
+    }
     val b = a.foldLeft((nil[PAttribute], Set.empty[String]))((a, x) => {
       val c = x.reference.whole_attributes(a._2)
       (c._1 ::: a._1, c._2 ++ a._2)
     })
     if (b._2.contains(qualifiedName)) b // XXX what?
     else (b._1 ::: attributes.toList ::: associationEntityAttributes, b._2 + qualifiedName)
+  }
+
+  private lazy val cyclic_inheritance: Option[String] = {
+    cyclic_inheritance(Set.empty)
+  }
+
+  protected def cyclic_inheritance(parents: Set[PObjectEntity]): Option[String] = {
+    if (parents.contains(this)) Some(parents.map(_.name).mkString)
+    else {
+      val os = Option(_baseObject).toList ::: _mixinTraits.toList
+      val a: List[Option[String]] = for (o <- os) yield {
+        o.reference.cyclic_inheritance(Set(this))
+      }
+      a.flatten match {
+        case Nil => None
+        case xs => Some(xs.toString)
+      }
+    }
   }
 
   lazy val wholeAttributesWithoutId: List[PAttribute] = {

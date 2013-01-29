@@ -16,7 +16,7 @@ import org.simplemodeling.SimpleModeler.entity.{SMConstraint, SMAttributeType, S
  *  version Oct. 30, 2012
  *  version Nov. 24, 2012
  *  version Dec. 26, 2012
- * @version Jan. 12, 2013
+ * @version Jan. 29, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectType(private val model_attribute_type: SMAttributeType) {
@@ -530,7 +530,7 @@ class PUrlType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrTy
 object PUrlType extends PUrlType
 
 /*
- * Business
+ * Business datatype
  */
 class PMoneyType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
   override def objectTypeName = "BigDecimal"
@@ -538,6 +538,7 @@ class PMoneyType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttr
   override def dslDataTypeName = Some("XMoney")
 
   def this() = this(null)
+  override def toString() = "datatype:money"
 }
 object PMoneyType extends PMoneyType
 
@@ -547,6 +548,7 @@ class PPercentType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAt
   override def dslDataTypeName = Some("XPercent")
 
   def this() = this(null)
+  override def toString() = "datatype:percent"
 }
 object PPercentType extends PPercentType
 
@@ -555,10 +557,56 @@ class PUnitType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrT
   override def dslDataTypeName = Some("XUnit")
 
   def this() = this(null)
+  override def toString() = "datatype:unit"
 }
 object PUnitType extends PUnitType
 
-// ReferenceProperty
+/*
+ * Platform datatype
+ */
+class PUuidType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
+  override def objectTypeName = "String"
+  override def sqlDatatypeName = "CHAR(36)"
+  override def dslDataTypeName = Some("XUuid")
+
+  def this() = this(null)
+  override def toString() = "datatype:uuid"
+}
+object PUuidType extends PUuidType
+
+class PEverforthidType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
+  override def objectTypeName = "String"
+  override def sqlDatatypeName = "CHAR(128)"
+  override def dslDataTypeName = Some("XEverforthid")
+
+  def this() = this(null)
+  override def toString() = "datatype:everforthid"
+}
+object PEverforthidType extends PEverforthidType
+
+class PXmlType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
+  override def objectTypeName = "String"
+  override def sqlDatatypeName = "TEXT"
+  override def dslDataTypeName = Some("XXml")
+
+  def this() = this(null)
+  override def toString() = "datatype:xml"
+}
+object PXmlType extends PXmlType
+
+class PHtmlType(aModelAttrType: SMAttributeType) extends PObjectType(aModelAttrType) with PDataType {
+  override def objectTypeName = "String"
+  override def sqlDatatypeName = "TEXT"
+  override def dslDataTypeName = Some("XHtml")
+
+  def this() = this(null)
+  override def toString() = "datatype:html"
+}
+object PHtmlType extends PHtmlType
+
+/*
+ * ReferenceProperty
+ */
 class PObjectReferenceType(val name: String, val packageName: String) extends PObjectType(null) {
   override def objectTypeName = name
   override def dslDataTypeName = None

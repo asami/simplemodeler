@@ -29,7 +29,7 @@ import org.goldenport.recorder.Recordable
  *  version Jun. 17, 2012
  *  version Nov. 29, 2012
  *  version Dec. 26, 2012
- * @version Jan. 17, 2013
+ * @version Jan. 29, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleModelEntity, val serviceContext: GServiceContext
@@ -916,6 +916,10 @@ abstract class SimpleModel2ProgramRealmTransformerBase(val simpleModel: SimpleMo
         case "org.simplemodeling.dsl.datatype.business.XMoney" => PMoneyType
         case "org.simplemodeling.dsl.datatype.business.XPercent" => PPercentType
         case "org.simplemodeling.dsl.datatype.business.XUnit" => PUnitType
+        case "org.simplemodeling.dsl.datatype.platform.XUuid" => PUuidType
+        case "org.simplemodeling.dsl.datatype.platform.XEverforthid" => PEverforthidType
+        case "org.simplemodeling.dsl.datatype.platform.XXml" => PXmlType
+        case "org.simplemodeling.dsl.datatype.platform.XHtml" => PHtmlType
         case _ => anAttr.attributeType.dslAttributeType match { 
           case v: SValue => new PValueType(v.name, v.packageName);
           case d: SDocument => new PDocumentType(d.name, d.packageName)

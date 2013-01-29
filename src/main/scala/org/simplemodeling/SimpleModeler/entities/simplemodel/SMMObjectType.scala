@@ -9,7 +9,8 @@ import scala.collection.mutable.ArrayBuffer
  *  version Mar. 24, 2012
  *  version Oct. 30, 2012
  *  version Nov. 15, 2012
- * @version Dec. 26, 2012
+ *  version Dec. 26, 2012
+ * @version Jan. 29, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -206,6 +207,27 @@ class SMMUnitType extends SMMDataType("XUnit", "org.simplemodeling.dsl.datatype.
 }
 object SMMUnitType extends SMMUnitType
 
+// Platform datatype
+class SMMUuidType extends SMMDataType("XUuid", "org.simplemodeling.dsl.datatype.platform") {
+  val candidates = List("uuid")
+}
+object SMMUuidType extends SMMUuidType
+
+class SMMXmlType extends SMMDataType("XXml", "org.simplemodeling.dsl.datatype.platform") {
+  val candidates = List("xml")
+}
+object SMMXmlType extends SMMXmlType
+
+class SMMHtmlType extends SMMDataType("XHtml", "org.simplemodeling.dsl.datatype.platform") {
+  val candidates = List("html")
+}
+object SMMHtmlType extends SMMHtmlType
+
+class SMMEverforthidType extends SMMDataType("XEverforthid", "org.simplemodeling.dsl.datatype.platform") {
+  val candidates = List("everforthid")
+}
+object SMMEverforthidType extends SMMEverforthidType
+
 //
 class SMMDocumentType(name: String, pkg: String) extends SMMDataType(name, pkg) {
   val candidates = Nil
@@ -401,7 +423,11 @@ object SMMObjectType {
     SMMLinkType,
     SMMMoneyType,
     SMMPercentType,
-    SMMUnitType)
+    SMMUnitType,
+    SMMUuidType,
+    SMMXmlType,
+    SMMHtmlType,
+    SMMEverforthidType)
 
   def getDataType(string: String): Option[SMMDataType] = {
     datatypes.find(_.isMatch(string))
