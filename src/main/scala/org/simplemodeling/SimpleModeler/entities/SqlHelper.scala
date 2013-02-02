@@ -3,7 +3,7 @@ package org.simplemodeling.SimpleModeler.entities
 /*
  * @since   Nov.  1, 2012
  *  version Dec. 23, 2012
- * @version Feb.  2, 2013
+ * @version Feb.  3, 2013
  * @author  ASAMI, Tomoharu
  */
 trait SqlHelper {
@@ -95,12 +95,12 @@ trait SqlHelper {
   }
 
   protected def sql_select_fetch_literal(entity: PEntityEntity): String = {
-    val maker = pContext.sqlMaker(entity)
+    val maker = pContext.sqlMaker(entity, DetailVisibility.isVisible(entity) _)
     maker.selectFetchLiteral
   }
 
   protected def sql_select_fetch_literal(doc: PDocumentEntity): String = {
-    val maker = pContext.sqlMaker(doc)
+    val maker = pContext.sqlMaker(doc, DetailVisibility.isVisible(doc) _)
     maker.selectFetchLiteral
   }
 
@@ -108,6 +108,57 @@ trait SqlHelper {
     o match {
       case x: PEntityEntity => sql_select_fetch_literal(x)
       case x: PDocumentEntity => sql_select_fetch_literal(x)
+    }
+  }
+
+  protected def sql_select_api_literal(entity: PEntityEntity): String = {
+    val maker = pContext.sqlMaker(entity, ApiVisibility.isVisible(entity) _)
+    maker.selectLiteral
+  }
+
+  protected def sql_select_api_literal(doc: PDocumentEntity): String = {
+    val maker = pContext.sqlMaker(doc, ApiVisibility.isVisible(doc) _)
+    maker.selectLiteral
+  }
+
+  protected def sql_select_api_literal(o: PObjectEntity): String = {
+    o match {
+      case x: PEntityEntity => sql_select_api_literal(x)
+      case x: PDocumentEntity => sql_select_api_literal(x)
+    }
+  }
+
+  protected def sql_select_api_grid_literal(entity: PEntityEntity): String = {
+    val maker = pContext.sqlMaker(entity, ApiGridVisibility.isVisible(entity) _)
+    maker.selectLiteral
+  }
+
+  protected def sql_select_api_grid_literal(doc: PDocumentEntity): String = {
+    val maker = pContext.sqlMaker(doc, ApiGridVisibility.isVisible(doc) _)
+    maker.selectLiteral
+  }
+
+  protected def sql_select_api_grid_literal(o: PObjectEntity): String = {
+    o match {
+      case x: PEntityEntity => sql_select_api_grid_literal(x)
+      case x: PDocumentEntity => sql_select_api_grid_literal(x)
+    }
+  }
+
+  protected def sql_select_api_fetch_literal(entity: PEntityEntity): String = {
+    val maker = pContext.sqlMaker(entity, ApiDetailVisibility.isVisible(entity) _)
+    maker.selectFetchLiteral
+  }
+
+  protected def sql_select_api_fetch_literal(doc: PDocumentEntity): String = {
+    val maker = pContext.sqlMaker(doc, ApiDetailVisibility.isVisible(doc) _)
+    maker.selectFetchLiteral
+  }
+
+  protected def sql_select_api_fetch_literal(o: PObjectEntity): String = {
+    o match {
+      case x: PEntityEntity => sql_select_api_fetch_literal(x)
+      case x: PDocumentEntity => sql_select_api_fetch_literal(x)
     }
   }
 
