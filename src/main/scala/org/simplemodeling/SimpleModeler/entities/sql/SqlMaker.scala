@@ -37,10 +37,10 @@ class EntitySqlMaker(
 )(implicit val context: PEntityContext) extends SqlMaker {
   val attributeCandicates = entity.wholeAttributes
   val attributes = attributeCandicates.filter(isTarget)
-  println("EntitySqlMaker(%s): whole = %s, filtered = %s".format(
-    entity.name,
-    attributeCandicates.map(x => x.name + "/" + entity.getDisplayVisibilities(x)),
-    attributes))
+//  println("EntitySqlMaker(%s): whole = %s, filtered = %s".format(
+//    entity.name,
+//    attributeCandicates.map(x => x.name + "/" + entity.getDisplayVisibilities(x)),
+//    attributes))
   val joinedAttributeCandidates: Seq[(PAttribute, String)] = {
     val a = attributeCandicates.filter(_is_join_candidate)
     val b = (1 to a.length).map(x => "T" + x)
