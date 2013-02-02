@@ -4,6 +4,8 @@ import scalaz._, Scalaz._
 import scala.collection.mutable.ArrayBuffer
 import org.apache.commons.lang3.StringUtils
 import com.asamioffice.goldenport.text.{JavaTextMaker, UString}
+import org.goldenport.Strings._
+import org.simplemodeling.SimpleModeler.builder.{NaturalLabel, VisibilityLabel}
 import org.simplemodeling.SimpleModeler.entities.simplemodel.SMMDisplay
 import org.simplemodeling.SimpleModeler.SimpleModelerConstants
 import org.simplemodeling.SimpleModeler.entity._
@@ -23,7 +25,7 @@ import org.simplemodeling.dsl._
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
  *  version Dec. 26, 2012
- * @version Jan. 29, 2013
+ * @version Feb.  2, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -528,6 +530,45 @@ abstract class PObjectEntity(val pContext: PEntityContext)
 
   def getDisplay(name: String): Option[SMMDisplay] = {
     displays.get(name) orElse getBaseObject.flatMap(_.getDisplay(name))
+  }
+
+  def getDisplayProperty(attr: PAttribute, label: NaturalLabel): Option[String] = {
+    displays.get(attr.name, label) orElse attr.getProperty(label)
+  }
+
+  def isDisplayProperty(attr: PAttribute, key: String): Option[Boolean] = {
+    val v = displays.get(attr.name, key) match {
+      case Some(value) => value.some
+      case None => attr.getProperty(key)
+    }
+    val r = 
+    v.flatMap(_.toLowerCase match {
+      case "o" => Some(true)
+      case "○" => Some(true)
+      case "1" => Some(true)
+      case "x" => Some(false)
+      case "×" => Some(false)
+      case "0" => Some(false)
+      case _ => None
+    })
+//    println("SummaryViewerEntityScalaClassDefinition#is_display_property(%s) = %s / %s".format(name, v, r))
+    r
+  }
+
+  def getDisplayVisibilities(attr: PAttribute): List[PVisibility] = {
+    getDisplayProperty(attr, VisibilityLabel) match {
+      case Some(v) => {
+        toTokens(v).flatMap {
+          case "plain" => PlainVisibility.some
+          case "grid" => GridVisibility.some
+          case "detail" => DetailVisibility.some
+          case "api" => ApiVisibility.some
+          case "all" => WholeVisibility.some
+          case _ => DetailVisibility.some
+        }
+      }
+      case None => Nil
+    }
   }
 
   def nameAttr: PAttribute = getNameAttr match {

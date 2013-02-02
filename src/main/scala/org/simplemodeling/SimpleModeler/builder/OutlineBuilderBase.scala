@@ -20,7 +20,8 @@ import org.simplemodeling.SimpleModeler.importer.MindmapModelingOutliner
  *  version Oct. 26, 2012
  *  version Nov. 24, 2012
  *  version Dec. 17, 2012
- * @version Jan. 10, 2013
+ *  version Jan. 10, 2013
+ * @version Feb.  2, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -376,7 +377,7 @@ abstract class OutlineBuilderBase(val policy: Policy, val packageName: String, v
   }
 
   private def _build_display_table(table: GTable[String], target: SMMEntityEntity) {
-//    println("OutlineBuilderBase#_build_display_table = %s".format(target.name))
+    println("OutlineBuilderBase#_build_display_table = %s".format(target.name))
     _table_builder.buildDisplay(target, table)
   }
 

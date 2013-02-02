@@ -10,7 +10,8 @@ import org.simplemodeling.SimpleModeler.entities.expr.SqlExpressionBuilder
 /**
  * @since   Nov.  2, 2012
  *  version Dec. 23, 2012
- * @version Jan. 17, 2013
+ *  version Jan. 17, 2013
+ * @version Feb.  3, 2013
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
@@ -36,6 +37,10 @@ class EntitySqlMaker(
 )(implicit val context: PEntityContext) extends SqlMaker {
   val attributeCandicates = entity.wholeAttributes
   val attributes = attributeCandicates.filter(isTarget)
+  println("EntitySqlMaker(%s): whole = %s, filtered = %s".format(
+    entity.name,
+    attributeCandicates.map(x => x.name + "/" + entity.getDisplayVisibilities(x)),
+    attributes))
   val joinedAttributeCandidates: Seq[(PAttribute, String)] = {
     val a = attributeCandicates.filter(_is_join_candidate)
     val b = (1 to a.length).map(x => "T" + x)

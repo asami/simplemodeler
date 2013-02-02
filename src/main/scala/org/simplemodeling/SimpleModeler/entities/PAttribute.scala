@@ -18,7 +18,8 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
- * @version Jan. 14, 2013
+ *  version Jan. 14, 2013
+ * @version Feb.  2, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -145,6 +146,7 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
 
   def isInheritancePowertype = getModelPowertype.map(_.isInheritancePowertype) | false
 
+/*
   def getVisibility: Option[PVisibility] = {
     getProperty("Visivility").flatMap(_ match {
       case "plain" => Some(PlainVisibility)
@@ -153,6 +155,7 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
       case _ => None
     })
   }
+*/
 
   def getProperty(key: String) = {
     getModelElement.flatMap(_.getProperty(key))
