@@ -4,7 +4,7 @@ name := "simplemodeler"
 
 organization := "org.simplemodeling"
 
-version := "0.4.1-e-SNAPSHOT"
+version := "0.4.1-e"
 
 // scalaVersion := "2.9.2"
 
@@ -34,7 +34,7 @@ libraryDependencies += "de.odysseus.juel" % "juel-spi" % "2.2.5"
 
 libraryDependencies += "de.odysseus.juel" % "juel-impl" % "2.2.5"
 
-libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.12-SNAPSHOT"
+libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.12"
 
 // libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.2.0"
 
