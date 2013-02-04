@@ -94,20 +94,20 @@ trait SqlHelper {
     }
   }
 
-  protected def sql_select_fetch_literal(entity: PEntityEntity): String = {
+  protected def sql_select_detail_literal(entity: PEntityEntity): String = {
     val maker = pContext.sqlMaker(entity, DetailVisibility.isVisible(entity) _)
-    maker.selectFetchLiteral
+    maker.selectLiteral
   }
 
-  protected def sql_select_fetch_literal(doc: PDocumentEntity): String = {
+  protected def sql_select_detail_literal(doc: PDocumentEntity): String = {
     val maker = pContext.sqlMaker(doc, DetailVisibility.isVisible(doc) _)
-    maker.selectFetchLiteral
+    maker.selectLiteral
   }
 
-  protected def sql_select_fetch_literal(o: PObjectEntity): String = {
+  protected def sql_select_detail_literal(o: PObjectEntity): String = {
     o match {
-      case x: PEntityEntity => sql_select_fetch_literal(x)
-      case x: PDocumentEntity => sql_select_fetch_literal(x)
+      case x: PEntityEntity => sql_select_detail_literal(x)
+      case x: PDocumentEntity => sql_select_detail_literal(x)
     }
   }
 
@@ -145,20 +145,20 @@ trait SqlHelper {
     }
   }
 
-  protected def sql_select_api_fetch_literal(entity: PEntityEntity): String = {
+  protected def sql_select_api_detail_literal(entity: PEntityEntity): String = {
     val maker = pContext.sqlMaker(entity, ApiDetailVisibility.isVisible(entity) _)
-    maker.selectFetchLiteral
+    maker.selectLiteral
   }
 
-  protected def sql_select_api_fetch_literal(doc: PDocumentEntity): String = {
+  protected def sql_select_api_detail_literal(doc: PDocumentEntity): String = {
     val maker = pContext.sqlMaker(doc, ApiDetailVisibility.isVisible(doc) _)
-    maker.selectFetchLiteral
+    maker.selectLiteral
   }
 
-  protected def sql_select_api_fetch_literal(o: PObjectEntity): String = {
+  protected def sql_select_api_detail_literal(o: PObjectEntity): String = {
     o match {
-      case x: PEntityEntity => sql_select_api_fetch_literal(x)
-      case x: PDocumentEntity => sql_select_api_fetch_literal(x)
+      case x: PEntityEntity => sql_select_api_detail_literal(x)
+      case x: PDocumentEntity => sql_select_api_detail_literal(x)
     }
   }
 

@@ -25,7 +25,7 @@ import org.simplemodeling.dsl._
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
  *  version Dec. 26, 2012
- * @version Feb.  2, 2013
+ * @version Feb.  4, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -558,7 +558,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   def getDisplayVisibilities(attr: PAttribute): List[PVisibility] = {
     getDisplayProperty(attr, VisibilityLabel) match {
       case Some(v) => {
-        toTokens(v).flatMap {
+        totokens(v).flatMap {
           case "plain" => PlainVisibility.some
           case "grid" => GridVisibility.some
           case "detail" => DetailVisibility.some
