@@ -283,6 +283,10 @@ case object UpdatedLabel extends NaturalLabel {
   val candidates = List("updated", "更新日時")
 }
 
+case object DeletedLabel extends NaturalLabel {
+  val candidates = List("deleted", "削除日時")
+}
+
 case object PropertyLabel extends NaturalLabel {
   val candidates = List("property", "性質")
 }

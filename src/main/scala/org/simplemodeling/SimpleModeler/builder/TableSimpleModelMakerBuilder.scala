@@ -156,6 +156,7 @@ class TableSimpleModelMakerBuilder(
       case ContentLabel => add_content(obj, entry)
       case CreatedLabel => add_created(obj, entry)
       case UpdatedLabel => add_updated(obj, entry)
+      case DeletedLabel => add_deleted(obj, entry)
       case _ => {
         add_attribute_with_kind(obj, entry, NullAttributeKind)
       }
@@ -231,6 +232,10 @@ class TableSimpleModelMakerBuilder(
 
   protected final def add_updated(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
     add_attribute_with_kind(obj, entry, UpdatedAttributeKind)
+  }
+
+  protected final def add_deleted(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, DeletedAttributeKind)
   }
 
   private def _build_attribute(attr: SMMAttribute, entry: Seq[PropertyRecord]) = {
@@ -437,6 +442,7 @@ class TableSimpleModelMakerBuilder(
       case ContentLabel => add_content(entity, entry)
       case CreatedLabel => add_created(entity, entry)
       case UpdatedLabel => add_updated(entity, entry)
+      case DeletedLabel => add_deleted(entity, entry)
       case AttributeLabel => add_attribute(entity, entry)
       case CompositionLabel => add_composition(entity, entry)
       case AggregationLabel => add_aggregation(entity, entry)

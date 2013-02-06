@@ -108,3 +108,9 @@ object CreatedAttributeKind extends CreatedAttributeKind
  */
 class UpdatedAttributeKind extends SAttributeKind
 object UpdatedAttributeKind extends UpdatedAttributeKind
+
+/**
+ * Used for logical delete.
+ */
+class DeletedAttributeKind extends SAttributeKind
+object DeletedAttributeKind extends UpdatedAttributeKind
