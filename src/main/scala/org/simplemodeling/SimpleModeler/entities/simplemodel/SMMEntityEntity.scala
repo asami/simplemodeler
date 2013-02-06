@@ -1,6 +1,7 @@
 package org.simplemodeling.SimpleModeler.entities.simplemodel
 
 import org.apache.commons.lang3.StringUtils
+import org.simplemodeling.dsl.SAttributeKind
 import org.simplemodeling.dsl.SStoryObject
 import org.simplemodeling.dsl.util.PropertyRecord
 import scalaz._, Scalaz._
@@ -33,7 +34,7 @@ import org.simplemodeling.dsl.datatype.business.XMoney
 import org.simplemodeling.dsl.datatype.business.XPercent
 import org.simplemodeling.dsl.datatype.business.XUnit
 import org.simplemodeling.dsl.datatype.platform._
-import org.simplemodeling.dsl.IdAttributeKind
+import org.simplemodeling.dsl.{IdAttributeKind, NullAttributeKind}
 import org.simplemodeling.dsl.SUsecase
 import org.simplemodeling.dsl.STask
 import org.simplemodeling.dsl.SPowertypeKind
@@ -97,7 +98,8 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Oct. 30, 2012
  *  version Nov. 30, 2012
  *  version Dec. 26, 2012
- * @version Jan. 29, 2013
+ *  version Jan. 29, 2013
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -382,9 +384,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
         case IdKind => new SMMValueIdType(anObject.name, anObject.packageName)
         case _    => new SMMValueType(anObject.name, anObject.packageName)
       }
-      val isId = anObject.kind == IdKind
+      val kind = if (anObject.kind == IdKind) IdAttributeKind else NullAttributeKind
       attrType.term = anObject.term
-      new SMMAttribute(aName, new SMMAttributeTypeSet(attrType.some), isId)
+      new SMMAttribute(aName, new SMMAttributeTypeSet(attrType.some), kind)
     }
   }
 
@@ -399,9 +401,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
           case IdKind => new SMMValueIdType(anObject.name, anObject.packageName)
           case _    => new SMMValueType(anObject.name, anObject.packageName)
         }
-        val isId = anObject.kind == IdKind
+        val kind = if (anObject.kind == IdKind) IdAttributeKind else NullAttributeKind
         attrType.term = anObject.term
-        val attr = new SMMAttribute(aName, new SMMAttributeTypeSet(attrType.some), isId)
+        val attr = new SMMAttribute(aName, new SMMAttributeTypeSet(attrType.some), kind)
         attributes += attr
         attr
       }
@@ -431,23 +433,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     attribute(aName, attrtype)
   }
 
-  final def attribute(aName: String, attrtype: SMMAttributeTypeSet, isId: Boolean = false): SMMAttribute = {
+  final def attribute(aName: String, attrtype: SMMAttributeTypeSet, kind: SAttributeKind = NullAttributeKind): SMMAttribute = {
     _add_slot(aName, attributes, attribute_append_message) {
-      new SMMAttribute(aName, attrtype, isId)
-    }
-  }
-
-  final def attribute0(aName: String, attrtype: SMMAttributeTypeSet, isId: Boolean = false): SMMAttribute = {
-    attributes.find(_.name == aName) match {
-      case Some(s) => {
-        record_report("「%s」の属性「%s」は追加定義を持っています。", this.name, aName)
-        s // XXX updates attrtype and isId
-      }
-      case None => {
-        val attr = new SMMAttribute(aName, attrtype, isId)
-        attributes += attr
-        attr
-      }
+      new SMMAttribute(aName, attrtype, kind)
     }
   }
 
@@ -457,7 +445,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   final def adjustAttributes() {
     if (!attributes.exists(_.id)) {
       attributes.headOption.collect {
-        case a if a.name.toLowerCase.endsWith("id") => a.id = true
+        case a if a.name.toLowerCase.endsWith("id") => a.kind = IdAttributeKind
       }
     }
   }
@@ -596,7 +584,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    * TableSimpleModelMakerBuilder add state using own add_state method.
    */
   def state(name: String): SMMStateMachineState = {
-    val s = new SMMStateMachineState(name, None)
+    val s = new SMMStateMachineState(name, None, None)
     statemachineStates += s
     s
   }
@@ -1827,7 +1815,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
 
   private def _build_statemachineStates(entity: DomainStateMachine) {
     for (state <- statemachineStates) {
-      val s = new DomainState(state.name, state.value)
+      val s = new DomainState(state.name, state.value, state.lifecycle)
       _build_specifications(s, state)
       _build_properties(s, state)
 //      println("SMMEntityEntity#_build_statemachineStates: %s, %s, %s".format(s.name, s.value, s.label))

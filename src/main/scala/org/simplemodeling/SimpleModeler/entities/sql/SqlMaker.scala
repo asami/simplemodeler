@@ -11,7 +11,7 @@ import org.simplemodeling.SimpleModeler.entities.expr.SqlExpressionBuilder
  * @since   Nov.  2, 2012
  *  version Dec. 23, 2012
  *  version Jan. 17, 2013
- * @version Feb.  3, 2013
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
@@ -271,7 +271,7 @@ class EntitySqlMaker(
   }
 
   private def _wheres = {
-    List(_wheres_inheritance).flatten match {
+    List(_wheres_inheritance, _wheres_logical_delete).flatten match {
       case Nil => ""
       case xs => " where " + xs.mkString(" and ")
     }
@@ -287,6 +287,36 @@ class EntitySqlMaker(
         }
       }
     }
+  }
+
+  private def _wheres_logical_delete = {
+    val a = entity.wholeAttributes.filter(_.isLogicalDelete)
+    a match {
+      case Nil => None
+      case x :: Nil => _logical_delete_available(x)
+      case xs => xs.flatMap(_logical_delete_available).mkString("(", "and", ")").some
+    }
+  }
+
+  private def _logical_delete_available(attr: PAttribute): Option[String] = {
+    val value = if (attr.modelAttribute != null) {
+      "0"
+    } else if (attr.modelStateMachine != null) {
+      attr.modelStateMachine.statemachine.findLifecycle("available") match {
+        case Some(s) => s.value match {
+          case Left(v) => "'" + v + "'"
+          case Right(v) => v.toString
+        }
+        case None => {
+          println("EntitySqlMaker#_logical_delete_available: " + attr.modelStateMachine.statemachine)
+          sys.error("not implemented yet.")
+        }
+      }
+    } else {
+      sys.error("not implemented yet.")
+    }
+    val columnname = context.sqlColumnName(attr)
+    Some(columnname + "=" + value)
   }
 
   def selectLiteral = {

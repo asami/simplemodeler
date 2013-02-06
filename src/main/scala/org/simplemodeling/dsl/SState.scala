@@ -5,10 +5,15 @@ import scala.collection.mutable.{ArrayBuffer, LinkedHashMap}
 /*
  * @since   Dec. 20, 2008
  *  version Mar. 18, 2009
- * @version Nov. 26, 2012
+ *  version Nov. 26, 2012
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  */
-abstract class SState(aName: String, val value: Option[String]) extends SElement(aName) {
+abstract class SState(
+  aName: String,
+  val value: Option[String],
+  val lifecycle: Option[String]
+) extends SElement(aName) {
   type Descriptable_TYPE = SState
   type Historiable_TYPE = SState
   val transitions = new ArrayBuffer[STransition]
@@ -45,4 +50,4 @@ abstract class SState(aName: String, val value: Option[String]) extends SElement
   }
 }
 
-object NullState extends SState(null, None)
+object NullState extends SState(null, None, None)

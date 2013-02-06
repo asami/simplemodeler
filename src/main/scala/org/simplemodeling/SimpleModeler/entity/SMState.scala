@@ -14,7 +14,8 @@ import org.goldenport.sdoc.inline.SHelpRef
  * @since   Dec. 24, 2008
  *  version Mar. 19, 2009
  *  version Nov. 26, 2012
- * @version Dec.  6, 2012
+ *  version Dec.  6, 2012
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  * ASAMI, Tomoharu
  */
@@ -41,6 +42,8 @@ class SMState(val dslState: SState, ownerStateMachine: SMStateMachine) extends S
     r
   }
 
+  def lifecycle: Option[String] = dslState.lifecycle
+
   override protected def qualified_Name = {
 //     println("state qname = " + dslState.qualifiedName) 2009-03-19
     Some(dslState.qualifiedName)
@@ -52,6 +55,10 @@ class SMState(val dslState: SState, ownerStateMachine: SMStateMachine) extends S
 
   final def isComposite = {
     !subStateMap.isEmpty
+  }
+
+  override def toString() = {
+    "SMState(%s/%s/%s)".format(name, value, lifecycle)
   }
 
 /*

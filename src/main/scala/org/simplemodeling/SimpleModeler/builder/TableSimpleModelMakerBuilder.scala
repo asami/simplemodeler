@@ -7,6 +7,7 @@ import org.goldenport.entities.csv._
 import org.goldenport.value._
 import org.goldenport.sdoc.SDoc
 import org.simplemodeling.dsl.util.PropertyRecord
+import org.simplemodeling.dsl._
 import org.simplemodeling.SimpleModeler.entities.simplemodel._
 import org.goldenport.recorder.Recordable
 import org.apache.commons.lang3.StringUtils.isNotBlank
@@ -20,7 +21,8 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
- * @version Jan. 17, 2013
+ *  version Jan. 17, 2013
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -140,20 +142,95 @@ class TableSimpleModelMakerBuilder(
   protected final def add_attribute(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
     _slot_kind(entry) match {
       case IdLabel => add_id(obj, entry)
+      case NameLabel => add_name(obj, entry)
+      case UserLabel => add_user(obj, entry)
+      case DeleteLabel => add_delete(obj, entry)
+      case TitleLabel => add_title(obj, entry)
+      case SubtitleLabel => add_subtitle(obj, entry)
+      case SummaryLabel => add_summary(obj, entry)
+      case CategoryLabel => add_category(obj, entry)
+      case AuthorLabel => add_author(obj, entry)
+      case IconLabel => add_icon(obj, entry)
+      case LogoLabel => add_logo(obj, entry)
+      case LinkLabel => add_link(obj, entry)
+      case ContentLabel => add_content(obj, entry)
+      case CreatedLabel => add_created(obj, entry)
+      case UpdatedLabel => add_updated(obj, entry)
       case _ => {
-        val atype = SMMAttributeTypeSet(entry, obj.packageName)
-        val attr = obj.attribute(_slot_name(entry), atype)
-//        println("TableSimpleModelMakerBuilder#add_attribute(%s/%s) = %s".format(obj.name, attr.name, atype))
-        _build_attribute(attr, entry)
+        add_attribute_with_kind(obj, entry, NullAttributeKind)
       }
     }
   }
 
-  protected final def add_id(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
-//    println("TableSimpleModelMakerBuilder#add_id:" + entry)
+  protected final def add_attribute_with_kind(
+    obj: SMMEntityEntity,
+    entry: Seq[PropertyRecord],
+    kind: SAttributeKind
+  ) = {
     val atype = SMMAttributeTypeSet(entry, obj.packageName)
-    val attr = obj.attribute(_slot_name(entry), atype, true)
+    val attr = obj.attribute(_slot_name(entry), atype, kind)
     _build_attribute(attr, entry)
+    //        println("TableSimpleModelMakerBuilder#add_attribute_with_kind(%s/%s) = %s".format(obj.name, attr.name, atype))
+  }
+
+  protected final def add_id(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, IdAttributeKind)
+  }
+
+  protected final def add_name(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, NameAttributeKind)
+  }
+
+  protected final def add_user(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, UserAttributeKind)
+  }
+
+  protected final def add_delete(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, LogicalDeleteAttributeKind)
+  }
+
+  protected final def add_title(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, TitleAttributeKind)
+  }
+
+  protected final def add_subtitle(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, SubTitleAttributeKind)
+  }
+
+  protected final def add_summary(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, SummaryAttributeKind)
+  }
+
+  protected final def add_category(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, CategoryAttributeKind)
+  }
+
+  protected final def add_author(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, AuthorAttributeKind)
+  }
+
+  protected final def add_icon(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, IconAttributeKind)
+  }
+
+  protected final def add_logo(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, LogoAttributeKind)
+  }
+
+  protected final def add_link(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, LinkAttributeKind)
+  }
+
+  protected final def add_content(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, ContentAttributeKind)
+  }
+
+  protected final def add_created(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, CreatedAttributeKind)
+  }
+
+  protected final def add_updated(obj: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    add_attribute_with_kind(obj, entry, UpdatedAttributeKind)
   }
 
   private def _build_attribute(attr: SMMAttribute, entry: Seq[PropertyRecord]) = {
@@ -346,6 +423,20 @@ class TableSimpleModelMakerBuilder(
   protected final def add_feature(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) {
     _slot_kind(entry) match {
       case IdLabel => add_id(entity, entry)
+      case NameLabel => add_name(entity, entry)
+      case UserLabel => add_user(entity, entry)
+      case DeleteLabel => add_delete(entity, entry)
+      case TitleLabel => add_title(entity, entry)
+      case SubtitleLabel => add_subtitle(entity, entry)
+      case SummaryLabel => add_summary(entity, entry)
+      case CategoryLabel => add_category(entity, entry)
+      case AuthorLabel => add_author(entity, entry)
+      case IconLabel => add_icon(entity, entry)
+      case LogoLabel => add_logo(entity, entry)
+      case LinkLabel => add_link(entity, entry)
+      case ContentLabel => add_content(entity, entry)
+      case CreatedLabel => add_created(entity, entry)
+      case UpdatedLabel => add_updated(entity, entry)
       case AttributeLabel => add_attribute(entity, entry)
       case CompositionLabel => add_composition(entity, entry)
       case AggregationLabel => add_aggregation(entity, entry)
@@ -353,7 +444,7 @@ class TableSimpleModelMakerBuilder(
       case PowertypeLabel => add_powertype(entity, entry)
       case StateMachineLabel => add_statemachine(entity, entry)
       case BaseLabel => add_inheritance_powertype(entity, entry)
-      case UnknownNaturalLabel => {
+      case UnknownNaturalLabel => { // unify additiona information
         val name = _slot_name(entry)
 //        println("TableSimpleModelMakerBuilder#add_feature(%s) = %s".format(entity.name, entry))
         if (entity.isAttribute(name)) {

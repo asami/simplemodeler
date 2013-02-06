@@ -19,7 +19,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
  *  version Jan. 14, 2013
- * @version Feb.  2, 2013
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -197,48 +197,26 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   }
 */
 
+  final def constraints: Map[String, PConstraint] = attributeType.constraints.toMap
+
+  def deriveExpression: Option[PExpression] = {
+    for {
+      a <- Option(modelAttribute)
+      b <- a.deriveExpression
+    } yield PExpression(b)
+  }
+
+  def isDerive: Boolean = {
+    Option(modelAttribute).flatMap(_.deriveExpression) ? true | false
+  }
+
+  //
+  final def multiplicity_is(aMultiplicity: PMultiplicity): PAttribute = {
+    multiplicity = aMultiplicity
+    this
+  }
   /*
-   * GUI
-   */
-  def displaySequence: Int = {
-    getModelElement.map(_.displaySequence) | SConstants.DEFAULT_DISPLAY_SEQUENCE
-  }
-
-  /*
-   * SQL
-   */
-  def sqlColumnName: String = {
-    getModelElement.flatMap(a => _non_blank_string(a.sqlColumnName)) | name
-  }
-
-  def getSqlDatatypeName: Option[String] = {
-    getModelElement.flatMap(a => _non_blank_string(a.sqlDatatypeName))
-  }
-
-  private def _non_blank_string(s: String): Option[String] = {
-    if (StringUtils.isNotBlank(s)) Some(s)
-    else None
-  }
-
-  def sqlAutoId: Boolean = {
-    getModelElement.map(_.sqlAutoId) | false
-  }
-
-  def sqlReadOnly: Boolean = {
-    getModelElement.map(_.sqlReadOnly) | false
-  }
-
-  def sqlAutoCreate: Boolean = {
-    getModelElement.map(_.sqlAutoCreate) | false
-  }
-
-  def sqlAutoUpdate: Boolean = {
-    getModelElement.map(_.sqlAutoUpdate) | false
-  }
-  // def sqlLifeCycle = modelElement.sqlLifeCycle
-
-  /*
-   * Atom Publishing
+   * Attribute Properties
    */
   final def isName: Boolean = {
     if (modelAttribute == null) return false
@@ -250,6 +228,14 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     else modelAttribute.isUser
   }
 
+  final def isLogicalDelete: Boolean = {
+    (modelAttribute != null && modelAttribute.isLogicalDelete) ||
+    (modelStateMachine != null && modelStateMachine.isLogicalDelete)
+  }
+
+  /*
+   * Attribute Properties - Atom Publishing
+   */
   final def isTitle: Boolean = {
     if (modelAttribute == null) return false
     else modelAttribute.isTitle
@@ -305,6 +291,9 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     else modelAttribute.isUpdated
   }
 
+  /*
+   * Attribute Properteis - Persistence
+   */
   final def isPersistentOption: Option[Boolean] = {
     if (modelAttribute != null) {
       if (modelAttribute.isPersistent) {
@@ -331,26 +320,49 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     modelAssociation != null && modelAssociation.isCache
   }
 
-  final def constraints: Map[String, PConstraint] = attributeType.constraints.toMap
-
-  def deriveExpression: Option[PExpression] = {
-    for {
-      a <- Option(modelAttribute)
-      b <- a.deriveExpression
-    } yield PExpression(b)
+  /*
+   * GUI
+   */
+  def displaySequence: Int = {
+    getModelElement.map(_.displaySequence) | SConstants.DEFAULT_DISPLAY_SEQUENCE
   }
 
-  def isDerive: Boolean = {
-    Option(modelAttribute).flatMap(_.deriveExpression) ? true | false
+  /*
+   * SQL
+   */
+  def sqlColumnName: String = {
+    getModelElement.flatMap(a => _non_blank_string(a.sqlColumnName)) | name
   }
 
-  //
-  final def multiplicity_is(aMultiplicity: PMultiplicity): PAttribute = {
-    multiplicity = aMultiplicity
-    this
+  def getSqlDatatypeName: Option[String] = {
+    getModelElement.flatMap(a => _non_blank_string(a.sqlDatatypeName))
   }
 
-  //
+  private def _non_blank_string(s: String): Option[String] = {
+    if (StringUtils.isNotBlank(s)) Some(s)
+    else None
+  }
+
+  def sqlAutoId: Boolean = {
+    getModelElement.map(_.sqlAutoId) | false
+  }
+
+  def sqlReadOnly: Boolean = {
+    getModelElement.map(_.sqlReadOnly) | false
+  }
+
+  def sqlAutoCreate: Boolean = {
+    getModelElement.map(_.sqlAutoCreate) | false
+  }
+
+  def sqlAutoUpdate: Boolean = {
+    getModelElement.map(_.sqlAutoUpdate) | false
+  }
+  // def sqlLifeCycle = modelElement.sqlLifeCycle
+
+  /*
+   * Utilities
+   */
   private def value_or_object_type_name = {
     if (use_object_over_datatype) {
       objectTypeName

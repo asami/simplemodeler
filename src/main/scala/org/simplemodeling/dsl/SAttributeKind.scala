@@ -2,7 +2,8 @@ package org.simplemodeling.dsl
 
 /*
  * @since   Sep. 12, 2008
- * @version Oct. 24, 2009
+ *  version Oct. 24, 2009
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  */
 class SAttributeKind {
@@ -14,6 +15,8 @@ class IdAttributeKind extends SAttributeKind
 object IdAttributeKind extends IdAttributeKind
 class NameAttributeKind extends SAttributeKind
 object NameAttributeKind extends NameAttributeKind
+class LogicalDeleteAttributeKind extends SAttributeKind
+object LogicalDeleteAttributeKind extends LogicalDeleteAttributeKind
 
 /**
  * Googleアカウントと連結。(OpenIdは?)

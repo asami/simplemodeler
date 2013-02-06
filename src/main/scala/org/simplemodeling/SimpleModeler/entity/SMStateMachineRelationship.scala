@@ -6,7 +6,8 @@ import org.goldenport.sdoc.inline._
 
 /*
  * @since   Nov. 14, 2012
- * @version Nov. 24, 2012
+ *  version Nov. 24, 2012
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -19,5 +20,7 @@ class SMStateMachineRelationship(val dslStateMachineRelationship: SStateMachineR
    */
   def statemachine: SMStateMachine = relationshipType.typeObject.asInstanceOf[SMStateMachine]
 
-  def isEntityReference = false
+  def isEntityReference = false // XXX future enhancement
+
+  def isLogicalDelete: Boolean = statemachine.isLogicalDelete
 }

@@ -14,7 +14,8 @@ import org.simplemodeling.SimpleModeler.entity.domain.SMDomainValueName
  *  version Dec. 15, 2011
  *  version Apr. 11, 2012
  *  version Oct. 30, 2012
- * @version Nov. 23, 2012
+ *  version Nov. 23, 2012
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  */
 class SMAttribute(val dslAttribute: SAttribute) extends SMElement(dslAttribute) {
@@ -47,6 +48,7 @@ class SMAttribute(val dslAttribute: SAttribute) extends SMElement(dslAttribute) 
   final def isNameWeak = {
     attributeType.typeObject.isInstanceOf[SMDomainValueName]
   }
+  final def isLogicalDelete = kind.isInstanceOf[LogicalDeleteAttributeKind]
   final def isUser = kind.isInstanceOf[UserAttributeKind]
   final def isTitle = kind.isInstanceOf[TitleAttributeKind]
   final def isSubTitle = kind.isInstanceOf[SubTitleAttributeKind]

@@ -12,7 +12,8 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Oct. 30, 2012
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
- * @version Jan. 17, 2013
+ *  version Jan. 17, 2013
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -165,6 +166,10 @@ case object ValueLabel extends NaturalLabel {
   val candidates = List("value", "バリュー", "値")
 }
 
+case object LifecycleLabel extends NaturalLabel {
+  val candidates = List("lifecycle", "ライフ サイクル")
+}
+
 case object StateLabel extends NaturalLabel {
   val candidates = List("state", "ステート", "状態")
 }
@@ -246,6 +251,38 @@ case object DescriptionLabel extends NaturalLabel {
   val candidates = List("description", "説明")
 }
 
+case object CategoryLabel extends NaturalLabel {
+  val candidates = List("category", "カテゴリ")
+}
+
+case object AuthorLabel extends NaturalLabel {
+  val candidates = List("author", "著者")
+}
+
+case object IconLabel extends NaturalLabel {
+  val candidates = List("icon", "アイコン")
+}
+
+case object LogoLabel extends NaturalLabel {
+  val candidates = List("logo", "ロゴ")
+}
+
+case object LinkLabel extends NaturalLabel {
+  val candidates = List("link", "リンク")
+}
+
+case object ContentLabel extends NaturalLabel {
+  val candidates = List("content", "コンテント", "コンテンツ")
+}
+
+case object CreatedLabel extends NaturalLabel {
+  val candidates = List("created", "作成日時")
+}
+
+case object UpdatedLabel extends NaturalLabel {
+  val candidates = List("updated", "更新日時")
+}
+
 case object PropertyLabel extends NaturalLabel {
   val candidates = List("property", "性質")
 }
@@ -267,6 +304,10 @@ case object AttributeLabel extends NaturalLabel {
 
 case object IdLabel extends NaturalLabel {
   val candidates = List("id")
+}
+
+case object UserLabel extends NaturalLabel {
+  val candidates = List("user", "ユーザ", "ユーザー")
 }
 
 case object AssociationLabel extends NaturalLabel {
@@ -430,6 +471,7 @@ object NaturalLabel {
     PowertypeLabel,
     DocumentLabel,
     ValueLabel,
+    LifecycleLabel,
     StateLabel,
     StateMachineLabel,
     RuleLabel,
@@ -453,6 +495,7 @@ object NaturalLabel {
     MemberLabel,
     AttributeLabel,
     IdLabel,
+    UserLabel,
     AssociationLabel,
     AggregationLabel,
     CompositionLabel,

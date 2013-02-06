@@ -6,10 +6,15 @@ import org.simplemodeling.SimpleModeler.builder._
 
 /*
  * @since   Nov. 13, 2012
- * @version Dec.  6, 2012
+ *  version Dec.  6, 2012
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  */
-class SMMStateMachineState(val name: String, val value: Option[String]) extends SMMElement {
+class SMMStateMachineState(
+  val name: String,
+  val value: Option[String],
+  val lifecycle: Option[String]
+) extends SMMElement {
 }
 
 object SMMStateMachineState {
@@ -19,8 +24,9 @@ object SMMStateMachineState {
   def create(entry: Seq[PropertyRecord]): SMMStateMachineState = {
     val name = NaturalLabel.getSlotName(entry) | "Unkonwn"
     val value = ValueLabel.findData(entry)
+    val lifecycle = LifecycleLabel.findData(entry)
 //    println("SMMStateMachineState#create(%s) = %s".format(name, value))
-    val k = new SMMStateMachineState(name, value)
+    val k = new SMMStateMachineState(name, value, lifecycle)
     k.update(entry)
     k
   }
@@ -30,6 +36,6 @@ object SMMStateMachineState {
    */
   def create(termname: (String, String)): SMMStateMachineState = {
     val (term, name) = termname
-    new SMMStateMachineState(name, term.some)
+    new SMMStateMachineState(name, term.some, None)
   }
 }

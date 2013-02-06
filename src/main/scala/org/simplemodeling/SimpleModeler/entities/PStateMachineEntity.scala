@@ -6,13 +6,18 @@ import org.simplemodeling.SimpleModeler.entity._
 
 /*
  * @since   Nov. 14, 2012
- * @version Dec.  2, 2012
+ *  version Dec.  2, 2012
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  */
 trait PStateMachineEntity extends PObjectEntity {
   var modelStateMachine: SMStateMachine = null
 
   lazy val states = modelStateMachine.states.map(PState.create)
+
+  def findLifecycle(name: String): Option[PState] = {
+    states.find(_.lifecycle == name)
+  }
 
   private def first_state = modelStateMachine.states.firstOption match {
     case Some(state) => state.name

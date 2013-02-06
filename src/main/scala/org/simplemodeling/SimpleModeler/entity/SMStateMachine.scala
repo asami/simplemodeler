@@ -9,7 +9,8 @@ import org.simplemodeling.SimpleModeler.sdoc._
 /*
  * @since   Dec. 22, 2008
  *  version Mar. 19, 2009
- * @version Nov. 15, 2012
+ *  version Nov. 15, 2012
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  */
 class SMStateMachine(
@@ -43,6 +44,10 @@ class SMStateMachine(
       case Some(state: SMState) => state
       case None => error("syntax error: " + qName)
     }
+  }
+
+  final def findLifecycle(name: String): Option[SMState] = {
+    states.find(_.lifecycle.map(_ == name) getOrElse false)
   }
 
 /*
@@ -240,6 +245,14 @@ class SMStateMachine(
 	}
       }
     }
+  }
+
+  /*
+   * Lifecycle
+   */
+  def isLogicalDelete: Boolean = {
+    states.exists(_.lifecycle.map(_ == "available") getOrElse false) &&
+    states.exists(_.lifecycle.map(_ == "deleted") getOrElse false)
   }
 }
 

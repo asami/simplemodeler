@@ -25,7 +25,7 @@ import org.simplemodeling.dsl._
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
  *  version Dec. 26, 2012
- * @version Feb.  4, 2013
+ * @version Feb.  6, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -521,6 +521,13 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     None
   }
 
+  def getLogicalDeleteAttrs: List[PAttribute] = {
+    wholeAttributesWithoutId.filter(_.isLogicalDelete)
+  }
+
+  /*
+   * SQL
+   */
   var actions: SMActions = SMActions(Nil)
   var displays: SMDisplays = SMDisplays(Nil)
 
@@ -605,170 +612,172 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     r
   }
 
-  //
-  def isUser: Boolean = {
-    for (attr <- attributes if !attr.isId) {
+  /*
+   * Attributes properties
+   */
+  def hasUser: Boolean = { // XXX usecase of User
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isUser) return true
     }
     false
   }
 
   def getUserName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isUser) return Some(attr.name)
     }
     None
   }
 
-  def isTitle: Boolean = {
-    for (attr <- attributes if !attr.isId) {
+  def hasTitle: Boolean = {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isTitle) return true
     }
     false
   }
 
   def getTitleName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isTitle) return Some(attr.name)
     }
     None
   }
 
-  def isSubTitle: Boolean = {
-    for (attr <- attributes if !attr.isId) {
+  def hasSubTitle: Boolean = {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isSubTitle) return true
     }
     false
   }
 
   def getSubTitleName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isSubTitle) return Some(attr.name)
     }
     None
   }
 
-  def isSummary: Boolean = {
-    for (attr <- attributes if !attr.isId) {
+  def hasSummary: Boolean = {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isSummary) return true
     }
     false
   }
 
   def getSummaryName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isSummary) return Some(attr.name)
     }
     None
   }
 
-  def isCategory: Boolean = {
-    for (attr <- attributes if !attr.isId) {
+  def hasCategory: Boolean = {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isCategory) return true
     }
     false
   }
 
   def getCategoryName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isCategory) return Some(attr.name)
     }
     None
   }
 
-  def isAuthor: Boolean = {
-    for (attr <- attributes if !attr.isId) {
+  def hasAuthor: Boolean = {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isAuthor) return true
     }
     false
   }
 
   def getAuthorName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isAuthor) return Some(attr.name)
     }
     None
   }
 
-  def isIcon: Boolean = {
-    for (attr <- attributes if !attr.isId) {
+  def hasIcon: Boolean = {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isIcon) return true
     }
     false
   }
 
   def getIconName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isIcon) return Some(attr.name)
     }
     None
   }
 
-  def isLogo: Boolean = {
-    for (attr <- attributes if !attr.isId) {
+  def hasLogo: Boolean = {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isLogo) return true
     }
     false
   }
 
   def getLogoName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isLogo) return Some(attr.name)
     }
     None
   }
 
-  def isLink: Boolean = {
-    for (attr <- attributes if !attr.isId) {
+  def hasLink: Boolean = {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isLink) return true
     }
     false
   }
 
   def getLinkName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isLink) return Some(attr.name)
     }
     None
   }
 
-  def isContent: Boolean = {
-    for (attr <- attributes if !attr.isId) {
+  def hasContent: Boolean = {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isContent) return true
     }
     false
   }
 
   def getContentName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isContent) return Some(attr.name)
     }
     None
   }
 
-  def isCreated: Boolean = {
-    for (attr <- attributes if !attr.isId) {
+  def hasCreated: Boolean = {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isCreated) return true
     }
     false
   }
 
   def getCreatedName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isCreated) return Some(attr.name)
     }
     None
   }
 
-  def isUpdated: Boolean = {
-    for (attr <- attributes if !attr.isId) {
+  def hasUpdated: Boolean = {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isUpdated) return true
     }
     false
   }
 
   def getUpdatedName: Option[String] = {
-    for (attr <- attributes if !attr.isId) {
+    for (attr <- wholeAttributesWithoutId) {
       if (attr.isUpdated) return Some(attr.name)
     }
     None
@@ -891,6 +900,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
         case SMApplicationIdPolicy => true
       }
       case NameAttributeKind => true
+      case LogicalDeleteAttributeKind => true
       case UserAttributeKind => true
       case TitleAttributeKind => true
       case SubTitleAttributeKind => true
