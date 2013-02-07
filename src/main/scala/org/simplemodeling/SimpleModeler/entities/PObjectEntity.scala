@@ -25,7 +25,7 @@ import org.simplemodeling.dsl._
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
  *  version Dec. 26, 2012
- * @version Feb.  6, 2013
+ * @version Feb.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -893,7 +893,7 @@ abstract class PObjectEntity(val pContext: PEntityContext)
   protected final def is_settable(attr: PAttribute): Boolean = {
     if (isImmutable) return false
     // if (!attr.isId || attr.isId) {
-    attr.kind match {
+    attr.attributeKind match {
       case NullAttributeKind => true
       case IdAttributeKind => attr.idPolicy match {
         case SMAutoIdPolicy => false

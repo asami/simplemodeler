@@ -13,7 +13,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
  *  version Jan. 17, 2013
- * @version Feb.  6, 2013
+ * @version Feb.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -334,6 +334,14 @@ case object PartLabel extends NaturalLabel {
   val candidates = List("tool", "部品")
 }
 
+case object SuperLabel extends NaturalLabel {
+  val candidates = List("super", "上位")
+}
+
+case object SubLabel extends NaturalLabel {
+  val candidates = List("sub", "下位")
+}
+
 case object IsaLabel extends NaturalLabel {
   val candidates = List("isa", "is-a", "subclass", "サブクラス", "種類")
 }
@@ -503,6 +511,9 @@ object NaturalLabel {
     AssociationLabel,
     AggregationLabel,
     CompositionLabel,
+    PartLabel,
+    SuperLabel,
+    SubLabel,
     BaseLabel,
     IsaLabel,
     MultiplicityLabel,

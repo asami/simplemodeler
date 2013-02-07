@@ -10,13 +10,15 @@ import org.goldenport.sdoc.inline.SHelpRef
 /*
  * @since   Sep. 17, 2008
  *  version Nov.  9, 2009
- * @version Nov. 25, 2012
+ *  version Nov. 25, 2012
+ * @version Feb.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 class SMAssociation(val dslAssociation: SAssociation) extends SMElement(dslAssociation) {
 //  final def entity = dslAssociation.entity // XXX SMEntity?
   val associationType = new SMAssociationType(dslAssociation.entity)
   val multiplicity = new SMMultiplicity(dslAssociation.multiplicity)
+  def kind = dslAssociation.kind
 
   def isAssociationClass = dslAssociation.isAssociationClass
   final def isAggregation = {

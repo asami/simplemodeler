@@ -3,7 +3,8 @@ package org.simplemodeling.dsl
 /*
  * @since   Sep. 23, 2008
  *  version Oct. 19, 2008
- * @version Dec. 13, 2012
+ *  version Dec. 13, 2012
+ * @version Feb.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 class SAssociationCandidate(val name: String, val associations: SAssociationSet) {
@@ -17,8 +18,8 @@ class SAssociationCandidate(val name: String, val associations: SAssociationSet)
     associations.create(this, aName, anEntity, aMultiplicity)
   }
 
-  def apply(aName: String, anEntity: SEntity, aMultiplicity: SMultiplicity, displayseq: Int): SAssociation = {
-    associations.create(this, aName, anEntity, aMultiplicity, displayseq)
+  def apply(aName: String, anEntity: SEntity, aMultiplicity: SMultiplicity, kind: SAssociationKind, displayseq: Int): SAssociation = {
+    associations.create(this, aName, anEntity, aMultiplicity, kind, displayseq)
   }
 
   // from SPropertyProxy

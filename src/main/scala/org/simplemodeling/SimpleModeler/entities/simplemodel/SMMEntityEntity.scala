@@ -1,8 +1,7 @@
 package org.simplemodeling.SimpleModeler.entities.simplemodel
 
 import org.apache.commons.lang3.StringUtils
-import org.simplemodeling.dsl.SAttributeKind
-import org.simplemodeling.dsl.SStoryObject
+import org.simplemodeling.dsl._
 import org.simplemodeling.dsl.util.PropertyRecord
 import scalaz._, Scalaz._
 import java.io.BufferedWriter
@@ -99,7 +98,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Nov. 30, 2012
  *  version Dec. 26, 2012
  *  version Jan. 29, 2013
- * @version Feb.  6, 2013
+ * @version Feb.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -349,7 +348,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     _add_slot(aName, roles, "「%s」の役割「%s」は追加定義を持っています。型以外の情報が追加されます。") {
       val roleType = new SMMEntityType(anObject.name, anObject.packageName)
       roleType.term = anObject.term
-      new SMMAssociation(aName, new SMMEntityTypeSet(roleType.some))
+      new SMMAssociation(aName, new SMMEntityTypeSet(roleType.some), RoleAssociationKind)
     }
   }
 
@@ -465,10 +464,11 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    */
   final def association(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
     _add_slot(aName, associations, "「%s」の関連「%s」は追加定義を持っています。") {
-      new SMMAssociation(aName, entityType)
+      new SMMAssociation(aName, entityType, PlainAssociationKind)
     }
   }
 
+/*
   final def association0(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
     associations.find(_.name == aName) match {
       case Some(s) => {
@@ -482,6 +482,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       }
     }
   }
+*/
 
   /**
    * 
@@ -504,7 +505,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    */
   final def aggregation(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
     _add_slot(aName, aggregations, "「%s」の属性「%s」は追加定義を持っています。型以外の情報は更新されます。") {
-      new SMMAssociation(aName, entityType)
+      new SMMAssociation(aName, entityType, AggregationAssociationKind)
     }
   }
 
@@ -530,7 +531,17 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    */
   final def composition(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
     _add_slot(aName, compositions, "「%s」の合成「%s」は追加定義を持っています。型以外の情報が追加されます。") {
-      new SMMAssociation(aName, entityType)
+      new SMMAssociation(aName, entityType, CompositionAssociationKind)
+    }
+  }
+
+  /**
+   * @see TableSimpleModelMakerBuilder
+   */
+  final def superAssociation(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
+    _add_slot(aName, associations, "「%s」の上位関連「%s」は追加定義を持っています。型以外の情報が追加されます。") {
+//      println("SMMEntityEntity#superAssociation(%s)".format(aName))
+      new SMMAssociation(aName, entityType, SuperAssociationKind)
     }
   }
 
@@ -539,7 +550,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
    */
   final def statemachine(aName: String, entityType: SMMEntityTypeSet): SMMAssociation = {
     _add_slot(aName, statemachineRelationships, "「%s」の状態機械「%s」は追加定義を持っています。型以外の情報が追加されます。") {
-      new SMMAssociation(aName, entityType)
+      new SMMAssociation(aName, entityType, StateMachineAssociationKind)
     }
   }
 
@@ -662,7 +673,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _association(name: String, entity: SMMEntityEntity): SMMAssociation = {
     val assocType = new SMMEntityType(entity.name, entity.packageName)
     assocType.term = entity.term
-    new SMMAssociation(name, new SMMEntityTypeSet(assocType.some))
+    new SMMAssociation(name, new SMMEntityTypeSet(assocType.some), PlainAssociationKind) // XXX
   }
 
   final def setNarrativeBase(aName: String) {
@@ -1268,11 +1279,13 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     entity
   }
 
+  // narrative specification
   private def _build_specifications(entity: SObject) {
     _build_specifications(entity, this)
     // TODO
   }
 
+  // narrative specification
   private def _build_specifications(target: SElement, source: SMMElement) {
     // TODO
   }
@@ -1561,7 +1574,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     for (assoc <- associations) {
       doe_w(_entity_ref(assoc.associationType.getName, entities)) { x =>
         record_trace("SMMEntityEntity#_build_associations: " + assoc.name)
-        val a = entity.association.create(assoc.name, x, _dsl_multiplicity(assoc.multiplicity), assoc.displaySequence)
+        val a = entity.association.create(assoc.name, x, _dsl_multiplicity(assoc.multiplicity), assoc.kind, assoc.displaySequence)
         _build_specifications(a, assoc)
         _build_properties(a, assoc)
         a
@@ -1911,9 +1924,9 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
     dr
   }
 
-  private def _describe_association(entities: Map[String, SObject], set: (String, SEntity, SMultiplicity, Int) => SAssociation, assoc: SMMAssociation) {
+  private def _describe_association(entities: Map[String, SObject], set: (String, SEntity, SMultiplicity, SAssociationKind, Int) => SAssociation, assoc: SMMAssociation) {
     doe_w(_entity_ref(assoc.associationType.getName, entities)) { 
-      set(assoc.name, _, _dsl_multiplicity(assoc.multiplicity), assoc.displaySequence)
+      set(assoc.name, _, _dsl_multiplicity(assoc.multiplicity), assoc.kind, assoc.displaySequence)
     }
   }
 

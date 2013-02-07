@@ -12,7 +12,8 @@ import java.util.TimeZone
  *  version Aug. 19, 2011
  *  version Feb. 19, 2012
  *  version May.  6, 2012
- * @version Nov. 23, 2012
+ *  version Nov. 23, 2012
+ * @version Feb.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -225,7 +226,7 @@ abstract class GenericClassAttributeDefinition(
       return false
     }
     // if (!attr.isId || attr.isId) {
-    attr.kind match {
+    attr.attributeKind match { // XXX
       case NullAttributeKind => true
       case IdAttributeKind => attr.idPolicy match {
         case SMAutoIdPolicy => false
@@ -384,7 +385,7 @@ abstract class GenericClassAttributeDefinition(
     if (isDerive) return
     val varName = var_name
     aspects.foreach(_.weaveAttributeSlot(attr, varName))
-    attr.kind match {
+    attr.attributeKind match {
       case NullAttributeKind => {
         attr.attributeType match {
           case e: PEntityType     => variable_plain_entity_attribute(e)
@@ -646,7 +647,7 @@ abstract class GenericClassAttributeDefinition(
     val attrName = attr.name;
     val paramName = attr.name;
     val varName = {
-      attr.kind match {
+      attr.attributeKind match {
         case NullAttributeKind     => attr.name
         case IdAttributeKind       => attr.name
         case NameAttributeKind     => attr.name

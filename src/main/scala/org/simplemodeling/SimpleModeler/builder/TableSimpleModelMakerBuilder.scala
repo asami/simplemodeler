@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
  *  version Jan. 17, 2013
- * @version Feb.  6, 2013
+ * @version Feb.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -447,6 +447,7 @@ class TableSimpleModelMakerBuilder(
       case CompositionLabel => add_composition(entity, entry)
       case AggregationLabel => add_aggregation(entity, entry)
       case AssociationLabel => add_association(entity, entry)
+      case SuperLabel => add_super_association(entity, entry)
       case PowertypeLabel => add_powertype(entity, entry)
       case StateMachineLabel => add_statemachine(entity, entry)
       case BaseLabel => add_inheritance_powertype(entity, entry)
@@ -536,6 +537,12 @@ class TableSimpleModelMakerBuilder(
   protected final def add_association(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
     val entitytype = SMMEntityTypeSet(entity.packageName, entry)
     val assoc = entity.association(_slot_name(entry), entitytype)
+    _build_association(assoc, entry)
+  }
+
+  protected final def add_super_association(entity: SMMEntityEntity, entry: Seq[PropertyRecord]) = {
+    val entitytype = SMMEntityTypeSet(entity.packageName, entry)
+    val assoc = entity.superAssociation(_slot_name(entry), entitytype)
     _build_association(assoc, entry)
   }
 

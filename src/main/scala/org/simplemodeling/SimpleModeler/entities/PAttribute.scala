@@ -19,7 +19,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
  *  version Jan. 14, 2013
- * @version Feb.  6, 2013
+ * @version Feb.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -76,9 +76,11 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
   final def jdoTypeName: String = jdo_type_name // AppEngine
   final def jdoElementTypeName: String = jdo_element_type_name // AppEngine
   final def xmlDatatypeName: String = attributeType.xmlDatatypeName
-  final def kind: SAttributeKind = {
-    if (modelAttribute != null) modelAttribute.kind
-    else NullAttributeKind
+  final def attributeKind: SAttributeKind = {
+    Option(modelAttribute).map(_.kind) | NullAttributeKind
+  }
+  final def associationKind: SAssociationKind = {
+    Option(modelAssociation).map(_.kind) | NullAssociationKind
   }
 
   def name_en = {

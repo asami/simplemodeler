@@ -2,6 +2,7 @@ package org.simplemodeling.SimpleModeler.entities.sql
 
 import scalaz._, Scalaz._
 import com.asamioffice.goldenport.text.UJavaString
+import org.simplemodeling.dsl.SuperAssociationKind
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.domain._
 import org.simplemodeling.SimpleModeler.entities._
@@ -127,6 +128,33 @@ class EntitySqlMaker(
     }
   }
 
+  object EntityReferenceForSuperAssociation {
+    def unapply(attr: PAttribute): Option[List[String]] = {
+      val names = entity.wholeAttributes.map(_.name)
+      def isvalid(a: PAttribute): Boolean = {
+        !names.contains(a.name)
+      }
+      if (attr.associationKind == SuperAssociationKind) {
+//        println("SqlMaker#EntityReferenceForSuperAssociation(%s) = %s".format(attr.name, attr.associationKind))
+        val b = for {
+          (a, t) <- joinedAttributes.find(_._1 == attr)
+          e <- a.attributeType match {
+            case e: PEntityType => Some(e.entity)
+            case p: PPowertypeType => None
+            case s: PStateMachineType => None
+          }
+        } yield {
+          for (attr <- e.wholeAttributesWithoutId if isvalid(attr)) yield {
+            val column = context.sqlColumnName(attr)
+            val name = column
+            _column_as(t + "." + column, name)
+          }
+        }
+        b
+      } else None
+    }
+  }
+
   object LabelReference {
     def unapply(attr: PAttribute): Option[String] = {
       val name = context.sqlNameAlias(attr)
@@ -193,6 +221,7 @@ class EntitySqlMaker(
     attr match {
       case ExpressionReference(c) => List(c)
       case AssociationClassReference(cs) => cs
+      case EntityReferenceForSuperAssociation(cs) => c1 :: cs
       case EntityReference(c) => List(c1, c)
       case LabelReference(c) => List(c1, c)
       case _ => List(c1)

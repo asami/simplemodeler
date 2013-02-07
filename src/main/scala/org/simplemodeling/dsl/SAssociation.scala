@@ -6,7 +6,8 @@ import org.simplemodeling.dsl.SAssociationStereotype._
 /*
  * @since   Sep. 11, 2008
  *  version Nov. 11, 2009
- * @version Nov. 25, 2012
+ *  version Nov. 25, 2012
+ * @version Feb.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 class SAssociation(aName: String) extends SRelationship(aName) {
@@ -486,6 +487,9 @@ object NullAssociation extends SAssociation(null)
 
 abstract class SAssociationKind
 
+class NullAssociationKind extends SAssociationKind
+object NullAssociationKind extends NullAssociationKind
+
 class PlainAssociationKind extends SAssociationKind
 object PlainAssociationKind extends PlainAssociationKind
 
@@ -494,3 +498,12 @@ object AggregationAssociationKind extends AggregationAssociationKind
 
 class CompositionAssociationKind extends SAssociationKind
 object CompositionAssociationKind extends CompositionAssociationKind
+
+class RoleAssociationKind extends SAssociationKind
+object RoleAssociationKind extends RoleAssociationKind
+
+class StateMachineAssociationKind extends SAssociationKind
+object StateMachineAssociationKind extends StateMachineAssociationKind
+
+class SuperAssociationKind extends SAssociationKind
+object SuperAssociationKind extends SuperAssociationKind

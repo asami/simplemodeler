@@ -4,6 +4,7 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import java.util.Locale
 import org.goldenport.sdoc._
+import org.simplemodeling.dsl._
 import org.simplemodeling.dsl.datatype._
 import org.simplemodeling.dsl.datatype.ext._
 import org.simplemodeling.SimpleModeler.entities.simplemodel.{SMMAction, SMMDisplay}
@@ -16,7 +17,8 @@ import org.simplemodeling.SimpleModeler.entities.simplemodel.{SMMAction, SMMDisp
  *  version Oct. 21, 2012
  *  version Nov. 22, 2012
  *  version Dec. 13, 2012
- * @version Jan. 10, 2013
+ *  version Jan. 10, 2013
+ * @version Feb.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -197,7 +199,7 @@ abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) 
   }
 
   def aggregation(aName: String, anEntity: => SEntity, aMultiplicity: SMultiplicity, dispseq: Int = SConstants.DEFAULT_DISPLAY_SEQUENCE): SAssociation = {
-    association.create(aName, anEntity, aMultiplicity, dispseq) aggregation_is true
+    association.create(aName, anEntity, aMultiplicity, AggregationAssociationKind, dispseq) aggregation_is true
   }
 
   def composition(aSymbol: Symbol, anEntity: => SEntity): SAssociation = {
@@ -213,7 +215,7 @@ abstract class SObject(aName: String, aPkgName: String) extends SElement(aName) 
   }
 
   def composition(aName: String, anEntity: => SEntity, aMultiplicity: SMultiplicity, dispseq: Int = SConstants.DEFAULT_DISPLAY_SEQUENCE): SAssociation = {
-    association.create(aName, anEntity, aMultiplicity, dispseq) composition_is true
+    association.create(aName, anEntity, aMultiplicity, CompositionAssociationKind, dispseq) composition_is true
   }
 
   def getXmlNamespace: Option[String] = Option(xmlNamespace)

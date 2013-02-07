@@ -18,7 +18,8 @@ import com.asamioffice.goldenport.text.UString.notNull
  *  version Dec. 15, 2011
  *  version May.  5, 2012
  *  version Oct. 26, 2012
- * @version Nov. 25, 2012
+ *  version Nov. 25, 2012
+ * @version Feb.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class JavaObjectEntityBase(val javaContext: JavaEntityContextBase)
@@ -381,7 +382,7 @@ abstract class JavaObjectEntityBase(val javaContext: JavaEntityContextBase)
       }
 
       //      println("Attr %s, kind = %s".format(attr.name, attr.kind)) // 2009-10-28
-    attr.kind match {
+    attr.attributeKind match {
       case NullAttributeKind => {
         attr.attributeType match {
           case e: PEntityType => make_entity_attribute(e)
@@ -454,7 +455,7 @@ abstract class JavaObjectEntityBase(val javaContext: JavaEntityContextBase)
     val attrName = attr.name;
     val paramName = attr.name;
     val varName = {
-      attr.kind match {
+      attr.attributeKind match {
         case NullAttributeKind     => attr.name
         case IdAttributeKind       => attr.name
         case NameAttributeKind     => attr.name
