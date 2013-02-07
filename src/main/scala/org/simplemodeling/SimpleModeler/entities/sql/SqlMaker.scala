@@ -11,7 +11,7 @@ import org.simplemodeling.SimpleModeler.entities.expr.SqlExpressionBuilder
  * @since   Nov.  2, 2012
  *  version Dec. 23, 2012
  *  version Jan. 17, 2013
- * @version Feb.  6, 2013
+ * @version Feb.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
@@ -316,7 +316,7 @@ class EntitySqlMaker(
       sys.error("not implemented yet.")
     }
     val columnname = context.sqlColumnName(attr)
-    Some(columnname + "=" + value)
+    Some("T." + columnname + "=" + value)
   }
 
   def selectLiteral = {
