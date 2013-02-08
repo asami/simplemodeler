@@ -12,7 +12,7 @@ import org.simplemodeling.SimpleModeler.entities.expr.SqlExpressionBuilder
  * @since   Nov.  2, 2012
  *  version Dec. 23, 2012
  *  version Jan. 17, 2013
- * @version Feb.  7, 2013
+ * @version Feb.  8, 2013
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
@@ -129,11 +129,31 @@ class EntitySqlMaker(
   }
 
   object EntityReferenceForSuperAssociation {
+    val names = entity.wholeAttributes.map(_.name)
+
+    def isvalid_policy1(a: PAttribute): Boolean = {
+      !names.contains(a.name)
+    }
+
+    def format_policy1(t: String, attr: PAttribute): String = {
+      val column = context.sqlColumnName(attr)
+      val name = column
+      _column_as(t + "." + column, name)
+    }
+
+    def isvalid_policy2(a: PAttribute): Boolean = {
+      !a.isId && a.isDataType
+    }
+
+    def format_policy2(t: String, from: PAttribute, attr: PAttribute): String = {
+      val column = context.sqlColumnName(attr)
+      val name = from.name + "__" + attr.name
+      _column_as(t + "." + column, name)
+    }
+
     def unapply(attr: PAttribute): Option[List[String]] = {
-      val names = entity.wholeAttributes.map(_.name)
-      def isvalid(a: PAttribute): Boolean = {
-        !names.contains(a.name)
-      }
+      def isvalid(a: PAttribute) = isvalid_policy2(a)
+      def clause(t: String, from: PAttribute, a: PAttribute) = format_policy2(t, from, a)
       if (attr.associationKind == SuperAssociationKind) {
 //        println("SqlMaker#EntityReferenceForSuperAssociation(%s) = %s".format(attr.name, attr.associationKind))
         val b = for {
@@ -145,9 +165,7 @@ class EntitySqlMaker(
           }
         } yield {
           for (attr <- e.wholeAttributesWithoutId if isvalid(attr)) yield {
-            val column = context.sqlColumnName(attr)
-            val name = column
-            _column_as(t + "." + column, name)
+            clause(t, a, attr)
           }
         }
         b
