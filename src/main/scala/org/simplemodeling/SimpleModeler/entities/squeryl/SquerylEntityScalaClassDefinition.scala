@@ -1,0 +1,28 @@
+package org.simplemodeling.SimpleModeler.entities.squeryl
+
+import scalaz._, Scalaz._
+import scala.xml.Elem
+import org.apache.commons.lang3.StringUtils
+import org.simplemodeling.SimpleModeler.builder.{NaturalLabel, VisibilityLabel}
+import org.simplemodeling.SimpleModeler.entity._
+import org.simplemodeling.SimpleModeler.entity.domain._
+import org.simplemodeling.SimpleModeler.entity.business._
+import org.simplemodeling.SimpleModeler.entities._
+import org.simplemodeling.SimpleModeler.entities.simplemodel.SMMAction
+import org.simplemodeling.dsl.datatype.XInt
+import org.simplemodeling.dsl.SDatatype
+import org.simplemodeling.dsl.SDatatypeFunction
+import org.simplemodeling.dsl.datatype._
+import org.simplemodeling.dsl.datatype.ext._
+
+/**
+ * @since   Feb. 22, 2013
+ * @version Feb. 22, 2013
+ * @author  ASAMI, Tomoharu
+ */
+class SquerylEntityScalaClassDefinition(
+  pContext: PEntityContext,     
+  aspects: Seq[ScalaAspect],
+  pobject: PEntityEntity
+) extends ScalaClassDefinition(pContext, aspects, pobject) {
+}

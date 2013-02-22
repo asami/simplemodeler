@@ -84,7 +84,7 @@ object Main {
 
 class SimpleModelerDescriptor extends GApplicationDescriptor {
   name = "SimpleModeler"
-  version = "0.4.1-g"
+  version = "0.4.1-f-SNAPSHOT"
   version_build = "20130222"
   copyright_years = "2008-2013"
   copyright_owner = "ASAMI, Tomoharu"
@@ -111,6 +111,7 @@ class SimpleModelerDescriptor extends GApplicationDescriptor {
 	   DiagramGeneratorService,
 	   ExtjsGeneratorService,
 	   PlayGeneratorService,
+           SquerylService,
 	   BuildService)
 }
 
