@@ -11,7 +11,8 @@ import java.util.TimeZone
 
 /**
  * @since   May.  3, 2012
- * @version Dec. 27, 2012
+ *  version Dec. 27, 2012
+ * @version Feb. 21, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class SqlClassAttributeDefinition(
@@ -183,7 +184,7 @@ abstract class SqlClassAttributeDefinition(
     }
 
     override protected def apply_TextType(datatype: PTextType): String = {
-      handle_xml(datatype)
+      "TEXT"
     }
 
     override protected def apply_UserType(datatype: PUserType): String = {
@@ -200,6 +201,30 @@ abstract class SqlClassAttributeDefinition(
 
     override protected def apply_MoneyType(datatype: PMoneyType): String = {
       handle_auxiliary(datatype)
+    }
+
+    override protected def apply_PercentType(datatype: PPercentType): String =  {
+      "DOUBLE"
+    }
+
+    override protected def apply_UnitType(datatype: PUnitType): String =  {
+      handle_auxiliary(datatype)
+    }
+
+    override protected def apply_UuidType(datatype: PUuidType): String =  {
+      "CHAR(36)"
+    }
+
+    override protected def apply_EverforthidType(datatype: PEverforthidType): String =  {
+      "CHAR(128)"
+    }
+
+    override protected def apply_XmlType(datatype: PXmlType): String =  {
+      "TEXT"
+    }
+
+    override protected def apply_HtmlType(datatype: PHtmlType): String =  {
+      "TEXT"
     }
 
     override protected def apply_ObjectReferenceType(datatype: PObjectReferenceType): String = {

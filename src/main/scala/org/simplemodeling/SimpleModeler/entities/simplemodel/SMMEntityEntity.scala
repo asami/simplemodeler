@@ -98,7 +98,7 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Nov. 30, 2012
  *  version Dec. 26, 2012
  *  version Jan. 29, 2013
- * @version Feb.  7, 2013
+ * @version Feb. 21, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1481,6 +1481,7 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
       attr.sqlColumnName = a
     }
     for (a <- src.attributeType.getSqlDataTypeName) {
+      println("SMMEntityEntity#_build_attribute sqlDatatypeName = " + a)
       attr.sqlDatatypeName = a
     }
 //    println("SMMEntityEntity#_build_attribute(%s/%s) = %s".format(name, attr.name, src.displaySequence))

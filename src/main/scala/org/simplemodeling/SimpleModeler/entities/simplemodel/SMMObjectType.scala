@@ -10,7 +10,8 @@ import scala.collection.mutable.ArrayBuffer
  *  version Oct. 30, 2012
  *  version Nov. 15, 2012
  *  version Dec. 26, 2012
- * @version Jan. 29, 2013
+ *  version Jan. 29, 2013
+ * @version Feb. 21, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -241,7 +242,7 @@ class SMMUnknownDataType(val unkonwn: String) extends SMMDataType("XString", "or
 /*
  * SQL DataType
  */
-abstract class SMMSqlDataType(name: String, pkg: String) extends SMMObjectType(name, pkg) {
+abstract class SMMSqlDataType(name: String, pkg: String) extends SMMObjectType(name, pkg) with SMMValueDataType {
   def dataType: SMMDataType
   def text: String
 }
@@ -387,6 +388,18 @@ object SMMSqlRealType extends SMMSqlRealType with SMMSqlDataTypeFactory {
   }
 }
 
+class SMMSqlTextType extends SMMSqlDataType("SText", "org.simplemodeling.dsl.datatype.sql") {
+  val dataType = SMMDoubleType
+  val text = "Text"
+}
+
+object SMMSqlTextType extends SMMSqlTextType with SMMSqlDataTypeFactory {
+  def unapply(string: String): Option[SMMSqlTextType] = {
+    if (string.toUpperCase == "TEXT") SMMSqlTextType.some
+    else none
+  }
+}
+
 // Special datatype
 class SMMSqlUnknownDataType(val unkonwn: String) extends SMMSqlDataType("TEXT", "org.simplemodeling.dsl.datatype.sql") {
   val candidates = Nil
@@ -429,15 +442,17 @@ object SMMObjectType {
     SMMHtmlType,
     SMMEverforthidType)
 
-  def getDataType(string: String): Option[SMMDataType] = {
-    datatypes.find(_.isMatch(string))
+  def getDataType(string: String): Option[SMMValueDataType] = { // SMMDataType
+    val r = datatypes.find(_.isMatch(string)) orElse getSqlDataType(string)
+    println("SMMObjectType#getDataType(%s) = %s".format(string, r))
+    r
   }
 
-  def getValueDataType(name: String, pkgname: String): SMMDataType = {
+  def getValueDataType(name: String, pkgname: String): SMMValueDataType = { // SMMDataType
     getDataType(name) | new SMMDocumentType(name, pkgname)
   }
 
-  def getDataTypeOrUnkonwn(string: String): SMMDataType = {
+  def getDataTypeOrUnkonwn(string: String): SMMValueDataType = { // SMMDataType
     getDataType(string) | new SMMUnknownDataType(string)
   }
 
@@ -453,7 +468,8 @@ object SMMObjectType {
     SMMSqlFloatType,
     SMMSqlDoubleType,
     SMMSqlDecimalType,
-    SMMSqlRealType
+    SMMSqlRealType,
+    SMMSqlTextType
   )
 
   def getSqlDataType(string: String): Option[SMMSqlDataType] = {

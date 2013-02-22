@@ -11,7 +11,8 @@ import org.simplemodeling.SimpleModeler.entities._
 /**
  * @since   May.  3, 2012
  *  version Jun. 16, 2012
- * @version Dec. 29, 2012
+ *  version Dec. 29, 2012
+ * @version Feb. 21, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class SqlClassDefinition(
@@ -56,7 +57,7 @@ abstract class SqlClassDefinition(
   override protected def attribute_variables_Epilogue {
     jm_pln("CREATE TABLE %s (", sqlContext.sqlTableName(sqlObject))
     jm_indent_up
-    wholeAttributeDefinitions.map { x =>
+    wholeAttributeDefinitions.filter(_is_db_attribute).map { x =>
       () => x.ddl
     } intersperse {
       () => jm_pln(",")
@@ -66,6 +67,10 @@ abstract class SqlClassDefinition(
     jm_p(")")
     create_Epilogue
     jm_pln(";")
+  }
+
+  private def _is_db_attribute(attr: SqlClassAttributeDefinition): Boolean = {
+    attr.attr.isSingle && !attr.attr.isParticipation
   }
 
   protected def create_Epilogue {}

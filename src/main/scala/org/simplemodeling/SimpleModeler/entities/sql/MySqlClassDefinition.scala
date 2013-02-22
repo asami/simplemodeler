@@ -6,7 +6,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Dec. 29, 2012
- * @version Dec. 29, 2012
+ * @version Feb. 21, 2013
  * @author  ASAMI, Tomoharu
  */
 class MySqlClassDefinition(
@@ -20,6 +20,6 @@ class MySqlClassDefinition(
   }
 
   override protected def create_Epilogue {
-    jm_p("DEFAULT CHARSET=utf8")
+    jm_p(" DEFAULT CHARSET=utf8")
   }
 }

@@ -19,7 +19,7 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
  *  version Jan. 14, 2013
- * @version Feb.  7, 2013
+ * @version Feb. 21, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -131,6 +131,10 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     (modelPowertype != null && modelPowertype.isEntityReference) ||
     (modelStateMachine != null && modelStateMachine.isEntityReference) ||
     platformParticipation.isDefined
+  }
+
+  def isParticipation: Boolean = {
+    modelParticipation != null || platformParticipation.isDefined
   }
 
   def getEntity: Option[PEntityEntity] = {

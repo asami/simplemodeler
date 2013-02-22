@@ -8,7 +8,8 @@ import org.simplemodeling.SimpleModeler.builder._
  * @since   Oct.  8, 2012
  *  version Oct. 26, 2012
  *  version Nov. 26, 2012
- * @version Dec. 26, 2012
+ *  version Dec. 26, 2012
+ * @version Feb. 21, 2013
  * @author  ASAMI, Tomoharu
  */
 trait SMMTypeSet {
@@ -26,7 +27,7 @@ object SMMTypeSet {
 
 class SMMAttributeTypeSet(
   val attributeType: Option[SMMValueDataType],
-  val dataType: Option[SMMDataType] = None,
+  val dataType: Option[SMMValueDataType] = None, // SMMDataType
   val sqlDataType: Option[SMMSqlDataType] = None
 ) extends SMMTypeSet {
   def getName = {
@@ -89,7 +90,7 @@ object SMMAttributeTypeSet {
     TypeLabel.findData(entry).map(SMMObjectType.getValueDataType(_, pkg))
   }
 
-  private def _data_type(entry: Seq[PropertyRecord]): Option[SMMDataType] = {
+  private def _data_type(entry: Seq[PropertyRecord]): Option[SMMValueDataType] = { // SMMDataType
     DatatypeLabel.findData(entry).flatMap(SMMObjectType.getDataType)
   }
 
