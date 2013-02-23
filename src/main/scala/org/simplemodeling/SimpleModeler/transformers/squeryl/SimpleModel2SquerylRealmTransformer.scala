@@ -23,7 +23,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /*
  * @since   Feb. 22, 2013
- * @version Feb. 23, 2013
+ * @version Feb. 24, 2013
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2SquerylRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ScalaRealmTransformerBase(sm, sctx) {
@@ -55,16 +55,11 @@ class SimpleModel2SquerylRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
   }
 
   class SquerylBuilder extends ScalaBuilder {
-/*
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
-      val appname = target_context.className(pkg, "Model")
-      val app = new SquerylModelEntity(target_context)
+      val appname = target_context.className(pkg, "Library")
+      val app = new SquerylLibraryEntity(target_context)
       build_object_for_package_at_package(app, pkg, appname, "model")
-      val drivername = target_context.className(pkg, "SqlDriver")
-      val driver = new SquerylSqlDriverEntity(target_context)
-      build_object_for_package_at_package(driver, pkg, drivername, "model")
     }
-*/
 
     override protected def create_Actor(entity: SMDomainActor): DomainActorTYPE = {
       new SquerylEntityEntity(target_context)

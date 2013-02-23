@@ -28,6 +28,10 @@ abstract class SquerylScalaClassDefinitionBase(
   isImmutable = true
 
   override protected def head_imports_Extension {
+    sm_import("org.squeryl._")
+    sm_import("org.squeryl.PrimitiveTypeMode._")
+    sm_import("org.squeryl.annotations._")
+    sm_import("org.squeryl.dsl._")
     sm_import("java.util.Date")
     sm_import("java.sql.Timestamp")
   }
