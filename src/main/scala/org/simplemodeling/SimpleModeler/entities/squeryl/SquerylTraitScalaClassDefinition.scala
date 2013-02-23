@@ -16,19 +16,21 @@ import org.simplemodeling.dsl.datatype._
 import org.simplemodeling.dsl.datatype.ext._
 
 /**
- * @since   Feb. 22, 2013
+ * @since   Feb. 23, 2013
  * @version Feb. 23, 2013
  * @author  ASAMI, Tomoharu
  */
-class SquerylEntityScalaClassDefinition(
-  pContext: PEntityContext,     
+class SquerylTraitScalaClassDefinition(
+  pContext: PEntityContext,
   aspects: Seq[ScalaAspect],
-  pobject: PEntityEntity
+  pobject: PTraitEntity
 ) extends SquerylScalaClassDefinitionBase(pContext, aspects, pobject) {
-  override protected def class_open_body_constructor {
-    val parents = parentAttributeDefinitions.filter(is_column).map(squeryl_param)
-    val mixins = traitsAttributeDefinitions.filter(is_column).map(squeryl_var)
-    val owns = attributeDefinitions.filter(is_column).map(squeryl_var)
-    sm_param_list(parents ++ mixins ++ owns)
+  scalaKind = TraitScalaKind
+
+  override def attribute_variables {
+    val owns = attributeDefinitions.filter(is_column).map(squeryl_abstract_def)
+    for (a <- owns) {
+      sm_pln(a)
+    }
   }
 }

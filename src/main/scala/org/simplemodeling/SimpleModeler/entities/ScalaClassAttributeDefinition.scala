@@ -11,7 +11,8 @@ import org.simplemodeling.dsl._
  * @since   Aug. 19, 2011
  *  version Feb. 20, 2012
  *  version May.  6, 2012
- * @version Nov. 22, 2012
+ *  version Nov. 22, 2012
+ * @version Feb. 23, 2013
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassAttributeDefinition(
@@ -164,7 +165,7 @@ class ScalaClassAttributeDefinition(
   }
 
   override def method_bean_multi_entity_Simple(e: PEntityType) {
-    sys.error("not supported yet")
+    multi_value_attribute_method
   }
 
   override def method_bean_multi_entity_Composition_Reference_Property(e: PEntityType) {
@@ -212,6 +213,7 @@ class ScalaClassAttributeDefinition(
 
   // part
   override protected def method_bean_multi_part(p: PEntityPartType) {
+/*
     sm_public_method("public " + javaType + " get" + attrName.capitalize + " ()") {
       sm_pln("fill_%s();", attrName)
       sm_if_else(erPartVarName + " != null") {
@@ -232,9 +234,11 @@ class ScalaClassAttributeDefinition(
         sm_pln("this.%s.add(%s);", erPartVarName, paramName) 
       }
     }
+*/
   }
 
   override protected def method_bean_multi_powertype(e: PPowertypeType) {
+/*
     sm_public_get_list_method_prologue(javaType, attrName, erPartVarName) {
       sm_pln("fill_%s()", attrName)
     }
@@ -242,6 +246,7 @@ class ScalaClassAttributeDefinition(
       sm_public_set_list_method(attrName, javaElementType, paramName, erPartVarName)
       sm_public_add_list_element_method(attrName, javaElementType, paramName, erPartVarName)
     }
+*/
   }
 
   def multi_value_attribute_method {
@@ -253,6 +258,7 @@ class ScalaClassAttributeDefinition(
   }
 
   def mapping_multi_value_attribute_method(getter: String, setter: String) {
+/*
     sm_public_method("%s get%s()", javaType, attrName.capitalize) {
       sm_if_else_not_null(attrName) {
         sm_var_List_new_ArrayList("result", attr.elementTypeName); 
@@ -269,6 +275,7 @@ class ScalaClassAttributeDefinition(
       sm_public_set_list_method(attrName, javaElementType, paramName, erPartVarName)
       sm_public_add_list_element_method(attrName, javaElementType, paramName, erPartVarName)
     }
+*/
   }
 
   /*
@@ -851,6 +858,7 @@ class ScalaClassAttributeDefinition(
    * method_with
    */
   override def method_with_plain_multi_entity(e: PEntityType) {
+/*
     sm_public_method("%s with%s(%s %s)", owner.name, attrName.capitalize, javaType, paramName) {
       sm_if(varName + " != null") {
         sm_assign_new_ArrayList(varName, javaElementType);
@@ -865,6 +873,7 @@ class ScalaClassAttributeDefinition(
       sm_pln("%s.add(%s);", varName, paramName)
       sm_return_this
     }
+*/
   }
 
   override def method_with_plain_multi_part(e: PEntityPartType) {
@@ -888,6 +897,7 @@ class ScalaClassAttributeDefinition(
   }
 
   override def method_with_plain_multi_plain {
+/*
     sm_public_method("%s with%s(%s %s)", owner.name, attrName.capitalize, javaType, paramName) {
       sm_if(varName + " != null") {
         sm_assign_new_ArrayList(varName, javaElementType);
@@ -902,6 +912,7 @@ class ScalaClassAttributeDefinition(
       sm_pln("%s.add(%s);")
       sm_return_this
     }
+*/
   }
 
   override def method_with_plain_single_entity(e: PEntityType) {

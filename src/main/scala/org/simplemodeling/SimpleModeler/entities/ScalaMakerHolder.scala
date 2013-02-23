@@ -7,7 +7,8 @@ import com.asamioffice.goldenport.text.UJavaString
  * @since   Aug. 19, 2011
  *  version Aug. 21, 2011
  *  version May.  3, 2012
- * @version Nov. 23, 2012
+ *  version Nov. 23, 2012
+ * @version Feb. 23, 2013
  * @author  ASAMI, Tomoharu
  */
 trait ScalaMakerHolder {
@@ -97,7 +98,7 @@ trait ScalaMakerHolder {
         }
         sm_pln
         sm_indent_down
-        sm_pln(")")
+        sm_p(")")
       }
     }
   }

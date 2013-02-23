@@ -7,7 +7,8 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
  *  version Aug. 19, 2011
  *  version Feb. 11, 2012
  *  version Nov. 22, 2012
- * @version Jan. 11, 2013
+ *  version Jan. 11, 2013
+ * @version Feb. 23, 2013
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassDefinition(
@@ -95,7 +96,9 @@ class ScalaClassDefinition(
       case Some(bn) => {
         sm_p(" extends ")
         sm_p(bn)
-        class_open_body_parent_constructor
+        if (scalaKind.isClass) {
+          class_open_body_parent_constructor
+        }
         if (trait_names.nonEmpty) {
           sm_p(" with ")
           sm_p(trait_names.mkString(" with "))
@@ -116,8 +119,13 @@ class ScalaClassDefinition(
     val parents = parentAttributeDefinitions.filter(!_.isInject).
       map(a => "%s: %s".format(a.paramName, a.javaType))
     val owns = attributeDefinitions.filter(!_.isInject).
-      map(a => "var %s: %s".format(a.paramName, a.javaType))
+      map(a => "%s %s: %s".format(class_open_body_constructor_var_keyword,
+                                  a.paramName, a.javaType))
     sm_param_list(parents ++ owns)
+  }
+
+  protected def class_open_body_constructor_var_keyword = {
+    if (isImmutable) "val" else "var"
   }
 
   protected def class_open_body_parent_constructor {

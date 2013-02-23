@@ -23,7 +23,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /*
  * @since   Feb. 22, 2013
- * @version Feb. 22, 2013
+ * @version Feb. 23, 2013
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2SquerylRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ScalaRealmTransformerBase(sm, sctx) {
@@ -40,11 +40,11 @@ class SimpleModel2SquerylRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
   def toSquerylRealm() = transform
 
   override protected def make_Package_Name(qname: String): String = {
-    "config"
+    "model"
   }
 
   override protected def make_Qualified_Name(qname: String): String = {
-    "config." + UPathString.getLastComponent(qname, ".")
+    "model." + UPathString.getLastComponent(qname, ".")
   }
 
   override protected def make_Builder() = {
@@ -57,12 +57,12 @@ class SimpleModel2SquerylRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
   class SquerylBuilder extends ScalaBuilder {
 /*
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
-      val appname = target_context.className(pkg, "Config")
-      val app = new SquerylConfigEntity(target_context)
-      build_object_for_package_at_package(app, pkg, appname, "config")
+      val appname = target_context.className(pkg, "Model")
+      val app = new SquerylModelEntity(target_context)
+      build_object_for_package_at_package(app, pkg, appname, "model")
       val drivername = target_context.className(pkg, "SqlDriver")
       val driver = new SquerylSqlDriverEntity(target_context)
-      build_object_for_package_at_package(driver, pkg, drivername, "config")
+      build_object_for_package_at_package(driver, pkg, drivername, "model")
     }
 */
 

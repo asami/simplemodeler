@@ -11,7 +11,7 @@ import scala.collection.mutable.ArrayBuffer
  *  version Nov. 15, 2012
  *  version Dec. 26, 2012
  *  version Jan. 29, 2013
- * @version Feb. 21, 2013
+ * @version Feb. 23, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -444,7 +444,7 @@ object SMMObjectType {
 
   def getDataType(string: String): Option[SMMValueDataType] = { // SMMDataType
     val r = datatypes.find(_.isMatch(string)) orElse getSqlDataType(string)
-    println("SMMObjectType#getDataType(%s) = %s".format(string, r))
+//    println("SMMObjectType#getDataType(%s) = %s".format(string, r))
     r
   }
 
