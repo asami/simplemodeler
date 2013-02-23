@@ -17,7 +17,7 @@ import org.simplemodeling.dsl.datatype.ext._
 
 /**
  * @since   Feb. 22, 2013
- * @version Feb. 23, 2013
+ * @version Feb. 24, 2013
  * @author  ASAMI, Tomoharu
  */
 class SquerylEntityScalaClassDefinition(
@@ -26,9 +26,22 @@ class SquerylEntityScalaClassDefinition(
   pobject: PEntityEntity
 ) extends SquerylScalaClassDefinitionBase(pContext, aspects, pobject) {
   override protected def class_open_body_constructor {
-    val parents = parentAttributeDefinitions.filter(is_column).map(squeryl_param)
-    val mixins = traitsAttributeDefinitions.filter(is_column).map(squeryl_var)
-    val owns = attributeDefinitions.filter(is_column).map(squeryl_var)
-    sm_param_list(parents ++ mixins ++ owns)
+//    val parents = parentAttributeDefinitions.filter(is_column).map(squeryl_param)
+//    val mixins = traitsAttributeDefinitions.filter(is_column).map(squeryl_var)
+//    val owns = attributeDefinitions.filter(is_column).map(squeryl_var)
+//    sm_param_list(parents ++ mixins ++ owns)
+    val parents = parentAttributeDefinitions.filter(is_column).map(_.attr.name)
+    val owns = wholeAttributeDefinitions.filter(is_column).map(_squeryl_var_or_param(parents))
+    sm_param_list(owns)
+  }
+
+  private def _squeryl_var_or_param(parents: Seq[String])(a: ScalaClassAttributeDefinition): String = {
+    if (parents.contains(a.attr.name)) squeryl_param(a)
+    else squeryl_var(a)
+  }
+
+  override protected def class_open_body_parent_constructor {
+    val parents = parentAttributeDefinitions.filter(is_column).map(_.paramName)
+    sm_param_list(parents)
   }
 }

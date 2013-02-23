@@ -17,7 +17,7 @@ import org.simplemodeling.dsl.datatype.ext._
 
 /**
  * @since   Feb. 23, 2013
- * @version Feb. 23, 2013
+ * @version Feb. 24, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class SquerylScalaClassDefinitionBase(
@@ -76,6 +76,7 @@ abstract class SquerylScalaClassDefinitionBase(
 
   private def _squery_type(a: PAttribute): String = {
     a.attributeType match {
+      case x: PIntType => "Int"
       case x: PDateTimeType => "Timestamp"
       case x: PLinkType => "String"
       case x: PObjectReferenceType => "String" // XXX Long
