@@ -83,10 +83,10 @@ abstract class SquerylScalaClassDefinitionBase(
       case x: PIntType => "Int"
       case x: PDateTimeType => "Timestamp"
       case x: PLinkType => "String"
-      case x: PObjectReferenceType => "String" // XXX Long
+      case x: PObjectReferenceType => _squery_type(x.reference.idAttr)
       case x: PPowertypeType => "Int" // XXX String
       case x: PStateMachineType => "Int" // XXX String
-      case x: PEntityType => "String" // XXX Long
+      case x: PEntityType => _squery_type(x.entity.idAttr)
       case _ => a.jpaElementTypeName
     }
   }
