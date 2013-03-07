@@ -13,7 +13,8 @@ import java.util.TimeZone
  *  version Feb. 19, 2012
  *  version May.  6, 2012
  *  version Nov. 23, 2012
- * @version Feb.  7, 2013
+ *  version Feb.  7, 2013
+ * @version Mar.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -71,7 +72,7 @@ abstract class GenericClassAttributeDefinition(
 
   var isImmutable: Boolean = false // XXX attr.readonly
   def isInject = attr.inject
-  def isDerive: Boolean = {
+  def isDerivedOnTheFly: Boolean = {
     attr.isDerive && owner.useDerivedAttribute
   }
   def isMulti = attr.isMulti
@@ -222,7 +223,7 @@ abstract class GenericClassAttributeDefinition(
     if (attr.readonly) {
       return false
     }
-    if (isDerive) {
+    if (isDerivedOnTheFly) {
       return false
     }
     // if (!attr.isId || attr.isId) {
@@ -381,8 +382,8 @@ abstract class GenericClassAttributeDefinition(
   protected def variable_id_Id(typeName: String, varName: String): Boolean = false
 
   def variable_plain {
-    //      println("Attr %s, kind = %s".format(attr.name, attr.kind)) // 2009-10-28
-    if (isDerive) return
+    //      println("Attr %s, kind = %s".format(attr.name, attr.kind)) / 2009-10-28
+    if (isDerivedOnTheFly) return
     val varName = var_name
     aspects.foreach(_.weaveAttributeSlot(attr, varName))
     attr.attributeKind match {

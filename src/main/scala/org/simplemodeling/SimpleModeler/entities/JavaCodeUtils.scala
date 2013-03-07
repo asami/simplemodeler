@@ -7,7 +7,7 @@ import org.simplemodeling.SimpleModeler.entity._
 
 /*
  * @since   Nov.  8, 2012
- * @version Nov. 19, 2012
+ * @version Mar.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 trait JavaCodeUtils {
@@ -33,7 +33,7 @@ trait JavaCodeUtils {
 
   // get value internally
   protected final def code_get_value(attr: GenericClassAttributeDefinition): String = {
-    if (attr.isDerive) {
+    if (attr.isDerivedOnTheFly) {
       code_get_method_name(attr) + "()"
     } else {
       attr.varName

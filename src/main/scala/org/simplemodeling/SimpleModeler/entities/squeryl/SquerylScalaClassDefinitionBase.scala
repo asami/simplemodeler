@@ -17,7 +17,7 @@ import org.simplemodeling.dsl.datatype.ext._
 
 /**
  * @since   Feb. 23, 2013
- * @version Feb. 24, 2013
+ * @version Mar.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class SquerylScalaClassDefinitionBase(
@@ -37,7 +37,7 @@ abstract class SquerylScalaClassDefinitionBase(
   }
 
   protected def is_column(a: ScalaClassAttributeDefinition): Boolean = {
-    !(a.isInject || a.isDerive || a.isMulti || a.attr.isParticipation)
+    !(a.isInject || a.attr.isDerive || a.isMulti || a.attr.isParticipation)
   }
 
   protected def squeryl_abstract_def(a: ScalaClassAttributeDefinition): String = {

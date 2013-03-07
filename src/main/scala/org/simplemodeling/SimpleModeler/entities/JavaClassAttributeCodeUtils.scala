@@ -7,7 +7,8 @@ import org.simplemodeling.SimpleModeler.entities.expr.JavaExpressionBuilder
 
 /*
  * @since   Nov.  8, 2012
- * @version Dec. 21, 2012
+ *  version Dec. 21, 2012
+ * @version Mar.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 trait JavaClassAttributeCodeUtils extends JavaCodeUtils {
@@ -44,7 +45,7 @@ trait JavaClassAttributeCodeUtils extends JavaCodeUtils {
   }
 
   def code_expression: String = {
-    if (isDerive) {
+    if (isDerivedOnTheFly) {
       attr.deriveExpression.map(code_expression) | varName
     } else {
       varName

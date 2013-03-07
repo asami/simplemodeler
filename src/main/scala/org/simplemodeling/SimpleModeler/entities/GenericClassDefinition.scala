@@ -49,7 +49,8 @@ import org.goldenport.recorder.Recordable
  *  version Jun. 10, 2012
  *  version Oct. 30, 2012
  *  version Dec. 22, 2012
- * @version Jan. 15, 2013
+ *  version Jan. 15, 2013
+ * @version Mar.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -233,21 +234,21 @@ abstract class GenericClassDefinition(
   protected def not_derived_implements_attribute_definitions = {
     record_trace("GenericClassDefinition#not_derived_implements_attribute_definitions(%s): %s".format(name, implementsAttributeDefinitions.map(_.attr.name)))
     if (useDerivedAttribute) 
-      implementsAttributeDefinitions.filterNot(_.isDerive)
+      implementsAttributeDefinitions.filterNot(_.isDerivedOnTheFly)
     else
       implementsAttributeDefinitions
   }
 
   protected def not_derived_whole_attribute_definitions = {
     if (useDerivedAttribute)
-      wholeAttributeDefinitions.filterNot(_.isDerive)
+      wholeAttributeDefinitions.filterNot(_.isDerivedOnTheFly)
     else
       wholeAttributeDefinitions
   }
 
   protected def not_derived_parent_attribute_definitions = {
     if (useDerivedAttribute)
-      parentAttributeDefinitions.filterNot(_.isDerive)
+      parentAttributeDefinitions.filterNot(_.isDerivedOnTheFly)
     else
       parentAttributeDefinitions
   }
