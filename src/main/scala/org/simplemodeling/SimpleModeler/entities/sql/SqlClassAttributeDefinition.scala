@@ -12,7 +12,8 @@ import java.util.TimeZone
 /**
  * @since   May.  3, 2012
  *  version Dec. 27, 2012
- * @version Feb. 21, 2013
+ *  version Feb. 21, 2013
+ * @version Mar. 18, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class SqlClassAttributeDefinition(
@@ -22,6 +23,9 @@ abstract class SqlClassAttributeDefinition(
   owner: SqlClassDefinition,
   maker: JavaMaker) extends GenericClassAttributeDefinition(sqlContext, aspects, attr, owner) with JavaMakerHolder {
   type ATTR_DEF = SqlClassAttributeDefinition
+
+  var ddl_string_length = 255
+  var ddl_token_length = 127
 
   jm_open(maker, Nil)
 
@@ -36,7 +40,7 @@ abstract class SqlClassAttributeDefinition(
     }
 
     override protected def apply_ByteStringType(datatype: PByteStringType): String = {
-      handle_xml(datatype)
+      "BLOB"
     }
 
     override protected def apply_BooleanType(datatype: PBooleanType): String = {
@@ -128,7 +132,11 @@ abstract class SqlClassAttributeDefinition(
     }
 
     override protected def apply_StringType(datatype: PStringType): String = {
-      "VARCHAR(64)"
+      "VARCHAR(" + ddl_string_length + ")"
+    }
+
+    override protected def apply_TokenType(datatype: PTokenType): String = {
+      "VARCHAR(" + ddl_token_length + ")"
     }
 
     override protected def apply_TimeType(datatype: PTimeType): String = {
@@ -212,19 +220,19 @@ abstract class SqlClassAttributeDefinition(
     }
 
     override protected def apply_UuidType(datatype: PUuidType): String =  {
-      "CHAR(36)"
+      "VARCHAR(36)"
     }
 
     override protected def apply_EverforthidType(datatype: PEverforthidType): String =  {
-      "CHAR(128)"
+      "VARCHAR(128)"
     }
 
     override protected def apply_XmlType(datatype: PXmlType): String =  {
-      "TEXT"
+      "MEDIUMTEXT"
     }
 
     override protected def apply_HtmlType(datatype: PHtmlType): String =  {
-      "TEXT"
+      "MEDIUMTEXT"
     }
 
     override protected def apply_ObjectReferenceType(datatype: PObjectReferenceType): String = {
