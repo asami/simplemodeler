@@ -5,7 +5,8 @@ import com.asamioffice.goldenport.text.JavaScriptTextMaker
 /*
  * @since   Apr.  4, 2012
  *  version Apr. 20, 2012
- * @version Jun. 10, 2012
+ *  version Jun. 10, 2012
+ * @version May.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 trait JavaScriptMakerHolder {
@@ -67,12 +68,24 @@ trait JavaScriptMakerHolder {
     js_pstring(name, value)
   }
 
+  protected final def js_ps_tail(name: String, value: String) {
+    js_pstring_tail(name, value)
+  }
+
   protected final def js_pstring(name: String, value: String) {
     jm_pln(name + ": '" + value + "',")
   }
 
+  protected final def js_pstring_tail(name: String, value: String) {
+    jm_pln(name + ": '" + value + "'")
+  }
+
   protected final def js_po(name: String)(body: => Unit) {
     js_property_object(name)(body)
+  }
+
+  protected final def js_po_tail(name: String)(body: => Unit) {
+    js_property_object_tail(name)(body)
   }
 
   protected final def js_property_object(name: String)(body: => Unit) {
@@ -81,6 +94,14 @@ trait JavaScriptMakerHolder {
     body
     jm_indent_down
     jm_pln("},")
+  }
+
+  protected final def js_property_object_tail(name: String)(body: => Unit) {
+    jm_pln(name + ": {")
+    jm_indent_up
+    body
+    jm_indent_down
+    jm_pln("}")
   }
 
   protected final def js_pa(name: String, values: Seq[String]) {

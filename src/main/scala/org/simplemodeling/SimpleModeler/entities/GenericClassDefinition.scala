@@ -50,7 +50,7 @@ import org.goldenport.recorder.Recordable
  *  version Oct. 30, 2012
  *  version Dec. 22, 2012
  *  version Jan. 15, 2013
- * @version Mar.  7, 2013
+ * @version May.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -461,6 +461,23 @@ abstract class GenericClassDefinition(
   protected def attribute(attr: PAttribute): ATTR_DEF
 
   protected def attribute_variables_plain {
+    val attrs = effectiveAttributeDefinitions.filter(_.attr.isId == false)
+    attrs.headOption.map { x =>
+      attribute_variables_plain_Prologue
+      x.variable_plain
+      for (attr <- attrs.tail) {
+        attribute_variables_plain_Interlude
+        attr.variable_plain
+      }
+      attribute_variables_plain_Epilogue
+    }
+  }
+
+  protected def attribute_variables_plain_Prologue {}
+  protected def attribute_variables_plain_Interlude {}
+  protected def attribute_variables_plain_Epilogue {}
+
+  protected def attribute_variables_plain0 {
     for (attr <- effectiveAttributeDefinitions if !attr.attr.isId) {
       attr.variable_plain
     }

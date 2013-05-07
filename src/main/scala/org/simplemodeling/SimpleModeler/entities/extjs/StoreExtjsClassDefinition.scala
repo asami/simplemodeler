@@ -9,7 +9,8 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Dec. 26, 2012
+ *  version Dec. 26, 2012
+ * @version May.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 class StoreExtjsClassDefinition(
@@ -24,15 +25,15 @@ class StoreExtjsClassDefinition(
 //    js_ptrue("autoLoad")
 //    js_ptrue("autoSync")
     js_ps("model", context.entityModelQualifiedNickname(extjsobject))
-    js_po("proxy") {
+    js_po_tail("proxy") {
       js_ps("type", "rest")
       js_ps("url", extjsContext.restUri(extjsobject))
       js_po("reader") {
         js_ps("type", "json")
-        js_ps("root", "data")
+        js_ps_tail("root", "data")
       }
-      js_po("writer") {
-        js_ps("type", "json")
+      js_po_tail("writer") {
+        js_ps_tail("type", "json")
       }
     }
   }

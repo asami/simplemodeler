@@ -11,7 +11,7 @@ import com.sun.xml.internal.bind.v2.schemagen.xmlschema.AttributeType
 
 /**
  * @since   Apr.  4, 2012
- * @version Apr. 20, 2012
+ * @version May.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 abstract class ExtjsClassAttributeDefinition(
@@ -1981,63 +1981,39 @@ abstract class ExtjsClassAttributeDefinition(
   /*
    * Ext-JS
    */
-  def extjsValidation() {
-    attr.multiplicity match {
-      case POne => {
-        jm_pln("{field: '%s', type: 'presence'},", attr.name)        
-      } 
-      case _ => {}
+  def extjsValidation: List[String] = {
+    val a: Option[String] = attr.multiplicity match {
+      case POne => Some("{field: '%s', type: 'presence'}".format(attr.name))
+      case _ => None
     }
-    if (attr.modelAttribute != null) {
-      for (c <- attr.modelAttribute.constraints) { // XXX datatype constraints
+    val b: Seq[Option[String]] = if (attr.modelAttribute != null) {
+      for (c <- attr.modelAttribute.constraints) yield { // XXX datatype constraints
         c.dslConstraint match {
-          case x: CAssertFalse => {
-            
-          }
-          case x: CAssertTrue => {
-            
-          }
-          case x: CDecimalMax => {
-            
-          }
-          case x: CDecimalMin => {
-            
-          }
-          case x: CDigits => {
-            
-          } 
-          case x: CFuture => {
-            
-          }
-          case x: CMax => {
-            jm_pln("{field: '%s', type: 'length'},", attr.name)
-          }
-          case x: CMin => {
-            jm_pln("{field: '%s', type: 'length'},", attr.name)
-          }
-          case x: CNotNull => {
-            
-          }
-          case x: CNull => {
-            
-          }
-          case x: CPast => {
-            
-          }
-          case x: CPattern => {
-            jm_pln("{field: '%s', type: 'format'},", attr.name)
-          }
-          case x: CSize => {
-          }
-          case x: CInclusion => {
-            jm_pln("{field: '%s', type: 'inclusion'},", attr.name)
-          }
-          case x: CExclusion => {
-            jm_pln("{field: '%s', type: 'exclusion'},", attr.name)
-          }
+          case x: CAssertFalse => None
+          case x: CAssertTrue => None
+          case x: CDecimalMax => None
+          case x: CDecimalMin => None
+          case x: CDigits => None
+          case x: CFuture => None
+          case x: CMax => 
+            Some("{field: '%s', type: 'length'}".format(attr.name))
+          case x: CMin =>
+            Some("{field: '%s', type: 'length'}".format(attr.name))
+          case x: CNotNull => None
+          case x: CNull => None
+          case x: CPast => None
+          case x: CPattern => 
+            Some("{field: '%s', type: 'format'}".format(attr.name))
+          case x: CSize => None
+          case x: CInclusion =>
+            Some("{field: '%s', type: 'inclusion'}".format(attr.name))
+          case x: CExclusion => 
+            Some("{field: '%s', type: 'exclusion'}".format(attr.name))
         }
       }
-    }
+    } else Nil
+    val c = a :: b.toList
+    c.flatten
   }
 }
 

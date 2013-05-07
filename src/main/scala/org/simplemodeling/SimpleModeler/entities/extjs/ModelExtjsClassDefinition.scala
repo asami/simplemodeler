@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /**
  * @since   Apr. 14, 2012
- * @version Apr. 20, 2012
+ * @version May.  7, 2013
  * @author  ASAMI, Tomoharu
  */
 class ModelExtjsClassDefinition(
@@ -34,11 +34,30 @@ class ModelExtjsClassDefinition(
     jm_pln("],")
     jm_pln("validations: [")
     jm_indent_up
-    for (a <- attributeDefinitions) {
-      a.extjsValidation()
+    val vs: Seq[String] = attributeDefinitions.flatMap(_.extjsValidation)
+    vs.headOption.map { x =>
+      jm_p(x)
+      for (a <- vs.tail) {
+        jm_pln(",")
+        jm_p(a)
+      }
+      jm_pln
     }
     jm_indent_down
-    jm_pln("],")
+    jm_pln("]")
+  }
+
+  // assumes id existing.
+  override protected def attribute_variables_plain_Prologue {
+    jm_pln(",")
+  }
+
+  override protected def attribute_variables_plain_Interlude {
+    jm_pln(",")
+  }
+
+  override protected def attribute_variables_plain_Epilogue {
+    jm_pln
   }
 }
 
@@ -51,6 +70,6 @@ class ModelExtjsClassAttributeDefinition(
 
   override protected def variable_plain_Attribute_Instance_Variable(typename: String, varname: String) {
     val tname = attr.attributeType(model_typename)
-    jm_pln("{name: '%s', type: '%s'},", data_key, tname)
+    jm_p("{name: '%s', type: '%s'}", data_key, tname)
   }
 }

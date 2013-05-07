@@ -6,7 +6,7 @@ organization := "org.simplemodeling"
 
 // src/main/scala/org/simplemodeling/SimpleModeler/SimpleModeler.scala
 
-version := "0.4.1-j"
+version := "0.4.1-k-SNAPSHOT"
 
 // scalaVersion := "2.9.2"
 
