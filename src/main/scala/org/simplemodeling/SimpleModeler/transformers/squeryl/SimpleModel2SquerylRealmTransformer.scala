@@ -23,7 +23,7 @@ import com.asamioffice.goldenport.util.MultiValueMap
 
 /*
  * @since   Feb. 22, 2013
- * @version Feb. 24, 2013
+ * @version Jun. 19, 2013
  * @author  ASAMI, Tomoharu
  */
 class SimpleModel2SquerylRealmTransformer(sm: SimpleModelEntity, sctx: GServiceContext) extends SimpleModel2ScalaRealmTransformerBase(sm, sctx) {
@@ -31,6 +31,7 @@ class SimpleModel2SquerylRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
   type TargetRealmTYPE = SquerylRealmEntity
 
   srcMainDir = "/app"
+  val kind_package_name = "model"
 
   override val target_context = new SquerylEntityContext(sm.entityContext, sctx)
   override val target_realm = new SquerylRealmEntity(target_context)  
@@ -40,11 +41,13 @@ class SimpleModel2SquerylRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
   def toSquerylRealm() = transform
 
   override protected def make_Package_Name(qname: String): String = {
-    "model"
+    if (qname == "app") kind_package_name
+    else qname + "." + kind_package_name
   }
 
   override protected def make_Qualified_Name(qname: String): String = {
-    "model." + UPathString.getLastComponent(qname, ".")
+//    "model." + UPathString.getLastComponent(qname, ".")
+    qname
   }
 
   override protected def make_Builder() = {
@@ -56,9 +59,13 @@ class SimpleModel2SquerylRealmTransformer(sm: SimpleModelEntity, sctx: GServiceC
 
   class SquerylBuilder extends ScalaBuilder {
     override protected def transform_Package_Extension(pkg: SMPackage, ppkg: PPackageEntity, module: Option[PModuleEntity], factory: Option[PFactoryEntity]) {
+      val pkgname = {
+        if (pkg.qualifiedName == "app") kind_package_name
+        else pkg.qualifiedName + "." + kind_package_name
+      }
       val appname = target_context.className(pkg, "Library")
       val app = new SquerylLibraryEntity(target_context)
-      build_object_for_package_at_package(app, pkg, appname, "model")
+      build_object_for_package_at_package(app, pkg, appname, pkgname)
     }
 
     override protected def create_Actor(entity: SMDomainActor): DomainActorTYPE = {
