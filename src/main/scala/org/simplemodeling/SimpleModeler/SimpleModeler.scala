@@ -28,7 +28,8 @@ import org.goldenport.exporter.FirstLeafOrZipResultExporterClass
  *  version Dec. 31, 2012
  *  version Jan. 30, 2013
  *  version Mar. 18, 2013
- * @version May.  7, 2013
+ *  version May.  7, 2013
+ * @version Jun. 19, 2013
  * @auther  ASAMI, Tomoharu
  */
 class SimpleModeler(args: Array[String]) {
@@ -85,8 +86,8 @@ object Main {
 
 class SimpleModelerDescriptor extends GApplicationDescriptor {
   name = "SimpleModeler"
-  version = "0.4.1-k"
-  version_build = "20130507"
+  version = "0.4.1-l"
+  version_build = "20130619"
   copyright_years = "2008-2013"
   copyright_owner = "ASAMI, Tomoharu"
   command_name = "sm"
