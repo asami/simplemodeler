@@ -8,7 +8,8 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version Aug. 21, 2011
  *  version May.  3, 2012
  *  version Nov. 23, 2012
- * @version Feb. 23, 2013
+ *  version Feb. 23, 2013
+ * @version Aug. 11, 2014
  * @author  ASAMI, Tomoharu
  */
 trait ScalaMakerHolder {
@@ -67,6 +68,14 @@ trait ScalaMakerHolder {
     _maker.println("}")
   }
 
+  protected def sm_blockps(o: String, ops: Any*)(b: => Unit) {
+    _maker.println(o + "(", ops.map(_.asInstanceOf[AnyRef]): _*)
+    sm_indent_up
+    b
+    sm_indent_down
+    _maker.println(")")
+  }
+
   protected final def sm_string_literal(s: String) = {
     UJavaString.stringLiteral(s)
   }
@@ -100,6 +109,23 @@ trait ScalaMakerHolder {
         sm_indent_down
         sm_p(")")
       }
+    }
+  }
+
+  protected final def sm_list(params: Seq[String]) {
+    params.toList match {
+      case Nil => Unit
+      case x :: Nil =>
+        sm_p(x)
+      case List(xs) if xs.length < 3 =>
+        sm_p(xs.mkString(", "))
+      case x :: xs =>
+        sm_p(x)
+        for (a <- xs) {
+          sm_pln(",")
+          sm_p(a)
+        }
+        sm_pln
     }
   }
 
@@ -264,6 +290,7 @@ trait ScalaMakerHolder {
   /*
    * old java style variable settings.
    */
+  // XXX
   protected final def sm_private_instance_variable(attr: PAttribute, typename: String = null, varname: String = null) {
     val tname = if (typename == null) attr.typeName else typename;
     val vname = if (varname == null) attr.name else varname;
@@ -274,14 +301,17 @@ trait ScalaMakerHolder {
     }
   }
 
+  // XXX
   protected final def sm_private_instance_variable_single(typename: String, varname: String) {
     _maker.privateInstanceVariableSingle(typename, varname);
   }
 
+  // XXX
   protected final def sm_private_instance_variable_list(typename: String, varname: String) {
     _maker.privateInstanceVariableList(typename, varname);
   }
 
+  // XXX
   protected final def sm_public_final_instance_variable(attr: PAttribute, typename: String = null, varname: String = null) {
     val tname = if (typename == null) attr.typeName else typename;
     val vname = if (varname == null) attr.name else varname;
@@ -292,14 +322,17 @@ trait ScalaMakerHolder {
     }
   }
 
+  // XXX
   protected final def sm_public_final_instance_variable_single(typename: String, varname: String) {
     _maker.publicFinalInstanceVariableSingle(typename, varname);
   }
 
+  // XXX
   protected final def sm_public_final_instance_variable_list(typename: String, varname: String) {
     _maker.publicFinalInstanceVariableList(typename, varname);
   }
 
+  // XXX
   protected final def sm_public_instance_variable(attr: PAttribute, typename: String = null, varname: String = null) {
     val tname = if (typename == null) attr.typeName else typename;
     val vname = if (varname == null) attr.name else varname;
@@ -310,14 +343,17 @@ trait ScalaMakerHolder {
     }
   }
 
+  // XXX
   protected final def sm_public_instance_variable_single(typename: String, varname: String) {
     _maker.publicInstanceVariableSingle(typename, varname);
   }
 
+  // XXX
   protected final def sm_public_instance_variable_list(typename: String, varname: String) {
     _maker.publicInstanceVariableList(typename, varname);
   }
 
+  // XXX
   protected final def sm_private_transient_instance_variable(attr: PAttribute, typename: String = null, varname: String = null) {
     val tname = if (typename == null) attr.typeName else typename;
     val vname = if (varname == null) attr.name else varname;
@@ -328,111 +364,143 @@ trait ScalaMakerHolder {
     }
   }
 
+  // XXX
   protected final def sm_private_transient_instance_variable_single(typename: String, varname: String) {
     _maker.privateTransientInstanceVariableSingle(typename, varname);
   }
 
+  // XXX
   protected final def sm_private_transient_instance_variable_list(typename: String, varname: String) {
     _maker.privateTransientInstanceVariableList(typename, varname);
   }
 
+  // XXX
   protected final def sm_public_static_final_String_literal(varname: String, form: String, params: AnyRef*) {
     _maker.pln("""public static final String %s = "%s";""", varname, _format(form, params))
   }
 
+  // XXX
   protected final def sm_public_static_final_int(varname: String, form: String, params: AnyRef*) {
     _maker.pln("""public static final int %s = %s;""", varname, _format(form, params))
   }
 
+  // XXX
   protected final def sm_public_static_final(typename: String, varname: String, form: String, params: AnyRef*) {
     _maker.pln("""public static final %s %s = %s;""", typename, varname, _format(form, params))
   }
 
+  // XXX
   protected final def sm_private_static_final_String_literal(varname: String, form: String, params: AnyRef*) {
     _maker.pln("""private static final String %s = "%s";""", varname, _format(form, params))
   }
 
+  // XXX
   protected final def sm_private_static_final_int(varname: String, value: Int) {
     _maker.pln("""private static final int %s = %s;""", varname, value.toString)
   }
 
+  // XXX
   protected final def sm_private_static_final_int(varname: String, form: String, params: AnyRef*) {
     _maker.pln("""private static final int %s = %s;""", varname, _format(form, params))
   }
 
+  // XXX
   protected final def sm_private_static_final(typename: String, varname: String, form: String, params: AnyRef*) {
     _maker.pln("""private static final %s %s = %s;""", typename, varname, _format(form, params))
   }
 
   // method
-  protected final def sm_method(signature: String, params: AnyRef*)(body: => Unit) {
-    _maker.method(signature, params: _*)(body)
+  // protected final def sm_method(signature: String, params: AnyRef*)(body: => Unit) {
+  //   _maker.method(signature, params: _*)(body)
+  // }
+
+  protected final def sm_def(signature: String, params: AnyRef*)(body: => Unit) {
+    _maker.publicMethod(signature, params: _*)(body)
   }
 
+  protected final def sm_override_def(signature: String, params: AnyRef*)(body: => Unit) {
+    _maker.overridePublicMethod(signature, params: _*)(body)
+  }
+
+  // XXX
   protected final def sm_public_method(signature: String, params: AnyRef*)(body: => Unit) {
     _maker.publicMethod(signature, params: _*)(body)
   }
 
+  // XXX
   protected final def sm_override_public_method(signature: String, params: AnyRef*)(body: => Unit) {
     _maker.pln
     _maker.p("@Override") // XXX
     _maker.publicMethod(signature, params: _*)(body)
   }
 
+  // XXX
   protected final def sm_public_void_method(signature: String, params: AnyRef*)(body: => Unit) {
     _maker.publicVoidMethod(signature, params: _*)(body)
   }
 
+  // XXX
   protected final def sm_public_get_method(typeName: String, attrName: String, expr: AnyRef*) {
     _maker.publicGetMethod(typeName, attrName, expr: _*)
   }
 
+  // XXX
   protected final def sm_public_get_or_null_method(typeName: String, attrName: String, varName: String, expr: String, params: AnyRef*) {
     _maker.publicGetOrNullMethod(typeName, attrName, varName, expr, params: _*)
   }
 
+  // XXX
   protected final def sm_public_is_method(attrName: String, expr: AnyRef*) {
     _maker.publicIsMethod(attrName, expr: _*)
   }
 
+  // XXX
   protected final def sm_public_set_method(attrName: String, typeName: String,
       paramName: String = null, varName: String = null, expr: Seq[AnyRef] = Nil) {
     _maker.publicSetMethod(attrName, typeName, paramName, varName, expr)
   }
 
+  // XXX
   protected final def sm_public_set_or_null_method(attrName: String, typeName: String,
       paramName: String = null, varName: String = null, expr: Seq[AnyRef] = Nil) {
     _maker.publicSetOrNullMethod(attrName, typeName, paramName, varName, expr)
   }
 
+  // XXX
   protected final def sm_public_with_method(className: String, attrName: String, typeName: String,
       paramName: String = null, varName: String = null, expr: Seq[AnyRef] = Nil) {
     _maker.publicWithMethod(className, attrName, typeName, paramName, varName, expr)
   }
 
+  // XXX
   protected final def sm_public_with_or_null_method(className: String, attrName: String, typeName: String,
       paramName: String = null, varName: String = null, expr: Seq[AnyRef] = Nil) {
     _maker.publicWithOrNullMethod(className, attrName, typeName, paramName, varName, expr)
   }
 
+  // XXX
   protected final def sm_override_protected_method(signature: String, params: AnyRef*)(body: => Unit) {
     _maker.pln
     _maker.p("@Override") // XXX
     _maker.protectedMethod(signature, params: _*)(body)
   }
 
+  // XXX
   protected final def sm_protected_final_void_method(signature: String, params: AnyRef*)(body: => Unit) {
     _maker.protectedFinalVoidMethod(signature, params: _*)(body)
   }
 
+  // XXX
   protected final def sm_private_method(signature: String, params: AnyRef*)(body: => Unit) {
     _maker.privateMethod(signature, params: _*)(body)
   }
 
+  // XXX
   protected final def sm_public_static_method(signature: String, params: AnyRef*)(body: => Unit) {
     _maker.publicStaticMethod(signature, params: _*)(body)
   }
 
+  // XXX
   protected final def sm_public_set_list_method(attrName: String, elemTypeName: String, paramName: String, varName: String) {
     val pname = if (paramName != null) paramName else attrName
     val vname = if (varName != null) varName else attrName
@@ -441,6 +509,7 @@ trait ScalaMakerHolder {
     }
   }
 
+  // XXX
   protected final def sm_public_add_list_element_method(attrName: String, elemTypeName: String, paramName: String, varName: String) {
     val pname = if (paramName != null) paramName else attrName
     val vname = if (varName != null) varName else attrName
@@ -452,6 +521,7 @@ trait ScalaMakerHolder {
     }
   }
 
+  // XXX
   protected final def sm_public_get_list_method(elemTypeName: String, attrName: String, varName: String) {
     val vname = if (varName != null) varName else attrName;  
     sm_public_method("%s get%s()", elemTypeName, attrName.capitalize) {
@@ -464,6 +534,7 @@ trait ScalaMakerHolder {
     }
   }
 
+  // XXX
   protected final def sm_public_get_list_method_prologue(elemTypeName: String, attrName: String, varName: String)(body: => Unit) {
     val vname = if (varName != null) varName else attrName;  
     sm_public_method("%s get%s()", elemTypeName, attrName.capitalize) {

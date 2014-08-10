@@ -5,7 +5,7 @@ import scala.collection.mutable.ArrayBuffer
 
 /*
  * @since   Aug. 19, 2011
- * @version Aug. 21, 2011
+ * @version Aug. 11, 2014
  * @author  ASAMI, Tomoharu
  */
 class ScalaMaker extends JavaTextMaker {
@@ -100,11 +100,16 @@ class ScalaMaker extends JavaTextMaker {
     pln("private transient List<%s> %s = new ArrayList<%s>();".format(typename, varname, typename))
   }
 
-  // unify 
+  override def method(signature: String, params: AnyRef*)(body: => Unit) {
+    super.method("def " + format_params(signature, params) + " = ")(body)
+  }
+
   def publicMethod(signature: String, params: AnyRef*)(body: => Unit) {
-    method("public " + format_params(signature, params)) {
-      body
-    }
+    method(format_params(signature, params))(body)
+  }
+
+  def overridePublicMethod(signature: String, params: AnyRef*)(body: => Unit) {
+    super.method("override def " + format_params(signature, params) + " = ")(body)
   }
 
 /*

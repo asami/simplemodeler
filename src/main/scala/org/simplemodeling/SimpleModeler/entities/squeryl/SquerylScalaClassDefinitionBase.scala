@@ -17,7 +17,8 @@ import org.simplemodeling.dsl.datatype.ext._
 
 /**
  * @since   Feb. 23, 2013
- * @version Mar.  7, 2013
+ *  version Mar.  7, 2013
+ * @version Aug. 10, 2014
  * @author  ASAMI, Tomoharu
  */
 abstract class SquerylScalaClassDefinitionBase(
@@ -34,6 +35,7 @@ abstract class SquerylScalaClassDefinitionBase(
     sm_import("org.squeryl.dsl._")
     sm_import("java.util.Date")
     sm_import("java.sql.Timestamp")
+    sm_import("org.goldenport.record.v2.{Schema => RScehma, _}") // XXX Option
   }
 
   protected def is_column(a: ScalaClassAttributeDefinition): Boolean = {
@@ -71,31 +73,31 @@ abstract class SquerylScalaClassDefinitionBase(
   protected def squeryl_type(a: ScalaClassAttributeDefinition): String = {
     val attr = a.attr
     attr.multiplicity match {
-      case POne => _squery_type(attr)
-      case PZeroOne => "Option[" + _squery_type(attr) + "]"
-      case POneMore => "Seq[" + _squery_type(attr) + "]"
-      case PZeroMore => "Seq[" + _squery_type(attr) + "]"
+      case POne => squeryl_object_type(attr)
+      case PZeroOne => "Option[" + squeryl_object_type(attr) + "]"
+      case POneMore => "Seq[" + squeryl_object_type(attr) + "]"
+      case PZeroMore => "Seq[" + squeryl_object_type(attr) + "]"
     }
   }
 
-  private def _squery_type(a: PAttribute): String = {
+  protected def squeryl_object_type(a: PAttribute): String = {
     a.attributeType match {
       case x: PIntType => "Int"
       case x: PDateTimeType => "Timestamp"
       case x: PLinkType => "String"
-      case x: PObjectReferenceType => _squery_type(x.reference.idAttr)
+      case x: PObjectReferenceType => squeryl_object_type(x.reference.idAttr)
       case x: PPowertypeType => "Int" // XXX String
       case x: PStateMachineType => "Int" // XXX String
-      case x: PEntityType => _squery_type(x.entity.idAttr)
+      case x: PEntityType => squeryl_object_type(x.entity.idAttr)
       case _ => a.jpaElementTypeName
     }
   }
 
-  override def attribute_variables {
+  override protected def attribute_variables {
     // Nop
   }
 
-  override def attribute_methods {
+  override protected def attribute_methods {
     // Nop
   }
 }
