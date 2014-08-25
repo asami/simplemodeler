@@ -18,7 +18,7 @@ import org.simplemodeling.dsl.datatype.ext._
 /**
  * @since   Feb. 22, 2013
  *  version Feb. 24, 2013
- * @version Aug. 11, 2014
+ * @version Aug. 25, 2014
  * @author  ASAMI, Tomoharu
  */
 class SquerylEntityScalaClassDefinition(
@@ -42,7 +42,7 @@ class SquerylEntityScalaClassDefinition(
   }
 
   override protected def class_open_body_parent_constructor {
-    val parents = parentAttributeDefinitions.filter(is_column).map(_.paramName)
+    val parents = parentAttributeDefinitions.filter(is_column).map(x => "_" + x.paramName)
     sm_param_list(parents)
   }
 

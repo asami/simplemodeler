@@ -8,7 +8,8 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
  *  version Feb. 11, 2012
  *  version Nov. 22, 2012
  *  version Jan. 11, 2013
- * @version Feb. 23, 2013
+ *  version Feb. 23, 2013
+ * @version Aug. 25, 2014
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassDefinition(
@@ -117,7 +118,7 @@ class ScalaClassDefinition(
 
   protected def class_open_body_constructor {
     val parents = parentAttributeDefinitions.filter(!_.isInject).
-      map(a => "%s: %s".format(a.paramName, a.javaType))
+      map(a => "%s: %s".format("_" + a.paramName, a.javaType))
     val owns = attributeDefinitions.filter(!_.isInject).
       map(a => "%s %s: %s".format(class_open_body_constructor_var_keyword,
                                   a.paramName, a.javaType))
@@ -130,7 +131,7 @@ class ScalaClassDefinition(
 
   protected def class_open_body_parent_constructor {
     val parents = parentAttributeDefinitions.filter(!_.isInject).
-      map(_.paramName)
+      map("_" + _.paramName)
     sm_param_list(parents)
   }
 

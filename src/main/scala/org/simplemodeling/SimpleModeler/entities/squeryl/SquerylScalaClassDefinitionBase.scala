@@ -18,7 +18,7 @@ import org.simplemodeling.dsl.datatype.ext._
 /**
  * @since   Feb. 23, 2013
  *  version Mar.  7, 2013
- * @version Aug. 10, 2014
+ * @version Aug. 25, 2014
  * @author  ASAMI, Tomoharu
  */
 abstract class SquerylScalaClassDefinitionBase(
@@ -52,7 +52,7 @@ abstract class SquerylScalaClassDefinitionBase(
 
   protected def squeryl_param(a: ScalaClassAttributeDefinition): String = {
     if (is_column(a)) {
-      squeryl_var_type(a)
+      "%s: %s".format("_" + squeryl_var_name(a), squeryl_type(a))
     } else {
       "// " + squeryl_var_type(a)
     }
