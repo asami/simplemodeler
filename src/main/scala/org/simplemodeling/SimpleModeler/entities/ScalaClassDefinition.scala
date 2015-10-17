@@ -9,7 +9,8 @@ import org.simplemodeling.SimpleModeler.entity.SMPackage
  *  version Nov. 22, 2012
  *  version Jan. 11, 2013
  *  version Feb. 23, 2013
- * @version Aug. 25, 2014
+ *  version Aug. 25, 2014
+ * @version Oct. 17, 2015
  * @author  ASAMI, Tomoharu
  */
 class ScalaClassDefinition(
@@ -170,6 +171,10 @@ object ObjectScalaKind extends ScalaClassifierKind {
 }
 object TraitScalaKind extends ScalaClassifierKind {
   def keyword = "trait"
+  def isClass = false
+}
+object SealedTraitScalaKind extends ScalaClassifierKind {
+  def keyword = "sealed trait"
   def isClass = false
 }
 object AbstractClassScalaKind extends ScalaClassifierKind {

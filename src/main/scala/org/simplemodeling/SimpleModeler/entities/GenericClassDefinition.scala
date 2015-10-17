@@ -50,7 +50,8 @@ import org.goldenport.recorder.Recordable
  *  version Oct. 30, 2012
  *  version Dec. 22, 2012
  *  version Jan. 15, 2013
- * @version May.  7, 2013
+ *  version May.  7, 2013
+ * @version Oct. 17, 2015
  * @author  ASAMI, Tomoharu
  */
 abstract class GenericClassDefinition(
@@ -336,6 +337,7 @@ abstract class GenericClassDefinition(
     if (useAttribute) {
       attribute_methods
     }
+    abstract_methods
     service_methods
     to_methods
     update_methods
@@ -807,6 +809,8 @@ abstract class GenericClassDefinition(
    * foo.setPerson_json("{name: 'a', address: 'b'}")
    * foo.setPerson_xml("<person><name>a</name><address>b</address></person>")
    */
+
+  protected def abstract_methods {}
 
   /*
    * Service methods

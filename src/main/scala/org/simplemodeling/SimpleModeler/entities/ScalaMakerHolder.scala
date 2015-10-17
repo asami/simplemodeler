@@ -9,7 +9,8 @@ import com.asamioffice.goldenport.text.UJavaString
  *  version May.  3, 2012
  *  version Nov. 23, 2012
  *  version Feb. 23, 2013
- * @version Aug. 11, 2014
+ *  version Aug. 11, 2014
+ * @version Oct. 17, 2015
  * @author  ASAMI, Tomoharu
  */
 trait ScalaMakerHolder {
@@ -76,8 +77,44 @@ trait ScalaMakerHolder {
     _maker.println(")")
   }
 
-  protected final def sm_string_literal(s: String) = {
-    UJavaString.stringLiteral(s)
+  protected final def sm_string_literal(s: Any) {
+    sm_p(to_string_literal(s))
+  }
+
+  protected final def to_string_literal(s: Any) = {
+    UJavaString.stringLiteral(s.toString)
+  }
+
+  protected final def sm_vector_string_literal(values: Seq[Any]) {
+    sm_pln("Vector(")
+    sm_indent_up
+    values.headOption.foreach { x =>
+      sm_string_literal(x)
+      values.tail.foreach { y =>
+        sm_p(",")
+        sm_pln
+        sm_string_literal(y)
+      }
+      sm_pln
+    }
+    sm_indent_down
+    sm_pln(")")
+  }
+
+  protected final def sm_vector_value(values: Seq[Any]) {
+    sm_pln("Vector(")
+    sm_indent_up
+    values.headOption.foreach { x =>
+      sm_p(x.toString)
+      values.tail.foreach { y =>
+        sm_p(",")
+        sm_pln
+        sm_p(y.toString)
+      }
+      sm_pln
+    }
+    sm_indent_down
+    sm_pln(")")
   }
 
   // 2012-11-20
@@ -212,6 +249,16 @@ trait ScalaMakerHolder {
     _maker.println("}")
   }
 
+  protected final def sm_case_object(
+    name: String,
+    parent: String = null,
+    params: Seq[String] = Nil,
+    mixins: Seq[String] = Nil
+  )(body: => Unit) {
+    _maker.print("case ")
+    sm_object(name, parent, params, mixins)(body)
+  }
+
   // 2012-11-20
   /**
    * Used by custom configured class definition.
@@ -284,7 +331,21 @@ trait ScalaMakerHolder {
     _maker.p("val ")
     _maker.p(varname)
     _maker.p(" = ")
-    _maker.pln(sm_string_literal(value))
+    _maker.pln(to_string_literal(value))
+  }
+
+  protected final def sm_val_vector_string_literal(varname: String, values: Seq[Any]) {
+    sm_p("val ")
+    sm_p(varname)
+    sm_p(" = ")
+    sm_vector_string_literal(values)
+  }
+
+  protected final def sm_val_vector_value(varname: String, values: Seq[Any]) {
+    sm_p("val ")
+    sm_p(varname)
+    sm_p(" = ")
+    sm_vector_value(values)
   }
 
   /*
@@ -420,6 +481,30 @@ trait ScalaMakerHolder {
 
   protected final def sm_override_def(signature: String, params: AnyRef*)(body: => Unit) {
     _maker.overridePublicMethod(signature, params: _*)(body)
+  }
+
+  protected final def sm_def_string(varname: String, value: Any) {
+    _maker.p("def ")
+    _maker.p(varname)
+    _maker.p(" = ")
+    _maker.pln(to_string_literal(value.toString))
+  }
+
+  protected final def sm_override_def_string(varname: String, value: Any) {
+    _maker.p("override ")
+    sm_def_string(varname, value)
+  }
+
+  protected final def sm_def_value(varname: String, value: Any) {
+    _maker.p("def ")
+    _maker.p(varname)
+    _maker.p(" = ")
+    _maker.pln(value.toString)
+  }
+
+  protected final def sm_override_def_value(varname: String, value: Any) {
+    _maker.p("override ")
+    sm_def_value(varname, value)
   }
 
   // XXX
