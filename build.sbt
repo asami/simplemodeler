@@ -6,7 +6,7 @@ organization := "org.simplemodeling"
 
 // src/main/scala/org/simplemodeling/SimpleModeler/SimpleModeler.scala
 
-version := "0.4.1-n"
+version := "0.4.1-o"
 
 // scalaVersion := "2.9.2"
 
@@ -49,6 +49,9 @@ libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.12a"
 libraryDependencies += "org.scalatest" %% "scalatest" % "1.6.1" % "test"
 
 libraryDependencies += "junit" % "junit" % "4.8" % "test"
+
+//
+sources in (Compile,doc) := Seq.empty
 
 //
 publishTo := Some(Resolver.file("asamioffice", file("target/maven-repository")))
