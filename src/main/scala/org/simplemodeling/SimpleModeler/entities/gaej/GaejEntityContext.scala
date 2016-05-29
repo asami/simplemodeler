@@ -8,7 +8,8 @@ import com.asamioffice.goldenport.text.{UString, UJavaString}
 
 /*
  * @since   Apr. 11, 2009
- * @version Nov.  9, 2009
+ *  version Nov.  9, 2009
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 class GaejEntityContext(aContext: GEntityContext, val serviceContext: GServiceContext) extends GSubEntityContext(aContext) {
@@ -177,7 +178,7 @@ class GaejEntityContext(aContext: GEntityContext, val serviceContext: GServiceCo
         case ':' => buf.append('_');afterSpace = false
         case '.' => buf.append('_');afterSpace = false
         case ' ' => afterSpace = true
-        case _ if afterSpace => buf.append(c.toUpperCase);afterSpace = false
+        case _ if afterSpace => buf.append(c.toUpper);afterSpace = false
         case _ => buf.append(c);afterSpace = false
       }
     }
@@ -197,8 +198,8 @@ class GaejEntityContext(aContext: GEntityContext, val serviceContext: GServiceCo
         case ':' => buf.append('_');afterSpace = false
         case '.' => buf.append('_');afterSpace = false
         case ' ' => afterSpace = true
-        case _ if firstCharacter => buf.append(c.toUpperCase);firstCharacter = false
-        case _ if afterSpace => buf.append(c.toUpperCase);afterSpace = false
+        case _ if firstCharacter => buf.append(c.toUpper);firstCharacter = false
+        case _ if afterSpace => buf.append(c.toUpper);afterSpace = false
         case _ => buf.append(c);afterSpace = false
       }
     }

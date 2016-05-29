@@ -6,10 +6,11 @@ import org.simplemodeling.SimpleModeler.entity.business._
 /*
  * @since   Jul. 15, 2008
  *  version Jul. 16, 2011
- * @version Nov. 25, 2012
+ *  version Nov. 25, 2012
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
-case class SimpleModelVisitor {
+case class SimpleModelVisitor() {
   def visit(mo: SMElement) {
     mo match {
       case actor: SMDomainActor         => visit_Actor(actor)

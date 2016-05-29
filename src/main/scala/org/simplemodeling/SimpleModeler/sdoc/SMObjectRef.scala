@@ -8,10 +8,11 @@ import org.goldenport.sdoc.inline.SHelpRef
 import org.simplemodeling.SimpleModeler.entity.SMObject
 
 /*
- * Dec.  6, 2008
- * Dec. 25, 2008
+ * @since   Dec.  6, 2008
+ * @version May. 29, 2016
+ * @author  ASAMI, Tomoharu
  */
-case class SMObjectRef(val sobject: SObject) extends SIAnchor(sobject.name) {
+class SMObjectRef(val sobject: SObject) extends SIAnchor(sobject.name) {
   unresolvedRef = new SElementRef(sobject.packageName, sobject.name)
   summary = sobject.summary
 

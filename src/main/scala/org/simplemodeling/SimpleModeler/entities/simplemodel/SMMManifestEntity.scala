@@ -9,7 +9,7 @@ import com.asamioffice.goldenport.text.{AppendableTextBuilder, TextBuilder, UJav
 
 /*
  * Feb.  6, 2009
- * Feb.  6, 2009
+ * @version May.  7, 2016
  */
 class SMMManifestEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityContext) extends GEntity(aIn, aOut, aContext) {
   type DataSource_TYPE = GDataSource
@@ -54,7 +54,7 @@ class SMMManifestEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCo
       buffer.indentUp
       buffer.print("objects(")
       if (!objects.isEmpty) {
-	var obj = objects.first
+	var obj = objects.head
 	buffer.print(obj.name)
 	buffer.print("()")
 	for (obj <- objects.drop(1)) {

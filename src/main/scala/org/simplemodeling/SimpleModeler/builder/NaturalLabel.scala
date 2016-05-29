@@ -13,7 +13,8 @@ import org.apache.commons.lang3.StringUtils.isNotBlank
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
  *  version Jan. 17, 2013
- * @version Feb.  7, 2013
+ *  version Feb.  7, 2013
+ * @version May. 29, 2016
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -23,21 +24,21 @@ sealed abstract trait NaturalLabel {
   /**
    * String in candiates must be lower case.
    */
-  def candidates: Seq[String]
-  lazy val allCandidates: Seq[String] = {
-    def augumentsSpace(s: String): Seq[String] = {
+  def candidates: Vector[String]
+  lazy val allCandidates: Vector[String] = {
+    def augumentsSpace(s: String): Vector[String] = {
       if (s.contains(" ")) {
-        List(s.replace(" ", ""), s.replace(" ", "-"), s.replace(" ", "・"))
-      } else Seq(s)
+        Vector(s.replace(" ", ""), s.replace(" ", "-"), s.replace(" ", "・"))
+      } else Vector(s)
     }
 
-    def augumentsList(s: String): Seq[String] = {
-      Seq(s, s + " list", s + " 一覧", s + " リスト")
+    def augumentsList(s: String): Vector[String] = {
+      Vector(s, s + " list", s + " 一覧", s + " リスト")
     }
 
-    def augumentPlural(s: String): Seq[String] = {
+    def augumentPlural(s: String): Vector[String] = {
       val a = s.plural(0)
-      if (s == a) Seq(s) else Seq(s, a)
+      if (s == a) Vector(s) else Vector(s, a)
     }
 
     candidates >>= augumentPlural >>= augumentsList >>= augumentsSpace
@@ -76,254 +77,254 @@ sealed abstract trait NaturalLabel {
 }
 
 case object KindLabel extends NaturalLabel {
-  val candidates = List("kind", "カインド", "種別")
+  val candidates = Vector("kind", "カインド", "種別")
 }
 
 case object TraitLabel extends NaturalLabel {
-  val candidates = List("trait", "トレイト", "特色")
+  val candidates = Vector("trait", "トレイト", "特色")
 }
 
 case object BusinessActorLabel extends NaturalLabel {
-  val candidates = List("business actor", "ビジネス アクター", "ビジネス アクタ", "業務 アクター", "業務 アクタ")
+  val candidates = Vector("business actor", "ビジネス アクター", "ビジネス アクタ", "業務 アクター", "業務 アクタ")
 }
 
 case object BusinessResourceLabel extends NaturalLabel {
-  val candidates = List("business resource", "ビジネス リソース", "業務 リソース")
+  val candidates = Vector("business resource", "ビジネス リソース", "業務 リソース")
 }
 case object BusinessEventLabel extends NaturalLabel {
-  val candidates = List("business event", "ビジネス イベント", "業務 イベント")
+  val candidates = Vector("business event", "ビジネス イベント", "業務 イベント")
 }
 
 case object EntityLabel extends NaturalLabel {
-  val candidates = List("entity", "エンティティ")
+  val candidates = Vector("entity", "エンティティ")
 }
 
 case object ActorLabel extends NaturalLabel {
-  val candidates = List("actor", "アクター", "アクタ", "登場人物")
+  val candidates = Vector("actor", "アクター", "アクタ", "登場人物")
 }
 
 case object ResourceLabel extends NaturalLabel {
-  val candidates = List("resource", "リソース", "道具")
+  val candidates = Vector("resource", "リソース", "道具")
 }
 
 case object EventLabel extends NaturalLabel {
-  val candidates = List("event", "イベント", "出来事")
+  val candidates = Vector("event", "イベント", "出来事")
 }
 
 case object RoleLabel extends NaturalLabel {
-  val candidates = List("role", "役割")
+  val candidates = Vector("role", "役割")
 }
 
 case object SummaryLabel extends NaturalLabel {
-  val candidates = List("summary", "サマリ", "サマリー", "要約")
+  val candidates = Vector("summary", "サマリ", "サマリー", "要約")
 }
 
 case object TypeLabel extends NaturalLabel {
-  val candidates = List("type", "型")
+  val candidates = Vector("type", "型")
 }
 
 case object DatatypeLabel extends NaturalLabel {
-  val candidates = List("data type", "データ型", "データタイプ")
+  val candidates = Vector("data type", "データ型", "データタイプ")
 }
 
 case object InLabel extends NaturalLabel {
-  val candidates = List("in", "input", "入力", "インプット")
+  val candidates = Vector("in", "input", "入力", "インプット")
 }
 
 case object OutLabel extends NaturalLabel {
-  val candidates = List("out", "output", "出力", "アウトプット")
+  val candidates = Vector("out", "output", "出力", "アウトプット")
 }
 
 case object CreateLabel extends NaturalLabel {
-  val candidates = List("create", "作成")
+  val candidates = Vector("create", "作成")
 }
 
 case object ReadLabel extends NaturalLabel {
-  val candidates = List("read", "参照")
+  val candidates = Vector("read", "参照")
 }
 
 case object UpdateLabel extends NaturalLabel {
-  val candidates = List("update", "更新")
+  val candidates = Vector("update", "更新")
 }
 
 case object DeleteLabel extends NaturalLabel {
-  val candidates = List("delete", "削除")
+  val candidates = Vector("delete", "削除")
 }
 
 case object ObjecttypeLabel extends NaturalLabel {
-  val candidates = List("object type", "オブジェクト型")
+  val candidates = Vector("object type", "オブジェクト型")
 }
 
 case object PowertypeLabel extends NaturalLabel {
-  val candidates = List("powertype", "powers", "パワータイプ", "区分")
+  val candidates = Vector("powertype", "powers", "パワータイプ", "区分")
 }
 
 case object DocumentLabel extends NaturalLabel {
-  val candidates = List("document", "ドキュメント", "文書")
+  val candidates = Vector("document", "ドキュメント", "文書")
 }
 
 case object ValueLabel extends NaturalLabel {
-  val candidates = List("value", "バリュー", "値")
+  val candidates = Vector("value", "バリュー", "値")
 }
 
 case object LifecycleLabel extends NaturalLabel {
-  val candidates = List("lifecycle", "ライフ サイクル")
+  val candidates = Vector("lifecycle", "ライフ サイクル")
 }
 
 case object StateLabel extends NaturalLabel {
-  val candidates = List("state", "ステート", "状態")
+  val candidates = Vector("state", "ステート", "状態")
 }
 
 case object StateMachineLabel extends NaturalLabel {
-  val candidates = List("state machine", "ステート マシーン", "ステート チャート", "状態機械")
+  val candidates = Vector("state machine", "ステート マシーン", "ステート チャート", "状態機械")
 }
 
 case object RuleLabel extends NaturalLabel {
-  val candidates = List("rule", "ルール", "規則")
+  val candidates = Vector("rule", "ルール", "規則")
 }
 
 case object ServiceLabel extends NaturalLabel {
-  val candidates = List("service", "サービス")
+  val candidates = Vector("service", "サービス")
 }
 
 case object BusinessUsecaseLabel extends NaturalLabel {
-  val candidates = List("business use case", "ビジネス ユースケース", "業務 ユースケース", "物語")
+  val candidates = Vector("business use case", "ビジネス ユースケース", "業務 ユースケース", "物語")
 }
 
 case object BusinessTaskLabel extends NaturalLabel {
-  val candidates = List("business task", "ビジネス タスク", "業務 タスク")
+  val candidates = Vector("business task", "ビジネス タスク", "業務 タスク")
 }
 
 case object UsecaseLabel extends NaturalLabel {
-  val candidates = List("use case", "ユースケース", "エピソード", "挿話")
+  val candidates = Vector("use case", "ユースケース", "エピソード", "挿話")
 }
 
 case object TaskLabel extends NaturalLabel {
-  val candidates = List("task", "タスク")
+  val candidates = Vector("task", "タスク")
 }
 
 case object NameLabel extends NaturalLabel {
-  val candidates = List("name", "名前")
+  val candidates = Vector("name", "名前")
 }
 
 case object NameJaLabel extends NaturalLabel {
-  val candidates = List("name(ja)", "names(ja)", "japanese name", "日本語名")
+  val candidates = Vector("name(ja)", "names(ja)", "japanese name", "日本語名")
 }
 
 case object NameEnLabel extends NaturalLabel {
-  val candidates = List("name(en)", "names(en)", "english name", "英語名")
+  val candidates = Vector("name(en)", "names(en)", "english name", "英語名")
 }
 
 case object TermLabel extends NaturalLabel {
-  val candidates = List("term", "用語")
+  val candidates = Vector("term", "用語")
 }
 
 case object TermJaLabel extends NaturalLabel {
-  val candidates = List("term(ja)", "terms(ja)", "japanese term", "日本語用語", "用語(日本語)")
+  val candidates = Vector("term(ja)", "terms(ja)", "japanese term", "日本語用語", "用語(日本語)")
 }
 
 case object TermEnLabel extends NaturalLabel {
-  val candidates = List("term(en)", "terms(en)", "english term", "英語用語", "用語(英語)")
+  val candidates = Vector("term(en)", "terms(en)", "english term", "英語用語", "用語(英語)")
 }
 
 case object TitleLabel extends NaturalLabel {
-  val candidates = List("title", "タイトル", "表題", "題")
+  val candidates = Vector("title", "タイトル", "表題", "題")
 }
 
 case object SubtitleLabel extends NaturalLabel {
-  val candidates = List("subtitle", "サブタイトル", "副題")
+  val candidates = Vector("subtitle", "サブタイトル", "副題")
 }
 
 case object LabelLabel extends NaturalLabel {
-  val candidates = List("label", "ラベル")
+  val candidates = Vector("label", "ラベル")
 }
 
 case object CaptionLabel extends NaturalLabel {
-  val candidates = List("caption", "キャプション")
+  val candidates = Vector("caption", "キャプション")
 }
 
 case object BriefLabel extends NaturalLabel {
-   val candidates = List("brief", "摘要")
+   val candidates = Vector("brief", "摘要")
 }
 // case object SummaryLabel extends NaturalLabel
 
 case object DescriptionLabel extends NaturalLabel {
-  val candidates = List("description", "説明")
+  val candidates = Vector("description", "説明")
 }
 
 case object CategoryLabel extends NaturalLabel {
-  val candidates = List("category", "カテゴリ")
+  val candidates = Vector("category", "カテゴリ")
 }
 
 case object AuthorLabel extends NaturalLabel {
-  val candidates = List("author", "著者")
+  val candidates = Vector("author", "著者")
 }
 
 case object IconLabel extends NaturalLabel {
-  val candidates = List("icon", "アイコン")
+  val candidates = Vector("icon", "アイコン")
 }
 
 case object LogoLabel extends NaturalLabel {
-  val candidates = List("logo", "ロゴ")
+  val candidates = Vector("logo", "ロゴ")
 }
 
 case object LinkLabel extends NaturalLabel {
-  val candidates = List("link", "リンク")
+  val candidates = Vector("link", "リンク")
 }
 
 case object ContentLabel extends NaturalLabel {
-  val candidates = List("content", "コンテント", "コンテンツ")
+  val candidates = Vector("content", "コンテント", "コンテンツ")
 }
 
 case object CreatedLabel extends NaturalLabel {
-  val candidates = List("created", "作成日時")
+  val candidates = Vector("created", "作成日時")
 }
 
 case object UpdatedLabel extends NaturalLabel {
-  val candidates = List("updated", "更新日時")
+  val candidates = Vector("updated", "更新日時")
 }
 
 case object DeletedLabel extends NaturalLabel {
-  val candidates = List("deleted", "削除日時")
+  val candidates = Vector("deleted", "削除日時")
 }
 
 case object PropertyLabel extends NaturalLabel {
-  val candidates = List("property", "性質")
+  val candidates = Vector("property", "性質")
 }
 
 case object FeatureLabel extends NaturalLabel { // TODO change semantics. current semantics delegates to member.
-  val candidates = List("feature", "特性")
+  val candidates = Vector("feature", "特性")
 }
 
 /**
  * Class slot (e.g. attribute, association)
  */
 case object MemberLabel extends NaturalLabel {
-  val candidates = List("member", "メンバ", "メンバー")
+  val candidates = Vector("member", "メンバ", "メンバー")
 }
 
 case object AttributeLabel extends NaturalLabel {
-  val candidates = List("attr", "attribute", "属性")
+  val candidates = Vector("attr", "attribute", "属性")
 }
 
 case object IdLabel extends NaturalLabel {
-  val candidates = List("id")
+  val candidates = Vector("id")
 }
 
 case object UserLabel extends NaturalLabel {
-  val candidates = List("user", "ユーザ", "ユーザー")
+  val candidates = Vector("user", "ユーザ", "ユーザー")
 }
 
 case object AssociationLabel extends NaturalLabel {
-  val candidates = List("assoc", "association", "関連", "参照")
+  val candidates = Vector("assoc", "association", "関連", "参照")
 }
 
 case object AggregationLabel extends NaturalLabel {
-  val candidates = List("aggregation", "集約")
+  val candidates = Vector("aggregation", "集約")
 }
 
 case object CompositionLabel extends NaturalLabel {
-  val candidates = List("composition", "合成", "合成集約")
+  val candidates = Vector("composition", "合成", "合成集約")
 }
 
 /**
@@ -331,148 +332,148 @@ case object CompositionLabel extends NaturalLabel {
  * Selection between composition and aggregation is evaluated later.
  */
 case object PartLabel extends NaturalLabel {
-  val candidates = List("tool", "部品")
+  val candidates = Vector("tool", "部品")
 }
 
 case object SuperLabel extends NaturalLabel {
-  val candidates = List("super", "上位")
+  val candidates = Vector("super", "上位")
 }
 
 case object SubLabel extends NaturalLabel {
-  val candidates = List("sub", "下位")
+  val candidates = Vector("sub", "下位")
 }
 
 case object IsaLabel extends NaturalLabel {
-  val candidates = List("isa", "is-a", "subclass", "サブクラス", "種類")
+  val candidates = Vector("isa", "is-a", "subclass", "サブクラス", "種類")
 }
 
 case object BaseLabel extends NaturalLabel {
-  val candidates = List("base", "extend", "ベース", "継承", "基底")
+  val candidates = Vector("base", "extend", "ベース", "継承", "基底")
 }
 
 case object MultiplicityLabel extends NaturalLabel {
-  val candidates = List("multiplicity", "mul", "多重度")
+  val candidates = Vector("multiplicity", "mul", "多重度")
 }
 
 case object DeriveLabel extends NaturalLabel {
-  val candidates = List("derive", "derived", "派生")
+  val candidates = Vector("derive", "derived", "派生")
 }
 
 case object OperationLabel extends NaturalLabel {
-  val candidates = List("operation", "method", "オペレーション", "メソッド", "操作")
+  val candidates = Vector("operation", "method", "オペレーション", "メソッド", "操作")
 }
 
 case object PrimaryActorLabel extends NaturalLabel {
-  val candidates = List("primary actor", "primary", "プライマリ アクタ", "主役")
+  val candidates = Vector("primary actor", "primary", "プライマリ アクタ", "主役")
 }
 
 case object SecondaryActorLabel extends NaturalLabel {
-  val candidates = List("secondary actor", "secondary", "セカンダリ アクタ", "相手役")
+  val candidates = Vector("secondary actor", "secondary", "セカンダリ アクタ", "相手役")
 }
 
 case object SupportingActorLabel extends NaturalLabel {
-  val candidates = List("supporting actor", "supporting", "サポーティング アクタ", "脇役")
+  val candidates = Vector("supporting actor", "supporting", "サポーティング アクタ", "脇役")
 }
 
 case object GoalLabel extends NaturalLabel {
-  val candidates = List("goal", "ゴール", "目的")
+  val candidates = Vector("goal", "ゴール", "目的")
 }
 
 case object ScenarioLabel extends NaturalLabel {
-  val candidates = List("scenario", "シナリオ", "脚本")
+  val candidates = Vector("scenario", "シナリオ", "脚本")
 }
 
 case object AnnotationLabel extends NaturalLabel {
-  val candidates = List("annotation", "注記")
+  val candidates = Vector("annotation", "注記")
 }
 
 case object ActionLabel extends NaturalLabel {
-  val candidates = List("action", "アクション")
+  val candidates = Vector("action", "アクション")
 }
 
 /*
  * GUI
  */
 case object DisplayLabel extends NaturalLabel {
-  val candidates = List("display", "表示")
+  val candidates = Vector("display", "表示")
 }
 
 case object VisibilityLabel extends NaturalLabel {
-  val candidates = List("visibility", "可視性")
+  val candidates = Vector("visibility", "可視性")
 }
 
 case object GuiNaviLabelLabel extends NaturalLabel {
-  val candidates = List("navi", "navigation", "ナビ", "ナビゲーション", "ナビ名")
+  val candidates = Vector("navi", "navigation", "ナビ", "ナビゲーション", "ナビ名")
 }
 
 case object GuiTabLabelLabel extends NaturalLabel {
-  val candidates = List("tab", "タブ", "タブ名")
+  val candidates = Vector("tab", "タブ", "タブ名")
 }
 
 case object GuiViewLabel extends NaturalLabel {
-  val candidates = List("gui view")
+  val candidates = Vector("gui view")
 }
 
 case object GuiTemplateLabel extends NaturalLabel {
-  val candidates = List("gui template")
+  val candidates = Vector("gui template")
 }
 
 case object GuiWidgetLabel extends NaturalLabel {
-  val candidates = List("gui widget")
+  val candidates = Vector("gui widget")
 }
 
 /*
  * SQL
  */
 case object TableNameLabel extends NaturalLabel {
-  val candidates = List("table name", "table", "テーブル", "表", "テーブル名")
+  val candidates = Vector("table name", "table", "テーブル", "表", "テーブル名")
 }
 
 case object JoinLabel extends NaturalLabel {
-  val candidates = List("join", "結合")
+  val candidates = Vector("join", "結合")
 }
 
 case object ColumnNameLabel extends NaturalLabel {
-  val candidates = List("column name", "column", "カラム名", "カラム")
+  val candidates = Vector("column name", "column", "カラム名", "カラム")
 }
 
 case object SqlDatatypeLabel extends NaturalLabel {
-  val candidates = List("sql type", "sql data type",
+  val candidates = Vector("sql type", "sql data type",
       "sql 型", "sql データ型", "sql データタイプ")
 }
 
 case object SqlAutoIdLabel extends NaturalLabel {
-  val candidates = List("auto id")
+  val candidates = Vector("auto id")
 }
 
 case object SqlReadOnlyLabel extends NaturalLabel {
-  val candidates = List("read only")
+  val candidates = Vector("read only")
 }
 
 case object SqlAutoCreateLabel extends NaturalLabel {
-  val candidates = List("auto create")
+  val candidates = Vector("auto create")
 }
 
 case object SqlAutoUpdateLabel extends NaturalLabel {
-  val candidates = List("auto update")
+  val candidates = Vector("auto update")
 }
 
 case object SqlPropertyLabel extends NaturalLabel {
-  val candidates = List("sql property", "sql properties")
+  val candidates = Vector("sql property", "sql properties")
 }
 
 //
 case object UnknownNaturalLabel extends NaturalLabel {
-  val candidates = Nil
+  val candidates = Vector.empty
 }
 
 case object NullNaturalLabel extends NaturalLabel {
-  val candidates = Nil
+  val candidates = Vector.empty
 }
 
 object NaturalLabel {
-//  val summary_candidates = List("summary")
-  val candidates = List(
+//  val summary_candidates = Vector("summary")
+  val candidates = Vector(
     KindLabel,
     TraitLabel,
     ActorLabel,

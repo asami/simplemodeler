@@ -8,10 +8,11 @@ import org.simplemodeling.SimpleModeler.entity._
 
 /*
  * @since   Nov. 26, 2012
- * @version Feb.  6, 2013
+ *  version Feb.  6, 2013
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
-case class PState(name: String, value: Either[String, Int], label: String, model: SMState) extends PEnumeration {
+case class PState(name: String, value: \/[String, Int], label: String, model: SMState) extends PEnumeration {
   def lifecycle = model.lifecycle
 }
 

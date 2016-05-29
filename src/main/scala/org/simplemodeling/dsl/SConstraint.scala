@@ -8,7 +8,8 @@ import org.goldenport.sdoc._
 /**
  * @since   Jun. 18, 2009
  *  version Jun. 20, 2009
- * @version Apr. 11, 2012
+ *  version Apr. 11, 2012
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 sealed trait SConstraint {
@@ -66,7 +67,7 @@ case class CNull() extends SConstraint {
 }
 object CNull extends CNull
 
-case class CPast extends SConstraint {
+case class CPast() extends SConstraint {
   def literal = "@Past"
 }
 

@@ -9,7 +9,7 @@ import org.simplemodeling.SimpleModeler.entity.SimpleModelEntity
 import org.simplemodeling.SimpleModeler.generators.uml.ClassDiagramGenerator
 import com.asamioffice.goldenport.text.UString
 import com.asamioffice.goldenport.text.UPathString
-import org.goldenport.record._
+import org.goldenport.record.v1._
 import org.smartdox.Text
 
 /*
@@ -17,7 +17,8 @@ import org.smartdox.Text
  *  version Dec.  6, 2011
  *  version Feb. 28, 2012
  *  version Jun. 17, 2012
- * @version Dec. 17, 2012
+ *  version Dec. 17, 2012
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 class DiagramGeneratorService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {

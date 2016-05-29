@@ -10,7 +10,8 @@ import org.goldenport.value.{GTree, GTreeNode, PlainTree, GTreeCursor, GTreeVisi
 /*
  * @since   Dec.  7, 2008
  *  version Apr. 17, 2011
- * @version Nov.  4, 2012
+ *  version Nov.  4, 2012
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -48,7 +49,7 @@ abstract class SStoryObject(aName: String, aPkgName: String) extends SEntity(aNa
     _in_basic_flow = false
   }
 
-  protected def adjust_Embedded_Task(aRoot: GTreeNode[SStep]): Unit = null
+  protected def adjust_Embedded_Task(aRoot: GTreeNode[SStep]): Unit = {}
 
   def extension_flow(aName: String)(theSteps: => Unit) {
     _in_extension_flow = true
@@ -69,7 +70,7 @@ abstract class SStoryObject(aName: String, aPkgName: String) extends SEntity(aNa
     merge_Alternate_Path(_alternate_flow.root, _basic_flow.root)
   }
 
-  protected def merge_Alternate_Path(aRoot: GTreeNode[SPath], theSteps: GTreeNode[SStep]): Unit = null
+  protected def merge_Alternate_Path(aRoot: GTreeNode[SPath], theSteps: GTreeNode[SStep]): Unit = {}
 
   def exception_flow(thePaths: => Unit) {
     _in_exception_flow = true
@@ -80,7 +81,7 @@ abstract class SStoryObject(aName: String, aPkgName: String) extends SEntity(aNa
     merge_Exception_Path(_exception_flow.root, _basic_flow.root)
   }
 
-  protected def merge_Exception_Path(aRoot: GTreeNode[SPath], theSteps: GTreeNode[SStep]): Unit = null
+  protected def merge_Exception_Path(aRoot: GTreeNode[SPath], theSteps: GTreeNode[SStep]): Unit = {}
 
   protected final def execute_step(aStep: SStep) = {
     _step_flow_cursor.enter(aStep)

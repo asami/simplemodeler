@@ -5,7 +5,7 @@ import java.util.UUID
 import java.net.URI
 import scala.xml.Elem
 import org.apache.commons.lang3.StringUtils
-import org.smartdox._, Doxes._
+import org.smartdox._
 import com.asamioffice.goldenport.text.UJavaString
 import org.simplemodeling.SimpleModeler.entity._
 import org.simplemodeling.SimpleModeler.entity.domain._
@@ -14,7 +14,7 @@ import org.simplemodeling.SimpleModeler.entities.relaxng._
 
 /*
  * @since   Dec.  4, 2012
- * @version Dec.  6, 2012
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 case class SpecMaker(
@@ -26,7 +26,7 @@ case class SpecMaker(
   services: Seq[ServiceMethodMaker],
   author: String = null,
   date: String = null
-)(implicit context: PEntityContext) {
+)(implicit context: PEntityContext) extends Doxes {
   private var _section_depth = 1
 
   def spec = {
@@ -38,7 +38,8 @@ case class SpecMaker(
   }
 
   def head = {
-    val t = List(title.some, nonBlankString(subtitle).map(_.mkString("(", "", ")"))).flatten.mkString(" ")
+    val t = List(title.some, nonBlankString(subtitle).
+      map(x => s"($x)")).flatten.mkString(" ")
     val a = Option(author).toList
     val d = Option(date) | new java.util.Date().toString
     Head(dox_text(t), a.flatMap(dox_text), dox_text(d))
@@ -119,7 +120,7 @@ trait ResourceSpecMaker {
 case class ServiceResourceSpecMaker(
   main: SpecMaker,
   maker: ServiceMethodMaker
-)(implicit context: PEntityContext) extends ResourceSpecMaker {
+)(implicit context: PEntityContext) extends ResourceSpecMaker with Doxes {
   val service = maker.service
   val path = "service/" + service.uriName // XXX
   val resourceName = context.localeName(service.modelObject)
@@ -168,7 +169,7 @@ case class OperationResourceSpecMaker(
   main: SpecMaker,
   service: ServiceResourceSpecMaker,
   maker: OperationMethodMaker
-)(implicit context: PEntityContext) extends ResourceSpecMaker {
+)(implicit context: PEntityContext) extends ResourceSpecMaker with Doxes {
   val op = maker.op
   val path = service.path + "/" + op.uriName
   val resourceName = op.uriName // context.localeName(op)
@@ -254,7 +255,7 @@ case class OperationResourceSpecMaker(
 case class EventResourceSpecMaker(
   main: SpecMaker,
   maker: EventMethodMaker
-)(implicit context: PEntityContext) extends ResourceSpecMaker {
+)(implicit context: PEntityContext) extends ResourceSpecMaker with Doxes {
   val entity = maker.entity
   val resourceName = context.localeName(entity.modelObject)
   val path = "event/" + entity.uriName // XXX
@@ -346,7 +347,7 @@ case class EventResourceSpecMaker(
 case class EntityResourceSpecMaker(
   main: SpecMaker,
   maker: EntityMethodMaker
-)(implicit context: PEntityContext) extends ResourceSpecMaker {
+)(implicit context: PEntityContext) extends ResourceSpecMaker with Doxes {
   val entity = maker.entity
   def spec = {
     List(

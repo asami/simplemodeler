@@ -8,11 +8,12 @@ import org.simplemodeling.SimpleModeler.entities._
 
 /*
  * @since   Dec. 21, 2012
- * @version Jan. 12, 2013
+ *  version Jan. 12, 2013
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 abstract class ExpressionBuilder(val context: PEntityContext, val expr: SMExpression) extends GRecordable {
-  implicit def SMExpressionShow: Show[SMExpressionNode] = showA
+  implicit def SMExpressionShow: Show[SMExpressionNode] = Show.showA
   type RESULT_TYPE
 
   setup_Recordable(context)

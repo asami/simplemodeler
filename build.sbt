@@ -6,11 +6,11 @@ organization := "org.simplemodeling"
 
 // src/main/scala/org/simplemodeling/SimpleModeler/SimpleModeler.scala
 
-version := "0.4.1-o"
+version := "2.0.0-SNAPSHOT"
 
-// scalaVersion := "2.9.2"
+scalaVersion := "2.11.6"
 
-crossScalaVersions := Seq("2.9.2", "2.9.1")
+// crossScalaVersions := Seq("2.9.2", "2.9.1")
 
 scalacOptions += "-deprecation"
 
@@ -28,7 +28,7 @@ libraryDependencies <+= scalaVersion { "org.scala-lang" % "scala-compiler" % _ }
 
 libraryDependencies += "org.apache.commons" % "commons-lang3" % "3.1"
 
-libraryDependencies += "org.scalaz" %% "scalaz-core" % "6.0.4"
+// libraryDependencies += "org.scalaz" %% "scalaz-core" % "6.0.4"
 
 libraryDependencies += "de.odysseus.juel" % "juel-api" % "2.2.5"
 
@@ -36,7 +36,7 @@ libraryDependencies += "de.odysseus.juel" % "juel-spi" % "2.2.5"
 
 libraryDependencies += "de.odysseus.juel" % "juel-impl" % "2.2.5"
 
-libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.12a"
+libraryDependencies += "org.goldenport" %% "goldenport" % "2.0.0-SNAPSHOT"
 
 // libraryDependencies += "org.goldenport" %% "goldenport-scalaz-lib" % "0.2.0"
 
@@ -46,9 +46,9 @@ libraryDependencies += "org.goldenport" %% "goldenport" % "0.4.12a"
 
 // libraryDependencies += "org.smartdox" %% "smartdox" % "0.3.2"
 
-libraryDependencies += "org.scalatest" %% "scalatest" % "1.6.1" % "test"
+libraryDependencies += "org.scalatest" %% "scalatest" % "2.2.6" % "test"
 
-libraryDependencies += "junit" % "junit" % "4.8" % "test"
+libraryDependencies += "junit" % "junit" % "4.12" % "test"
 
 //
 sources in (Compile,doc) := Seq.empty

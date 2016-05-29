@@ -9,7 +9,7 @@ import de.odysseus.el.util._
 
 /*
  * @since   Oct. 31, 2012
- * @version Nov.  1, 2012
+ * @version May. 29, 2016
  * @author  ASAMI, Tomoharu
  */
 object SMExpressionJuel {
@@ -77,7 +77,7 @@ object SMExpressionJuel {
       case OR => SMEBOOr(_children(x))
       case SUB => SMEBOSub(_children(x))
     }
-    node(o, o.children.toStream)
+    Tree.node(o, o.children.toStream)
   }
 
   private def _children(x: JNode): Seq[Tree[SMExpressionNode]] = {
@@ -104,24 +104,28 @@ object SMExpressionJuel {
     build_dot_node(x)
   }
 
-  protected def build_dot_node(x: AstDot): Tree[SMEDot] = {
+  protected def build_dot_node(x: AstDot): Tree[SMExpressionNode] = {
     val name = x.toString.dropWhile(x => x == '.' || x == ' ')
-    val id = leaf(SMEIdentifier(name))
-    x.getChild(0) match {
+    val id = Tree.leaf(SMEIdentifier(name)).asInstanceOf[Tree[SMExpressionNode]]
+    val r = x.getChild(0) match {
       case c: AstDot => {
-        val a = build_dot_node(c)
+        val a = build_dot_node(c).asInstanceOf[Tree[SMEDot]]
         val b = a.rootLabel
-        val cs = Seq(b.lhs, _build_dot_node(Seq(b.rhs, id)))
+        val cs = Seq[Tree[SMExpressionNode]](
+          b.lhs,
+          _build_dot_node(Seq(b.rhs, id)).asInstanceOf[Tree[SMExpressionNode]]
+        )
         _build_dot_node(cs)
       }
       case i: AstIdentifier => {
         _build_dot_node(Seq(build_identifier(i), id))
       }
     }
+    r.asInstanceOf[Tree[SMExpressionNode]]
   }
 
   private def _build_dot_node(cs: Seq[Tree[SMExpressionNode]]): Tree[SMEDot] = {
-    node(SMEDot(cs), cs.toStream).asInstanceOf[Tree[SMEDot]]
+    Tree.node(SMEDot(cs), cs.toStream).asInstanceOf[Tree[SMEDot]]
   }
 
   protected def build_eval(x: AstEval): Tree[SMExpressionNode] = {
@@ -129,11 +133,11 @@ object SMExpressionJuel {
   }
 
   protected def build_identifier(x: AstIdentifier): Tree[SMExpressionNode] = {
-    leaf(SMEIdentifier(x.getName))
+    Tree.leaf(SMEIdentifier(x.getName))
   }
 
   protected def build_method(x: AstMethod): Tree[SMExpressionNode] = {
-    leaf(SMEMethod())
+    Tree.leaf(SMEMethod())
   }
 
   protected def build_nested(x: AstNested): Tree[SMExpressionNode] = {
@@ -141,7 +145,7 @@ object SMExpressionJuel {
   }
 
   protected def build_null(x: AstNull): Tree[SMExpressionNode] = {
-    leaf(SMENull())
+    Tree.leaf(SMENull())
   }
 
   protected def build_number(x: AstNumber): Tree[SMExpressionNode] = {
@@ -149,7 +153,7 @@ object SMExpressionJuel {
   }
 
   protected def build_property(x: AstProperty): Tree[SMExpressionNode] = {
-    leaf(SMEProperty())
+    Tree.leaf(SMEProperty())
   }  
 
   protected def build_string(x: AstString): Tree[SMExpressionNode] = {
@@ -170,7 +174,7 @@ object SMExpressionJuel {
   ): Tree[SMExpressionNode] = {
     val b = x.getValue(_bindings, _context, classOf[Boolean])
     b match {
-      case x: java.lang.Boolean => leaf(f(x))
+      case x: java.lang.Boolean => Tree.leaf(f(x))
       case x => sys.error(x.toString) // XXX
     }
   }
@@ -181,7 +185,7 @@ object SMExpressionJuel {
   ): Tree[SMExpressionNode] = {
     val b = x.getValue(_bindings, _context, classOf[Number])
     b match {
-      case x: java.lang.Number => leaf(f(x))
+      case x: java.lang.Number => Tree.leaf(f(x))
       case x => sys.error(x.toString) // XXX
     }
   }
@@ -192,7 +196,7 @@ object SMExpressionJuel {
   ): Tree[SMExpressionNode] = {
     val b = x.getValue(_bindings, _context, classOf[String])
     b match {
-      case x: java.lang.String => leaf(f(x))
+      case x: java.lang.String => Tree.leaf(f(x))
       case x => sys.error(x.toString) // XXX
     }
   }
@@ -209,6 +213,6 @@ object SMExpressionJuel {
     f: Seq[Tree[SMExpressionNode]] => SMExpressionNode,
     cs: Seq[Tree[SMExpressionNode]]
   ): Tree[SMExpressionNode] = {
-    node(f(cs), cs.toStream)
+    Tree.node(f(cs), cs.toStream)
   }
 }

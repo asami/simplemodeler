@@ -11,13 +11,14 @@ import org.simplemodeling.SimpleModeler.entities.gaej.GaejUtil._
 /*
  * @since   Oct. 25, 2009
  *  version Oct. 28, 2009
- * @version Nov. 18, 2012
+ *  version Nov. 18, 2012
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 class GaejPowertypeEntity(aContext: GaejEntityContext) extends GaejObjectEntity(aContext) {
   var modelPowertype: SMPowertype = null
 
-  private def first_kind = modelPowertype.kinds.firstOption match {
+  private def first_kind = modelPowertype.kinds.headOption match {
     case Some(kind) => kind.name
     case _ => "null"
   }

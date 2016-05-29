@@ -13,7 +13,8 @@ import org.simplemodeling.SimpleModeler.entities.gaej.GaejUtil._
  * @since   Apr. 23, 2011
  *  version Aug. 20, 2011
  *  version Apr.  8, 2012
- * @version Nov. 26, 2012
+ *  version Nov. 26, 2012
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 trait PPowertypeEntity extends PObjectEntity {
@@ -21,7 +22,7 @@ trait PPowertypeEntity extends PObjectEntity {
 
   def kinds = modelPowertype.kinds.map(PPowertypeKind.create)
 
-  private def first_kind = modelPowertype.kinds.firstOption match {
+  private def first_kind = modelPowertype.kinds.headOption match {
     case Some(kind) => kind.name
     case _ => "null"
   }

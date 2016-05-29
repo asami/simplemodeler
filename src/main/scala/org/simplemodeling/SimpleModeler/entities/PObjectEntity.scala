@@ -25,7 +25,8 @@ import org.simplemodeling.dsl._
  *  version Oct. 26, 2012
  *  version Nov. 29, 2012
  *  version Dec. 26, 2012
- * @version Feb.  7, 2013
+ *  version Feb.  7, 2013
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 abstract class PObjectEntity(val pContext: PEntityContext) 
@@ -597,11 +598,11 @@ abstract class PObjectEntity(val pContext: PEntityContext)
     wholeAttributes.find(_.isInheritancePowertype)
   }
 
-  def getInheritancePowertypeValue: Option[Either[String, Int]] = {
+  def getInheritancePowertypeValue: Option[\/[String, Int]] = {
     getInheritancePowertypeAttributeValue.map(x => (x._2))
   }
 
-  def getInheritancePowertypeAttributeValue: Option[(PAttribute, Either[String, Int])] = {
+  def getInheritancePowertypeAttributeValue: Option[(PAttribute, \/[String, Int])] = {
     val r = 
     getInheritancePowertype.flatMap(attr => {
       attr.getPowertype.flatMap(p => {

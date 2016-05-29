@@ -7,18 +7,18 @@ import org.simplemodeling.SimpleModeler.entity._
 
 /*
  * @since   Nov. 26, 2012
- * @version Nov. 26, 2012
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 trait PEnumeration {
   val name: String
-  val value: Either[String, Int]
+  val value: \/[String, Int]
   val label: String
 
   def sqlValue = {
     value match {
-      case Left(v) => "'" + v + "'"
-      case Right(v) => v.toString
+      case -\/(v) => "'" + v + "'"
+      case \/-(v) => v.toString
     }
   }
 

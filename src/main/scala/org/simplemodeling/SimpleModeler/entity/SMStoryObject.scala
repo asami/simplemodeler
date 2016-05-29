@@ -20,7 +20,8 @@ import org.simplemodeling.SimpleModeler.entity.util.StepFlowBuilder
 /*
  * @since   Dec.  7, 2008
  *  version Nov.  4, 2011
- * @version Nov. 18, 2012
+ *  version Nov. 18, 2012
+ * @version May. 29, 2016
  * @author  ASAMI, Tomoharu
  */
 abstract class SMStoryObject(val dslStoryObject: SStoryObject) extends SMObject(dslStoryObject) {
@@ -51,7 +52,7 @@ abstract class SMStoryObject(val dslStoryObject: SStoryObject) extends SMObject(
 //      case s: SMRequirementTaskStep => s.resolve(f)
       case s: SMStep => s.resolve(f)
     }
-  }.sumr
+  }.toVector.concatenate
 
   private def _all_steps: Seq[SMStep] = {
     // collectContent includes the target node itself.

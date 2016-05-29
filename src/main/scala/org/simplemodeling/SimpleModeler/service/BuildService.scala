@@ -13,7 +13,7 @@ import org.goldenport.entity.content.GContent
 import org.goldenport.entities.workspace.TreeWorkspaceEntity
 import org.goldenport.entities.fs.FileStoreEntity
 import org.goldenport.entities.csv.CsvEntity
-import org.goldenport.record._
+import org.goldenport.record.v1._
 import org.smartdox.Text
 import org.simplemodeling.SimpleModeler.SimpleModelerConstants._
 import org.simplemodeling.SimpleModeler.entity.SimpleModelEntity
@@ -25,7 +25,8 @@ import org.simplemodeling.SimpleModeler.transformers.java.SimpleModel2Java6Realm
  * @since   Jan. 29, 2012
  *  version Feb. 28, 2012
  *  version Jun. 17, 2012
- * @version Nov.  2, 2012
+ *  version Nov.  2, 2012
+ * @version May. 29, 2016
  * @author  ASAMI, Tomoharu
  */
 class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GService(aCall, serviceClass) {
@@ -43,8 +44,8 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
       case "" => DEFAULT_PACKAGE_NAME
       case n => n
     }
-    val srcdir: Either[String, FileStoreEntity] = _src_dir(aRequest)
-    val result: Either[String, Unit] = srcdir.flatMap { src =>
+    val srcdir: \/[String, FileStoreEntity] = _src_dir(aRequest)
+    val result: \/[String, Unit] = srcdir.flatMap { src =>
       src.open()
       val dest = new TreeWorkspaceEntity(entityContext)
       dest.open()
@@ -53,10 +54,11 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
       home.foreach(_build)
       aResponse.addRealm(dest).right
     }
-    result.left.foreach(m => record_error(m))
+    val r: Option[String] = result.left.toOption
+    r.foreach(m => record_error(m))
   }
 
-  private def _src_dir(req: GServiceRequest): Either[String, FileStoreEntity] = {
+  private def _src_dir(req: GServiceRequest): \/[String, FileStoreEntity] = {
     req.getEntity match {
       case Some(fs: FileStoreEntity) => fs.right
       case _ => new FileStoreEntity(".", entityContext).right
@@ -69,7 +71,7 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
     }
   }
 
-  implicit def GtreeContainerEntityNodeShow: Show[GTreeContainerEntityNode] = showA
+  implicit def GtreeContainerEntityNodeShow: Show[GTreeContainerEntityNode] = Show.showA
 
   private def _build(home: GTreeContainerEntityNode) {
     val tree = entree(home)
@@ -169,7 +171,7 @@ class BuildService(aCall: GServiceCall, serviceClass: GServiceClass) extends GSe
   }
 
   def entree(node: GTreeContainerEntityNode): Tree[GTreeContainerEntityNode] = {
-    Scalaz.node(node, node.children.toStream.map(entree))
+    Tree.node(node, node.children.toStream.map(entree))
   }
 
   def untree(root: Tree[GTreeContainerEntityNode]): GTreeContainerEntityNode = {

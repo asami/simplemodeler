@@ -25,7 +25,8 @@ import com.asamioffice.goldenport.text.UJavaString
 
 /*
  * @since   Nov.  7, 2012
- * @version Dec. 15, 2012
+ *  version Dec. 15, 2012
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 trait SimpleModelEntityHelper {
@@ -109,7 +110,7 @@ trait SimpleModelEntityHelper {
         case ':' => buf.append('_');afterSpace = false
         case '.' => buf.append('_');afterSpace = false
         case ' ' => afterSpace = true
-        case _ if afterSpace => buf.append(c.toUpperCase);afterSpace = false
+        case _ if afterSpace => buf.append(c.toUpper);afterSpace = false
         case _ => buf.append(c);afterSpace = false
       }
     }
@@ -129,8 +130,8 @@ trait SimpleModelEntityHelper {
         case ':' => buf.append('_');afterSpace = false
         case '.' => buf.append('_');afterSpace = false
         case ' ' => afterSpace = true
-        case _ if firstCharacter => buf.append(c.toUpperCase);firstCharacter = false
-        case _ if afterSpace => buf.append(c.toUpperCase);afterSpace = false
+        case _ if firstCharacter => buf.append(c.toUpper);firstCharacter = false
+        case _ if afterSpace => buf.append(c.toUpper);afterSpace = false
         case _ => buf.append(c);afterSpace = false
       }
     }

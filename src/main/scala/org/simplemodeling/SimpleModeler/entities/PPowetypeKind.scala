@@ -8,10 +8,10 @@ import org.simplemodeling.SimpleModeler.entity._
 
 /*
  * @since   Nov. 26, 2012
- * @version Nov. 26, 2012
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
-case class PPowertypeKind(name: String, value: Either[String, Int], label: String, model: SPowertypeKind) extends PEnumeration
+case class PPowertypeKind(name: String, value: \/[String, Int], label: String, model: SPowertypeKind) extends PEnumeration
 
 object PPowertypeKind {
   def create(k: SPowertypeKind) = {

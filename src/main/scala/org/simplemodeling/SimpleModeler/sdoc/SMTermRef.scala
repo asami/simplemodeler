@@ -7,9 +7,10 @@ import org.goldenport.sdoc.inline.SElementRef
 import org.goldenport.sdoc.inline.SHelpRef
 
 /*
- * Dec.  6, 2008
- * Dec. 10, 2008
+ * @since   Dec.  6, 2008
+ * @version May. 29, 2016
+ * @author  ASAMI, Tomoharu
  */
-case class SMTermRef(val anObject: SObject) extends SIAnchor(anObject.term) {
+class SMTermRef(val anObject: SObject) extends SIAnchor(anObject.term) {
   unresolvedRef = new SElementRef(anObject.packageName, anObject.name)
 }

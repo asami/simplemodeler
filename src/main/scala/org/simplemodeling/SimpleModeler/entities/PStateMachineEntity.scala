@@ -7,7 +7,8 @@ import org.simplemodeling.SimpleModeler.entity._
 /*
  * @since   Nov. 14, 2012
  *  version Dec.  2, 2012
- * @version Feb.  6, 2013
+ *  version Feb.  6, 2013
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 trait PStateMachineEntity extends PObjectEntity {
@@ -19,7 +20,7 @@ trait PStateMachineEntity extends PObjectEntity {
     states.find(_.lifecycle == name)
   }
 
-  private def first_state = modelStateMachine.states.firstOption match {
+  private def first_state = modelStateMachine.states.headOption match {
     case Some(state) => state.name
     case _ => "null"
   }

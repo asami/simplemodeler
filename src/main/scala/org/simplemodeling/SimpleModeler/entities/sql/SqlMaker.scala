@@ -12,7 +12,8 @@ import org.simplemodeling.SimpleModeler.entities.expr.SqlExpressionBuilder
  * @since   Nov.  2, 2012
  *  version Dec. 23, 2012
  *  version Jan. 17, 2013
- * @version Feb.  8, 2013
+ *  version Feb.  8, 2013
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 trait SqlMaker {
@@ -329,8 +330,8 @@ class EntitySqlMaker(
       case (attr, value) => {
         val columnname = context.sqlColumnName(attr)
         value match {
-          case Left(v) => "T.%s='%s'".format(columnname, v)
-          case Right(v) => "T.%s=%s".format(columnname, v)
+          case -\/(v) => "T.%s='%s'".format(columnname, v)
+          case \/-(v) => "T.%s=%s".format(columnname, v)
         }
       }
     }
@@ -351,8 +352,8 @@ class EntitySqlMaker(
     } else if (attr.modelStateMachine != null) {
       attr.modelStateMachine.statemachine.findLifecycle("available") match {
         case Some(s) => s.value match {
-          case Left(v) => "'" + v + "'"
-          case Right(v) => v.toString
+          case -\/(v) => "'" + v + "'"
+          case \/-(v) => v.toString
         }
         case None => {
           println("EntitySqlMaker#_logical_delete_available: " + attr.modelStateMachine.statemachine)

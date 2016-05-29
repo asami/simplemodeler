@@ -6,9 +6,10 @@ import org.goldenport.sdoc._
 import org.simplemodeling.SimpleModeler.sdoc._
 
 /*
- * Dec. 24, 2008
- * Mar. 18, 2009
- * ASAMI, Tomoharu
+ * @since   Dec. 24, 2008
+ *  version Mar. 18, 2009
+ * @version May. 29, 2016
+ * @author  ASAMI, Tomoharu
  */
 class SMTransition(val dslTransition: STransition, val ownerStateMachine: SMStateMachine) extends SMElement(dslTransition) {
   var resource: SMObject = SMNullObject
@@ -26,7 +27,7 @@ class SMTransition(val dslTransition: STransition, val ownerStateMachine: SMStat
   }
 
   final def eventLiteral: SDoc = {
-    SMObjectRef(dslTransition.event)
+    new SMObjectRef(dslTransition.event)
   }
 
   final def preStateLiteral: SDoc = {

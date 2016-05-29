@@ -6,7 +6,8 @@ import org.goldenport.value._
 /*
  * @since   Sep. 14, 2008
  *  version Apr. 17, 2011
- * @version Dec.  6, 2011
+ *  version Dec.  6, 2011
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 object UDsl {
@@ -54,7 +55,7 @@ object UDsl {
       val buffer = new StringBuilder
       buffer += prefix(0)
       for (i <- 1 until prefix.length) {
-	buffer += prefix(i).toLowerCase
+	buffer += prefix(i).toLower
       }
       buffer.append(body)
       buffer.toString

@@ -15,7 +15,8 @@ import org.goldenport.sdoc.inline.SHelpRef
  *  version Mar. 19, 2009
  *  version Nov. 26, 2012
  *  version Dec.  6, 2012
- * @version Feb.  6, 2013
+ *  version Feb.  6, 2013
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  * ASAMI, Tomoharu
  */
@@ -31,7 +32,7 @@ class SMState(val dslState: SState, ownerStateMachine: SMStateMachine) extends S
     subStateMap += (name -> state) // owner composition state
   }
 
-  val value: Either[String, Int] = {
+  val value: \/[String, Int] = {
     val v = dslState.value | name
     val r = if (StringUtils.isBlank(v)) {
       name.left

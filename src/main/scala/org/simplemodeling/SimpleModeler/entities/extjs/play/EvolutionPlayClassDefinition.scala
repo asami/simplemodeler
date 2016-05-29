@@ -14,7 +14,8 @@ import org.simplemodeling.SimpleModeler.entities.sql._
 /**
  * @since   Apr. 21, 2012
  *  version May. 14, 2012
- * @version Dec. 26, 2012
+ *  version Dec. 26, 2012
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 class EvolutionPlayClassDefinition(
@@ -36,10 +37,10 @@ class EvolutionPlayClassDefinition(
     val entities = entities_in_module
     sm_pln("""# --- !Ups""")
     sm_pln()
-    entities |>| _create_table
+    entities.foreach(_create_table)
     sm_pln("""# --- !Downs""")
     sm_pln()
-    entities |>| _drop_table
+    entities.foreach(_drop_table)
   }
 
   private def _create_table(entity: PEntityEntity) {

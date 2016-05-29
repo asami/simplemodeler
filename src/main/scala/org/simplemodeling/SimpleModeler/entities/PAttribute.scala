@@ -19,7 +19,8 @@ import org.simplemodeling.SimpleModeler.entity._
  *  version Nov. 26, 2012
  *  version Dec. 26, 2012
  *  version Jan. 14, 2013
- * @version Feb. 21, 2013
+ *  version Feb. 21, 2013
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -514,9 +515,9 @@ class PAttribute(val name: String, val attributeType: PObjectType, val readonly:
     }
   }
 
-  def getConstraints(): Seq[SConstraint] = {
+  def getConstraints(): Vector[SConstraint] = {
     Option(modelAttribute) map { m =>
-      m.dslAttribute.constraints
+      m.dslAttribute.constraints.toVector
     } orZero
   }
 

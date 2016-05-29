@@ -17,7 +17,7 @@ import org.simplemodeling.dsl.datatype.ext._
 
 /*
  * @since   Oct. 17, 2015
- * @version Oct. 17, 2015
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 class SquerylStateMachineScalaClassDefinition(
@@ -33,7 +33,7 @@ class SquerylStateMachineScalaClassDefinition(
   private lazy val _states = for ((k, i) <- pobject.states.zipWithIndex) yield {
     val cn = k.name.capitalize + name
     val v = k.value match {
-      case Right(r) => r
+      case \/-(r) => r
       case _ => i + 1
     }
     State(cn, k.name, v, k.label)

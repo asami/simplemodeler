@@ -4,7 +4,7 @@ import scalaz._, Scalaz._
 
 /*
  * @since   Nov. 18, 2012
- * @version Nov. 18, 2012
+ * @version May. 29, 2016
  * @author  ASAMI, Tomoharu
  */
 sealed trait ResolveResult { // XXX more suitable name
@@ -78,8 +78,12 @@ case class ResolveNotFound(qname: String) extends ResolveMessage {
 }
 
 trait ResolveResults {  
-  implicit def ResolveResultZero: Zero[ResolveResult] = zero(ResolveSuccess)
-  implicit def ResolveResultSemigroup: Semigroup[ResolveResult] = semigroup((a, b) => a.join(b))
+  // implicit def ResolveResultZero: Zero[ResolveResult] = zero(ResolveSuccess)
+  // implicit def ResolveResultSemigroup: Semigroup[ResolveResult] = semigroup((a, b) => a.join(b))
+  implicit def ResolveResultMonoid: Monoid[ResolveResult] = new Monoid[ResolveResult] {
+    def zero = ResolveSuccess
+    def append(lhs: ResolveResult, rhs: => ResolveResult): ResolveResult = lhs.join(rhs)
+  }
 }  
 
 object ResolveResult extends ResolveResults {

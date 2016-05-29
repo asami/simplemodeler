@@ -11,7 +11,7 @@ import scala.collection.mutable.ArrayBuffer
  *  version Nov. 15, 2012
  *  version Dec. 26, 2012
  *  version Jan. 29, 2013
- * @version Feb. 23, 2013
+ * @version May. 29, 2016
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -65,16 +65,16 @@ class SMMServiceType(aName: String, aPackageName: String) extends SMMEntityType(
  * DataType
  */
 abstract class SMMDataType(name: String, pkg: String) extends SMMObjectType(name, pkg) with SMMValueDataType {
-  def candidates: Seq[String]
-  lazy val allCandidates: Seq[String] = {
-    def augumentsSpace(s: String): Seq[String] = {
+  def candidates: Vector[String]
+  lazy val allCandidates: Vector[String] = {
+    def augumentsSpace(s: String): Vector[String] = {
       if (s.contains(" ")) {
-        List(s, s.replace(" ", ""), s.replace(" ", "-"))
-      } else Seq(s)
+        Vector(s, s.replace(" ", ""), s.replace(" ", "-"))
+      } else Vector(s)
     }
 
-    def augumentsPrefix(s: String): Seq[String] = {
-      Seq(s, "x" + s)
+    def augumentsPrefix(s: String): Vector[String] = {
+      Vector(s, "x" + s)
     }
 
     candidates >>= augumentsPrefix >>= augumentsSpace
@@ -87,156 +87,156 @@ abstract class SMMDataType(name: String, pkg: String) extends SMMObjectType(name
 }
 
 class SMMStringType extends SMMDataType("XString", "org.simplemodeling.dsl.datatype") {
-  val candidates = List("string")
+  val candidates = Vector("string")
 }
 object SMMStringType extends SMMStringType
 
 class SMMTokenType extends SMMDataType("XToken", "org.simplemodeling.dsl.datatype") {
-  val candidates = List("token")
+  val candidates = Vector("token")
 }
 object SMMTokenType extends SMMTokenType
 
 class SMMTextType extends SMMDataType("XText", "org.simplemodeling.dsl.datatype") {
-  val candidates = List("text")
+  val candidates = Vector("text")
 }
 object SMMTextType extends SMMTextType
 
 class SMMBooleanType extends SMMDataType("XBoolean", "org.simplemodeling.dsl.datatype") {
-  val candidates = List("boolean")
+  val candidates = Vector("boolean")
 }
 object SMMBooleanType extends SMMBooleanType
 
 class SMMByteType extends SMMDataType("XByte", "org.simplemodeling.dsl.datatype") {
-  val candidates = List("byte")
+  val candidates = Vector("byte")
 }
 object SMMByteType extends SMMByteType
 
 class SMMShortType extends SMMDataType("XShort", "org.simplemodeling.dsl.datatype") {
-    val candidates = List("short")
+    val candidates = Vector("short")
 }
 object SMMShortType extends SMMShortType
 
 class SMMIntType extends SMMDataType("XInt", "org.simplemodeling.dsl.datatype") {
-    val candidates = List("int")
+    val candidates = Vector("int")
 }
 object SMMIntType extends SMMIntType
 
 class SMMLongType extends SMMDataType("XLong", "org.simplemodeling.dsl.datatype") {
-    val candidates = List("long")
+    val candidates = Vector("long")
 }
 object SMMLongType extends SMMLongType
 
 class SMMFloatType extends SMMDataType("XFloat", "org.simplemodeling.dsl.datatype") {
-    val candidates = List("float")
+    val candidates = Vector("float")
 }
 object SMMFloatType extends SMMFloatType
 
 class SMMDoubleType extends SMMDataType("XDouble", "org.simplemodeling.dsl.datatype") {
-    val candidates = List("double")
+    val candidates = Vector("double")
 }
 object SMMDoubleType extends SMMDoubleType
 
 class SMMUnsignedByteType extends SMMDataType("XUnsignedByte", "org.simplemodeling.dsl.datatype") {
-    val candidates = List("unsigned byte")
+    val candidates = Vector("unsigned byte")
 }
 object SMMUnsignedByteType extends SMMUnsignedByteType
 
 class SMMUnsignedShortType extends SMMDataType("XUnsignedShort", "org.simplemodeling.dsl.datatype") {
-    val candidates = List("unsigned short")
+    val candidates = Vector("unsigned short")
 }
 object SMMUnsignedShortType extends SMMUnsignedShortType
 
 class SMMUnsignedIntType extends SMMDataType("XUnsignedInt", "org.simplemodeling.dsl.datatype") {
-    val candidates = List("unsigned int")
+    val candidates = Vector("unsigned int")
 }
 object SMMUnsignedIntType extends SMMUnsignedIntType
 
 class SMMUnsignedLongType extends SMMDataType("XUnsignedLong", "org.simplemodeling.dsl.datatype") {
-    val candidates = List("unsigned long")
+    val candidates = Vector("unsigned long")
 }
 object SMMUnsignedLongType extends SMMUnsignedLongType
 
 class SMMIntegerType extends SMMDataType("XInteger", "org.simplemodeling.dsl.datatype") {
-    val candidates = List("integer")
+    val candidates = Vector("integer")
 }
 object SMMIntegerType extends SMMIntegerType
 
 class SMMDecimalType extends SMMDataType("XDecimal", "org.simplemodeling.dsl.datatype") {
-  val candidates = List("decimal")
+  val candidates = Vector("decimal")
 }
 object SMMDecimalType extends SMMDecimalType
 
 class SMMDateType extends SMMDataType("XDate", "org.simplemodeling.dsl.datatype") {
-  val candidates = List("date")
+  val candidates = Vector("date")
 }
 object SMMDateType extends SMMDateType
 
 class SMMTimeType extends SMMDataType("XTime", "org.simplemodeling.dsl.datatype") {
-  val candidates = List("time")
+  val candidates = Vector("time")
 }
 object SMMTimeType extends SMMTimeType
 
 class SMMDateTimeType extends SMMDataType("XDateTime", "org.simplemodeling.dsl.datatype") {
-  val candidates = List("datetime")
+  val candidates = Vector("datetime")
 }
 object SMMDateTimeType extends SMMDateTimeType
 
 class SMMUriType extends SMMDataType("XAnyUri", "org.simplemodeling.dsl.datatype") {
-  val candidates = List("uri")
+  val candidates = Vector("uri")
 }
 object SMMUriType extends SMMUriType
 
 // Extension (AppEngine)
 class SMMLinkType extends SMMDataType("XLink", "org.simplemodeling.dsl.datatype.ext") {
-  val candidates = List("link", "url")
+  val candidates = Vector("link", "url")
 }
 object SMMLinkType extends SMMLinkType
 
 // Business datatype
 class SMMMoneyType extends SMMDataType("XMoney", "org.simplemodeling.dsl.datatype.business") {
-  val candidates = List("money")
+  val candidates = Vector("money")
 }
 object SMMMoneyType extends SMMMoneyType
 
 class SMMPercentType extends SMMDataType("XPercent", "org.simplemodeling.dsl.datatype.business") {
-  val candidates = List("percent")
+  val candidates = Vector("percent")
 }
 object SMMPercentType extends SMMPercentType
 
 class SMMUnitType extends SMMDataType("XUnit", "org.simplemodeling.dsl.datatype.business") {
-  val candidates = List("unit")
+  val candidates = Vector("unit")
 }
 object SMMUnitType extends SMMUnitType
 
 // Platform datatype
 class SMMUuidType extends SMMDataType("XUuid", "org.simplemodeling.dsl.datatype.platform") {
-  val candidates = List("uuid")
+  val candidates = Vector("uuid")
 }
 object SMMUuidType extends SMMUuidType
 
 class SMMXmlType extends SMMDataType("XXml", "org.simplemodeling.dsl.datatype.platform") {
-  val candidates = List("xml")
+  val candidates = Vector("xml")
 }
 object SMMXmlType extends SMMXmlType
 
 class SMMHtmlType extends SMMDataType("XHtml", "org.simplemodeling.dsl.datatype.platform") {
-  val candidates = List("html")
+  val candidates = Vector("html")
 }
 object SMMHtmlType extends SMMHtmlType
 
 class SMMEverforthidType extends SMMDataType("XEverforthid", "org.simplemodeling.dsl.datatype.platform") {
-  val candidates = List("everforthid")
+  val candidates = Vector("everforthid")
 }
 object SMMEverforthidType extends SMMEverforthidType
 
 //
 class SMMDocumentType(name: String, pkg: String) extends SMMDataType(name, pkg) {
-  val candidates = Nil
+  val candidates = Vector.empty
 }
 
 // Special datatype
 class SMMUnknownDataType(val unkonwn: String) extends SMMDataType("XString", "org.simplemodeling.dsl.datatype") {
-  val candidates = Nil
+  val candidates = Vector.empty
 }
 
 /*
@@ -402,7 +402,7 @@ object SMMSqlTextType extends SMMSqlTextType with SMMSqlDataTypeFactory {
 
 // Special datatype
 class SMMSqlUnknownDataType(val unkonwn: String) extends SMMSqlDataType("TEXT", "org.simplemodeling.dsl.datatype.sql") {
-  val candidates = Nil
+  val candidates = Vector.empty
   val dataType = SMMStringType
   val text = "Unkonwn:" + unkonwn
 }
@@ -411,7 +411,7 @@ class SMMSqlUnknownDataType(val unkonwn: String) extends SMMSqlDataType("TEXT", 
  * Factory
  */
 object SMMObjectType {
-  val datatypes = List(
+  val datatypes = Vector(
     SMMStringType,
     SMMTokenType,
     SMMTextType,

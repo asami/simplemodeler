@@ -98,7 +98,8 @@ import org.simplemodeling.SimpleModeler.builder._
  *  version Nov. 30, 2012
  *  version Dec. 26, 2012
  *  version Jan. 29, 2013
- * @version Feb. 23, 2013
+ *  version Feb. 23, 2013
+ * @version May.  7, 2016
  * @author  ASAMI, Tomoharu
  */
 /**
@@ -1610,20 +1611,20 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _entity_ref(name: Option[String], entities: Map[String, SObject]): Either[String, SEntity] = {
     name match {
       case Some(s) => _entity_ref(s, entities)
-      case None => "エンティティ名がありません。(参照元: %s)".format(this.name).left
+      case None => Left("エンティティ名がありません。(参照元: %s)".format(this.name))
     }
   }
 
   private def _entity_ref(name: String, entities: Map[String, SObject]): Either[String, SEntity] = {
     entities.get(name) match {
-      case Some(entity: SEntity) => entity.right
-      case Some(x) => "エンティティに対してのみ関連・集約・合成を持つことができます。(参照元: %s, 参照先: %s)".format(this.name, name).left
+      case Some(entity: SEntity) => Right(entity)
+      case Some(x) => Left("エンティティに対してのみ関連・集約・合成を持つことができます。(参照元: %s, 参照先: %s)".format(this.name, name))
       case None => Left("エンティティ「%s」はみつかりません。(参照元: %s)".format(name, this.name))
     }
   }
 
 /*
-  private def _entity_ref0(name: String, entities: Map[String, SObject]): Either[String, SEntity] = {
+  private def _entity_ref0(name: String, entities: Map[String, SObject]): \/[String, SEntity] = {
     entities.get(name) match {
       case Some(entity: SEntity) => entity.right
       case Some(obj: SObject) => "エンティティに対してのみ関連・集約・合成を持つことができます。(参照元: %s, 参照先: %s)".format(name, obj.name).left
@@ -1645,14 +1646,14 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _powertype_ref(name: Option[String], entities: Map[String, SObject]): Either[String, DomainPowertype] = {
     name match {
       case Some(s) => _powertype_ref(s, entities)
-      case None => "パワータイプ(区分)名がありません。(参照元: %s)".format(this.name).left
+      case None => Left("パワータイプ(区分)名がありません。(参照元: %s)".format(this.name))
     }
   }
 
   private def _powertype_ref(name: String, entities: Map[String, SObject]): Either[String, DomainPowertype] = {
     entities.get(name) match {
-      case Some(p: DomainPowertype) => p.right
-      case Some(x) => "「%s」はパワータイプ(区分)ではありません。(参照元: %s)".format(x.name, this.name).left
+      case Some(p: DomainPowertype) => Right(p)
+      case Some(x) => Left("「%s」はパワータイプ(区分)ではありません。(参照元: %s)".format(x.name, this.name))
       case None => Left("パワータイプ(区分)「%s」はみつかりません。(参照元: %s)".format(name, this.name))
     }
   }
@@ -1661,14 +1662,14 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _statemachine_ref(name: Option[String], entities: Map[String, SObject]): Either[String, DomainStateMachine] = {
     name match {
       case Some(s) => _statemachine_ref(s, entities)
-      case None => "状態機械名がありません。(参照元: %s)".format(this.name).left
+      case None => Left("状態機械名がありません。(参照元: %s)".format(this.name))
     }
   }
 
   private def _statemachine_ref(name: String, entities: Map[String, SObject]): Either[String, DomainStateMachine] = {
     entities.get(name) match {
-      case Some(p: DomainStateMachine) => p.right
-      case Some(x) => "「%s」は状態機械ではありません。(参照元: %s)".format(x.name, this.name).left
+      case Some(p: DomainStateMachine) => Right(p)
+      case Some(x) => Left("「%s」は状態機械ではありません。(参照元: %s)".format(x.name, this.name))
       case None => Left("状態機械「%s」はみつかりません。(参照元: %s)".format(name, this.name))
 
     }
@@ -1677,14 +1678,14 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _role_ref(name: Option[String], entities: Map[String, SObject]): Either[String, DomainRole] = {
     name match {
       case Some(s) => _role_ref(s, entities)
-      case None => "ロール(役割)名がありません。(参照元: %s)".format(this.name).left
+      case None => Left("ロール(役割)名がありません。(参照元: %s)".format(this.name))
     }
   }
 
   private def _role_ref(name: String, entities: Map[String, SObject]): Either[String, DomainRole] = {
     entities.get(name) match {
-      case Some(r: DomainRole) => r.right
-      case Some(x) => "「%s」はロール(役割)ではありません。(参照元: %s)".format(x.name, this.name).left
+      case Some(r: DomainRole) => Right(r)
+      case Some(x) => Left("「%s」はロール(役割)ではありません。(参照元: %s)".format(x.name, this.name))
       case None => Left("ロール(役割)「%s」はみつかりません。(参照元: %s)".format(name, this.name))
     }
   }
@@ -1692,14 +1693,14 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _rule_ref(name: Option[String], entities: Map[String, SObject]): Either[String, DomainRule] = {
     name match {
       case Some(s) => _rule_ref(s, entities)
-      case None => "規則名がありません。(参照元: %s)".format(this.name).left
+      case None => Left("規則名がありません。(参照元: %s)".format(this.name))
     }
   }
 
   private def _rule_ref(name: String, entities: Map[String, SObject]): Either[String, DomainRule] = {
     entities.get(name) match {
-      case Some(r: DomainRule) => r.right
-      case Some(x) => "「%s」は規則ではありません。(参照元: %s)".format(x.name, this.name).left
+      case Some(r: DomainRule) => Right(r)
+      case Some(x) => Left("「%s」は規則ではありません。(参照元: %s)".format(x.name, this.name))
       case None => Left("規則「%s」はみつかりません。(参照元: %s)".format(name, this.name))
     }
   }
@@ -1707,15 +1708,15 @@ class SMMEntityEntity(aIn: GDataSource, aOut: GDataSource, aContext: GEntityCont
   private def _service_ref(name: Option[String], entities: Map[String, SObject]): Either[String, DomainService] = {
     name match {
       case Some(s) => _service_ref(s, entities)
-      case None => "サービス名がありません。(参照元: %s)".format(this.name).left
+      case None => Left("サービス名がありません。(参照元: %s)".format(this.name))
     }
   }
 
   private def _service_ref(name: String, entities: Map[String, SObject]): Either[String, DomainService] = {
 //    println("SMMEntityEntity#_service_ref(%s) = %s / %s".format(this.name, name, entities))
     entities.get(name) match {
-      case Some(r: DomainService) => r.right
-      case Some(x) => "「%s」はサービスではありません。(参照元: %s)".format(x.name, this.name).left
+      case Some(r: DomainService) => Right(r)
+      case Some(x) => Left("「%s」はサービスではありません。(参照元: %s)".format(x.name, this.name))
       case None => Left("サービス「%s」はみつかりません。(参照元: %s)".format(name, this.name))
     }
   }
